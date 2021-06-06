@@ -1,0 +1,37 @@
+$color1: #525252;
+$color2: #414141;
+$color3: #313131;
+$red: #ca3e47;
+$bg-color: #36393f;
+$textcolorutama: rgb(212, 212, 212);
+$text: rgb(212, 212, 212);
+$textsecond: #d4d5d6;
+$textagakbiru: #d3eaff;
+$putihterang: white;
+$abusedang: #2a2c30;
+$abutua: #202024;
+$birumuda: #1b9cfc;
+$merahmuda: #fb9595;
+$pinksr: #ff5a91;
+$small: 600px;
+$medium: 1024px;
+
+@mixin for($resolution) {
+  $conditions: ();
+  $conditions: append(
+    $conditions,
+    #{"only screen and (max-width: " + $resolution + ")"},
+    comma
+  );
+  @media #{$conditions} {
+    @content;
+  }
+}
+
+img {
+  &.isLoaded {
+    opacity: 1;
+  }
+  opacity: 0;
+  transition: 0.3s;
+}

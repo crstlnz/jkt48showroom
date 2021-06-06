@@ -1,0 +1,19 @@
+let { Schema } = require("mongoose");
+
+module.exports = {
+  name: "Showroom_Message",
+  schema: new Schema({
+    data_id: {
+      type: String,
+      required: true,
+    },
+    message_id: {
+      type: String,
+      required: true,
+    },
+    channel_id: {
+      type: String,
+      required: true,
+    },
+  }),
+};
