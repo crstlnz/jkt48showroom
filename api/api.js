@@ -1,6 +1,7 @@
 const app = require("express").Router();
 const { default: axios } = require("axios");
 const db = require("../database/database");
+const cache = new Map();
 
 function checkDB(req, res, next) {
   req.dbReady = false;
@@ -25,13 +26,34 @@ app.get("/japanrate.json", checkDB, async (req, res) => {
 
 app.get("/showroom/log", checkDB, async (req, res, next) => {
   // if (!req.query.id) return next();
-
   if (!req.dbReady) return res.send([]);
   let srLog = db.model("ShowroomLog_Backup");
   let sr = db.model("Showroom");
   let log;
   let query = req.query.page;
   let search = req.query.search;
+  let limit = 15;
+  if (req.query.limit) {
+    limit = parseInt(req.query.limit);
+    if (!limit || isNaN(limit)) limit = 15;
+    limit = limit > 0 && limit <= 15 ? limit : 15;
+  }
+
+  let members;
+
+  if (!cache.has("jkt48members"))
+    try {
+      members = await sr.find({ group: "jkt48" }).select({ room_id: 1 });
+      members = members.map(i => i.room_id);
+      if (!cache.has("jkt48members")) {
+        cache.set("jkt48members", members);
+      }
+    } catch (e) {
+      return res.send([]);
+    }
+
+  members = cache.get("jkt48members");
+  if (members == null) return res.send([]);
   // let latest = req.query.latest;
   let sort = req.query.sort ? req.query.sort : "newest";
 
@@ -65,14 +87,16 @@ app.get("/showroom/log", checkDB, async (req, res, next) => {
   };
 
   sort._id = 1;
-  let s = {};
+  let s = {
+    room_id: members
+  };
   if (search) {
-    let mirip = (await sr.find({ name: new RegExp(search, "i") })).map(
-      i => i.room_id
-    );
+    let mirip = (
+      await sr.find({ room_id: members, name: new RegExp(search, "i") })
+    ).map(i => i.room_id);
 
     // console.log(mirip);
-    s["room_id"] = { $in: mirip };
+    s["room_id"] = mirip;
   }
   // console.log(s);
 
@@ -85,7 +109,7 @@ app.get("/showroom/log", checkDB, async (req, res, next) => {
       })
       .sort(sort)
       .skip((page - 1) * 15)
-      .limit(15)
+      .limit(limit)
       .lean();
   } else {
     log = await srLog
@@ -95,7 +119,7 @@ app.get("/showroom/log", checkDB, async (req, res, next) => {
         select: "-_id name img url -room_id"
       })
       .sort(sort)
-      .limit(15)
+      .limit(limit)
       .lean();
   }
   // if()
@@ -115,10 +139,10 @@ app.get("/showroom/log", checkDB, async (req, res, next) => {
   );
 });
 
-app.get("/showroom", async (req, res) => {
-  if (!showroom) return res.send({ data: [] });
-  return res.send({ data: await showroom.getAll() });
-});
+// app.get("/showroom", async (req, res) => {
+//   if (!showroom) return res.send({ data: [] });
+//   return res.send({ data: await showroom.getAll() });
+// });
 
 app.get("/members/jkt48.json", checkDB, async (req, res) => {
   if (!req.dbReady) return res.send([]);
@@ -246,8 +270,6 @@ app.get("/showroom/user/total_gift", checkDB, async (req, res, next) => {
     return res.status(500).send(setError("Error!"));
   }
 });
-
-const cache = new Map();
 
 app.get("/showroom/next_live", checkDB, async (req, res, next) => {
   if (!req.dbReady)

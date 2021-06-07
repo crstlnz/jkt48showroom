@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser");
 const { loadNuxt, build } = require("nuxt");
 
 async function run() {
+  await require("./database/database").ready();
   app.use(express.json());
   app.use(
     express.urlencoded({

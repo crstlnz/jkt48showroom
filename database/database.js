@@ -6,7 +6,7 @@ mongoose.set("useCreateIndex", true);
 const connection = mongoose.connection;
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
-  useUnifiedTopology: true,
+  useUnifiedTopology: true
 });
 
 connection.on("close", () => {
@@ -39,40 +39,24 @@ connection.once("open", () => {
   console.log(`${schemas.length} Schemas Loaded!`);
 });
 
-connection.on("error", (err) => {
+connection.on("error", err => {
   error.send(err);
   console.log(err);
 });
 
-const getDb = (dbname) => {
+module.exports = mongoose;
+module.exports.ready = () => {
   return new Promise((resolve, reject) => {
-    if (connection.readyState != 1) {
-      connection.once("open", () => {
-        return resolve(mongoose.model(dbname));
-      });
-    } else {
-      return resolve(mongoose.model(dbname));
+    try {
+      if (mongoose.connection.readyState == 1) {
+        return resolve(mongoose);
+      } else {
+        mongoose.connection.once("open", () => {
+          return resolve(mongoose);
+        });
+      }
+    } catch (e) {
+      return reject(e);
     }
   });
-};
-
-// mongoose.logDb = async (run) => {
-//   if (!(run instanceof Function)) return;
-//   try {
-//     let db = await getDb("ShowroomLog_Backup");
-//     return run(db);
-//   } catch (e) {
-//     console.log(e);
-//   }
-// };
-
-module.exports = mongoose;
-module.exports.logDb = async (run) => {
-  if (!(run instanceof Function)) return;
-  try {
-    let db = await getDb("ShowroomLog_Backup");
-    return run(db);
-  } catch (e) {
-    console.log(e);
-  }
 };

@@ -419,8 +419,11 @@ export default {
         params: { page: 1, sort: sort }
       });
 
+      let jpnrate = $cookiz.get("jpn_rate");
+      if (!jpnrate) jpnrate = $cookiz.get("jpn_rate", { fromRes: true });
+
       return {
-        jpnrate: $cookiz.get("jpn_rate"),
+        jpnrate: jpnrate,
         sort: sort,
         logs: data,
         isLoading: false,

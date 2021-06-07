@@ -15,7 +15,10 @@
       <div class="nowlive listsr">
         <div class="title"><i class="fas fa-video live"></i>Live</div>
         <div class="item">
-          <div v-if="!now_live || !now_live.length" class="kosong">
+          <div v-if="now_live == null" class="kosong">
+            Hmm sepertinya terjadi error :(<br />Silahkan coba refresh ulang!
+          </div>
+          <div v-else-if="!now_live.length" class="kosong">
             Hmm saat ini tidak ada yang lagi live :(
           </div>
           <div v-else class="item-container">
@@ -33,7 +36,10 @@
           <img data-src="/calendar.png" alt="" v-lazy-load />Next Live
         </div>
         <div class="item">
-          <div v-if="!next_live || !next_live.length" class="kosong">
+          <div v-if="next_live == null" class="kosong">
+            Hmm sepertinya terjadi error :(<br />Silahkan coba refresh ulang!
+          </div>
+          <div v-else-if="!next_live.length" class="kosong">
             Hmm saat ini tidak ada yang menjadwalkan live showroom :(
           </div>
           <div v-else class="item-container">
@@ -49,8 +55,25 @@
       <div class="recent listsr">
         <div class="title"><i class="fas fa-history recent"></i>Recent</div>
         <div class="item">
-          <div class="kosong">
+          <div v-if="recent == null" class="kosong">
+            Hmm sepertinya terjadi error :(<br />Silahkan coba refresh ulang!
+          </div>
+          <div v-else-if="!recent.length" class="kosong">
             Hmm saat ini belum ada recent :(
+          </div>
+          <div v-else class="item-container recent-container">
+            <Recent
+              v-for="item of recent"
+              v-bind:key="item.room_id"
+              :data="item"
+              class="itemlist"
+            ></Recent>
+
+            <div v-if="recent_length > recent.length" class="more">
+              <NuxtLink to="/log" class="more_link" prefetch
+                >Lihat selanjutnya</NuxtLink
+              >
+            </div>
           </div>
         </div>
       </div>
@@ -62,6 +85,8 @@
 * {
   box-sizing: border-box;
 }
+
+@import "~assets/showroom-card.scss";
 
 .mainmenu {
   padding: 10px;
@@ -120,15 +145,19 @@
       border-radius: 5px;
       padding: 15px;
       background: lighten($color3, 6%);
+      overflow: hidden;
+      overflow-x: auto;
 
       .kosong {
         flex: 1;
         align-self: center;
         font-weight: bold;
         font-size: 16px;
-        height: 180px;
-        line-height: 180px;
+        height: 155px;
         text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
 
       .item-container {
@@ -137,8 +166,30 @@
         grid-gap: 15px;
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
         .itemlist {
-          display: inline-block;
+          // display: inline-block;
         }
+
+        @include for("330px") {
+          grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        }
+
+        .more {
+          text-align: right;
+          .more_link {
+            text-decoration: none;
+            color: inherit;
+            font-weight: bold;
+            &:hover {
+              color: darken($color: $text, $amount: 15%);
+            }
+          }
+        }
+      }
+
+      .recent-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
       }
 
       // white-space: nowrap;
@@ -201,28 +252,75 @@ export default {
     };
   },
   computed: {
+    recent_length() {
+      if (!this.recent_raw) return 0;
+      if (!this.recent.length) return 0;
+      return this.recent_raw.length;
+    },
     next_live() {
-      if (!this.next_live_raw && !this.next_live_raw.length) return [];
-      return this.next_live_raw.sort((a, b) => a.epoch - b.epoch);
+      if (this.next_live_raw == null) return null;
+      if (!this.next_live_raw.length) return [];
+      let next_live = this.next_live_raw;
+      if (this.now_live_raw && this.now_live_raw.length) {
+        let now_live = this.now_live_raw;
+        next_live = next_live.filter(
+          i => !now_live.some(item => item.room_id == i.room_id)
+        );
+      }
+      return next_live.sort((a, b) => a.epoch - b.epoch);
     },
     now_live() {
-      if (!this.now_live_raw && !this.now_live_raw.length) return [];
+      if (this.now_live_raw == null) return null;
+      if (!this.now_live_raw.length) return [];
       return this.now_live_raw.sort((a, b) => a.start_date - b.start_date);
+    },
+    recent() {
+      if (this.recent_raw == null) return null;
+      if (!this.recent_raw.length) return [];
+      return this.recent_raw.slice(0, -1);
     }
   },
   watch: {},
-  methods: {},
+  methods: {
+    relativeTime: function(timestamps) {
+      return moment(timestamps).fromNow();
+    },
+    convertRupiah(num) {
+      num = num * this.jpnrate;
+
+      return (
+        "Rp. " +
+        num
+          .toFixed(2)
+          .replace(".", ",")
+          .replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.")
+      );
+    }
+  },
   async asyncData({ $axios, $cookiz, $refs }) {
     let jpnrate = $cookiz.get("jpn_rate");
     if (!jpnrate) jpnrate = $cookiz.get("jpn_rate", { fromRes: true });
 
-    let next_live_raw = [],
-      now_live_raw = [];
+    let next_live_raw = null,
+      now_live_raw = null,
+      recent_raw = null;
     try {
       let { data } = await $axios.get("/api/showroom/next_live");
       next_live_raw = data;
+    } catch (e) {}
+
+    try {
       let { data: wew } = await $axios.get("/api/showroom/now_live");
       now_live_raw = wew;
+    } catch (e) {}
+
+    try {
+      let { data: r } = await $axios.get("/api/showroom/log", {
+        params: {
+          limit: 5
+        }
+      });
+      recent_raw = r;
     } catch (e) {}
 
     // let nextlive = [
@@ -241,7 +339,8 @@ export default {
     return {
       jpnrate: jpnrate,
       next_live_raw: next_live_raw,
-      now_live_raw: now_live_raw
+      now_live_raw: now_live_raw,
+      recent_raw: recent_raw
     };
   }
 };

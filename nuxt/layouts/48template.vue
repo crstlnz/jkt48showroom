@@ -227,10 +227,10 @@ div#__nuxt,
         flex-direction: column;
         transition: 0.4s ease-out;
         transform: translateX(-100%);
-        padding: 20px;
+        padding: 82px 0;
         .link {
           font-size: 24px;
-          line-height: 30px;
+          line-height: 40px;
         }
       }
 
@@ -260,6 +260,42 @@ div#__nuxt,
         }
       }
     }
+
+    @include for("330px") {
+      .title {
+        .text {
+          font-size: 12px;
+        }
+
+        .logo {
+          width: 24px;
+          height: 24px;
+        }
+      }
+
+      .burger {
+        width: 24px;
+        height: 24px;
+        span {
+          height: 3.5px;
+        }
+      }
+      &.open {
+        .burger {
+          span {
+            &:first-child {
+              transform: translateY(6.7px) rotate(45deg);
+            }
+            &:nth-child(2) {
+              opacity: 0;
+            }
+            &:last-child {
+              transform: translateY(-6.7px) rotate(-45deg);
+            }
+          }
+        }
+      }
+    }
   }
 
   .content {
@@ -277,9 +313,10 @@ div#__nuxt,
   .footer {
     background: $red;
     .wrapper {
-      padding: 10px;
-      padding-left: 20px;
-      padding-right: 20px;
+      padding: 10px 20px;
+      @include for("700px") {
+        padding: 10px 10px;
+      }
       display: flex;
       justify-content: space-between;
 
@@ -328,7 +365,7 @@ export default {
     meta: [
       {
         name: "theme-color",
-        content: "#313131"
+        content: "#36393f"
       }
     ]
   },
