@@ -248,7 +248,8 @@ export default {
   middleware: "japan_rate",
   data() {
     return {
-      error: false
+      error: false,
+      loading: true
     };
   },
   computed: {
@@ -297,7 +298,7 @@ export default {
       );
     }
   },
-  async asyncData({ $axios, $cookiz, $refs }) {
+  async asyncData({ $axios, $cookiz, from }) {
     let jpnrate = $cookiz.get("jpn_rate");
     if (!jpnrate) jpnrate = $cookiz.get("jpn_rate", { fromRes: true });
 
@@ -305,23 +306,29 @@ export default {
       now_live_raw = null,
       recent_raw = null;
     try {
-      let { data } = await $axios.get("/api/showroom/next_live");
-      next_live_raw = data;
-    } catch (e) {}
+      let promises = [
+        $axios.get("/api/showroom/next_live", { progress: false }),
+        $axios.get("/api/showroom/now_live"),
+        $axios.get("/api/showroom/log", {
+          progress: false,
+          params: {
+            limit: 5
+          }
+        })
+      ];
 
-    try {
-      let { data: wew } = await $axios.get("/api/showroom/now_live");
-      now_live_raw = wew;
-    } catch (e) {}
+      let [a, b, c] = await Promise.all(promises);
 
-    try {
-      let { data: r } = await $axios.get("/api/showroom/log", {
-        params: {
-          limit: 5
-        }
-      });
-      recent_raw = r;
-    } catch (e) {}
+      if (process.client) {
+        console.log(from);
+      }
+
+      next_live_raw = a.data;
+      now_live_raw = b.data;
+      recent_raw = c.data;
+    } catch (e) {
+      console.log(e);
+    }
 
     // let nextlive = [
     //   {
