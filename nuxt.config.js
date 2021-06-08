@@ -40,10 +40,8 @@ export default {
   ],
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
-  credentials: false,
   axios: {
-    baseURL: url,
-    credentials: false
+    baseURL: url
   },
   loading: {
     color: "#ff4d4d",
