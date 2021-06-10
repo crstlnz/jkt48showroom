@@ -16,6 +16,7 @@
       </div>
       <div class="outsideclick" v-on:click="toggleNav"></div>
       <div class="nav-menu">
+        <NuxtLink to="/" class="item link home" prefetch>Home</NuxtLink>
         <NuxtLink to="/log" class="item link" prefetch>Log</NuxtLink>
         <NuxtLink to="#" class="item link" prefetch>Member</NuxtLink>
         <NuxtLink to="#wew" class="item link" prefetch>Fans</NuxtLink>
@@ -179,11 +180,15 @@ div#__nuxt,
       align-items: center;
       margin-left: 25px;
 
+      .home {
+        // opacity: 0;
+        display: none;
+      }
+
       .item {
         text-align: center;
         padding-left: 20px;
         padding-right: 20px;
-        display: inline-block;
         min-width: 80px;
         text-decoration: none;
         font-size: 18px;
@@ -232,6 +237,9 @@ div#__nuxt,
         .link {
           font-size: 24px;
           line-height: 40px;
+        }
+        .home {
+          display: initial;
         }
       }
 
@@ -381,8 +389,10 @@ export default {
     };
   },
   methods: {
-    resize() {
-      this.nav_open = false;
+    resize(e) {
+      if (e.target.innerWidth > 700) {
+        this.toggleNav(null, false);
+      }
     },
     toggleNav(e, t = null) {
       if (t != null) {
@@ -400,10 +410,10 @@ export default {
     }
   },
   mounted() {
-    // window.addEventListener("resize", this.resize);
+    window.addEventListener("resize", this.resize);
   },
   beforeDestroy() {
-    // window.removeEventListener("resize", this.resize);
+    window.removeEventListener("resize", this.resize);
   }
 };
 </script>

@@ -201,16 +201,17 @@
     margin-top: 10px;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     .date {
       @include for("600px") {
         font-size: 14px;
       }
 
       @include for("500px") {
-        font-size: 12px;
+        font-size: 13px;
       }
       @include for("400px") {
-        font-size: 10px;
+        font-size: 12px;
       }
     }
 
@@ -225,10 +226,10 @@
         }
 
         @include for("500px") {
-          font-size: 14px;
+          font-size: 15px;
         }
         @include for("400px") {
-          font-size: 12px;
+          font-size: 13.5px;
         }
       }
     }

@@ -3,16 +3,16 @@ let { Schema } = require("mongoose");
 let showroomLogBackupListSchema = new Schema({
   is_dev: {
     type: Boolean,
-    default: false,
+    default: false
   },
   live_id: {
     type: Number,
-    unique: true,
+    unique: true
   },
   data_id: {
     type: String,
     required: true,
-    unique: true,
+    unique: true
   },
   live_info: {
     screenshot: {
@@ -20,25 +20,25 @@ let showroomLogBackupListSchema = new Schema({
       format: String,
       list: {
         type: [Number],
-        default: [],
-      },
+        default: []
+      }
     },
     background_image: {
-      type: String,
+      type: String
     },
     stage_list: {
       type: [
         {
           _id: false,
           date: {
-            type: Date,
+            type: Date
           },
           list: {
-            type: [Number],
-          },
-        },
+            type: [Number]
+          }
+        }
       ],
-      default: [],
+      default: []
     },
     penonton: {
       history: {
@@ -46,28 +46,28 @@ let showroomLogBackupListSchema = new Schema({
           {
             _id: false,
             num: {
-              type: Number,
+              type: Number
             },
             waktu: {
-              type: Date,
-            },
-          },
+              type: Date
+            }
+          }
         ],
-        default: [],
+        default: []
       },
       peak: {
         type: Number,
-        default: 0,
-      },
+        default: 0
+      }
     },
     start_date: {
       type: Date,
-      required: true,
+      required: true
     },
     end_date: {
       type: Date,
-      required: true,
-    },
+      required: true
+    }
   },
   // user_ids: {
   //   type: [Number],
@@ -84,7 +84,7 @@ let showroomLogBackupListSchema = new Schema({
   //   ],
   // },
   room_id: {
-    type: Number,
+    type: Number
   },
   gift_data: {
     gift_id_list: { type: [Number], default: [] },
@@ -99,13 +99,13 @@ let showroomLogBackupListSchema = new Schema({
               _id: false,
               gift_id: Number,
               num: Number,
-              date: Date,
-            },
-          ],
-        },
+              date: Date
+            }
+          ]
+        }
       ],
-      default: [],
-    },
+      default: []
+    }
     // gift_log: {
     //   type: [
     //     {
@@ -122,11 +122,11 @@ let showroomLogBackupListSchema = new Schema({
   },
   total_point: {
     type: Number,
-    default: 0,
+    default: 0
   },
   created_at: {
     type: Date,
-    required: true,
+    required: true
   },
   users: {
     type: [
@@ -134,29 +134,29 @@ let showroomLogBackupListSchema = new Schema({
         _id: false,
         user_id: Number,
         avatar_url: String,
-        name: String,
-      },
-    ],
-  },
+        name: String
+      }
+    ]
+  }
 });
 
 showroomLogBackupListSchema.virtual("room_info", {
   ref: "Showroom",
   localField: "room_id",
   foreignField: "room_id",
-  justOne: true,
+  justOne: true
 });
 
 showroomLogBackupListSchema.virtual("gift_data.gift_list", {
   ref: "Showroom_Gift",
   localField: "gift_data.gift_id_list",
-  foreignField: "gift_id",
+  foreignField: "gift_id"
 });
 
 showroomLogBackupListSchema.virtual("user_list", {
   ref: "Showroom_User",
   localField: "users.user_id",
-  foreignField: "user_id",
+  foreignField: "user_id"
 });
 
 // showroomLogBackupListSchema.pre("findOne", async function(next) {
@@ -203,13 +203,15 @@ showroomLogBackupListSchema.virtual("user_list", {
 //   return doc;
 // });
 
-showroomLogBackupListSchema.statics.getUserGiftDetail = async function(user_id) {
+showroomLogBackupListSchema.statics.getUserGiftDetail = async function(
+  user_id
+) {
   try {
     let doc = await this.aggregate([
       {
         $match: {
-          "gift_data.gift_log.user_id": user_id,
-        },
+          "gift_data.gift_log.user_id": user_id
+        }
       },
       {
         $project: {
@@ -220,60 +222,60 @@ showroomLogBackupListSchema.statics.getUserGiftDetail = async function(user_id) 
               input: "$users",
               as: "u",
               cond: {
-                $eq: ["$$u.user_id", user_id],
-              },
-            },
+                $eq: ["$$u.user_id", user_id]
+              }
+            }
           },
           gift: {
             $filter: {
               input: "$gift_data.gift_log",
               as: "gift",
               cond: {
-                $eq: ["$$gift.user_id", user_id],
-              },
-            },
-          },
-        },
+                $eq: ["$$gift.user_id", user_id]
+              }
+            }
+          }
+        }
       },
       {
         $unwind: {
           path: "$gift",
-          preserveNullAndEmptyArrays: true,
-        },
+          preserveNullAndEmptyArrays: true
+        }
       },
       {
         $unwind: {
           path: "$user",
-          preserveNullAndEmptyArrays: true,
-        },
+          preserveNullAndEmptyArrays: true
+        }
       },
       {
         $match: {
           "gift.gifts": {
             $exists: true,
-            $ne: [],
-          },
-        },
+            $ne: []
+          }
+        }
       },
       {
         $group: {
           _id: "$room_id",
           point: {
-            $sum: "$gift.total",
+            $sum: "$gift.total"
           },
           user_id: {
-            $last: "$user.user_id",
+            $last: "$user.user_id"
           },
           user: {
-            $last: "$user",
+            $last: "$user"
           },
           last_seen: {
-            $last: "$data_id",
+            $last: "$data_id"
           },
           gift_log: {
-            $push: "$gift.gifts",
-          },
-        },
+            $push: "$gift.gifts"
+          }
+        }
       },
       {
         $addFields: {
@@ -282,71 +284,78 @@ showroomLogBackupListSchema.statics.getUserGiftDetail = async function(user_id) 
               input: "$gift_log",
               initialValue: [],
               in: {
-                $concatArrays: ["$$this", "$$value"],
-              },
-            },
-          },
-        },
+                $concatArrays: ["$$this", "$$value"]
+              }
+            }
+          }
+        }
       },
       {
         $lookup: {
           from: "showrooms",
           localField: "_id",
           foreignField: "room_id",
-          as: "room_info",
-        },
+          as: "room_info"
+        }
       },
       {
         $unwind: {
           path: "$room_info",
-          preserveNullAndEmptyArrays: true,
-        },
+          preserveNullAndEmptyArrays: true
+        }
       },
       {
         $sort: {
-          point: -1,
-        },
+          point: -1
+        }
       },
       {
         $group: {
           _id: "$user_id",
           user: {
-            $last: "$user",
+            $last: "$user"
           },
           total_point: {
-            $sum: "$point",
+            $sum: "$point"
           },
           list_room: {
             $push: {
               room: "$room_info",
               point: "$point",
-              gift_list: "$gift_log",
-            },
+              gift_list: "$gift_log"
+            }
           },
           last_seen: {
-            $last: "$last_seen",
-          },
-        },
+            $last: "$last_seen"
+          }
+        }
       },
       {
         $lookup: {
           from: "showroom_gifts",
           localField: "list_room.gift_list.gift_id",
           foreignField: "gift_id",
-          as: "gift_list",
-        },
-      },
+          as: "gift_list"
+        }
+      }
     ]);
 
     doc = doc[0];
-    if (doc.gift_list) doc.gift_list = doc.gift_list.reduce((a, b) => ((a[b.gift_id] = b), a), {});
+    if (doc.gift_list)
+      doc.gift_list = doc.gift_list.reduce(
+        (a, b) => ((a[b.gift_id] = b), a),
+        {}
+      );
     return doc;
   } catch (e) {
     return null;
   }
 };
 
-showroomLogBackupListSchema.statics.getUserGifts = function(page, perpage = 50) {
+showroomLogBackupListSchema.statics.getUserGifts = function(
+  page,
+  perpage = 50
+) {
   if (page < 1) page = 1;
   let limit = perpage;
   let skip = (page - 1) * limit;
@@ -354,8 +363,8 @@ showroomLogBackupListSchema.statics.getUserGifts = function(page, perpage = 50) 
     {
       $unwind: {
         path: "$gift_data.gift_log",
-        preserveNullAndEmptyArrays: true,
-      },
+        preserveNullAndEmptyArrays: true
+      }
     },
     {
       $project: {
@@ -367,43 +376,43 @@ showroomLogBackupListSchema.statics.getUserGifts = function(page, perpage = 50) 
             input: "$users",
             as: "u",
             cond: {
-              $eq: ["$$u.user_id", "$gift_data.gift_log.user_id"],
-            },
-          },
-        },
-      },
+              $eq: ["$$u.user_id", "$gift_data.gift_log.user_id"]
+            }
+          }
+        }
+      }
     },
     {
       $unwind: {
         path: "$user",
-        preserveNullAndEmptyArrays: true,
-      },
+        preserveNullAndEmptyArrays: true
+      }
     },
     {
       $group: {
         _id: "$user_id",
         point: {
-          $sum: "$point",
+          $sum: "$point"
         },
         user: {
-          $last: "$user",
+          $last: "$user"
         },
         last_seen: {
-          $last: "$data_id",
-        },
-      },
+          $last: "$data_id"
+        }
+      }
     },
     {
       $sort: {
-        point: -1,
-      },
+        point: -1
+      }
     },
     {
-      $skip: skip,
+      $skip: skip
     },
     {
-      $limit: limit,
-    },
+      $limit: limit
+    }
   ]);
 };
 
@@ -412,15 +421,15 @@ showroomLogBackupListSchema.statics.getDetails = async function(data_id) {
     let doc = await this.findOne({ data_id: data_id })
       .populate({
         path: "user_list",
-        options: { select: "-_id name avatar_url user_id image" },
+        options: { select: "-_id name avatar_url user_id image" }
       })
       .populate({
         path: "room_info",
-        options: { select: "-_id name img url -room_id" },
+        options: { select: "-_id name img url -room_id" }
       })
       .populate({
         path: "gift_data.gift_list",
-        options: { select: "-_id gift_id free image point" },
+        options: { select: "-_id gift_id free image point" }
       })
       .lean();
 
@@ -431,12 +440,15 @@ showroomLogBackupListSchema.statics.getDetails = async function(data_id) {
         url: "",
         img:
           "https://image.showroom-cdn.com/showroom-prod/assets/img/v3/img-err-404.jpg?t=1602821561",
-        group: null,
+        group: null
       };
     }
 
     if (doc.user_list && doc.user_list.length) {
-      doc.user_list = doc.user_list.reduce((a, c) => ((a[c.user_id] = c), a), {});
+      doc.user_list = doc.user_list.reduce(
+        (a, c) => ((a[c.user_id] = c), a),
+        {}
+      );
     } else {
       doc.user_list = {};
     }
@@ -454,16 +466,18 @@ showroomLogBackupListSchema.statics.getDetails = async function(data_id) {
       for (let { user_id: d } of doc.users) {
         if (!doc.user_list[d])
           doc.user_list[d] = {
-            avatar_url: "https://image.showroom-cdn.com/showroom-prod/image/avatar/1.png",
+            avatar_url:
+              "https://image.showroom-cdn.com/showroom-prod/image/avatar/1.png",
             user_id: d,
-            name: "Not Found!",
+            name: "Not Found!"
           };
       }
 
     if (doc.user_ids) delete doc.user_ids;
     if (doc.gift_data.gift_id_list) delete doc.gift_data.gift_id_list;
 
-    if (doc.users) doc.users = doc.users.reduce((a, b) => ((a[b.user_id] = b), a), {});
+    if (doc.users)
+      doc.users = doc.users.reduce((a, b) => ((a[b.user_id] = b), a), {});
 
     return doc;
   } catch (e) {
@@ -475,6 +489,6 @@ showroomLogBackupListSchema.statics.getDetails = async function(data_id) {
 showroomLogBackupListSchema.index({ data_id: 1 }, { unique: true });
 
 module.exports = {
-  name: "ShowroomLog_Development",
-  schema: showroomLogBackupListSchema,
+  name: "ShowroomLog",
+  schema: showroomLogBackupListSchema
 };

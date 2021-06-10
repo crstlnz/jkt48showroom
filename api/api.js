@@ -27,7 +27,7 @@ app.get("/japanrate.json", checkDB, async (req, res) => {
 app.get("/showroom/log", checkDB, async (req, res, next) => {
   // if (!req.query.id) return next();
   if (!req.dbReady) return res.send([]);
-  let srLog = db.model("ShowroomLog_Development");
+  let srLog = db.model("ShowroomLog");
   let sr = db.model("Showroom");
   let log;
   let query = req.query.page;
@@ -207,7 +207,7 @@ app.get("/showroom/log/:id", checkDB, async (req, res, next) => {
   let id = req.params.id;
   if (id.slice(id.length - ext.length, id.length) == ext) {
     id = id.slice(0, id.length - ext.length);
-    let srLog = db.model("ShowroomLog_Development");
+    let srLog = db.model("ShowroomLog");
 
     try {
       let data = await srLog.getDetails(id);
@@ -231,7 +231,7 @@ app.get("/showroom/user/gifts", checkDB, async (req, res, next) => {
 
   if (!req.query.user_id) return res.status(404).send(setError("Not Found!"));
 
-  let logDB = db.model("ShowroomLog_Development");
+  let logDB = db.model("ShowroomLog");
   let userDB = db.model("Showroom_User");
 
   let user = await userDB.findOne({ user_id: req.query.user_id });
@@ -257,7 +257,7 @@ app.get("/showroom/user/total_gift", checkDB, async (req, res, next) => {
   let page = 0;
   if (req.query.page) page = req.query.page;
 
-  let logDB = db.model("ShowroomLog_Development");
+  let logDB = db.model("ShowroomLog");
 
   try {
     let usergifts = await logDB.getUserGifts(page);
