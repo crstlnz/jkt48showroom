@@ -27,7 +27,7 @@ app.get("/japanrate.json", checkDB, async (req, res) => {
 app.get("/showroom/log", checkDB, async (req, res, next) => {
   // if (!req.query.id) return next();
   if (!req.dbReady) return res.send([]);
-  let srLog = db.model("ShowroomLog_Backup");
+  let srLog = db.model("ShowroomLog_Development");
   let sr = db.model("Showroom");
   let log;
   let query = req.query.page;
@@ -54,7 +54,6 @@ app.get("/showroom/log", checkDB, async (req, res, next) => {
 
   members = cache.get("jkt48members");
   if (members == null) return res.send([]);
-  // let latest = req.query.latest;
   let sort = req.query.sort ? req.query.sort : "newest";
 
   let sortOption = {
@@ -66,13 +65,11 @@ app.get("/showroom/log", checkDB, async (req, res, next) => {
 
   try {
     sort = sortOption[sort];
+    sort = sort ? sort : sortOption.newest;
   } catch (e) {
-    sort = "-created_at";
+    sort = sortOption.newest;
   }
 
-  // console.log(sort);
-
-  // console.log(query);
   let page = query && !isNaN(query) && query > 0 ? query : null;
   let select = {
     room_info: 1,
@@ -210,7 +207,7 @@ app.get("/showroom/log/:id", checkDB, async (req, res, next) => {
   let id = req.params.id;
   if (id.slice(id.length - ext.length, id.length) == ext) {
     id = id.slice(0, id.length - ext.length);
-    let srLog = db.model("ShowroomLog_Backup");
+    let srLog = db.model("ShowroomLog_Development");
 
     try {
       let data = await srLog.getDetails(id);
@@ -234,7 +231,7 @@ app.get("/showroom/user/gifts", checkDB, async (req, res, next) => {
 
   if (!req.query.user_id) return res.status(404).send(setError("Not Found!"));
 
-  let logDB = db.model("ShowroomLog_Backup");
+  let logDB = db.model("ShowroomLog_Development");
   let userDB = db.model("Showroom_User");
 
   let user = await userDB.findOne({ user_id: req.query.user_id });
@@ -260,7 +257,7 @@ app.get("/showroom/user/total_gift", checkDB, async (req, res, next) => {
   let page = 0;
   if (req.query.page) page = req.query.page;
 
-  let logDB = db.model("ShowroomLog_Backup");
+  let logDB = db.model("ShowroomLog_Development");
 
   try {
     let usergifts = await logDB.getUserGifts(page);

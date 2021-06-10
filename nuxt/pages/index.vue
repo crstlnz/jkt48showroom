@@ -71,7 +71,7 @@
 
             <div v-if="recent_length > recent.length" class="more">
               <NuxtLink to="/log" class="more_link" prefetch
-                >Lihat selanjutnya</NuxtLink
+                >Lihat lebih banyak</NuxtLink
               >
             </div>
           </div>
@@ -302,33 +302,25 @@ export default {
     let jpnrate = $cookiz.get("jpn_rate");
     if (!jpnrate) jpnrate = $cookiz.get("jpn_rate", { fromRes: true });
 
-    let next_live_raw = null,
-      now_live_raw = null,
-      recent_raw = null;
-    try {
-      let promises = [
-        $axios.get("/api/showroom/next_live", { progress: false }),
-        $axios.get("/api/showroom/now_live"),
-        $axios.get("/api/showroom/log", {
+    const [a, b, c] = await Promise.all([
+      $axios
+        .get("/api/showroom/next_live")
+        .then(r => r.data)
+        .catch(e => null),
+      $axios
+        .get("/api/showroom/now_live")
+        .then(r => r.data)
+        .catch(e => null),
+      $axios
+        .get("/api/showroom/log", {
           progress: false,
           params: {
             limit: 5
           }
         })
-      ];
-
-      let [a, b, c] = await Promise.all(promises);
-
-      if (process.client) {
-        console.log(from);
-      }
-
-      next_live_raw = a.data;
-      now_live_raw = b.data;
-      recent_raw = c.data;
-    } catch (e) {
-      console.log(e);
-    }
+        .then(r => r.data)
+        .catch(e => null)
+    ]);
 
     // let nextlive = [
     //   {
@@ -345,9 +337,9 @@ export default {
 
     return {
       jpnrate: jpnrate,
-      next_live_raw: next_live_raw,
-      now_live_raw: now_live_raw,
-      recent_raw: recent_raw
+      next_live_raw: a,
+      now_live_raw: b,
+      recent_raw: c
     };
   }
 };

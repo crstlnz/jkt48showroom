@@ -1,94 +1,226 @@
 <template>
-  <div class="mainmenu">
-    <div v-if="error" class="error">Telah terjadi error!</div>
-    <div v-else class="loglist">
-      <div class="topmenu">
-        <div class="menu">
-          <div class="jpnrate">
-            <label for="rate">JPY Rate </label>
-            <input name="rate" v-model="jpnrate" step="any" type="number" />
+  <div class="log">
+    <div class="page-title">
+      Recent Log
+    </div>
+    <div class="top-menu">
+      <div class="control-menu">
+        <div class="jpnrate">
+          <label for="rate">JPY Rate </label>
+          <input name="rate" v-model="jpnrate" step="any" type="number" />
+        </div>
+        <div class="sort-menu">
+          <div
+            v-for="menu in sortMenu"
+            v-bind:class="{ active: menu.value == sort }"
+            v-on:click="sort = menu.value"
+            v-bind:key="menu.value"
+            class="item-menu"
+          >
+            {{ menu.title }}
           </div>
-          <div class="toggle">
-            <div
-              v-for="menu in sortMenu"
-              v-bind:class="{ active: menu.value == sort }"
-              v-on:click="sort = menu.value"
-              v-bind:key="menu.value"
-            >
-              {{ menu.title }}
-            </div>
-          </div>
-        </div>
-        <div class="search">
-          <input v-model="search" type="text" placeholder="Search..." />
         </div>
       </div>
-      <!-- <div class="search">Search Div</div> -->
-
-      <div v-if="isLoading" class="error">Loading...</div>
-      <div v-else-if="logs && logs.length > 0" class="data">
-        <!-- <transition-group type="transition"> -->
-        <Loglist v-for="log in logs" v-bind:log="log" v-bind:key="log._id">
-        </Loglist>
-        <!-- </transition-group> -->
+      <div class="search">
+        <input class="search-input" placeholder="Search..." type="text" />
       </div>
-      <div
-        v-else-if="(!logs || logs.length == 0) && !this.infiniteState.isLoading"
-        class="error"
-      >
-        Tidak ada data!
+    </div>
+    <div class="log-container">
+      <div v-if="error" class="error">Telah terjadi error!</div>
+      <div v-else-if="!logs || !logs.length" class="empty error">
+        Data tidak ada!
       </div>
-
-      <div class="infiniteLoading">
-        <div class="loading" v-if="this.infiniteState.isLoading">
-          Sedang memuat...
-          <div class="loader"></div>
-        </div>
-        <div class="complete" v-else-if="this.infiniteState.end">
-          Tidak ada lagi data :(
-        </div>
-        <div class="errors" v-else-if="this.infiniteState.error">
-          Error bang :'(
-        </div>
+      <div v-else class="log-list">
+        <Recent
+          v-for="log in logs"
+          :key="log._id"
+          :data="log"
+          class="log-item"
+        ></Recent>
       </div>
-      <!-- <infinite-loading @infinite="infiniteHandler"></infinite-loading> -->
     </div>
   </div>
 </template>
+
 <style lang="scss">
 @import "~assets/core.scss";
-* {
-  box-sizing: border-box;
+.content {
+  width: 1024px !important;
+}
+
+.log {
+  .page-title {
+    color: $text;
+    font-weight: bold;
+    font-size: 38px;
+    text-align: center;
+    margin-bottom: 30px;
+    margin-top: 20px;
+    @include for("768px") {
+      margin-bottom: 25px;
+      margin-top: 15px;
+    }
+    @include for("500px") {
+      margin-bottom: 20px;
+      margin-top: 10px;
+    }
+  }
+  .top-menu {
+    .control-menu {
+      padding: 0 20px;
+      display: flex;
+      color: $text;
+      align-content: center;
+      justify-content: space-between;
+
+      .jpnrate {
+        font-weight: bold;
+        input {
+          font-size: 16px;
+          margin: 0;
+          margin-left: 10px;
+          padding: 4px 8px;
+          width: 100px;
+          border-radius: 10px;
+          text-align: center;
+          box-sizing: border-box;
+          background: darken($color3, 3%);
+          border: none;
+          color: $text;
+          &:focus {
+            outline: none !important;
+          }
+        }
+      }
+
+      .sort-menu {
+        display: flex;
+        // font-weight: bold;
+        .item-menu {
+          padding: 4px 7px;
+          font-size: 15px;
+          cursor: pointer;
+          &:hover {
+            background: $color3;
+          }
+          &.active {
+            background: darken($color: $color3, $amount: 6%);
+          }
+          &:not(:first-child):not(:last-child) {
+            margin: 0 2px;
+          }
+          &:not(:first-child) {
+            margin-left: 2px;
+          }
+          &:not(:last-child) {
+            margin-right: 2px;
+          }
+        }
+      }
+
+      @include for("768px") {
+        .jpnrate {
+          margin-bottom: 10px;
+        }
+        flex-direction: column;
+        align-items: center;
+        .sort-menu {
+          .item-menu {
+            font-size: 14px;
+          }
+        }
+      }
+      @include for("400px") {
+        .jpnrate {
+          margin-bottom: 10px;
+        }
+        flex-direction: column;
+        align-items: center;
+        .sort-menu {
+          .item-menu {
+            font-size: 13px;
+          }
+        }
+      }
+    }
+    .search {
+      margin-top: 10px;
+
+      background: darken($color3, 6%);
+      border-radius: 25px;
+
+      input[type="text"] {
+        font-size: 16px;
+        width: 100%;
+        margin: 0;
+        border-radius: 25px;
+        padding: 15px 20px;
+        box-sizing: border-box;
+        background: transparent;
+        border: none;
+        color: $text;
+        &:focus {
+          outline: none !important;
+        }
+      }
+    }
+  }
+
+  .log-container {
+    margin-top: 10px;
+    .error {
+      color: $text;
+      font-size: 32px;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .log-list {
+      color: $text;
+      .log-item {
+        &:not(:last-child) {
+          margin-bottom: 10px;
+        }
+      }
+    }
+  }
 }
 </style>
 
 <script>
+// import LogList from "~/components/showroom/log/log-list.vue";
 import moment from "moment";
 moment.locale("id");
+// import InfiniteLoading from "vue-infinite-loading";
 
+// const db
 export default {
+  transition: "log",
+  middleware: "japan_rate",
   layout: "48template",
   head: {
-    title: "JKT48 Showroom Log",
+    title: "Showroom Log | Satan Discord",
     meta: [
       {
         hid: "description",
         name: "description",
-        content: "Showroom Log JKT48!"
+        content: "List showroom log yang tercatat bot satan!"
+      }
+    ],
+    script: [
+      {
+        src:
+          "https://cdn.jsdelivr.net/npm/sweetalert2@10.16.7/dist/sweetalert2.all.min.js"
       }
     ]
-    // script: [
-    //   {
-    //     src:
-    //       "https://cdn.jsdelivr.net/npm/sweetalert2@10.16.7/dist/sweetalert2.all.min.js"
-    //   }
-    // ]
   },
+
   data() {
     return {
       error: false,
       logs: null,
-      page: 2,
+      page: 2, /// untuk next load
       sort: "newest",
       isLoading: true,
       jpnrate: 135.65,
@@ -113,24 +245,6 @@ export default {
         err: function() {
           this.error = true;
         }
-      },
-      sortMenu: {
-        newest: {
-          title: "Newest",
-          value: "newest"
-        },
-        oldest: {
-          title: "Oldest",
-          value: "oldest"
-        },
-        highest: {
-          title: "Most Gifts",
-          value: "highest"
-        },
-        lowest: {
-          title: "Least Gifts",
-          value: "lowest"
-        }
       }
     };
   },
@@ -138,67 +252,20 @@ export default {
     search: function(val, oldval) {
       if (this.cancel) this.cancel.cancel("Operation canceled by the user.");
       this.logs = [];
-
-      // this.$refs.infiniteLoading.$emit("$InfiniteLoading:reset");
       this.page = 1;
       this.infiniteState.loading();
-      // this.infiniteState.reset();
       this.loadPage(true);
-      // this.$axios
-      //   .get("/api/showroom/log", {
-      //     params: {
-      //       page: this.page,
-      //       sort: this.sort,
-      //       search: this.search,
-      //     },
-      //     cancelToken: this.cancel.token,
-      //   })
-      //   .then(({ data }) => {
-      //     this.isLoading = false;
-      //     this.cancel = null;
-      //     this.page++;
-      //     this.logs = data;
-      //   })
-      //   .catch((e) => {
-      //     if (this.$axios.isCancel(e)) {
-      //       // console.log("Request canceled", e);
-      //     } else {
-      //       this.cancel = null;
-      //       this.isLoading = false;
-
-      //       console.log(e);
-      //       this.error = true;
-      //     }
-      //   });
     },
     sort: function(val, oldVal) {
       this.logs = [];
-      // this.$refs.infiniteLoading.$emit("$InfiniteLoading:reset");
       this.page = 1;
       this.infiniteState.loading();
-      this.$cookiz.set("sort_state", val);
+      this.$cookiz.set("sort_state", val, {
+        path: "/",
+        maxAge: 3600 * 24 * 30 * 12 * 10,
+        sameSite: true
+      });
       this.loadPage(true);
-
-      // this.$axios
-      //   .get("/api/showroom/log", {
-      //     params: {
-      //       page: this.page,
-      //       sort: this.sort,
-      //       search: this.search,
-      //     },
-      //   })
-      //   .then(({ data }) => {
-      //     this.isLoading = false;
-
-      //     this.page++;
-      //     this.logs = data;
-      //   })
-      //   .catch((e) => {
-      //     this.isLoading = false;
-
-      //     console.log(e);
-      //     this.error = true;
-      //   });
     }
   },
   computed: {
@@ -265,7 +332,7 @@ export default {
           // $state.complete();
         });
     },
-    toRupiah: function(total) {
+    convertRupiah: function(total) {
       // let total = 0;
       // if (this.showroomloglist) total = this.showroomloglist.total_point;
 
@@ -319,70 +386,7 @@ export default {
         });
     }
   },
-  // fetchOnServer: false,
-  // async fetch() {
-  //   // let sortMenu = {
-  //   //   newest: {
-  //   //     title: "Newest",
-  //   //     value: "newest"
-  //   //   },
-  //   //   oldest: {
-  //   //     title: "Oldest",
-  //   //     value: "oldest"
-  //   //   },
-  //   //   highest: {
-  //   //     title: "Most Gifts",
-  //   //     value: "highest"
-  //   //   },
-  //   //   lowest: {
-  //   //     title: "Least Gifts",
-  //   //     value: "lowest"
-  //   //   }
-  //   // };
-  //   // this.sortMenu = sortMenu;
 
-  //   let sort_state = this.$cookiz.get("sort_state");
-
-  //   let sort;
-  //   // console.log(sortMenu[sort_state]);
-  //   if (sort_state && this.sortMenu[sort_state]) {
-  //     sort = this.sortMenu[sort_state].value;
-  //   } else {
-  //     sort = "newest";
-  //     this.$cookiz.set("sort_state", "newest");
-  //   }
-
-  //   this.sort = sort;
-
-  //   try {
-  //     let { data } = await this.$axios.get(
-  //       "http://192.168.1.2:48/api/showroom/log",
-  //       {
-  //         params: { page: 1, sort: this.sort }
-  //       }
-  //     );
-  //     this.logs = data;
-
-  //     this.isLoading = false;
-
-  //     // return {
-  //     //   jpnrate: $cookiz.get("jpn_rate"),
-  //     //   sort: sort,
-  //     //   logs: data,
-  //     //   isLoading: false,
-  //     //   sortMenu: sortMenu
-  //     // };
-  //   } catch (e) {
-  //     this.isLoading = false;
-  //     this.error = true;
-
-  //     console.log(e);
-  //     // return {
-  //     //   error: true,
-  //     //   sortMenu: sortMenu
-  //     // };
-  //   }
-  // }
   async asyncData({ $axios, $cookiz, $refs }) {
     let sortMenu = {
       newest: {
@@ -411,16 +415,20 @@ export default {
       sort = sortMenu[sort_state].value;
     } else {
       sort = "newest";
-      $cookiz.set("sort_state", "newest");
+      $cookiz.set("sort_state", "newest", {
+        path: "/",
+        maxAge: 3600 * 24 * 30 * 12 * 10,
+        sameSite: true
+      });
     }
+
+    let jpnrate = $cookiz.get("jpn_rate");
+    if (!jpnrate) jpnrate = $cookiz.get("jpn_rate", { fromRes: true });
 
     try {
       let { data } = await $axios.get("/api/showroom/log", {
         params: { page: 1, sort: sort }
       });
-
-      let jpnrate = $cookiz.get("jpn_rate");
-      if (!jpnrate) jpnrate = $cookiz.get("jpn_rate", { fromRes: true });
 
       return {
         jpnrate: jpnrate,
@@ -446,7 +454,10 @@ export default {
     // }
     // this.$store.commit("commands/setCommands", "weawdawdw");
   }
+
+  // asyncData({ store }) {
+  //   store.commit("setCommands", "wew");
+  // },
+  // middleware: "auth",
 };
 </script>
-
-<style></style>

@@ -52,6 +52,7 @@ html {
 }
 
 body {
+  overflow-x: hidden;
   background-color: lighten($color3, 3%);
   width: 100vw;
   overflow-x: hidden;
@@ -371,12 +372,7 @@ export default {
   },
   watch: {
     $route(to, from) {
-      this.nav_open = false;
-      // menu.removeAttribute("style");
-      // this.isOpen = false;
-      // this.$nextTick(() => {
-      //   this.calcHeight();
-      // });
+      this.toggleNav(null, false);
     }
   },
   data() {
@@ -388,8 +384,12 @@ export default {
     resize() {
       this.nav_open = false;
     },
-    toggleNav() {
-      this.nav_open = !this.nav_open;
+    toggleNav(e, t = null) {
+      if (t != null) {
+        this.nav_open = t;
+      } else {
+        this.nav_open = !this.nav_open;
+      }
       try {
         if (this.nav_open) {
           document.body.classList.add("disablescroll");

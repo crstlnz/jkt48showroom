@@ -475,6 +475,6 @@ showroomLogBackupListSchema.statics.getDetails = async function(data_id) {
 showroomLogBackupListSchema.index({ data_id: 1 }, { unique: true });
 
 module.exports = {
-  name: "ShowroomLog_Backup",
+  name: "ShowroomLog_Development",
   schema: showroomLogBackupListSchema,
 };
