@@ -13,7 +13,7 @@
         /></a>
       </div>
       <div class="nowlive listsr">
-        <div class="title"><i class="fas fa-video live"></i>Live</div>
+        <div class="item-title"><i class="fas fa-video live"></i>Live</div>
         <div class="item">
           <div v-if="now_live == null" class="kosong">
             Hmm sepertinya terjadi error :(<br />Silahkan coba refresh ulang!
@@ -32,7 +32,7 @@
         </div>
       </div>
       <div class="nextlive listsr">
-        <div class="title">
+        <div class="item-title">
           <img data-src="/calendar.png" alt="" v-lazy-load />Next Live
         </div>
         <div class="item">
@@ -53,7 +53,9 @@
         </div>
       </div>
       <div class="recent listsr">
-        <div class="title"><i class="fas fa-history recent"></i>Recent</div>
+        <div class="item-title">
+          <i class="fas fa-history recent"></i>Recent
+        </div>
         <div class="item">
           <div v-if="recent == null" class="kosong">
             Hmm sepertinya terjadi error :(<br />Silahkan coba refresh ulang!
@@ -115,7 +117,7 @@
       padding-bottom: 20px;
       margin-bottom: 20px;
     }
-    .title {
+    .item-title {
       font-weight: bold;
       font-size: 20px;
       margin-bottom: 10px;
@@ -165,9 +167,9 @@
         display: grid;
         grid-gap: 15px;
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        .itemlist {
-          // display: inline-block;
-        }
+        // .itemlist {
+        // display: inline-block;
+        // }
 
         @include for("330px") {
           grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));

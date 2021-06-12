@@ -18,8 +18,9 @@
       <div class="nav-menu">
         <NuxtLink to="/" class="item link home" prefetch>Home</NuxtLink>
         <NuxtLink to="/log" class="item link" prefetch>Log</NuxtLink>
-        <NuxtLink to="#" class="item link" prefetch>Member</NuxtLink>
-        <NuxtLink to="#wew" class="item link" prefetch>Fans</NuxtLink>
+        <NuxtLink to="/member" class="item link">Daftar Member</NuxtLink>
+        <NuxtLink to="#wew" class="item link">Rangking Fans</NuxtLink>
+        <NuxtLink to="/games" class="item link">Oshi Calculator</NuxtLink>
         <!-- <div class="center">
         </div> -->
         <!-- <div class="side">
@@ -193,10 +194,14 @@ div#__nuxt,
         text-decoration: none;
         font-size: 18px;
         font-weight: bold;
+
+        &.nuxt-link-exact-active {
+          color: lighten($color: $red, $amount: 15%);
+        }
       }
     }
 
-    @include for("700px") {
+    @include for("900px") {
       padding: 10px 15px;
       // display: block;
       .burger {

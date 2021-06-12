@@ -134,6 +134,7 @@ let showroomLogBackupListSchema = new Schema({
         _id: false,
         user_id: Number,
         avatar_url: String,
+        avatar_id: Number,
         name: String
       }
     ]
@@ -338,7 +339,7 @@ showroomLogBackupListSchema.statics.getUserGiftDetail = async function(
           as: "gift_list"
         }
       }
-    ]);
+    ]).allowDiskUse(true);
 
     doc = doc[0];
     if (doc.gift_list)
@@ -413,7 +414,7 @@ showroomLogBackupListSchema.statics.getUserGifts = function(
     {
       $limit: limit
     }
-  ]);
+  ]).allowDiskUse(true);
 };
 
 showroomLogBackupListSchema.statics.getDetails = async function(data_id) {

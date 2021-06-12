@@ -13,7 +13,7 @@
         </div>
       </div>
       <div class="information">
-        <div class="title">
+        <div class="recent-title">
           {{ data.room_info.name }}
         </div>
         <div class="detail">
@@ -30,7 +30,7 @@
       <div class="date">
         {{ relativeTime(data.live_info.end_date) }}
       </div>
-      <div class="detail">
+      <div class="detail_link">
         <NuxtLink class="button" :to="`/log/${data.data_id}`">Detail</NuxtLink>
       </div>
     </div>
@@ -135,7 +135,7 @@
       margin-left: 10px;
       display: flex;
       flex-direction: column;
-      .title {
+      .recent-title {
         display: -webkit-box;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 1;
@@ -198,7 +198,7 @@
   }
 
   .down {
-    margin-top: 10px;
+    margin-top: 5px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -215,21 +215,21 @@
       }
     }
 
-    .detail {
+    .detail_link {
       a {
         color: inherit;
-        font-size: 18px;
+        // font-size: 18px;
         font-weight: bold;
         text-decoration: none;
         @include for("600px") {
-          font-size: 16px;
+          font-size: 14px;
         }
 
         @include for("500px") {
-          font-size: 15px;
+          font-size: 13px;
         }
         @include for("400px") {
-          font-size: 13.5px;
+          font-size: 12px;
         }
       }
     }

@@ -95,7 +95,8 @@ app.get("/showroom/log", checkDB, async (req, res, next) => {
     // console.log(mirip);
     s["room_id"] = mirip;
   }
-  // console.log(s);
+
+  if (!process.env.IS_DEV) s.is_dev = false;
 
   if (page) {
     log = await srLog
@@ -136,10 +137,16 @@ app.get("/showroom/log", checkDB, async (req, res, next) => {
   );
 });
 
-// app.get("/showroom", async (req, res) => {
-//   if (!showroom) return res.send({ data: [] });
-//   return res.send({ data: await showroom.getAll() });
-// });
+app.get("/showroom", checkDB, async (req, res) => {
+  if (!req.dbReady) return res.send([]);
+  let srdb = db.model("Showroom");
+  return res.send(
+    await srdb
+      .find({ group: "jkt48" })
+      .sort("name")
+      .lean()
+  );
+});
 
 app.get("/members/jkt48.json", checkDB, async (req, res) => {
   if (!req.dbReady) return res.send([]);
@@ -152,57 +159,16 @@ app.get("/members/jkt48.json", checkDB, async (req, res) => {
   );
 });
 
-app.get("/commands", (req, res) => {
-  let commands = require("./commands");
-  let prefix = require("../../prefix");
-  if (!commands || !prefix) {
-    return res.send([]);
-  }
-  return res.send({ prefix: prefix, commands: commands });
-});
-
-app.get("/heroes", checkDB, async (req, res) => {
-  if (!req.dbReady)
-    return res.status(401).send(setError("DB not initialized!"));
-  let dotaDb = db.model("DotaHeroes");
-  let heroes = await dotaDb
-    .find({})
-    .sort("name")
-    .lean();
-  return res.status(200).send(heroes);
-});
-
-app.post("/youtube", checkDB, async (req, res) => {
-  if (!req.dbReady)
-    return res.status(401).send(setError("DB not initialized!"));
-  if (!req.body.query) return res.status(400).send(setError("Tak ade query!"));
-  let query = req.body.query;
-
-  try {
-    let pldb = new pl(db);
-    let data = await pldb.searchYoutube(query, 10);
-    return res.status(200).send(data);
-  } catch (e) {
-    console.log(e);
-    return res.status(400).send("Failed!");
-  }
-});
-
-app.get("/showroom/live", async (req, res, next) => {
-  if (!showroom) return res.send([]);
-  let d = showroom.getLive();
-  return res.send(d);
-});
+// app.get("/showroom/live", async (req, res, next) => {
+//   if (!showroom) return res.send([]);
+//   let d = showroom.getLive();
+//   return res.send(d);
+// });
 
 app.get("/showroom/log/:id", checkDB, async (req, res, next) => {
   if (!req.dbReady)
     return res.status(401).send(setError("DB not initialized!"));
 
-  if (!showroom)
-    return res.send({
-      data: null
-    });
-  // return res.send({ data: await this.showroom.getAll() });
   let ext = ".json";
   let id = req.params.id;
   if (id.slice(id.length - ext.length, id.length) == ext) {
@@ -250,17 +216,42 @@ app.get("/showroom/user/gifts", checkDB, async (req, res, next) => {
   return res.status(404).send(setError("Not Found!"));
 });
 
+// app.get("/showroom/user/total_gift", checkDB, async (req, res, next) => {
+//   if (!req.dbReady)
+//     return res.status(401).send(setError("DB not initialized!"));
+
+//   let page = 0;
+//   if (req.query.page) page = req.query.page;
+
+//   let logDB = db.model("ShowroomLog");
+
+//   try {
+//     let usergifts = await logDB.getUserGifts(page);
+//     return res.send(usergifts);
+//   } catch (e) {
+//     console.log(e);
+//     return res.status(500).send(setError("Error!"));
+//   }
+// });
+
 app.get("/showroom/user/total_gift", checkDB, async (req, res, next) => {
   if (!req.dbReady)
     return res.status(401).send(setError("DB not initialized!"));
 
-  let page = 0;
+  let page = 1;
   if (req.query.page) page = req.query.page;
+  if (page < 1) page = 1;
 
-  let logDB = db.model("ShowroomLog");
+  let perpage = 50;
+
+  let userdb = db.model("Showroom_User");
 
   try {
-    let usergifts = await logDB.getUserGifts(page);
+    let usergifts = await userdb
+      .find({})
+      .sort({ point: -1 })
+      .skip((page - 1) * perpage)
+      .limit(perpage);
     return res.send(usergifts);
   } catch (e) {
     console.log(e);

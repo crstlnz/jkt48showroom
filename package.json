@@ -12,6 +12,8 @@
   "dependencies": {
     "@nuxtjs/axios": "^5.13.6",
     "axios": "^0.21.1",
+    "chart.js": "^3.3.2",
+    "chartjs-adapter-moment": "^1.0.0",
     "cookie-parser": "^1.4.5",
     "cookie-universal-nuxt": "^2.1.4",
     "core-js": "^3.9.1",
@@ -23,7 +25,8 @@
     "nuxt": "^2.15.3",
     "nuxt-lazy-load": "^1.2.6",
     "sass": "^1.32.12",
-    "sass-loader": "10.1.1"
+    "sass-loader": "10.1.1",
+    "vue-virtual-scroll-list": "^2.3.2"
   },
   "devDependencies": {}
 }

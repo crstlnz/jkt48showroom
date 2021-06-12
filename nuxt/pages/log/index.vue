@@ -78,8 +78,10 @@
     @include for("768px") {
       margin-bottom: 25px;
       margin-top: 15px;
+      font-size: 30px;
     }
     @include for("500px") {
+      font-size: 25px;
       margin-bottom: 20px;
       margin-top: 10px;
     }
@@ -199,6 +201,7 @@
       margin: auto;
       text-align: center;
       margin-top: 20px;
+      margin-bottom: 20px;
     }
 
     .loader {
@@ -324,7 +327,7 @@ export default {
   middleware: "japan_rate",
   layout: "48template",
   head: {
-    title: "Showroom Log | Satan Discord",
+    title: "Showroom Log | JKT48Showroom",
     meta: [
       {
         hid: "description",

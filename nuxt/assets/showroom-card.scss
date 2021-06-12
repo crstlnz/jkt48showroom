@@ -34,16 +34,20 @@
     padding-left: 10px;
     position: absolute;
     bottom: 0;
-    .title {
+    .card-title {
+      margin-bottom: 10px;
       font-weight: bold;
-      @include for("430px") {
-        font-size: 16px;
-      }
-      @include for("330px") {
+      @include for("600px") {
         font-size: 14px;
       }
-      @include for("230px") {
+      @include for("430px") {
         font-size: 12px;
+      }
+      @include for("330px") {
+        font-size: 11px;
+      }
+      @include for("230px") {
+        font-size: 10px;
       }
     }
 
@@ -100,7 +104,7 @@
   .action {
     .container {
       height: 100%;
-      width: 60%;
+      width: 80%;
       margin: auto;
       display: flex;
       align-items: center;
@@ -109,6 +113,7 @@
       a {
         text-decoration: none;
         &.button {
+          visibility: hidden;
           transition: 0.3s;
           cursor: pointer;
           display: flex;
@@ -116,6 +121,18 @@
           align-items: center;
           color: white;
           font-size: 36px;
+          @include for("768px") {
+            font-size: 30px;
+          }
+          @include for("600px") {
+            font-size: 28px;
+          }
+          @include for("500px") {
+            font-size: 25px;
+          }
+          @include for("400px") {
+            font-size: 20px;
+          }
           &:hover {
             .text {
               text-decoration: underline;
@@ -125,12 +142,32 @@
             margin-top: 8px;
             font-size: 14px;
             text-align: center;
+            @include for("768px") {
+              font-size: 14px;
+            }
+            @include for("600px") {
+              font-size: 13px;
+            }
+            @include for("500px") {
+              font-size: 12px;
+            }
+            @include for("400px") {
+              font-size: 11px;
+            }
           }
         }
       }
     }
 
     &:hover {
+      .container {
+        a {
+          text-decoration: none;
+          &.button {
+            visibility: visible;
+          }
+        }
+      }
       opacity: 1;
       background: rgba(0, 0, 0, 0.7);
     }

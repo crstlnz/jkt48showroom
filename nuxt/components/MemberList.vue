@@ -1,19 +1,19 @@
 <template>
   <div class="nextlive-item showroom-card">
-    <img v-bind:data-src="data.img" alt="" v-lazy-load />
+    <img v-bind:data-src="member.img" alt="" v-lazy-load />
     <div class="gradient"></div>
     <div class="information">
-      <div class="date">
+      <!-- <div class="date">
         {{ date_live }}
-      </div>
+      </div> -->
       <div class="card-title">
-        {{ data.name }}
+        {{ member.name }}
       </div>
     </div>
     <div class="action">
       <div class="container">
         <a
-          :href="`https://www.showroom-live.com${data.url}`"
+          :href="`https://www.showroom-live.com${member.url}`"
           target="_blank"
           class="room button"
         >
@@ -23,7 +23,7 @@
         <a
           target="_blank"
           :href="
-            `https://www.showroom-live.com/room/profile?room_id=${data.room_id}`
+            `https://www.showroom-live.com/room/profile?room_id=${member.room_id}`
           "
           class="profile button"
         >
@@ -39,22 +39,21 @@
 
 <script>
 export default {
-  props: ["data"],
+  props: ["member"],
   computed: {
-    date_live() {
-      let now = new Date();
-      let date = new Date(this.data.epoch * 1000);
-      if (
-        now.getDate() == date.getDate() &&
-        now.getMonth() == date.getMonth() &&
-        now.getFullYear() == date.getFullYear()
-      ) {
-        return `${date.getHours()}:${this.pad(date.getMinutes())}~`;
-      }
-
-      return `${date.getDate()}/${date.getMonth() +
-        1} ${date.getHours()}:${this.pad(date.getMinutes())}~`;
-    }
+    // date_live() {
+    //   let now = new Date();
+    //   let date = new Date(this.data.epoch * 1000);
+    //   if (
+    //     now.getDate() == date.getDate() &&
+    //     now.getMonth() == date.getMonth() &&
+    //     now.getFullYear() == date.getFullYear()
+    //   ) {
+    //     return `${date.getHours()}:${this.pad(date.getMinutes())}~`;
+    //   }
+    //   return `${date.getDate()}/${date.getMonth() +
+    //     1} ${date.getHours()}:${this.pad(date.getMinutes())}~`;
+    // }
   },
   methods: {
     pad(num) {

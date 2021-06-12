@@ -11,7 +11,7 @@
           Live!
         </div>
       </div>
-      <div class="title">
+      <div class="card-title">
         {{ data.name }}
       </div>
     </div>

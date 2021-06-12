@@ -28,6 +28,18 @@ $medium: 1024px;
   }
 }
 
+@mixin gapV($s) {
+  & > :not(:last-child) {
+    margin-bottom: $s;
+  }
+}
+
+@mixin gapH($s) {
+  & > :not(:last-child) {
+    margin-right: $s;
+  }
+}
+
 img {
   &.isLoaded {
     opacity: 1;
