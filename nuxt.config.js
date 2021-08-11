@@ -1,5 +1,3 @@
-const url = process.env.IS_DEV ? "http://192.168.1.2:48" : process.env.API_URL;
-
 export default {
   // Target: https://go.nuxtjs.dev/config-target
   // Global page headers: https://go.nuxtjs.dev/config-head
@@ -51,7 +49,7 @@ export default {
     }
   },
   axios: {
-    baseURL: url
+    baseURL: process.env.IS_DEV ? "http://192.168.1.2:48" : process.env.API_URL
   },
   loading: {
     color: "#ff4d4d",
