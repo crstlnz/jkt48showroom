@@ -3,12 +3,8 @@ FROM node:14-alpine
 WORKDIR /app
 ADD . /app/
 
-RUN apk update && apk upgrade
+RUN npm install --silent
 
-RUN yarn install --silent
+RUN npm heroku-postbuild
 
-RUN yarn heroku-postbuild
-
-
-# start the app
-CMD [ "yarn", "start" ]
+CMD [ "npm", "start" ]
