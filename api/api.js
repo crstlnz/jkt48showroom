@@ -234,7 +234,7 @@ app.get("/showroom/user/gifts", checkDB, async (req, res, next) => {
 //   }
 // });
 
-app.get("/showroom/user/total_gift", checkDB, async (req, res, next) => {
+app.get("/showroom/user/ranks", checkDB, async (req, res, next) => {
   if (!req.dbReady)
     return res.status(401).send(setError("DB not initialized!"));
 
@@ -252,7 +252,20 @@ app.get("/showroom/user/total_gift", checkDB, async (req, res, next) => {
       .sort({ point: -1 })
       .skip((page - 1) * perpage)
       .limit(perpage);
-    return res.send(usergifts);
+
+    let result = {
+      list: usergifts
+    };
+
+    if (req.query.count != null && req.query.count) {
+      let total = await userdb.count({}).catch(e => 0);
+      result = {
+        total,
+        perpage: perpage,
+        ...result
+      };
+    }
+    return res.send(result);
   } catch (e) {
     console.log(e);
     return res.status(500).send(setError("Error!"));

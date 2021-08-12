@@ -49,7 +49,20 @@ export default {
     }
   },
   axios: {
-    baseURL: process.env.IS_DEV ? "http://192.168.1.2:48" : process.env.API_URL
+    // baseURL: process.env.IS_DEV ? "http://192.168.1.2:48" : process.env.API_URL
+    baseURL: "/"
+  },
+  publicRuntimeConfig: {
+    axios: {
+      browserBaseURL: "/"
+    }
+  },
+
+  privateRuntimeConfig: {
+    axios: {
+      baseURL:
+        "http://localhost:" + (process.env.IS_DEV ? "48" : process.env.PORT)
+    }
   },
   loading: {
     color: "#ff4d4d",

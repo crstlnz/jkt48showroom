@@ -19,7 +19,7 @@
         <NuxtLink to="/" class="item link home" prefetch>Home</NuxtLink>
         <NuxtLink to="/log" class="item link" prefetch>Log</NuxtLink>
         <NuxtLink to="/member" class="item link">Daftar Member</NuxtLink>
-        <NuxtLink to="#wew" class="item link">Rangking Fans</NuxtLink>
+        <NuxtLink to="/ranking" class="item link">Ranking Fans</NuxtLink>
         <NuxtLink to="/games" class="item link">Oshi Calculator</NuxtLink>
         <!-- <div class="center">
         </div> -->

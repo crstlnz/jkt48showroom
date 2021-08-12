@@ -5,52 +5,65 @@
       <i v-if="volumeOn" class="fas fa-volume-up volumeon"></i>
     </div>
     <div :class="{ hide: result.length }" id="game" class="game">
-      <div class="box versus">
-        <card
-          ref="card1"
-          v-on:click.native="game.choose(0)"
-          v-bind:card="cards[0]"
-        />
-        <div class="vs">VS</div>
-        <card
-          ref="card2"
-          v-on:click.native="game.choose(1)"
-          v-bind:card="cards[1]"
-        />
+      <div v-if="is_loading" class="loading">
+        <div class="title">Loading</div>
+        <div class="progressbar">
+          <div class="fill" :style="{ width: progress + '%' }"></div>
+        </div>
       </div>
-      <div class="versusbutton">
-        <button
-          :disabled="!game.started"
-          v-on:click="game.choose(2)"
-          class="startgame button"
-        >
-          Tie
-        </button>
-        <button
-          :disabled="!game.started || !game.haveUndo"
-          v-on:click="game.undo()"
-          class="startgame button"
-        >
-          Undo
-        </button>
-      </div>
-      <div class="startversus">
-        <button
-          :disabled="!game.isReady || game.started"
-          v-on:click="startGame"
-          class="startgame button"
-        >
-          Start
-        </button>
+      <div v-else class="gamecontainer">
+        <div class="box versus">
+          <card
+            ref="card1"
+            v-on:click.native="game.choose(0)"
+            v-bind:card="cards[0]"
+          />
+          <div class="vs">VS</div>
+          <card
+            ref="card2"
+            v-on:click.native="game.choose(1)"
+            v-bind:card="cards[1]"
+          />
+        </div>
+        <div class="versusbutton">
+          <button
+            :disabled="!game.started"
+            v-on:click="game.choose(2)"
+            class="startgame button"
+          >
+            Tie
+          </button>
+          <button
+            :disabled="!game.started || !game.haveUndo"
+            v-on:click="game.undo()"
+            class="startgame button"
+          >
+            Undo
+          </button>
+        </div>
+        <div class="startversus">
+          <button
+            :disabled="!game.isReady || game.started"
+            v-on:click="startGame"
+            class="startgame button"
+          >
+            Start
+          </button>
+        </div>
       </div>
     </div>
 
-    <div class="result" :class="{ show: result.length }">
+    <div class="result" id="result" :class="{ show: result.length }">
       <div ref="rank" id="rank" class="title">Ranks</div>
       <button v-on:click="game.restart()" class="startgame button">
         Play Again
       </button>
-      <transition-group name="list-complete" class="members" tag="div">
+      <transition-group
+        name="list-complete"
+        class="members"
+        tag="div"
+        id="members"
+      >
         <div
           class="rankdiv list-complete-item"
           v-for="(card, i) in result"
@@ -141,62 +154,88 @@
     width: 100%;
 
     .game {
-      margin-top: 30px;
-      margin-bottom: 20px;
-
-      .startversus {
-        padding-top: 20px;
-        text-align: center;
-      }
-
-      .versusbutton {
-        text-align: center;
-      }
-
-      .box {
-        margin-bottom: 20px;
-        .vs {
+      .loading {
+        padding: 20px;
+        .title {
+          font-size: 32px;
           font-weight: bold;
-          font-size: 18px;
-          align-self: flex-end;
-          padding-bottom: 40px;
+          text-align: center;
         }
-        display: grid;
-        grid-template-columns: minmax(120px, 250px) minmax(30px, 80px) minmax(
-            120px,
-            250px
-          );
-        gap: 10px;
-        align-content: center;
-        justify-content: center;
-        justify-items: center;
-
-        @include for("678px") {
-          width: 80%;
-          flex-direction: column;
-          margin: auto;
-          margin-bottom: 20px;
-          .vs {
-            align-self: center;
-            padding-top: 20px;
-            padding-bottom: 20px;
+        .progressbar {
+          height: 10px;
+          border-radius: 10px;
+          margin-top: 20px;
+          transition: 0.5s;
+          border: 1px solid black;
+          overflow: hidden;
+          .fill {
+            height: 10px;
+            background-color: $bg-color;
           }
         }
-
-        // .card {
-        //   &:not(:last-child) {
-        //     margin-bottom: 20px;
-        //   }
-        // }
       }
+      .gamecontainer {
+        // margin-top: 30px;
+        // margin-bottom: 20px;
 
-      transition: all 1s;
-      overflow: hidden;
+        .startversus {
+          padding-top: 20px;
+          text-align: center;
+        }
+
+        .versusbutton {
+          text-align: center;
+        }
+
+        .box {
+          padding-top: 25px;
+          padding-bottom: 10px;
+          margin-bottom: 20px;
+          .vs {
+            font-weight: bold;
+            font-size: 18px;
+            align-self: flex-end;
+            padding-bottom: 40px;
+          }
+          display: grid;
+          grid-template-columns: minmax(120px, 250px) minmax(30px, 80px) minmax(
+              120px,
+              250px
+            );
+          gap: 10px;
+          align-content: center;
+          justify-content: center;
+          justify-items: center;
+
+          @include for("678px") {
+            width: 80%;
+            flex-direction: column;
+            margin: auto;
+            margin-bottom: 20px;
+            .vs {
+              align-self: center;
+              padding-top: 20px;
+              padding-bottom: 20px;
+            }
+          }
+
+          // .card {
+          //   &:not(:last-child) {
+          //     margin-bottom: 20px;
+          //   }
+          // }
+        }
+
+        transition: all 1s;
+        overflow: hidden;
+      }
       &.hide {
         opacity: 0;
         height: 0 !important;
         margin: 0;
       }
+      transition: all 1s;
+      overflow: hidden;
     }
 
     .result {
@@ -325,6 +364,8 @@ export default {
             s.play();
           }
       },
+      is_loading: true,
+      progress: 0,
       game: {
         playSound(sound) {
           if (this.ctx.volumeOn)
@@ -358,7 +399,11 @@ export default {
           this.temp = [];
           this.ctx.change("card1", null);
           this.ctx.change("card2", null);
-
+          // this.ctx.$nextTick(() => {
+          //   document
+          //     .getElementById("result")
+          //     .scrollIntoView({ behavior: "smooth", block: "start" });
+          // });
           this.playSound(startSound);
 
           // try {
@@ -691,9 +736,6 @@ export default {
   },
   async asyncData({ $axios, $cookiz }) {
     let vol = $cookiz.get("volumeOn");
-    let { data } = await $axios.get("/api/members/jkt48.json");
-
-    data = data.filter(i => !i.isGraduate);
     let card = [
       {
         // first: data[0],
@@ -710,27 +752,39 @@ export default {
         pointer: 2
       }
     ];
+    try {
+      let { data } = await $axios.get("/api/members/jkt48.json");
+      data = data.filter(i => !i.isGraduate);
+      // data = data.filter(i => !i.isGraduate).slice(0, 5);
 
-    return {
-      members: data,
-      cards: card,
-      volumeOn: vol ? true : false
-    };
-  },
-  async mounted() {
-    for (let c of this.members) {
-      new Image().src = c.img;
+      return {
+        members: data,
+        cards: card,
+        volumeOn: vol ? true : false
+      };
+    } catch (e) {
+      console.log(e);
+
+      return {
+        cards: card,
+        volumeOn: vol ? true : false
+      };
     }
-
-    // let i = 0;
-    // setTimeout(() => {
-    //   setInterval(() => {
-    //     this.change("card1", this.members[i]);
-    //     i++;
-    //     if (i > this.members.length - 1) i = 0;
-    //   }, 100);
-    // }, 1000);
   },
+  // async mounted() {
+  //   for (let c of this.members) {
+  //     new Image().src = c.img;
+  //   }
+
+  //   // let i = 0;
+  //   // setTimeout(() => {
+  //   //   setInterval(() => {
+  //   //     this.change("card1", this.members[i]);
+  //   //     i++;
+  //   //     if (i > this.members.length - 1) i = 0;
+  //   //   }, 100);
+  //   // }, 1000);
+  // },
   methods: {
     shuffleArray(array) {
       for (let i = array.length - 1; i > 0; i--) {
@@ -739,7 +793,12 @@ export default {
       }
     },
     startGame() {
-      this.game.start();
+      if (!this.started_before) {
+        this.game.start();
+        this.started_before = true;
+      } else {
+        this.game.restart();
+      }
     },
     choose: function(no) {
       this.game.choose(no);
@@ -848,10 +907,48 @@ export default {
       //     .catch((e) => {});
     }
   },
-  mounted() {
-    let gameDiv = document.getElementById("game");
-    gameDiv.style.height = gameDiv.offsetHeight + "px";
-    window.addEventListener("resize", this.resizeHandler);
+  async mounted() {
+    if (!this.is_loading) {
+      let gameDiv = document.getElementById("game");
+      gameDiv.style.height = gameDiv.offsetHeight + "px";
+      window.addEventListener("resize", this.resizeHandler);
+    } else {
+      console.log(this.members);
+      this.loaded_image = 0;
+      // for (let i = 0; i < this.members.length; i++) {
+      //   let image = new Image();
+      //   image.onload = () => {
+      //     this.loaded_image++;
+      //     this.progress = (this.loaded_image / this.members.length) * 100;
+      //   };
+      //   image.src = this.members[i].img;
+      //   console.log(this.members[i].img);
+      // }
+
+      function loadImage(url) {
+        return new Promise((resolve, reject) => {
+          let image = new Image();
+          image.onload = () => {
+            resolve();
+          };
+          image.src = url;
+        });
+      }
+
+      for (let member of this.members) {
+        await loadImage(member.img);
+        this.loaded_image++;
+        this.progress = (this.loaded_image / this.members.length) * 100;
+        console.log(member.img);
+      }
+      this.is_loading = false;
+      // this.is_loading = false;
+      this.$nextTick(() => {
+        let gameDiv = document.getElementById("game");
+        gameDiv.style.height = gameDiv.offsetHeight + "px";
+        window.addEventListener("resize", this.resizeHandler);
+      });
+    }
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.resizeHandler);

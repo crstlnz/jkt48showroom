@@ -40,7 +40,6 @@ connection.once("open", () => {
 });
 
 connection.on("error", err => {
-  error.send(err);
   console.log(err);
 });
 
