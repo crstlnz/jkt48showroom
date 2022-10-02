@@ -16,7 +16,7 @@ export default async ({ h3App }) => {
       credentials: true,
     })
   );
-  h3App.use(function (req, res, next) {
+  h3App.use(function (_req, res, next) {
     res.header("Access-Control-Allow-Origin", process.env.BASE_URL);
     res.header("Access-Control-Allow-Credentials", true);
     res.header("Access-Control-Allow-Methods", "GET");
