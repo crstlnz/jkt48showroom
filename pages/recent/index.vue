@@ -61,7 +61,6 @@ watch(
 watch(pending, (d) => console.log("Pending", d));
 
 watch(res, (d: IApiRecents) => {
-  console.log(d);
   // if ($device.isMobile) {
   //   data.value.push(...d.recents);
   // } else {
@@ -132,7 +131,6 @@ function onQueryChange() {
 }
 
 function onPageChange(page) {
-  console.log(page);
   if (pending.value || cooldown.value) return;
   if (isNaN(page)) page = 1;
   changeQuery({ ...query.value, page });

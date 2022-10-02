@@ -12,16 +12,12 @@
       :class="props.imgClass"
       :alt="props.alt"
       :src="props.src"
-      @load="onload"
       loading="lazy"
     />
   </div>
 </template>
 
 <script lang="ts" setup>
-function onload() {
-  console.log("wew");
-}
 const props = defineProps({
   imgClass: {
     type: String,

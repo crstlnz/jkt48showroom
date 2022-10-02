@@ -36,8 +36,6 @@ async function fetchData(dateRange: IDateRange): Promise<IShowroomStats> {
     data_id: 1,
     room_id: 1,
   };
-  console.log(members);
-
   const option: StatsOptions = {
     room_id: members.map((i) => i.room_id),
     "live_info.end_date": {

@@ -142,7 +142,7 @@ const { results: filteredMembers } = useFuse<IMember>(qq, memba);
 //         return member.name.toLowerCase().includes(qq.value.toLowerCase());
 //       });
 // });
-watch(members, (d) => console.log("Member Loaded"));
+// watch(members, (d) => console.log("Member Loaded"));
 const selectedMembers = ref([]);
 watch(selectedMembers, (val) => {
   // if(!members.value && )

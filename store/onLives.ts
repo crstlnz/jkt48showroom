@@ -21,15 +21,12 @@ export const useOnLives = defineStore("onLives", () => {
   });
 
   async function refreshLives(): Promise<IMember[]> {
-    console.log("REFRESHING ONLIVES");
     const data: IMember[] = await $fetch("/api/showroom/now_live");
-    console.log(data);
     if (data?.length && isDifferent(data, lives.value)) {
       liveInfoStore.refresh(data?.map((i) => i.room_id));
     } else if (!data?.length) {
       liveInfoStore.clear();
     }
-    console.log("FINISH FETCH ONLIVES");
     return data;
   }
 

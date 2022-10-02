@@ -41,7 +41,7 @@ async function fetchData(): Promise<IMember[]> {
       .sort((a, b) => a.name.localeCompare(b.name));
   } catch (e) {
     // eslint-disable-next-line no-console
-    console.log(e);
+    // console.log(e);
     return [];
   }
 }

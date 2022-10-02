@@ -53,7 +53,7 @@ export default function <T>(
       data.value = res;
       pending.value = false;
     } catch (e) {
-      console.log(e);
+      // console.log(e);
       pending.value = false;
       error.value = true;
     }
