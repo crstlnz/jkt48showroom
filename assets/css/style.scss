@@ -1,0 +1,246 @@
+// @tailwind base;
+@tailwind components;
+// @tailwind utilities;
+@layer components {
+  .disable-highlight {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .pulse-color {
+    @apply bg-gray-300 dark:bg-dark-3;
+  }
+
+  .pulse-color-2 {
+    @apply bg-gray-200 dark:bg-dark-2;
+  }
+
+  .transition-filter {
+    transition: filter var(--switch-duration);
+  }
+
+  .transition-border {
+    transition: border-color var(--switch-duration);
+  }
+
+  .nav-btn {
+    @apply w-9 h-9 flex hover:bg-dark-1 hover:bg-opacity-10 hover:dark:bg-gray-400 hover:dark:bg-opacity-10 rounded-lg;
+  }
+
+  .burger {
+    @apply md:hidden p-2 flex flex-col justify-around [&>span]:bg-slate-800 [&>span]:dark:bg-slate-100;
+  }
+}
+
+// @font-face {
+//   font-family: "Rubik","Roboto",sans-serif;
+//   src: url("/fonts/rubik/Rubik-VariableFont_wght.ttf") format("truetype");
+// }
+
+:root {
+  // --switch-duration: 300ms;
+  --viewport-height: 100%;
+}
+
+* {
+  font-family: Rubik, Roboto, sans-serif;
+}
+
+a:focus,
+button:focus {
+  @apply outline-second-2;
+}
+
+.nuxt-progress {
+  transition: 0.3s;
+  &.hide {
+    transition: 0.3s;
+    opacity: 0;
+  }
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+html,
+body,
+#__nuxt,
+#__layout {
+  scroll-behavior: smooth;
+  height: 100% !important;
+  width: 100% !important;
+}
+
+body {
+  overflow-y: overlay;
+  transition-property: background-color;
+  transition-duration: var(--switch-duration);
+  @apply bg-slate-100 dark:bg-dark-2 text-slate-800 dark:text-slate-100;
+}
+
+.burger {
+  span {
+    transition: all 200ms;
+    width: 100%;
+    display: inline-block;
+    height: 3px;
+    border-radius: 3px;
+    transform-origin: 0;
+  }
+
+  &.open {
+    z-index: 60;
+    span {
+      &:first-child {
+        transform: translate(3px) rotate(45deg);
+      }
+
+      &:not(:first-child):not(:last-child) {
+        opacity: 0;
+      }
+
+      &:last-child {
+        transform: translate(3px, 1px) rotate(-45deg);
+      }
+    }
+  }
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+  // padding: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgb(150, 150, 150);
+  transition: var(--switch-duration);
+}
+
+.dark {
+  ::-webkit-scrollbar-thumb {
+    background: rgb(60, 60, 60);
+  }
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(100, 100, 100);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease-in-out !important;
+}
+.fade-enter-from,
+.fade-leave-active {
+  opacity: 0;
+}
+
+.sheet-enter-active,
+.sheet-leave-active {
+  .background {
+    transition: 0.5s ease;
+  }
+  .sheet-content {
+    transition: 0.5s ease;
+  }
+  transition: 0.5s ease;
+}
+
+.sheet-enter-from,
+.sheet-leave-to {
+  .background {
+    opacity: 0;
+  }
+  .sheet-content {
+    transform: translateY(100%) !important;
+  }
+}
+
+@keyframes bounce-in {
+  0% {
+    transform: translateY(100%);
+  }
+  100% {
+    transform: translateY(0%);
+  }
+}
+
+.vue-recycle-scroller__slot {
+  @apply sticky top-0 left-0 right-0 z-[101];
+}
+
+.vue-recycle-scroller {
+  &::-webkit-scrollbar-track {
+    background: rgba(220, 220, 220, 0.3);
+  }
+}
+
+.dark {
+  .vue-recycle-scroller {
+    &::-webkit-scrollbar-track {
+      background: rgba(85, 85, 85, 0.3);
+    }
+  }
+}
+
+.fade-abs,
+.fade-abs-enter-active,
+.fade-abs-leave-active {
+  transition: opacity 0.4s ease;
+}
+
+.fade-abs-enter-from,
+.fade-abs-leave-active {
+  opacity: 0;
+}
+
+.fade-abs-leave-active {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.page-leave-active,
+.page-enter-active {
+  transition: all 0.3s ease-out;
+}
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+}
+
+// layout transition
+.layout-enter-active {
+  transition: all 0.1s ease-out;
+}
+.layout-leave-active {
+  transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
+}
+.layout-enter-from,
+.layout-leave-to {
+  transform: translateY(-20px);
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion) {
+  * {
+    transition: none !important;
+  }
+}
