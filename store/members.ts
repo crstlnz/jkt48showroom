@@ -1,7 +1,12 @@
+import { acceptHMRUpdate } from "pinia";
+
 export const useMembers = defineStore("members", () => {
-  const error = ref(false);
-  const loading = ref(false);
-  const members = ref(null);
+  // const error = ref(false);
+  // const loading = ref(false);
+  // const members = ref(null);
+  const error = useState("error", () => false);
+  const loading = useState("loading", () => false);
+  const members = useState("members", () => null);
 
   async function load() {
     try {
@@ -25,3 +30,7 @@ export const useMembers = defineStore("members", () => {
     load,
   };
 });
+
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useMembers, import.meta.hot));
+}

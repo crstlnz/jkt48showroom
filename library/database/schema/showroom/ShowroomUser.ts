@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import { model, Schema } from "mongoose";
 
 const userSchema = new Schema({
   name: {
@@ -33,8 +33,4 @@ const userSchema = new Schema({
 });
 
 userSchema.index({ user_id: 1 }, { unique: true });
-
-export default {
-  name: "Showroom_User",
-  schema: userSchema,
-};
+export default model("Showroom_User", userSchema);

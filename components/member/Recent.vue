@@ -1,7 +1,12 @@
 <template>
   <div class="text-center py-2 md:py-3 flex gap-3">
     <NuxtLink class="h-20 aspect-square relative cursor-pointer drop-shadow-sm rounded-full overflow-hidden" to="/">
-      <LazyImage lazy="false" class="w-full h-full" :src="$fixCloudinary(recent.member?.img)" />
+      <LazyImage
+        lazy="false"
+        class="w-full h-full"
+        :alt="recent.member?.name + 'Display Picture'"
+        :src="$fixCloudinary(recent.member?.img)"
+      />
     </NuxtLink>
 
     <div class="info text-left flex flex-col flex-1 w-0">
@@ -34,13 +39,13 @@
           </svg>
         </div>
       </div>
-      <ul class="mt-1 space-y-1 [&>li]:flex [&>li]:gap-1.5 text-sm">
+      <ul class="mt-1 space-y-1 [&>li]:flex [&>li]:gap-1 text-sm">
         <li v-if="recent.live_info?.viewers">
-          <i class="i ph:users-bold"></i>
+          <Icon name="ph:users-bold" class="self-center text-base" />
           {{ $util.numberFormat(recent.live_info.viewers) }}
         </li>
         <li>
-          <i class="i ph:clock-bold"></i>
+          <Icon name="ph:clock-bold" class="self-center text-base" />
           {{
             $time.fromNow(
               recent.live_info && recent.live_info?.date?.end ? recent.live_info.date.end : recent.created_at

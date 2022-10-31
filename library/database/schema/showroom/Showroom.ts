@@ -35,6 +35,10 @@ const ShowroomSchema = new Schema<IShowroomMember>({
     type: Boolean,
     default: true,
   },
+  is_group: {
+    type: Boolean,
+    default: false,
+  },
   member_data: {
     type: Schema.Types.ObjectId,
     ref: Member,

@@ -21,8 +21,8 @@
         class="aspect-square w-5 md:w-6 rounded-full hover:bg-slate-300/50 flex justify-center items-center cursor-pointer select-none z-10"
         @click="openMenu = !openMenu"
       >
-        <i v-if="!openMenu" class="i ph:dots-three-outline-fill aspect-square text-xs md:text-base" />
-        <i v-else class="i ph:x-bold aspect-square text-xs md:text-base text-white" />
+        <Icon v-if="!openMenu" name="ph:dots-three-outline-fill" class="aspect-square text-xs md:text-base" />
+        <Icon v-else name="ph:x-bold" class="aspect-square text-xs md:text-base text-white" />
       </button>
     </div>
     <a
@@ -54,7 +54,7 @@
       {{ member.name }}
     </h3>
     <div
-      class="rounded-full text-white select-none mx-auto text-xs px-2 py-0.5"
+      class="rounded-full text-white select-none mx-auto text-xs px-2.5 py-1"
       :class="member.is_group ? 'bg-sky-400' : member.is_graduate ? 'bg-red-500' : 'bg-green-500'"
       :title="`${member.is_group ? 'Official' : member.is_graduate ? 'Graduated' : 'Active'} Member`"
     >
@@ -66,12 +66,12 @@
     <NuxtLink
       :to="`/member/${member.room_id}`"
       :tabindex="openMenu ? -1 : null"
-      class="mt-auto px-5 py-2 xl:py-3 cursor-pointer bg-blue-500 hover:bg-blue-600 rounded-xl inline-block mx-auto font-semibold text-white text-xs md:text-sm xl:text-base truncate"
-      >View Profile</NuxtLink
+      class="min-w-[80%] flex items-center justify-center gap-1.5 mt-auto px-5 py-2 xl:py-3 cursor-pointer bg-blue-500 hover:bg-blue-600 rounded-xl mx-auto font-semibold text-white text-xs md:text-sm xl:text-base truncate"
+      ><Icon name="ph:user-fill" class="seft-center text-base md:text-lg" />View Profile</NuxtLink
     >
 
     <div
-      class="absolute visible flex flex-col justify-center p-3 sm:p-4 md:p-5 bg-red-400 top-0 left-0 w-full h-full transition-[transform,visibility] duration-300 rounded-t-xl z-[9] text-white"
+      class="absolute visible flex flex-col justify-center p-3 sm:p-4 md:p-5 bg-red-500 top-0 left-0 w-full h-full transition-[transform,visibility] duration-300 rounded-t-xl z-[9] text-white"
       :class="{ 'translate-y-full invisible': !openMenu }"
     >
       <ul

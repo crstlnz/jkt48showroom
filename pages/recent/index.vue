@@ -45,7 +45,7 @@ const {
   pending,
   refresh,
 } = useMyFetch(
-  "/api/showroom/recents",
+  "/api/showroom/recent",
   { ...query.value },
   {
     initialCache: false,

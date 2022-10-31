@@ -1,3 +1,4 @@
+import { acceptHMRUpdate } from "pinia";
 import JSONSerializer from "~~/library/serializer/json";
 import { useLiveInfos } from "./liveInfos";
 
@@ -28,6 +29,10 @@ export const useOnLives = defineStore("onLives", () => {
       liveInfoStore.clear();
     }
     return data;
+  }
+
+  async function refreshLiveInfo() {
+    liveInfoStore.refresh(lives.value?.map((i) => i.room_id));
   }
 
   function isLive(roomId: number) {
@@ -64,6 +69,11 @@ export const useOnLives = defineStore("onLives", () => {
     tryRefresh,
     refresh,
     getStartDate,
+    refreshLiveInfo,
     isLive,
   };
 });
+
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useOnLives, import.meta.hot));
+}

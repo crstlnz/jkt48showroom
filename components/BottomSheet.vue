@@ -15,7 +15,7 @@
         >
           <RecycleScroller
             ref="scroller"
-            class="overflow-y-auto h-[80vh] bg-white dark:bg-dark-1 overscroll-contain"
+            class="overflow-y-auto roundedscrollbar h-[80vh] bg-white dark:bg-dark-1 overscroll-contain"
             :class="{ 'no-scrollbar': $device.isMobile }"
             :items="items"
             :item-size="120"
@@ -146,14 +146,6 @@ export default {
       let percent = 0;
       let swipeDetector;
       if (scroller && sheet) {
-        // const finishDrag = (x, y) => {
-        //   this.isDrag = false;
-        //   const isSwipe = swipeDetector ? swipeDetector.finish(x, y) : false;
-        //   if (percent > 40 || isSwipe) {
-        //     return this.close();
-        //   }
-        //   sheet.style.transform = null;
-        // };
         this.dragListener = this.$createDragListener(scroller);
         let isScrolling = false;
         let isDragging = false;
@@ -210,16 +202,6 @@ export default {
         let swipeDetector;
         let percent = 0;
         this.dragListener2 = this.$createDragListener(navbar);
-
-        // const finishDrag = (x, y) => {
-        //   this.isDrag = false;
-        //   const isSwipe = swipeDetector ? swipeDetector.finish(x, y) : false;
-        //   if (percent > 40 || isSwipe) {
-        //     return this.close();
-        //   }
-        //   sheet.style.transform = null;
-        // };
-
         this.dragListener2.on("start", ({ x, y, e }) => {
           e.stopPropagation();
           if (e.cancelable) e.preventDefault();
@@ -238,7 +220,6 @@ export default {
             sheet.style.transform = `translateY(${percent}%)`;
           }
         });
-
         this.dragListener2.on("end", ({ x, y }) => {
           this.finishDrag(x, y, percent, swipeDetector);
         });

@@ -1,28 +1,18 @@
 <template>
-  <div
-    class="lazyContainer"
-    :class="{
-      loading: !isLoaded,
-      'bg-slate-200 dark:bg-dark-3/50': !props.transparent,
-    }"
-  >
-    <img
-      ref="lazyImage"
-      class="lazyImage w-full h-full object-cover object-center"
-      :class="props.imgClass"
-      :alt="props.alt"
-      :src="props.src"
-      loading="lazy"
-    />
-  </div>
+  <div v-if="isLoading" class="pulse-color animate-pulse inline-block"></div>
+  <img
+    v-else
+    ref="lazyImage"
+    class="lazyImage object-cover object-center"
+    :alt="!error ? alt : 'Image Error'"
+    :src="!error ? src : '/img/img-error.jpg'"
+    loading="lazy"
+  />
 </template>
 
 <script lang="ts" setup>
+import { useImage } from "@vueuse/core";
 const props = defineProps({
-  imgClass: {
-    type: String,
-    default: "",
-  },
   src: {
     type: String,
     default: "",
@@ -37,22 +27,23 @@ const props = defineProps({
     default: false,
   },
 });
-const isLoaded = ref(false);
 const lazyImage = ref(null);
-onMounted(() => {
-  const el = lazyImage?.value;
-  if (el!.complete) {
-    isLoaded.value = true;
-  } else {
-    el.onload = function () {
-      isLoaded.value = true;
-    };
-    el.onerror = function () {
-      isLoaded.value = false;
-      el.src = "/img/img-error.jpg";
-    };
-  }
-});
+const { isLoading, error } = useImage({ src: props.src });
+
+// onMounted(() => {
+//   const el = lazyImage?.value;
+//   if (el!.complete) {
+//     isLoaded.value = true;
+//   } else {
+//     el.onload = function () {
+//       isLoaded.value = true;
+//     };
+//     el.onerror = function () {
+//       isLoaded.value = false;
+//       el.src = "/img/img-error.jpg";
+//     };
+//   }
+// });
 </script>
 
 <style lang="scss">

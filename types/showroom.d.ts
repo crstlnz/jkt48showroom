@@ -4,19 +4,14 @@ interface IShowroomLog {
   jpn_rate: number;
   data_id: string;
   live_info: {
-    screenshot: {
+    screenshot?: {
       folder: string;
       format: string;
       list: number[];
     };
-    background_image: string;
-    stage_list: [
-      {
-        date: Date;
-        list: number[];
-      }
-    ];
-    penonton: {
+    background_image?: string;
+    stage_list?: IStageList[];
+    penonton?: {
       history: [
         {
           num: number;
@@ -31,6 +26,7 @@ interface IShowroomLog {
   room_id: number;
   gift_data: {
     gift_id_list: number[];
+    gift_list?: IShowroomGift[];
     gift_log: [
       {
         total: number;
@@ -58,13 +54,6 @@ interface IShowroomLog {
     }
   ];
   room_info?: IShowroomMember;
-  // room_info?: {
-  //   name: string;
-  //   url: string;
-  //   img: string;
-  //   group?: string;
-  //   member_data?: I48Member;
-  // };
 }
 
 interface IShowroomMember {
@@ -77,5 +66,25 @@ interface IShowroomMember {
   room_id: number;
   room_exists: boolean;
   is_active: boolean;
+  is_group: boolean;
   member_data?: I48Member;
+}
+
+interface IShowroomGift {
+  gift_id: number;
+  gift_name: string;
+  is_delete_from_stage: boolean;
+  free: boolean;
+  image: string;
+  point: number;
+}
+
+interface IShowroomUser {
+  name: string;
+  image: string;
+  avatar_url: string;
+  avatar_id: number;
+  user_id: number;
+  point: number;
+  last_seen: string;
 }

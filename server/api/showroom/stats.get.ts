@@ -5,7 +5,7 @@ import cache from "~~/library/utils/cache";
 const type = "weekly";
 export default defineEventHandler(async () => await getStats());
 
-export { getStats };
+export { getStats, calculateFansPoints };
 
 async function getStats(): Promise<IShowroomStats> {
   const dateRange = getDateRange(type);
@@ -142,9 +142,8 @@ interface CalculatedRanks {
 }
 
 function calculateRanks(logs: IShowroomLog[]): CalculatedRanks {
-  const fansRanks: Map<string | number, number> = new Map();
   const memberRanks: Map<string | number, IStatMember> = new Map();
-  const users: Map<string | number, IFans> = new Map();
+
   for (const log of logs) {
     if (memberRanks.has(log.room_id)) {
       const member = memberRanks.get(log.room_id);
@@ -165,42 +164,66 @@ function calculateRanks(logs: IShowroomLog[]): CalculatedRanks {
         point: log.total_point,
       });
     }
-    for (const user of log.users) {
-      users.set(user.user_id, {
+  }
+
+  const users = logs.reduce<IFansCompact[]>((a, b) => {
+    for (const user of b.users) {
+      a.push({
         name: user.name,
         avatar_id: user.avatar_id,
         id: user.user_id,
       });
     }
-    for (const stage of log.live_info?.stage_list ?? []) {
-      for (const [i, id] of stage.list.entries()) {
-        const point = calculateFansPoint(i);
-        if (fansRanks.has(id)) {
-          fansRanks.set(id, fansRanks.get(id) + point);
-        } else {
-          fansRanks.set(id, point);
-        }
+    return a;
+  }, [] as IFansCompact[]);
+
+  const stageList = logs.reduce<IStageList[]>((a, b) => {
+    a.push(...(b.live_info?.stage_list ?? []));
+    return a;
+  }, [] as IStageList[]);
+
+  return {
+    member: Array.from(memberRanks.values()).sort((a, b) => b.point - a.point),
+    fans: calculateFansPoints(users, stageList),
+  };
+}
+
+function calculateFansPoints(usersData: IFansCompact[], stageList: IStageList[]) {
+  const fansRanks: Map<string | number, number> = new Map();
+  const users: Map<string | number, IFans> = new Map();
+  for (const user of usersData) {
+    users.set(user.id, {
+      name: user.name,
+      avatar_id: user.avatar_id,
+      id: user.id,
+    });
+  }
+
+  for (const stage of stageList ?? []) {
+    for (const [i, id] of stage.list.entries()) {
+      const point = getRankPoints(i);
+      if (fansRanks.has(id)) {
+        fansRanks.set(id, fansRanks.get(id) + point);
+      } else {
+        fansRanks.set(id, point);
       }
     }
   }
 
-  return {
-    member: Array.from(memberRanks.values()).sort((a, b) => b.point - a.point),
-    fans: Array.from(fansRanks, ([user_id, fans_point]): IStatFans => {
-      const user = users.get(user_id) ?? { name: "User not found!", avatar_id: 1 };
-      return {
-        id: Number(user_id),
-        name: user.name,
-        avatar_id: user.avatar_id,
-        fans_point: fans_point,
-      };
-    })
-      .sort((a, b) => b.fans_point - a.fans_point)
-      .slice(0, 100),
-  };
+  return Array.from(fansRanks, ([user_id, fans_point]): IStatFans => {
+    const user = users.get(user_id) ?? { name: "User not found!", avatar_id: 1 };
+    return {
+      id: Number(user_id),
+      name: user.name,
+      avatar_id: user.avatar_id,
+      fans_point: fans_point,
+    };
+  })
+    .sort((a, b) => b.fans_point - a.fans_point)
+    .slice(0, 100);
 }
 
-function calculateFansPoint(rank) {
+function getRankPoints(rank) {
   if (rank < 4) {
     return 165 + (4 - rank) * 15;
   } else if (rank < 14) {

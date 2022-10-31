@@ -3,7 +3,6 @@
     <NuxtLink class="h-20 aspect-square relative cursor-pointer drop-shadow-sm rounded-full overflow-hidden" to="/">
       <LazyImage lazy="false" class="w-full h-full" :src="$fixCloudinary(data.img)" />
     </NuxtLink>
-
     <div class="info text-left flex flex-col flex-1 w-0">
       <div class="name flex flex-1 gap-2">
         <h3 class="font-bold text-ellipsis whitespace-nowrap overflow-hidden flex-1" :title="data.name">
@@ -34,13 +33,9 @@
           </svg>
         </div>
       </div>
-      <ul class="mt-1 space-y-1 [&>li]:flex [&>li]:gap-1.5 text-sm">
-        <!-- <li v-if="recent.live_info?.viewers">
-          <i class="i ph:users-bold font-bold"></i>
-          {{ $util.numberFormat(recent.live_info.viewers) }}
-        </li> -->
+      <ul class="mt-1 space-y-1 [&>li]:flex [&>li]:gap-1 text-sm">
         <li>
-          <i class="i ph:clock-bold"></i>
+          <Icon name="ph:clock-bold" class="self-center text-base" />
           {{ $time.fromNow(data.date) }}
         </li>
       </ul>

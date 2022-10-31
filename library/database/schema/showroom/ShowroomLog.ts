@@ -1,9 +1,17 @@
 /* eslint-disable no-sequences */
 /* eslint-disable no-console */
 /* eslint-disable camelcase */
-import { Schema, model } from "mongoose";
+import { Schema, model, Model } from "mongoose";
+import config from "~/config";
+import Showroom from "./Showroom";
+import ShowroomGift from "./ShowroomGift";
+import ShowroomUser from "./ShowroomUser";
 
-const showroomLogSchema = new Schema<IShowroomLog>({
+interface IShowroomLogModel extends Model<IShowroomLog> {
+  getDetails(id: string | number): Promise<IShowroomLogDetail>;
+}
+
+const showroomLogSchema = new Schema<IShowroomLog, IShowroomLogModel>({
   is_dev: {
     type: Boolean,
     default: false,
@@ -125,458 +133,90 @@ const showroomLogSchema = new Schema<IShowroomLog>({
 });
 
 showroomLogSchema.virtual("room_info", {
-  ref: "Showroom",
+  ref: Showroom,
   localField: "room_id",
   foreignField: "room_id",
   justOne: true,
 });
 
 showroomLogSchema.virtual("gift_data.gift_list", {
-  ref: "Showroom_Gift",
+  ref: ShowroomGift,
   localField: "gift_data.gift_id_list",
   foreignField: "gift_id",
 });
 
 showroomLogSchema.virtual("user_list", {
-  ref: "Showroom_User",
+  ref: ShowroomUser,
   localField: "users.user_id",
   foreignField: "user_id",
 });
 
-// showroomLogSchema.pre("findOne", async function(next) {
-//   next();
-// });
+showroomLogSchema.statics.getDetails = async function (data_id: string | number): Promise<IShowroomLogDetail> {
+  const doc = await this.findOne({ data_id })
+    .populate({
+      path: "user_list",
+      options: { select: "-_id name avatar_url user_id image" },
+    })
+    .populate({
+      path: "room_info",
+      options: { select: "-_id name img url -room_id member_data is_graduate is_group" },
+    })
+    .populate({
+      path: "gift_data.gift_list",
+      options: { select: "-_id gift_id free image point" },
+    })
+    .lean();
 
-// showroomLogSchema.post("findOne", async function(doc) {
-//   if (!doc) return doc;
-//   if (!doc.room_info) {
-//     doc.room_info = {
-//       name: "Nama tidak ditemukan!",
-//       url: "",
-//       img:
-//         "https://image.showroom-cdn.com/showroom-prod/assets/img/v3/img-err-404.jpg?t=1602821561",
-//       group: null,
-//     };
-//   }
+  if (!doc) return null;
 
-//   if (doc.user_list && doc.user_list.length) {
-//     doc.user_list = doc.user_list.reduce((a, c) => ((a[c.user_id] = c), a), {});
-//   } else {
-//     doc.user_list = {};
-//   }
-
-//   if (doc.gift_data.gift_list && doc.gift_data.gift_list.length) {
-//     doc.gift_data.gift_list = doc.gift_data.gift_list.reduce((a, c) => ((a[c.gift_id] = c), a), {});
-//   } else {
-//     doc.gift_data.gift_list = {};
-//   }
-
-//   if (doc.user_ids)
-//     for (let d of doc.user_ids) {
-//       if (!doc.user_list[d])
-//         doc.user_list[d] = {
-//           avatar_url: "https://image.showroom-cdn.com/showroom-prod/image/avatar/1.png",
-//           user_id: d,
-//           name: "Not Found!",
-//         };
-//     }
-
-//   if (doc.user_ids) delete doc.user_ids;
-//   if (doc.gift_data.gift_id_list) delete doc.gift_data.gift_id_list;
-
-//   return doc;
-// });
-
-showroomLogSchema.statics.getUserGiftDetail = async function (user_id) {
-  try {
-    let doc = await this.aggregate([
-      {
-        $match: {
-          "gift_data.gift_log.user_id": user_id,
-        },
-      },
-      {
-        $project: {
-          room_id: 1,
-          data_id: "$data_id",
-          user: {
-            $filter: {
-              input: "$users",
-              as: "u",
-              cond: {
-                $eq: ["$$u.user_id", user_id],
-              },
-            },
-          },
-          gift: {
-            $filter: {
-              input: "$gift_data.gift_log",
-              as: "gift",
-              cond: {
-                $eq: ["$$gift.user_id", user_id],
-              },
-            },
-          },
-        },
-      },
-      {
-        $unwind: {
-          path: "$gift",
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-      {
-        $unwind: {
-          path: "$user",
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-      {
-        $match: {
-          "gift.gifts": {
-            $exists: true,
-            $ne: [],
-          },
-        },
-      },
-      {
-        $group: {
-          _id: "$room_id",
-          point: {
-            $sum: "$gift.total",
-          },
-          user_id: {
-            $last: "$user.user_id",
-          },
-          user: {
-            $last: "$user",
-          },
-          last_seen: {
-            $last: "$data_id",
-          },
-          gift_log: {
-            $push: "$gift.gifts",
-          },
-        },
-      },
-      {
-        $addFields: {
-          gift_log: {
-            $reduce: {
-              input: "$gift_log",
-              initialValue: [],
-              in: {
-                $concatArrays: ["$$this", "$$value"],
-              },
-            },
-          },
-        },
-      },
-      {
-        $lookup: {
-          from: "showrooms",
-          localField: "_id",
-          foreignField: "room_id",
-          as: "room_info",
-        },
-      },
-      {
-        $unwind: {
-          path: "$room_info",
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-      {
-        $sort: {
-          point: -1,
-        },
-      },
-      {
-        $group: {
-          _id: "$user_id",
-          user: {
-            $last: "$user",
-          },
-          total_point: {
-            $sum: "$point",
-          },
-          list_room: {
-            $push: {
-              room: "$room_info",
-              point: "$point",
-              gift_list: "$gift_log",
-            },
-          },
-          last_seen: {
-            $last: "$last_seen",
-          },
-        },
-      },
-      {
-        $lookup: {
-          from: "showroom_gifts",
-          localField: "list_room.gift_list.gift_id",
-          foreignField: "gift_id",
-          as: "gift_list",
-        },
-      },
-    ]);
-
-    doc = doc[0];
-    // if (doc.gift_list) doc.gift_list = doc.gift_list.reduce((a, b) => ((a[b.gift_id] = b), a), {});
-    return doc;
-  } catch (e) {
-    return null;
-  }
-};
-
-showroomLogSchema.statics.getUserGifts = function (page, perpage = 50) {
-  if (page < 1) page = 1;
-  const limit = perpage;
-  const skip = (page - 1) * limit;
-  return this.aggregate([
-    {
-      $unwind: {
-        path: "$gift_data.gift_log",
-        preserveNullAndEmptyArrays: true,
-      },
-    },
-    {
-      $project: {
-        user_id: "$gift_data.gift_log.user_id",
-        point: "$gift_data.gift_log.total",
-        data_id: "$data_id",
-        user: {
-          $filter: {
-            input: "$users",
-            as: "u",
-            cond: {
-              $eq: ["$$u.user_id", "$gift_data.gift_log.user_id"],
-            },
-          },
-        },
-      },
-    },
-    {
-      $unwind: {
-        path: "$user",
-        preserveNullAndEmptyArrays: true,
-      },
-    },
-    {
-      $group: {
-        _id: "$user_id",
-        point: {
-          $sum: "$point",
-        },
-        user: {
-          $last: "$user",
-        },
-        last_seen: {
-          $last: "$data_id",
-        },
-      },
-    },
-    {
-      $sort: {
-        point: -1,
-      },
-    },
-    {
-      $skip: skip,
-    },
-    {
-      $limit: limit,
-    },
-  ]);
-};
-
-showroomLogSchema.statics.getDetails = async function (data_id) {
-  try {
-    const doc = await this.findOne({ data_id })
-      .populate({
-        path: "user_list",
-        options: { select: "-_id name avatar_url user_id image" },
-      })
-      .populate({
-        path: "room_info",
-        options: { select: "-_id name img url -room_id member_data" },
-      })
-      .populate({
-        path: "gift_data.gift_list",
-        options: { select: "-_id gift_id free image point" },
-      })
-      .lean();
-
-    if (!doc) return doc;
-    if (!doc.room_info) {
-      doc.room_info = {
-        name: "Nama tidak ditemukan!",
-        url: "",
-        img: "https://image.showroom-cdn.com/showroom-prod/assets/img/v3/img-err-404.jpg?t=1602821561",
-        group: null,
-      };
-    }
-
-    if (doc.user_list && doc.user_list.length) {
-      doc.user_list = doc.user_list.reduce((a, c) => ((a[c.user_id] = c), a), {});
-    } else {
-      doc.user_list = {};
-    }
-
-    if (doc.gift_data.gift_list && doc.gift_data.gift_list.length) {
-      doc.gift_data.gift_list = doc.gift_data.gift_list.reduce((a, c) => ((a[c.gift_id] = c), a), {});
-    } else {
-      doc.gift_data.gift_list = {};
-    }
-
-    if (doc.users)
-      for (const { user_id: d } of doc.users) {
-        if (!doc.user_list[d])
-          doc.user_list[d] = {
-            avatar_url: "https://image.showroom-cdn.com/showroom-prod/image/avatar/1.png",
-            user_id: d,
-            name: "Not Found!",
-          };
+  const viewer = doc.live_info?.penonton
+    ? {
+        history: doc.live_info?.penonton?.history?.map((i) => ({ num: i.num, date: i.waktu.toISOString() })),
+        peak: doc.live_info?.penonton?.peak,
       }
-
-    if (doc.user_ids) delete doc.user_ids;
-    if (doc.gift_data.gift_id_list) delete doc.gift_data.gift_id_list;
-
-    if (doc.users) doc.users = doc.users.reduce((a, b) => ((a[b.user_id] = b), a), {});
-
-    return doc;
-  } catch (e) {
-    console.log(e);
-    return null;
-  }
+    : undefined;
+  return {
+    data_id: doc.data_id,
+    room_info: {
+      name: doc.room_info?.name ?? "Member not found!",
+      img: doc.room_info?.img ?? config.errorPicture,
+      url: doc.room_info?.url ?? "",
+      is_graduate: doc.room_info?.member_data?.isGraduate ?? doc.room_info.is_group ?? false,
+      is_group: doc.room_info?.is_group,
+    },
+    live_info: {
+      screenshot: doc.live_info?.screenshot,
+      background_image: doc.live_info?.background_image,
+      stage_list: doc.live_info?.stage_list?.map((i) => ({ date: i.date, list: i.list })),
+      viewer,
+      date: {
+        start: doc.live_info?.start_date.toISOString(),
+        end: doc.live_info?.end_date.toISOString(),
+      },
+      gift: {
+        log: doc.gift_data?.gift_log?.map((i) => ({
+          total: i.total,
+          user_id: i.user_id,
+          gifts: i.gifts?.map((g) => ({
+            id: g.gift_id,
+            num: g.num,
+            date: g.date.toISOString(),
+          })),
+        })),
+        list: doc.gift_data?.gift_list?.map((g) => ({
+          id: g.gift_id,
+          free: g.free,
+          point: g.point,
+        })),
+      },
+    },
+    jpn_rate: doc.jpn_rate,
+    room_id: doc.room_id,
+    total_point: doc.total_point,
+    users: doc.users?.map((u) => ({ id: u.user_id, avatar_id: u.avatar_id, name: u.name })),
+    created_at: doc.created_at.toISOString(),
+  };
 };
 
-showroomLogSchema.statics.getMemberStats = async function (room_id) {
-  room_id = isNaN(room_id) ? 0 : parseInt(room_id);
-  const data = await this.aggregate([
-    {
-      $match: {
-        room_id,
-        is_dev: false,
-      },
-    },
-    {
-      $project: {
-        room_id: 1,
-        data_id: 1,
-        "live_info.stage_list.list": 1,
-        "live_info.penonton.peak": 1,
-        "live_info.date.start": "$live_info.start_date",
-        "live_info.date.end": "$live_info.end_date",
-        total_point: 1,
-      },
-    },
-    {
-      $group: {
-        _id: "$room_id",
-        list_date: {
-          $push: "$live_info.date",
-        },
-        total_lives: {
-          $sum: 1,
-        },
-        last_live_id: {
-          $last: "$data_id",
-        },
-        last_live_date: {
-          $last: "$live_info.date.end",
-        },
-        max_views: {
-          $max: "$live_info.penonton.peak",
-        },
-        min_views: {
-          $min: "$live_info.penonton.peak",
-        },
-        stage_list: {
-          $push: "$live_info.stage_list.list",
-        },
-        max_point: {
-          $max: "$total_point",
-        },
-        min_point: {
-          $min: "$total_point",
-        },
-        miss_views: {
-          $sum: {
-            $cond: [
-              {
-                $eq: ["$live_info.penonton", undefined],
-              },
-              1,
-              0,
-            ],
-          },
-        },
-      },
-    },
-    {
-      $lookup: {
-        from: "showrooms",
-        localField: "_id",
-        foreignField: "room_id",
-        as: "room_info",
-      },
-    },
-    {
-      $unwind: {
-        path: "$room_info",
-        preserveNullAndEmptyArrays: true,
-      },
-    },
-    {
-      $project: {
-        total_lives: 1,
-        date: "$list_date",
-        point: {
-          max: "$max_point",
-          min: "$min_point",
-        },
-        last_live: {
-          id: "$last_live_id",
-          date: "$last_live_date",
-        },
-        viewers: {
-          miss: "$miss_views",
-          max: "$max_views",
-          min: "$min_views",
-          stage_list: "$stage_list",
-        },
-        room_info: {
-          $cond: [
-            {
-              $ne: ["$room_info.name", undefined],
-            },
-            "$room_info",
-            {
-              name: "Member not found!",
-              url: "",
-              img: "https://image.showroom-cdn.com/showroom-prod/assets/img/v3/img-err-404.jpg?t=1602821561",
-              group: null,
-            },
-          ],
-        },
-      },
-    },
-  ]);
-
-  if (data && data.length) {
-    const res = data[0];
-    if (!res.room_info)
-      res.room_info = {
-        name: "Nama tidak ditemukan!",
-        url: "",
-        img: "https://image.showroom-cdn.com/showroom-prod/assets/img/v3/img-err-404.jpg?t=1602821561",
-        group: null,
-      };
-    return res;
-  }
-  return null;
-};
 showroomLogSchema.index({ data_id: 1 }, { unique: true });
-export default model<IShowroomLog>("ShowroomLog", showroomLogSchema);
+export default model<IShowroomLog, IShowroomLogModel>("ShowroomLog", showroomLogSchema);

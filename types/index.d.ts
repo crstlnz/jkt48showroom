@@ -5,17 +5,18 @@ type RecentsQuery = {
   filter?: "graduated" | "active" | "all";
 };
 
+interface ILiveInfo {
+  penonton: {
+    peak: number;
+  };
+  start_date: string;
+  end_date: string;
+}
 interface IShowroomRecents {
   // _id: string;
   data_id: string;
   created_at: string;
-  live_info: {
-    penonton: {
-      peak: number;
-    };
-    start_date: string;
-    end_date: string;
-  };
+  live_info: ILiveInfo;
   room_id: number;
   total_point: number;
   room_info: {
@@ -130,7 +131,7 @@ interface ApiShowroomLive {
   };
 }
 
-interface ILiveInfo {
+interface APILiveInfo {
   name: string;
   room_id: number;
   live_id?: number;
@@ -141,3 +142,22 @@ interface ILiveInfo {
   url?: string;
   is_error: boolean;
 }
+
+interface CanvasWorker {
+  type: "canvas";
+  canvas: HTMLCanvasElement;
+}
+
+interface CommandWorker {
+  type: "setFans" | "setFansAvatar";
+  imageData?: {
+    size: {
+      width: number;
+      height: number;
+    };
+    id: number;
+  };
+  data: any;
+}
+
+type WorkerMessage = CanvasWorker | CommandWorker;

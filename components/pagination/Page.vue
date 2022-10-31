@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col lg:flex-row gap-5 md:gap-6 xl:gap-8">
     <PaginationFilter
-      class="lg:max-h-[calc(100vh_-_96px_-_20px)] lg:top-[96px] overflow-y-auto lg:w-[260px] xl:w-[320px] lg:sticky h-fit rounded-xl bg-white dark:bg-dark-1 p-4"
+      class="lg:max-h-[calc(100vh_-_96px_-_20px)] lg:top-[96px] overflow-y-auto lg:w-[260px] xl:w-[320px] lg:sticky h-fit rounded-xl bg-white dark:bg-dark-1 p-4 shadow-sm"
       :query="query"
       @apply="(filter) => $emit('filter', filter)"
     />

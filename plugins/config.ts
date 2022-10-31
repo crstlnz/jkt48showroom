@@ -4,6 +4,7 @@ import config from "~~/config";
 import SwipeDetector from "~~/library/plugins/swipeDetector";
 import DragListener from "~~/library/plugins/dragListener";
 export default defineNuxtPlugin(() => {
+  type CurrencyType = "jpy" | "idr" | "sr";
   return {
     provide: {
       fixCloudinary: (url: string, w = 300, h = 300) => {
@@ -18,6 +19,15 @@ export default defineNuxtPlugin(() => {
       createSwipeDetector: (x, y, mode) => new SwipeDetector(x, y, mode),
       createDragListener: (el) => new DragListener(el),
       ...config,
+      currency(num, type: CurrencyType = "sr") {
+        const { n: $n } = useI18n();
+        if (type == "sr") {
+          return `${$n(num)} G`;
+        } else {
+          if (type == "jpy") return $n(num * 1.1, "currency", "ja-JP");
+          return $n(num * 1.1 * 105.5, "currency", "id-ID");
+        }
+      },
     },
   };
 });

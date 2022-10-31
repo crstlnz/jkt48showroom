@@ -1,6 +1,6 @@
 <template>
   <div class="flex-1 lg:w-0">
-    <transition
+    <Transition
       enter-class="transition-all duration-500"
       leave-to-class="transition"
       enter-active-class="opacity-0 translate-y-full"
@@ -13,7 +13,7 @@
       >
         Scroll top
       </div>
-    </transition>
+    </Transition>
     <div class="flex justify-end mb-2 items-center">
       <div class="font-bold">Filter</div>
     </div>

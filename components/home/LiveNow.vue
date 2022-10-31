@@ -23,6 +23,7 @@
         :live="live"
         :pending="liveInfo.pending"
         :start-date="onLives.getStartDate(live.room_id)"
+        @refreshliveinfo="refreshLiveInfo"
       />
     </div>
     <div
@@ -30,8 +31,9 @@
       class="flex flex-col justify-center items-center bg-white dark:bg-dark-1 w-full rounded-xl md:min-h-[404px]"
     >
       <div class="aspect-square gap-2 md:gap-3 text-xs md:text-sm pb-6 text-center flex flex-col justify-center">
-        <img class="mx-auto w-72 max-w-[80%] aspect-square" alt="No member onlive" src="/svg/space.svg" /> No member
-        onlive 😭
+        <img class="mx-auto w-72 max-w-[80%] aspect-square" alt="No member onlive" src="/svg/space.svg" />
+        No Live
+        <!-- {{ $t("nolive") }} -->
       </div>
     </div>
     <template #fallback>
@@ -48,4 +50,8 @@
 import { useOnLives } from "~/store/onLives";
 const onLives = useOnLives();
 const { lives, liveInfo } = storeToRefs(onLives);
+
+function refreshLiveInfo() {
+  onLives.refreshLiveInfo();
+}
 </script>

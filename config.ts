@@ -1,3 +1,5 @@
+type GiftSize = "small" | "medium";
+
 export default {
   avatarURL: (id: number | string) => `https://image.showroom-cdn.com/showroom-prod/image/avatar/${id}.png`,
   profileURL: (roomId: number | string) => `https://www.showroom-live.com/room/profile?room_id=${roomId}`,
@@ -11,4 +13,9 @@ export default {
   errorPicture: "https://image.showroom-cdn.com/showroom-prod/assets/img/v3/img-err-404.jpg?t=1602821561",
   fansProfileURL: (userId: string | number) => `https://www.showroom-live.com/user/profile?user_id=${userId}`,
   onLivesURL: "https://www.showroom-live.com/api/live/onlives",
+  giftUrl: (id: string | number, type: GiftSize = "small") =>
+    `https://image.showroom-cdn.com/showroom-prod/assets/img/gift/${id}_${type === "small" ? "s" : "m"}.png`,
+  cloudinaryURL: "https://res.cloudinary.com/haymzm4wp/image/upload/",
+  screenshotURL: (folder: string, id: string, format: string) =>
+    `https://res.cloudinary.com/haymzm4wp/image/upload/${folder?.startsWith("/") ? "" : "/"}${folder}/${id}.${format}`,
 };

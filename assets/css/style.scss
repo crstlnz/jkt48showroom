@@ -142,6 +142,42 @@ body {
   background: rgb(100, 100, 100);
 }
 
+.roundedscrollbar::-webkit-scrollbar {
+  width: 15px;
+}
+
+.roundedscrollbar::-webkit-scrollbar-track {
+  margin-top: 6px;
+  margin-bottom: 6px;
+  background: white !important;
+}
+
+.roundedscrollbar::-webkit-scrollbar-thumb {
+  background: #dbdbdb;
+  border-radius: 100vh;
+  border: 4px solid white;
+}
+
+.roundedscrollbar::-webkit-scrollbar-thumb:hover {
+  background: #a3a3a3;
+}
+
+.dark {
+  .roundedscrollbar::-webkit-scrollbar-track {
+    --tw-bg-opacity: 1;
+    background-color: rgb(30 33 36 / var(--tw-bg-opacity)) !important;
+    @apply bg-dark-1;
+  }
+
+  .roundedscrollbar::-webkit-scrollbar-thumb {
+    @apply bg-dark-2 border-dark-1;
+  }
+
+  .roundedscrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-dark-3/50;
+  }
+}
+
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.3s ease-in-out !important;

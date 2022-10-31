@@ -1,6 +1,6 @@
 import config from "~~/config";
 import cache from "~~/library/utils/cache";
-export default defineEventHandler(async (event): Promise<ILiveInfo | ILiveInfo[]> => {
+export default defineEventHandler(async (event): Promise<APILiveInfo | APILiveInfo[]> => {
   const { room_id: ids } = useQuery(event);
   const roomIds = String(ids)
     .split(",")
@@ -12,22 +12,22 @@ export default defineEventHandler(async (event): Promise<ILiveInfo | ILiveInfo[]
 export { getLiveInfo };
 
 const time = 30000;
-async function getLiveInfo(roomId): Promise<ILiveInfo | ILiveInfo[]> {
+async function getLiveInfo(roomId): Promise<APILiveInfo | APILiveInfo[]> {
   return await fetchAllData(roomId);
 }
 
-async function fetchAllData(roomId: number | number[]): Promise<ILiveInfo | ILiveInfo[]> {
+async function fetchAllData(roomId: number | number[]): Promise<APILiveInfo | APILiveInfo[]> {
   if (Array.isArray(roomId)) {
     const promises = [];
     for (const room of roomId) {
-      promises.push(cache.fetch<ILiveInfo | ILiveInfo[]>("live_info" + room, () => fetchData(room, true), time));
+      promises.push(cache.fetch<APILiveInfo | APILiveInfo[]>("live_info" + room, () => fetchData(room, true), time));
     }
     return await Promise.all(promises);
   }
-  return await cache.fetch<ILiveInfo | ILiveInfo[]>("live_info" + roomId, () => fetchData(roomId), time);
+  return await cache.fetch<APILiveInfo | APILiveInfo[]>("live_info" + roomId, () => fetchData(roomId), time);
 }
 
-async function fetchData(roomId, bulk = false): Promise<ILiveInfo> {
+async function fetchData(roomId, bulk = false): Promise<APILiveInfo> {
   const response = await fetch(config.apiProfileURL(roomId));
   if (!response.ok && !bulk) throw createError({ statusCode: 404, statusMessage: "Room not found!" });
   const data = await response.json();

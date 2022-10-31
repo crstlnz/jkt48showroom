@@ -8,10 +8,11 @@
       v-if="pending"
       v-for="i in 10"
       :key="i"
-      class="pulse-color h-[260px] md:h-[330px] xl:h-[400px] rounded-xl animate-pulse"
+      class="pulse-color h-[260px] md:h-[330px] xl:h-[400px] rounded-xl animate-pulse shadow-sm"
     />
 
     <MemberCard
+      class="shadow-sm"
       v-else
       v-for="member in members"
       :key="member.room_id"
