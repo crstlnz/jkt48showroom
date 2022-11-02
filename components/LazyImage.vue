@@ -47,7 +47,7 @@ const { isLoading, error } = useImage({ src: props.src });
 </script>
 
 <style lang="scss">
-.lazyContainer {
+// .lazyContainer {
   // &.loading {
   //   @apply animate-pulse;
   //   img {
@@ -58,5 +58,5 @@ const { isLoading, error } = useImage({ src: props.src });
   // img {
   //   transition: 400ms;
   // }
-}
+// }
 </style>

@@ -17,15 +17,16 @@
       v-for="member in members"
       :key="member.room_id"
       :member="member"
-      :is-live="onLives.isLive(member.room_id)"
+      :is-live="false"
     />
+    <!-- :is-live="onLives.isLive(member.room_id)" -->
   </div>
 </template>
 
 <script lang="ts" setup>
 import { useMembers } from "~~/store/members";
-import { useOnLives } from "~~/store/onLives";
-const onLives = useOnLives();
+// import { useOnLives } from "~~/store/onLives";
+// const onLives = useOnLives();
 // function isLive(roomId) {
 //   return true;
 // }

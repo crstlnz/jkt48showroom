@@ -5,40 +5,8 @@
   <div v-else-if="error"><Error message="Something error :(" img-src="/svg/error.svg" /></div>
   <div v-else class="flex flex-col gap-5 pt-4 md:pt-6 xl:pt-8">
     <HomeBanner class="rounded-xl overflow-hidden shadow-sm aspect-[38/9] lg:aspect-[95/9]" />
-    <div class="flex justify-between items-center mt-2 xl:mt-3">
-      <div class="flex gap-1">
-        <div class="w-6 relative aspect-square">
-          <ClientOnly>
-            <div
-              v-if="!lives.data?.length"
-              class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full w-4 bg-gray-500"
-            >
-              <div class="w-full aspect-square rounded-full" />
-            </div>
-            <div v-else class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full w-3 bg-red-500">
-              <div class="w-full aspect-square rounded-full" />
-              <div class="absolute top-0 w-full aspect-square rounded-full bg-red-500 animate-ping" />
-            </div>
-            <template #fallback>
-              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full w-4 bg-gray-500">
-                <div class="w-full aspect-square rounded-full" />
-              </div>
-            </template>
-          </ClientOnly>
-        </div>
-        <h2 class="text-xl sm:text-2xl font-bold relative">Live Now</h2>
-      </div>
-      <ClientOnly>
-        <div v-if="lives.pending && lives.data == null" key="loading">
-          <div class="h-4 md:h-5 w-20 rounded-xl animate-pulse pulse-color" />
-        </div>
-        <div v-else key="data" class="text-xs md:text-sm opacity-60">{{ lives.data?.length }} Members</div>
-        <template #fallback key="server">
-          <div class="h-4 md:h-5 w-20 rounded-xl animate-pulse pulse-color" />
-        </template>
-      </ClientOnly>
-    </div>
-    <HomeLiveNow />
+
+    <!-- <HomeLiveNow /> -->
     <div class="flex justify-between items-center xl:mt-2">
       <div class="flex gap-1">
         <Icon name="ph:presentation-chart-bold" class="text-xl sm:text-2xl self-center" />
@@ -146,9 +114,6 @@
 
 <script lang="ts" setup>
 import { LazyImage } from "#components";
-import { useOnLives } from "~/store/onLives";
-const onlives = useOnLives();
-const { lives } = storeToRefs(onlives);
 const config = useRuntimeConfig();
 const { data, pending, error } = useFetch("/api/home", { baseURL: config.public.baseURL, initialCache: false });
 

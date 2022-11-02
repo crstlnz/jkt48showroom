@@ -23,10 +23,10 @@ export default function <T>(
   const expiredIn = opts?.expiredIn ?? defaultOptions.expiredIn;
   const serializer = opts?.serializer ?? defaultOptions.serializer;
   const allowExpiredData = opts?.allowExpiredData ?? defaultOptions.allowExpiredData;
-  // const pending = ref(false);
-  // const error = ref(false);
-  const pending = useState("pending", () => false);
-  const error = useState("error", () => false);
+  // const pending = useState("pending", () => false);
+  // const error = useState("error", () => false);
+  const pending = ref(false);
+  const error = ref(false);
 
   const data: Ref<T | null> = useLocalStorage(`data-${id}`, null as T, {
     serializer: serializer,

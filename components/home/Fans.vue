@@ -26,7 +26,7 @@
     <BottomSheet ref="bottomSheet" title="Fans Ranking" :items="data">
       <template #default="{ item, index }">
         <div
-          class="flex justify-start items-center gap-4 py-1 h-[120px] px-6 hover:bg-slate-300/30 dark:hover:bg-dark-3/30 border-r border-slate-100/60"
+          class="flex justify-start items-center gap-4 py-1 h-[120px] px-6 hover:bg-slate-300/30 dark:hover:bg-dark-3/30 border-r border-slate-100/60 dark:border-dark-2/80"
         >
           <div class="truncate font-semibold">{{ index + 1 }}</div>
           <img
