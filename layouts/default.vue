@@ -66,29 +66,6 @@
                 class="dark:!hidden absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
               />
             </button>
-            <!-- <Popover class="relative flex items-center">
-              <PopoverButton class="border-slate-800 dark:border-slate-100 cursor-pointer relative text-2xl w-6 h-6">
-                <Icon name="ph:gear" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-              /></PopoverButton>
-
-              <transition
-                enter-active-class="transition duration-200 ease-out"
-                enter-from-class="translate-y-1 opacity-0"
-                enter-to-class="translate-y-0 opacity-100"
-                leave-active-class="transition duration-150 ease-in"
-                leave-from-class="translate-y-0 opacity-100"
-                leave-to-class="translate-y-1 opacity-0"
-              >
-                <PopoverPanel
-                  class="absolute -right-4 top-full mt-1 z-10 flex flex-col p-4 md:p-5 bg-white dark:bg-dark-1 rounded-xl drop-shadow-lg min-w-[230px] border-2 border-slate-100/60 dark:border-dark-2/50"
-                >
-                  <div class="flex flex-col whitespace-nowrap gap-2 md:gap-3">
-                    <a>Show</a>
-                    <LangSwitch />
-                  </div>
-                </PopoverPanel>
-              </transition>
-            </Popover> -->
           </li>
         </ul>
       </div>
@@ -105,7 +82,6 @@
 </template>
 
 <script lang="ts" setup>
-import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
 const i18nHead = useLocaleHead({
   addDirAttribute: true,
   identifierAttribute: "id",
