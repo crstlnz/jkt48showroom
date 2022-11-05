@@ -11,18 +11,18 @@
       <div class="flex gap-1">
         <Icon name="ph:presentation-chart-bold" class="text-xl sm:text-2xl self-center" />
         <h1 class="text-xl sm:text-2xl font-bold">
-          {{ data.data.type === "weekly" ? "Weekly Stats" : "Monthly Stats" }}
+          {{ data!.data.type === "weekly" ? "Weekly Stats" : "Monthly Stats" }}
         </h1>
       </div>
       <div class="text-xs md:text-sm opacity-60">
-        {{ new Date(data.data.date.from).toLocaleDateString() }} -
-        {{ new Date(data.data.date.to).toLocaleDateString() }}
+        {{ new Date(data!.data.date.from).toLocaleDateString() }} -
+        {{ new Date(data!.data.date.to).toLocaleDateString() }}
       </div>
     </div>
-    <div v-if="data.data && data.data.stats.length > 3">
+    <div v-if="data!.data && data!.data.stats.length > 3">
       <div class="flex md:flex-row flex-col gap-3 xl:gap-4">
         <div
-          v-for="stat in data.data.stats.slice(0, 4)"
+          v-for="stat in data!.data.stats.slice(0, 4)"
           :key="stat.title"
           class="bg-white dark:bg-dark-1 p-5 rounded-lg items-center gap-2 lg:gap-3 flex-1 flex w-full md:w-0 first:hidden md:first:block shadow-sm"
         >
@@ -49,7 +49,7 @@
         </div>
       </div>
     </div>
-    <HomeFans v-if="data.data?.ranks?.fans?.length" :data="data.data.ranks.fans" />
+    <HomeFans v-if="data!.data?.ranks?.fans?.length" :data="data!.data.ranks.fans" />
     <!-- <div class="bg-white dark:bg-dark-1 rounded-xl p-3 md:p-4 space-y-1 shadow-sm">
       <div class="flex justify-between items-center">
         <h3 class="text-lg font-bold">Top Fans</h3>
@@ -57,7 +57,7 @@
       </div>
       <div class="whitespace-nowrap py-1 flex flex-1">
         <button
-          v-for="fans in data.data.ranks.fans.slice(0, 13)"
+          v-for="fans in data!.data.ranks.fans.slice(0, 13)"
           :key="fans.id"
           :title="fans.name"
           class="rounded-sm w-20 md:w-32 aspect-square text-center space-y-1 min-w-0 px-1 lg:px-2 cursor-pointer hidden [&:not(:nth-of-type(1n+6))]:inline-block md:[&:not(:nth-of-type(1n+8))]:inline-block lg:[&:not(:nth-of-type(1n+11))]:inline-block xl:[&:not(:nth-of-type(1n+13))]:inline-block flex-1"

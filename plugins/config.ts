@@ -16,10 +16,10 @@ export default defineNuxtPlugin(() => {
       },
       util,
       time,
-      createSwipeDetector: (x, y, mode) => new SwipeDetector(x, y, mode),
-      createDragListener: (el) => new DragListener(el),
+      createSwipeDetector: (x: number, y: number, mode: string) => new SwipeDetector(x, y, mode),
+      createDragListener: (el: any) => new DragListener(el),
       ...config,
-      currency(num, type: CurrencyType = "sr") {
+      currency(num: number, type: CurrencyType = "sr") {
         const { n: $n } = useI18n();
         if (type == "sr") {
           return `${$n(num)} G`;

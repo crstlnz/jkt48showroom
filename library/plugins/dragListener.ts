@@ -1,11 +1,10 @@
-import EventEmitter from "events";
+import { EventEmitter } from "events";
 import Listener from "./eventListener";
-
 class DragListener extends EventEmitter {
   touchMode: boolean;
   el: unknown;
   listener: Listener;
-  constructor(el, touchMode = true) {
+  constructor(el: any, touchMode = true) {
     super();
     this.el = el;
     this.touchMode = touchMode;
@@ -13,7 +12,7 @@ class DragListener extends EventEmitter {
     this.init();
   }
 
-  onStart(e) {
+  onStart(e: any) {
     let x, y;
     if (this.touchMode) {
       this.listener.add("touchmove", this.onMove.bind(this), false);
@@ -30,7 +29,7 @@ class DragListener extends EventEmitter {
     this.emit("start", { x, y, e });
   }
 
-  onMove(e) {
+  onMove(e: any) {
     let x, y;
     if (this.touchMode) {
       const touch = e.touches[0] || e.changedTouches[0];
@@ -43,7 +42,7 @@ class DragListener extends EventEmitter {
     this.emit("move", { x, y, e });
   }
 
-  onEnd(e) {
+  onEnd(e: any) {
     let x, y;
     if (this.touchMode) {
       this.listener.remove("touchmove");

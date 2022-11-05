@@ -52,8 +52,7 @@
 
 <script lang="ts" setup>
 import "vue-virtual-scroller/dist/vue-virtual-scroller.css";
-import { DynamicScroller, DynamicScrollerItem } from "vue-virtual-scroller";
-function getNumColor(num) {
+function getNumColor(num: number) {
   if (num < 10) {
     return "bg-blue-500";
   } else if (num < 50) {

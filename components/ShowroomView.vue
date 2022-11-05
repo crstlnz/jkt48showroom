@@ -122,7 +122,7 @@ const props = defineProps<{
   memberImage: string;
   date: ILiveDate;
   background: string;
-  screenshot: IScreenshotData;
+  screenshot?: IScreenshotData;
   stageList: IStageList[];
   users: Map<number, IFansCompact>;
   giftData: IGiftsLogData;
@@ -161,8 +161,8 @@ function getFansRankList() {
     const fans = props.users.get(i);
     return {
       id: i,
-      name: fans.name,
-      avatar: $avatarURL(fans.avatar_id),
+      name: fans?.name ?? "Not Found!",
+      avatar: $avatarURL(fans?.avatar_id ?? 1),
     };
   });
 }
@@ -170,7 +170,7 @@ function getFansRankList() {
 const selectedTime = computed(() => {
   const percent = Number(sliderVal.value) / 1000;
   const range = (stageTime?.value?.end ?? 0) - (stageTime?.value?.start ?? 0);
-  return stageTime.value.start + range * percent;
+  return (stageTime?.value?.start ?? 0) + range * percent;
 });
 
 watch(selectedTime, (time) => {
@@ -187,7 +187,7 @@ const stageNum = computed(() => {
   return props.stageList?.length - 1 ?? 0;
 });
 
-const timeout = ref(undefined);
+const timeout = ref<NodeJS.Timeout>();
 watch(stageNum, (val) => {
   if (timeout.value) clearTimeout(timeout.value);
   timeout.value = setTimeout(() => {
@@ -222,7 +222,7 @@ onMounted(() => {
   background.inject(bgCanvas.value);
   background.loadBackground(props.background);
   background.setPodiumGifts(podiumGifts.value);
-  background.screenshots.set(props.screenshot);
+  background.screenshots.set(props.screenshot!);
   background.setDate(selectedTime.value);
   foreground.inject(fgCanvas.value);
 });
@@ -231,12 +231,12 @@ useEventListener(container, "click", async (e: MouseEvent) => {
   const tagName = (e.target as HTMLElement)?.tagName.toLowerCase();
   if ((e.target as HTMLElement)?.id === "timeslider") return;
   if (tagName === "svg" || tagName === "button") return;
-  const rect = stCanvas.value.getBoundingClientRect();
-  const x = ((e.clientX - rect.left) / rect.width) * stCanvas.value.width;
-  const y = ((e.clientY - rect.top) / rect.height) * stCanvas.value.height;
+  const rect = stCanvas.value!.getBoundingClientRect();
+  const x = ((e.clientX - rect.left) / rect.width) * stCanvas.value!.width;
+  const y = ((e.clientY - rect.top) / rect.height) * stCanvas.value!.height;
   const userId = stage.getClickedUser(x, y);
   if (userId) {
-    window.open($fansProfileURL(userId), "_blank").focus();
+    window.open($fansProfileURL(userId), "_blank")!.focus();
     // const response = await $fetch("/api/user/profile?user_id=" + userId);
     // console.log(response);
   }
@@ -264,7 +264,7 @@ async function toggleFullscreen() {
   if (!isFullscreen.value) {
     const o = orientation.value;
     await toggle();
-    if (["portrait-primary", "portrait-secondary", "portrait"].includes(o)) {
+    if (["portrait-primary", "portrait-secondary", "portrait"].includes(o ?? "")) {
       if (isSupported.value) await lockOrientation("landscape").catch(() => {});
     }
   } else {

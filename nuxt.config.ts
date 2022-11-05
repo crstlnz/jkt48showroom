@@ -29,23 +29,21 @@ export default defineNuxtConfig({
     fallback: "light",
     classSuffix: "",
   },
-  serverMiddleware: [{ path: "/api", handler: "~/library/utils/dbCheck.ts" }],
+  serverHandlers: [{ route: "/api", middleware: true, handler: "~/library/utils/dbCheck.ts" }],
   googleFonts: {
     families: {
       Rubik: true,
       Roboto: true,
     },
   },
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
+    },
+  },
   build: {
     transpile: ["@headlessui/vue"],
-    postcss: {
-      postcssOptions: {
-        plugins: {
-          tailwindcss: {},
-          autoprefixer: {},
-        },
-      },
-    },
   },
   vite: {
     server: {

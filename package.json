@@ -2,6 +2,9 @@
   "name": "jkt48showroom",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "16.17.x"
+  },
   "scripts": {
     "start": "node .output/server/index.mjs",
     "build": "nuxt build",
@@ -23,6 +26,7 @@
     "axios": "^1.1.3",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
+    "events": "^3.3.0",
     "fuse.js": "^6.6.2",
     "moment": "^2.29.4",
     "mongoose": "^6.7.1",
@@ -35,7 +39,7 @@
   "devDependencies": {
     "@nuxtjs/color-mode": "^3.1.8",
     "@nuxtjs/eslint-config-typescript": "^11.0.0",
-    "@nuxtjs/tailwindcss": "^6.1.1",
+    "@nuxtjs/tailwindcss": "^6.1.3",
     "@tailwindcss/line-clamp": "^0.4.2",
     "@types/node": "^18.8.0",
     "@typescript-eslint/eslint-plugin": "^5.40.1",
@@ -47,7 +51,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-nuxt": "^4.0.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "nuxt": "^3.0.0-rc.12",
+    "nuxt": "^3.0.0-rc.13",
     "nuxt-icon": "^0.1.7",
     "sass": "^1.56.0"
   }

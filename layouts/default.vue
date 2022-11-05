@@ -103,14 +103,7 @@ useHead({
       content: "JKT48 Showroom Logs",
     },
   ],
-  link: [
-    ...(i18nHead.value.link || []),
-    { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
-    {
-      rel: "stylesheet",
-      href: "/fonts/icons/iconfont.css",
-    },
-  ],
+  link: [...(i18nHead.value.link || []), { rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
 });
 const menuOpen = ref(false);
 const menus = [

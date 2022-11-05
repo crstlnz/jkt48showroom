@@ -42,7 +42,7 @@
       <ul class="mt-1 space-y-1 [&>li]:flex [&>li]:gap-1 text-sm">
         <li v-if="recent.live_info?.viewers">
           <Icon name="ph:users-bold" class="self-center text-base" />
-          {{ $util.numberFormat(recent.live_info.viewers) }}
+          {{ $n(recent.live_info.viewers) }}
         </li>
         <li>
           <Icon name="ph:clock-bold" class="self-center text-base" />

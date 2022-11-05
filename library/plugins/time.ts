@@ -1,5 +1,4 @@
 import moment from "moment";
-
 const secondsTime = {
   year: 31536000,
   month: 2628000,
@@ -46,7 +45,7 @@ const english: IDateString = {
 
 const dateString: IDateString = english;
 
-function getStringDuration(time): IStringDuration {
+function getStringDuration(time: any): IStringDuration {
   if (time >= secondsTime.year) {
     // 1 year
     const num = Math.floor(time / secondsTime.year);
@@ -99,16 +98,16 @@ function getStringDuration(time): IStringDuration {
 }
 
 export default {
-  fromNow(time) {
+  fromNow(time: any) {
     return moment(time).fromNow();
   },
-  formatSR(time) {
+  formatSR(time: any) {
     return moment(time).format("h:mm A") + "~";
   },
 
-  detailDuration(time1, time2) {
+  detailDuration(time1: any, time2: any) {
     const time = Math.floor(Math.abs(new Date(time1).getTime() - new Date(time2).getTime()) / 1000); // in seconds
-    function get(time, res = []) {
+    function get(time: any, res: any[] = []): any[] {
       const data = getStringDuration(time);
       if ("english" === "english") {
         res.push(data.string + (data.num > 1 ? "s" : ""));
