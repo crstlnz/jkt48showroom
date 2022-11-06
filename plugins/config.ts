@@ -1,8 +1,8 @@
 import util from "../library/plugins/util";
 import time from "../library/plugins/time";
 import config from "~~/config";
-import SwipeDetector from "~~/library/plugins/swipeDetector";
-import DragListener from "~~/library/plugins/dragListener";
+// import SwipeDetector from "~~/library/plugins/swipeDetector";
+// import DragListener from "~~/library/plugins/dragListener";
 export default defineNuxtPlugin(() => {
   type CurrencyType = "jpy" | "idr" | "sr";
   return {
@@ -16,8 +16,8 @@ export default defineNuxtPlugin(() => {
       },
       util,
       time,
-      createSwipeDetector: (x: number, y: number, mode: string) => new SwipeDetector(x, y, mode),
-      createDragListener: (el: any) => new DragListener(el),
+      // createSwipeDetector: (x: number, y: number, mode: string) => new SwipeDetector(x, y, mode),
+      // createDragListener: (el: any) => new DragListener(el),
       ...config,
       currency(num: number, type: CurrencyType = "sr") {
         const { n: $n } = useI18n();
