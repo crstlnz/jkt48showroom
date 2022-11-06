@@ -19,9 +19,6 @@ export default defineNuxtConfig({
         autoImports: ["defineStore", "storeToRefs"],
       },
     ],
-    // "@nuxtjs/html-validator",
-    // "@nuxtjs/robots",
-    // "@nuxtjs/sitemap",
   ],
   css: ["~/assets/css/style.scss"],
   colorMode: {
