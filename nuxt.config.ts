@@ -1,6 +1,9 @@
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
   ssr: true,
+  app: {
+    pageTransition: { name: "page", mode: "out-in" },
+  },
   runtimeConfig: {
     public: {
       baseURL: process.env.BASE_URL,
@@ -13,12 +16,7 @@ export default defineNuxtConfig({
     "@nuxtjs/tailwindcss",
     "@nuxtjs/color-mode",
     "@vueuse/nuxt",
-    [
-      "@pinia/nuxt",
-      {
-        autoImports: ["defineStore", "storeToRefs"],
-      },
-    ],
+    ["@pinia/nuxt"],
   ],
   css: ["~/assets/css/style.scss"],
   colorMode: {

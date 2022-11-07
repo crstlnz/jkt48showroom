@@ -29,6 +29,7 @@
 // function isLive(roomId) {
 //   return true;
 // }
+import { storeToRefs } from "pinia";
 import { useMembers } from "~~/store/members";
 const memberState = useMembers();
 const { members, pending, error } = storeToRefs(memberState);

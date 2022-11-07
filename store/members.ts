@@ -1,4 +1,4 @@
-import { acceptHMRUpdate } from "pinia";
+import { acceptHMRUpdate, defineStore } from "pinia";
 
 export const useMembers = defineStore("members", () => {
   const error = useState("error", () => false);

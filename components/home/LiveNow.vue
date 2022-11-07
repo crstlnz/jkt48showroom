@@ -79,6 +79,7 @@
 </template>
 
 <script lang="ts" setup>
+import { storeToRefs } from "pinia";
 import { useOnLives } from "~/store/onLives";
 const onLives = useOnLives();
 const { lives, liveInfo } = storeToRefs(onLives);
