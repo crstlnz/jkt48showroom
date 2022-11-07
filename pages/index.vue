@@ -6,7 +6,7 @@
   <div v-else class="flex flex-col gap-5 pt-4 md:pt-6 xl:pt-8">
     <HomeBanner class="rounded-xl overflow-hidden shadow-sm aspect-[38/9] lg:aspect-[95/9]" />
 
-    <!-- <HomeLiveNow /> -->
+    <HomeLiveNow />
     <div class="flex justify-between items-center xl:mt-2">
       <div class="flex gap-1">
         <Icon name="ph:presentation-chart-bold" class="text-xl sm:text-2xl self-center" />
