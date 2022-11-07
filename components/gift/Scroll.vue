@@ -1,5 +1,5 @@
 <template>
-  <DynamicScroller
+  <!-- <DynamicScroller
     class="h-full w-full roundedscrollbar"
     :min-item-size="182"
     :prerender="10"
@@ -28,7 +28,6 @@
               alt=""
             />
             <div class="flex-1 w-0">
-              <!-- <div class="text-lg font-semibold">{{ item.name }}</div> -->
               <div class="grid grid-cols-5 gap-2 md:gap-2.5 pb-[8px]">
                 <div v-for="gift in item.gifts" class="relative" :title="$currency(gift.point)">
                   <img :src="gift.img" alt="" class="aspect-square" />
@@ -47,23 +46,24 @@
         </div>
       </DynamicScrollerItem>
     </template>
-  </DynamicScroller>
+  </DynamicScroller> -->
+  <div>Gift Scroll</div>
 </template>
 
 <script lang="ts" setup>
-import "vue-virtual-scroller/dist/vue-virtual-scroller.css";
-function getNumColor(num: number) {
-  if (num < 10) {
-    return "bg-blue-500";
-  } else if (num < 50) {
-    return "bg-green-500";
-  } else if (num < 100) {
-    return "bg-teal-500";
-  } else if (num < 1000) {
-    return "bg-violet-500";
-  } else {
-    return "bg-red-500";
-  }
-}
-defineProps<{ gifts: IFansGift[] }>();
+// import "vue-virtual-scroller/dist/vue-virtual-scroller.css";
+// function getNumColor(num: number) {
+//   if (num < 10) {
+//     return "bg-blue-500";
+//   } else if (num < 50) {
+//     return "bg-green-500";
+//   } else if (num < 100) {
+//     return "bg-teal-500";
+//   } else if (num < 1000) {
+//     return "bg-violet-500";
+//   } else {
+//     return "bg-red-500";
+//   }
+// }
+// defineProps<{ gifts: IFansGift[] }>();
 </script>

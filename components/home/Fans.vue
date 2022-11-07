@@ -2,7 +2,7 @@
   <div class="bg-white dark:bg-dark-1 rounded-xl p-3 md:p-4 space-y-1 shadow-sm">
     <div class="flex justify-between items-center">
       <h3 class="text-lg font-bold">Top Fans</h3>
-      <button class="hover:text-second-2" href="#" @click="openRankFans">More</button>
+      <!-- <button class="hover:text-second-2" href="#" @click="openRankFans">More</button> -->
     </div>
     <div class="whitespace-nowrap py-1 flex flex-1">
       <a
@@ -23,7 +23,7 @@
         <div class="truncate text-xs">{{ fans.name }}</div>
       </a>
     </div>
-    <BottomSheet ref="bottomSheet" title="Fans Ranking" :items="data">
+    <!-- <BottomSheet ref="bottomSheet" title="Fans Ranking" :items="data">
       <template #default="{ item, index }">
         <div
           class="flex justify-start items-center gap-4 py-1 h-[120px] px-6 hover:bg-slate-300/30 dark:hover:bg-dark-3/30 border-r border-slate-100/60 dark:border-dark-2/80"
@@ -42,7 +42,7 @@
           </div>
         </div>
       </template>
-    </BottomSheet>
+    </BottomSheet> -->
   </div>
 </template>
 
@@ -52,8 +52,8 @@ defineProps<{
   data: IStatFans[];
 }>();
 // const openRankFans = ref(false);
-const bottomSheet = ref(null);
-function openRankFans() {
-  bottomSheet.value?.open();
-}
+// const bottomSheet = ref(null);
+// function openRankFans() {
+//   bottomSheet.value?.open();
+// }
 </script>

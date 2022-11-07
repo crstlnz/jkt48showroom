@@ -24,12 +24,12 @@
 </template>
 
 <script lang="ts" setup>
-import { useMembers } from "~~/store/members";
 // import { useOnLives } from "~~/store/onLives";
 // const onLives = useOnLives();
 // function isLive(roomId) {
 //   return true;
 // }
+import { useMembers } from "~~/store/members";
 const memberState = useMembers();
 const { members, pending, error } = storeToRefs(memberState);
 </script>

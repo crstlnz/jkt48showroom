@@ -1,6 +1,6 @@
 <template>
   <div class="absolute">
-    <transition name="sheet">
+    <!-- <transition name="sheet">
       <div v-if="isOpen" ref="swipe">
         <div
           ref="background"
@@ -58,169 +58,169 @@
           </RecycleScroller>
         </div>
       </div>
-    </transition>
+    </transition> -->
   </div>
 </template>
 
 <script>
-import "vue-virtual-scroller/dist/vue-virtual-scroller.css";
-import { RecycleScroller } from "vue-virtual-scroller";
+// import "vue-virtual-scroller/dist/vue-virtual-scroller.css";
+// import { RecycleScroller } from "vue-virtual-scroller";
 
-export default {
-  components: { RecycleScroller },
+// export default {
+//   components: { RecycleScroller },
 
-  props: {
-    id: {
-      type: String,
-      default() {
-        return "bottomSheet";
-      },
-    },
-    title: {
-      type: String,
-      default() {
-        return "";
-      },
-    },
-    items: {
-      type: Array,
-      default() {
-        return [];
-      },
-    },
-  },
-  data() {
-    return {
-      isOpen: false,
-      isDrag: false,
-      dragListener: null,
-      dragListener2: null,
-    };
-  },
-  watch: {
-    isOpen(open) {
-      this.$nextTick(() => {
-        if (open) {
-          if (this.$device.isMobile) {
-            const query = {};
-            query[this.id] = null;
-            this.$router.push({
-              path: this.$route.path,
-              query,
-            });
-          }
-          return this.startListener();
-        } else if (this.$device.isMobile && this.$route.query[this.id] === null) {
-          this.$router.back();
-        }
-        return this.stopListener();
-      });
-    },
-    $route(to, from) {
-      if (this.$device.isMobile) {
-        const tQ = to.query[this.id];
-        const fQ = from.query[this.id];
-        if (tQ === undefined && fQ === null) {
-          this.close();
-        }
-      }
-    },
-  },
+//   props: {
+//     id: {
+//       type: String,
+//       default() {
+//         return "bottomSheet";
+//       },
+//     },
+//     title: {
+//       type: String,
+//       default() {
+//         return "";
+//       },
+//     },
+//     items: {
+//       type: Array,
+//       default() {
+//         return [];
+//       },
+//     },
+//   },
+//   data() {
+//     return {
+//       isOpen: false,
+//       isDrag: false,
+//       dragListener: null,
+//       dragListener2: null,
+//     };
+//   },
+//   watch: {
+//     isOpen(open) {
+//       this.$nextTick(() => {
+//         if (open) {
+//           if (this.$device.isMobile) {
+//             const query = {};
+//             query[this.id] = null;
+//             this.$router.push({
+//               path: this.$route.path,
+//               query,
+//             });
+//           }
+//           return this.startListener();
+//         } else if (this.$device.isMobile && this.$route.query[this.id] === null) {
+//           this.$router.back();
+//         }
+//         return this.stopListener();
+//       });
+//     },
+//     $route(to, from) {
+//       if (this.$device.isMobile) {
+//         const tQ = to.query[this.id];
+//         const fQ = from.query[this.id];
+//         if (tQ === undefined && fQ === null) {
+//           this.close();
+//         }
+//       }
+//     },
+//   },
 
-  methods: {
-    open() {
-      this.isOpen = true;
-    },
-    close() {
-      this.isOpen = false;
-    },
-    toggle() {
-      this.isOpen = !this.isOpen;
-    },
-    startListener() {
-      // const bg = this.$refs.background;
-      // if (bg) bg.addEventListener("touchmove", (e) => e.preventDefault());
-      // this.listenDrag();
-      // const scroller = this.$refs.scroller.$el;
-      // const sheet = this.$refs.sheet;
-      // let percent = 0;
-      // let swipeDetector;
-      // if (scroller && sheet) {
-      //   this.dragListener = this.$createDragListener(scroller);
-      //   let isScrolling = false;
-      //   let isDragging = false;
-      //   this.dragListener.on("move", ({ x, y, e }) => {
-      //     const isTop = scroller.scrollTop === 0;
-      //     if (isTop && !isScrolling) {
-      //       if (!this.isDrag) {
-      //         if (e.cancelable) e.preventDefault();
-      //         this.isDrag = true;
-      //         swipeDetector = this.$createSwipeDetector(x, y);
-      //       } else if (y <= 0 || x <= 0 || x >= window.innerWidth || y >= window.innerHeight) {
-      //         this.finishDrag(x, y, percent, swipeDetector);
-      //       } else {
-      //         const deltaY = swipeDetector ? swipeDetector.getDistanceY(y) : 0;
-      //         percent = (deltaY / sheet.clientHeight) * 100;
-      //         if (percent >= 0) {
-      //           isDragging = true;
-      //           if (e.cancelable) e.preventDefault();
-      //           sheet.style.transform = `translateY(${percent}%)`;
-      //         } else if (isDragging) {
-      //           if (e.cancelable) e.preventDefault();
-      //         } else {
-      //           isScrolling = true;
-      //           this.isDrag = false;
-      //         }
-      //       }
-      //     }
-      //   });
-      //   this.dragListener.on("end", ({ x, y }) => {
-      //     isScrolling = false;
-      //     isDragging = false;
-      //     this.finishDrag(x, y, percent, swipeDetector);
-      //   });
-      // }
-    },
-    stopListener() {
-      // if (this.dragListener) this.dragListener.destroy();
-      // if (this.dragListener2) this.dragListener2.destroy();
-    },
-    finishDrag(x, y, percent, swipeDetector) {
-      // this.isDrag = false;
-      // const isSwipe = swipeDetector ? swipeDetector.finish(x, y) : false;
-      // if (percent > 40 || isSwipe) {
-      //   return this.close();
-      // }
-      // this.$refs.sheet.style.transform = null;
-    },
-    listenDrag() {
-      // const navbar = this.$refs.sheetNav;
-      // const sheet = this.$refs.sheet;
-      // if (navbar && sheet) {
-      //   let swipeDetector;
-      //   let percent = 0;
-      //   this.dragListener2 = this.$createDragListener(navbar);
-      //   this.dragListener2.on("start", ({ x, y, e }) => {
-      //     e.stopPropagation();
-      //     if (e.cancelable) e.preventDefault();
-      //     this.isDrag = true;
-      //     swipeDetector = this.$createSwipeDetector(x, y);
-      //   });
-      //   this.dragListener2.on("move", ({ x, y }) => {
-      //     if (y <= 0 || x <= 0 || x >= window.innerWidth || y >= window.innerHeight) {
-      //       this.finishDrag(x, y, percent, swipeDetector);
-      //     } else {
-      //       const deltaY = swipeDetector ? swipeDetector.getDistanceY(y) : 0;
-      //       percent = (deltaY / sheet.clientHeight) * 100;
-      //       percent = percent < 0 ? 0 : percent;
-      //       sheet.style.transform = `translateY(${percent}%)`;
-      //     }
-      //   });
-      //   this.dragListener2.on("end", ({ x, y }) => {
-      //     this.finishDrag(x, y, percent, swipeDetector);
-      //   });
-      // }
-    },
-  },
-};
+//   methods: {
+//     open() {
+//       this.isOpen = true;
+//     },
+//     close() {
+//       this.isOpen = false;
+//     },
+//     toggle() {
+//       this.isOpen = !this.isOpen;
+//     },
+//     startListener() {
+//       // const bg = this.$refs.background;
+//       // if (bg) bg.addEventListener("touchmove", (e) => e.preventDefault());
+//       // this.listenDrag();
+//       // const scroller = this.$refs.scroller.$el;
+//       // const sheet = this.$refs.sheet;
+//       // let percent = 0;
+//       // let swipeDetector;
+//       // if (scroller && sheet) {
+//       //   this.dragListener = this.$createDragListener(scroller);
+//       //   let isScrolling = false;
+//       //   let isDragging = false;
+//       //   this.dragListener.on("move", ({ x, y, e }) => {
+//       //     const isTop = scroller.scrollTop === 0;
+//       //     if (isTop && !isScrolling) {
+//       //       if (!this.isDrag) {
+//       //         if (e.cancelable) e.preventDefault();
+//       //         this.isDrag = true;
+//       //         swipeDetector = this.$createSwipeDetector(x, y);
+//       //       } else if (y <= 0 || x <= 0 || x >= window.innerWidth || y >= window.innerHeight) {
+//       //         this.finishDrag(x, y, percent, swipeDetector);
+//       //       } else {
+//       //         const deltaY = swipeDetector ? swipeDetector.getDistanceY(y) : 0;
+//       //         percent = (deltaY / sheet.clientHeight) * 100;
+//       //         if (percent >= 0) {
+//       //           isDragging = true;
+//       //           if (e.cancelable) e.preventDefault();
+//       //           sheet.style.transform = `translateY(${percent}%)`;
+//       //         } else if (isDragging) {
+//       //           if (e.cancelable) e.preventDefault();
+//       //         } else {
+//       //           isScrolling = true;
+//       //           this.isDrag = false;
+//       //         }
+//       //       }
+//       //     }
+//       //   });
+//       //   this.dragListener.on("end", ({ x, y }) => {
+//       //     isScrolling = false;
+//       //     isDragging = false;
+//       //     this.finishDrag(x, y, percent, swipeDetector);
+//       //   });
+//       // }
+//     },
+//     stopListener() {
+//       // if (this.dragListener) this.dragListener.destroy();
+//       // if (this.dragListener2) this.dragListener2.destroy();
+//     },
+//     finishDrag(x, y, percent, swipeDetector) {
+//       // this.isDrag = false;
+//       // const isSwipe = swipeDetector ? swipeDetector.finish(x, y) : false;
+//       // if (percent > 40 || isSwipe) {
+//       //   return this.close();
+//       // }
+//       // this.$refs.sheet.style.transform = null;
+//     },
+//     listenDrag() {
+//       // const navbar = this.$refs.sheetNav;
+//       // const sheet = this.$refs.sheet;
+//       // if (navbar && sheet) {
+//       //   let swipeDetector;
+//       //   let percent = 0;
+//       //   this.dragListener2 = this.$createDragListener(navbar);
+//       //   this.dragListener2.on("start", ({ x, y, e }) => {
+//       //     e.stopPropagation();
+//       //     if (e.cancelable) e.preventDefault();
+//       //     this.isDrag = true;
+//       //     swipeDetector = this.$createSwipeDetector(x, y);
+//       //   });
+//       //   this.dragListener2.on("move", ({ x, y }) => {
+//       //     if (y <= 0 || x <= 0 || x >= window.innerWidth || y >= window.innerHeight) {
+//       //       this.finishDrag(x, y, percent, swipeDetector);
+//       //     } else {
+//       //       const deltaY = swipeDetector ? swipeDetector.getDistanceY(y) : 0;
+//       //       percent = (deltaY / sheet.clientHeight) * 100;
+//       //       percent = percent < 0 ? 0 : percent;
+//       //       sheet.style.transform = `translateY(${percent}%)`;
+//       //     }
+//       //   });
+//       //   this.dragListener2.on("end", ({ x, y }) => {
+//       //     this.finishDrag(x, y, percent, swipeDetector);
+//       //   });
+//       // }
+//     },
+//   },
+// };
 </script>
