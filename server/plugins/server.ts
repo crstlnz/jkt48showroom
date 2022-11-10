@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-import cors from "cors";
 import * as dotenv from "dotenv";
 import database from "../../library/database/database";
 export default defineNitroPlugin(async ({ h3App }) => {

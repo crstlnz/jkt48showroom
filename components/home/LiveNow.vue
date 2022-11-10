@@ -35,7 +35,7 @@
   <ClientOnly>
     <div
       v-if="lives.pending && lives.data === null"
-      class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-3 md:gap-4 xl:gap-5 p-3 md:p-4 xl:p-5 bg-white dark:bg-dark-1 rounded-xl"
+      class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 md:gap-4 xl:gap-5 p-3 md:p-4 xl:p-5 bg-white dark:bg-dark-1 rounded-xl"
     >
       <PulseLiveCard></PulseLiveCard>
     </div>

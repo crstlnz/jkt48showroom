@@ -24,7 +24,6 @@ export default defineNuxtConfig({
     fallback: "light",
     classSuffix: "",
   },
-  serverHandlers: [{ route: "/api", middleware: true, handler: "~/library/utils/dbCheck.ts" }],
   googleFonts: {
     families: {
       Rubik: true,

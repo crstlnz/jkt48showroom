@@ -1,14 +1,14 @@
-import cors from "cors";
-
+import redirectSSL from "redirect-ssl";
 export default defineNitroPlugin(({ h3App }) => {
-  h3App.use(
-    fromNodeMiddleware(
-      cors({
-        origin: "http://localhost:3000",
-        credentials: true,
-      })
-    )
-  );
+  if (!process.env.IS_DEV) h3App.use(fromNodeMiddleware(redirectSSL));
+  // h3App.use(
+  //   fromNodeMiddleware(
+  //     cors({
+  //       origin: "http://localhost:3000",
+  //       credentials: true,
+  //     })
+  //   )
+  // );
   // h3App.use(fromNodeMiddleware(function (req, res, next) {
   //   res.header("Access-Control-Allow-Origin", "http://localhost:3000");
   //   res.header("Access-Control-Allow-Credentials", true);

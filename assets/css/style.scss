@@ -1,6 +1,6 @@
-// @tailwind base;
+@tailwind base;
 @tailwind components;
-// @tailwind utilities;
+@tailwind utilities;
 @layer components {
   .disable-highlight {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
