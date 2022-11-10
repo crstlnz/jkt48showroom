@@ -27,7 +27,7 @@
     </div>
     <a
       v-if="isLive"
-      :tabindex="openMenu ? -1 : null"
+      :tabindex="openMenu ? -1 : undefined"
       title="Member is on live!"
       :href="$liveURL(member.url)"
       class="h-20 md:h-24 xl:h-28 aspect-square relative group text-white font-bold drop-shadow-sm flex justify-center items-center gap-0.5 rounded-full overflow-hidden mx-auto ring ring-offset-2 dark:ring-offset-dark-1 ring-red-500"
