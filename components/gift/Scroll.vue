@@ -1,5 +1,5 @@
 <template>
-  <!-- <DynamicScroller
+  <DynamicScroller
     class="h-full w-full roundedscrollbar"
     :min-item-size="182"
     :prerender="10"
@@ -46,24 +46,23 @@
         </div>
       </DynamicScrollerItem>
     </template>
-  </DynamicScroller> -->
-  <div>Gift Scroll</div>
+  </DynamicScroller>
 </template>
 
 <script lang="ts" setup>
-// import "vue-virtual-scroller/dist/vue-virtual-scroller.css";
-// function getNumColor(num: number) {
-//   if (num < 10) {
-//     return "bg-blue-500";
-//   } else if (num < 50) {
-//     return "bg-green-500";
-//   } else if (num < 100) {
-//     return "bg-teal-500";
-//   } else if (num < 1000) {
-//     return "bg-violet-500";
-//   } else {
-//     return "bg-red-500";
-//   }
-// }
-// defineProps<{ gifts: IFansGift[] }>();
+import "vue-virtual-scroller/dist/vue-virtual-scroller.css";
+function getNumColor(num: number) {
+  if (num < 10) {
+    return "bg-blue-500";
+  } else if (num < 50) {
+    return "bg-green-500";
+  } else if (num < 100) {
+    return "bg-teal-500";
+  } else if (num < 1000) {
+    return "bg-violet-500";
+  } else {
+    return "bg-red-500";
+  }
+}
+defineProps<{ gifts: IFansGift[] }>();
 </script>
