@@ -163,3 +163,4 @@ interface CommandWorker {
 type WorkerMessage = CanvasWorker | CommandWorker;
 
 declare module "vue-virtual-scroller";
+declare module "cors";

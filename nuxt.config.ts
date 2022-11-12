@@ -54,17 +54,16 @@ export default defineNuxtConfig({
     baseUrl: process.env.BASE_URL,
     strategy: "no_prefix",
     // locales: [
-    //   { code: "en", iso: "en-US", file: "en.yml", dir: "ltr", name: "English" },
-    //   { code: "id", iso: "id-ID", file: "id.yml", dir: "ltr", name: "Bahasa Indonesia" },
+    //   { code: "en", iso: "en-US", file: "en.js", dir: "ltr", name: "EN" },
+    //   { code: "id", iso: "id-ID", file: "id.js", dir: "ltr", name: "ID" },
+    //   // { code: "en", iso: "en-US", file: "en.ts", dir: "ltr", name: "English" },
+    //   // { code: "id", iso: "id-ID", file: "id.ts", dir: "ltr", name: "Bahasa Indonesia" },
     // ],
     // locales: ["en", "id"],
-    // langDir: "./locales/",
+    // langDir: "locales/",
+    // lazy: true,
     defaultLocale: "en",
     vueI18n: {
-      legacy: false,
-      locale: "en",
-      fallbackLocale: "en",
-      availableLocales: ["en", "id"],
       numberFormats: {
         "en-US": {
           currency: {
@@ -87,10 +86,6 @@ export default defineNuxtConfig({
           },
         },
       },
-      // messages: {
-      //   id,
-      //   en,
-      // },
     },
   },
 });

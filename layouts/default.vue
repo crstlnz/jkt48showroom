@@ -32,6 +32,7 @@
         <div class="flex-1 md:flex-none w-0 md:w-auto items-center flex">
           <NuxtLink class="text-2xl py-2 hover:text-blue-400 inline-block font-bold truncate" to="/"
             >JKT48 Showroom
+            <!-- {{ $t("nolive") }} -->
           </NuxtLink>
         </div>
 
@@ -51,6 +52,7 @@
           <li
             class="flex gap-4 md:pl-6 md:border-l-2 dark:border-slate-100/30 py-4 md:py-0.5 items-center justify-center"
           >
+            <!-- <LangSwitch></LangSwitch> -->
             <button
               type="button"
               aria-label="Toggle Dark Mode"
