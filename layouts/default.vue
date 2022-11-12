@@ -14,10 +14,8 @@
       :height="4"
       color="repeating-linear-gradient(to right,#6eff94 0%,#0addfc 50%,#3482F6 100%)"
     />
-    <nav ref="nav" class="fixed z-[100] top-0 left-0 right-0 bg-white dark:bg-dark-1 shadow-sm">
-      <div
-        class="container h-16 flex items-center mx-auto px-4 md:px-3 gap-10 justify-between flex-row-reverse md:flex-row"
-      >
+    <nav ref="nav" class="fixed z-[1000] top-0 left-0 right-0 bg-white dark:bg-dark-1 shadow-sm">
+      <div class="container h-16 flex items-center mx-auto px-4 md:px-3 flex-row-reverse md:flex-row">
         <button
           key="burger"
           type="button"
@@ -31,37 +29,47 @@
           <span></span>
         </button>
 
-        <NuxtLink
-          class="text-2xl py-2 flex-1 md:flex-none w-0 md:w-auto hover:text-blue-400 inline-block font-bold text-center truncate"
-          to="/"
-          >JKT48 Showroom
-        </NuxtLink>
+        <div class="flex-1 md:flex-none w-0 md:w-auto items-center flex">
+          <NuxtLink class="text-2xl py-2 hover:text-blue-400 inline-block font-bold truncate" to="/"
+            >JKT48 Showroom
+            <!-- {{ $t("nolive") }} -->
+          </NuxtLink>
+        </div>
 
         <ul
           :class="{ 'translate-y-full invisible': !menuOpen }"
-          class="menu absolute z-[100] top-full transition-[visibility,transform] pt-4 md:pt-0 duration-500 md:flex md:gap-6 md:transition-none md:translate-y-0 md:!visible md:flex-1 md:w-0 md:static md:top-0 h-[calc(100vh_-_4rem)] md:h-auto left-0 right-0 overflow-y-auto md:overflow-y-hidden bg-white dark:bg-dark-1 md:!bg-transparent overscroll-contain"
+          class="absolute z-[100] top-full transition-[visibility,transform] pt-4 md:pt-0 duration-500 md:flex md:flex-row md:justify-end md:items-center md:gap-6 md:transition-none md:translate-y-0 md:!visible md:flex-1 md:w-0 md:static md:top-0 h-[calc(100vh_-_4rem)] md:h-auto left-0 right-0 overflow-y-auto md:overflow-y-visible bg-white dark:bg-dark-1 md:!bg-transparent overscroll-contain"
         >
           <li v-for="menu in menus" :key="menu.title" :class="{ 'md:hidden': !menu.mobile }">
             <NuxtLink
               :to="menu.url"
-              class="text-2xl hover:text-blue-400 inline-block font-bold text-center w-full py-4"
+              class="text-xl hover:text-blue-400 inline-block text-center w-full py-4 md:py-0"
               active-class="text-blue-500"
             >
               {{ menu.title }}
             </NuxtLink>
           </li>
+          <li
+            class="flex gap-4 md:pl-6 md:border-l-2 dark:border-slate-100/30 py-4 md:py-0.5 items-center justify-center"
+          >
+            <!-- <LangSwitch></LangSwitch> -->
+            <button
+              type="button"
+              aria-label="Toggle Dark Mode"
+              class="border-slate-800 dark:border-slate-100 cursor-pointer relative text-2xl w-6 h-6"
+              @click="toggleDark"
+            >
+              <Icon
+                name="ph:moon-bold"
+                class="!hidden dark:!inline-block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+              />
+              <Icon
+                name="ph:sun-bold"
+                class="dark:!hidden absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+              />
+            </button>
+          </li>
         </ul>
-        <button
-          type="button"
-          aria-label="Toggle Dark Mode"
-          class="border-slate-800 dark:border-slate-100 cursor-pointer relative nav-btn text-2xl"
-          @click="toggleDark"
-        >
-          <i
-            class="i ph:moon-bold hidden dark:inline-block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-          />
-          <i class="i ph:sun-bold dark:hidden absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
-        </button>
       </div>
     </nav>
 
@@ -76,12 +84,19 @@
 </template>
 
 <script lang="ts" setup>
+const i18nHead = useLocaleHead({
+  addDirAttribute: true,
+  identifierAttribute: "id",
+  addSeoAttributes: true,
+});
 useHead({
   htmlAttrs: {
-    lang: "en",
+    lang: i18nHead.value.htmlAttrs!.lang,
+    dir: i18nHead.value.htmlAttrs?.dir,
   },
   title: "JKT48 Showroom",
   meta: [
+    ...(i18nHead.value.meta || []),
     { charset: "utf-8" },
     { name: "viewport", content: "width=device-width, initial-scale=1" },
     {
@@ -90,13 +105,7 @@ useHead({
       content: "JKT48 Showroom Logs",
     },
   ],
-  link: [
-    { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
-    {
-      rel: "stylesheet",
-      href: "/fonts/icons/iconfont.css",
-    },
-  ],
+  link: [...(i18nHead.value.link || []), { rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
 });
 const menuOpen = ref(false);
 const menus = [
@@ -116,21 +125,18 @@ const menus = [
     mobile: true,
   },
 ];
-const route = useRoute();
-
-const { $colorMode } = useNuxtApp();
+const colorMode = useColorMode();
 function toggleDark() {
-  if ($colorMode.value === "dark") {
-    $colorMode.preference = "light";
+  if (colorMode.value === "dark") {
+    colorMode.preference = "light";
   } else {
-    $colorMode.preference = "dark";
+    colorMode.preference = "dark";
   }
 }
-
 function toggleMenu() {
   menuOpen.value = !menuOpen.value;
 }
-
+const route = useRoute();
 watch(route, () => {
   nextTick(() => {
     menuOpen.value = false;

@@ -1,5 +1,7 @@
 <template>
-  <div v-if="pending">loading</div>
+  <div v-if="pending">
+    <PulseNextLive v-for="n in 6" :key="n" />
+  </div>
   <div v-else-if="data?.length" class="">
     <MemberNextLive v-for="live in data" :key="live.room_id" :data="live" />
   </div>
@@ -21,7 +23,5 @@
 const config = useRuntimeConfig();
 const { data, pending } = useFetch("/api/showroom/next_live", {
   baseURL: config.public.baseURL,
-  initialCache: false,
-  server: false,
 });
 </script>

@@ -1,11 +1,10 @@
 import Fuse from "fuse.js";
-import { getMembers } from "./members.get";
+import { getMembers } from "../members.get";
 import ShowroomLog from "~~/library/database/schema/showroom/ShowroomLog";
 import config from "~~/config";
 export default defineEventHandler(async (event): Promise<IApiRecents> => await getRecents(useQuery(event)));
 export { getRecents };
 
-// const defaultReturn = { logs: [], page: 1, perpage: 10, total_count: 1 };
 async function getRecents(qq = null): Promise<IApiRecents> {
   let page = 1;
   const perpage = 10;

@@ -1,86 +1,89 @@
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
   ssr: true,
+  app: {
+    pageTransition: { name: "page", mode: "out-in" },
+  },
   runtimeConfig: {
     public: {
       baseURL: process.env.BASE_URL,
     },
   },
   modules: [
+    "@nuxtjs/i18n",
+    "nuxt-icon",
     "@nuxtjs/google-fonts",
     "@nuxtjs/tailwindcss",
     "@nuxtjs/color-mode",
     "@vueuse/nuxt",
-    [
-      "@pinia/nuxt",
-      {
-        autoImports: ["defineStore", "storeToRefs"],
-      },
-    ],
-    // "@nuxtjs/html-validator",
-    "@nuxtjs/robots",
-    "@nuxtjs/sitemap",
+    ["@pinia/nuxt"],
   ],
   css: ["~/assets/css/style.scss"],
-  // components: {
-  //   global: true,
-  //   dirs: ["~/components"],
-  // },
   colorMode: {
     preference: "dark",
     fallback: "light",
     classSuffix: "",
   },
-  serverMiddleware: [{ path: "/api", handler: "~/library/utils/dbCheck.ts" }],
-  nitro: {
-    plugins: ["~/library/server.ts"],
-  },
-  // env: {
-  //   privateRuntimeConfig: {
-  //     mongodbUri: process.env.MONGODB_URI,
-  //   },
-  // },
   googleFonts: {
     families: {
       Rubik: true,
       Roboto: true,
     },
   },
-  htmlValidator: {
-    usePrettier: false,
-    failOnError: false,
-    options: {
-      extends: ["html-validate:document", "html-validate:recommended", "html-validate:standard"],
-      rules: {
-        "svg-focusable": "off",
-        "no-unknown-elements": "error",
-        // Conflicts or not needed as we use prettier formatting
-        "void-style": "off",
-        "no-trailing-whitespace": "off",
-        // Conflict with Nuxt defaults
-        "require-sri": "off",
-        "attribute-boolean-style": "off",
-        "doctype-style": "off",
-        // Unreasonable rule
-        "no-inline-style": "off",
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
+    },
+  },
+  build: {
+    transpile: ["@headlessui/vue"],
+  },
+  vite: {
+    server: {
+      proxy: {
+        "/api/user/profile": {
+          target: "https://www.showroom-live.com/api/user/profile",
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api\/user\/profile/, ""),
+        },
       },
     },
   },
-  robots: [
-    {
-      UserAgent: "*",
-      Disallow: "/recent  ",
-      CrawlDelay: 60,
-      Sitemap: (req) => `https://${req.headers.host}/sitemap.xml`,
-    },
-  ],
-  build: {
-    transpile: ["@headlessui/vue"],
-    postcss: {
-      postcssOptions: {
-        plugins: {
-          tailwindcss: {},
-          autoprefixer: {},
+  i18n: {
+    baseUrl: process.env.BASE_URL,
+    strategy: "no_prefix",
+    // locales: [
+    //   { code: "en", iso: "en-US", file: "en.js", dir: "ltr", name: "EN" },
+    //   { code: "id", iso: "id-ID", file: "id.js", dir: "ltr", name: "ID" },
+    //   // { code: "en", iso: "en-US", file: "en.ts", dir: "ltr", name: "English" },
+    //   // { code: "id", iso: "id-ID", file: "id.ts", dir: "ltr", name: "Bahasa Indonesia" },
+    // ],
+    // locales: ["en", "id"],
+    // langDir: "locales/",
+    // lazy: true,
+    defaultLocale: "en",
+    vueI18n: {
+      numberFormats: {
+        "en-US": {
+          currency: {
+            style: "currency",
+            currency: "USD",
+          },
+        },
+        "ja-JP": {
+          currency: {
+            style: "currency",
+            currency: "JPY",
+            currencyDisplay: "symbol",
+          },
+        },
+        "id-ID": {
+          currency: {
+            style: "currency",
+            currency: "IDR",
+            currencyDisplay: "symbol",
+          },
         },
       },
     },

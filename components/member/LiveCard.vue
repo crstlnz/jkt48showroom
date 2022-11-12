@@ -9,8 +9,8 @@
         class="aspect-square w-5 md:w-6 rounded-full flex justify-center items-center text-white select-none"
         :title="`${live.is_group ? 'Official' : live.is_graduate ? 'Graduated' : 'Active'} Member`"
       >
-        <i
-          :class="
+        <Icon
+          :name="
             live.is_group ? 'ic:round-check font-bold' : live.is_graduate ? 'ph:graduation-cap' : 'ph:microphone-stage'
           "
           class="i aspect-square text-xs md:text-sm"
@@ -20,8 +20,8 @@
         class="aspect-square w-5 md:w-6 rounded-full hover:bg-slate-300/50 flex justify-center items-center cursor-pointer select-none z-10"
         @click="openMenu = !openMenu"
       >
-        <i v-if="!openMenu" class="i ph:dots-three-outline-fill aspect-square text-xs md:text-base" />
-        <i v-else class="i ph:x-bold aspect-square text-xs md:text-base text-white" />
+        <Icon v-if="!openMenu" name="ph:dots-three-outline-fill" class="aspect-square text-xs md:text-base" />
+        <Icon v-else name="ph:x-bold" class="aspect-square text-xs md:text-base text-white" />
       </button>
     </div>
     <NuxtLink
@@ -45,19 +45,23 @@
       v-if="!pending"
       class="bg-red-500 rounded-xl px-2 py-1 md:px-3 md:py-2 mx-auto text-white md:font-semibold text-xs"
     >
-      {{ startDate ? $time.formatSR(startDate) : "Error" }}
+      <div v-if="startDate">{{ $time.formatSR(startDate) }}</div>
+      <div v-else>
+        Error
+        <button @click="$emit('refreshliveinfo')"><Icon name="ion:md-refresh" class="text-base self-center" /></button>
+      </div>
     </div>
     <div v-else class="h-6 md:h-8 w-[74px] animate-pulse bg-red-500 mx-auto rounded-xl" />
     <a
       :tabindex="openMenu ? -1 : null"
       :href="$liveURL(live.url)"
       target="_blank"
-      class="flex justify-center gap-1.5 w-full text-center p-2 md:px-5 md:py-3 cursor-pointer bg-blue-500 hover:bg-blue-600 rounded-xl mx-auto font-semibold text-white text-xs sm:text-sm md:text-base"
-      ><i class="i ph:video-camera" /> View Live</a
+      class="flex justify-center items-center gap-1.5 w-full text-center p-2 md:px-5 md:py-3 cursor-pointer bg-blue-500 hover:bg-blue-600 rounded-xl mx-auto font-semibold text-white text-xs sm:text-sm md:text-base"
+      ><Icon name="ph:video-camera-fill" class="seft-center text-base md:text-lg" /> View Live</a
     >
 
     <div
-      class="absolute visible flex flex-col justify-center p-3 sm:p-4 md:p-5 bg-red-400 top-0 left-0 w-full h-full transition-[transform,visibility] duration-300 rounded-t-xl z-[9] text-white"
+      class="absolute visible flex flex-col justify-center p-3 sm:p-4 md:p-5 bg-red-500 top-0 left-0 w-full h-full transition-[transform,visibility] duration-300 rounded-t-xl z-[9] text-white"
       :class="{ 'translate-y-full invisible': !openMenu }"
     >
       <ul

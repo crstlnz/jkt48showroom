@@ -14,7 +14,7 @@ connection.on("error", (err) => {
 async function run() {
   try {
     console.log("Connecting Database...");
-    await mongoose.connect(process.env.MONGODB_URI);
+    await mongoose.connect(process.env.MONGODB_URI ?? "");
   } catch (e) {
     console.log("Failed connect to database!");
     setTimeout(() => {
@@ -26,3 +26,5 @@ async function run() {
 export default {
   run,
 };
+
+export { connection };

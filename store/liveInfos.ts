@@ -1,18 +1,19 @@
-import { skipHydrate } from "pinia";
+import { skipHydrate, acceptHMRUpdate, defineStore } from "pinia";
 import JSONSerializer from "~~/library/serializer/json";
 
 export const useLiveInfos = defineStore("liveInfos", () => {
-  const controller = useLocalStoreController<ILiveInfo[]>("liveInfos", refreshLiveInfo, {
-    expiredIn: 30000,
+  const controller = useLocalStoreController<APILiveInfo[]>("liveInfos", refreshLiveInfo, {
+    allowExpiredData: true,
+    expiredIn: 60000,
     serializer: new JSONSerializer([]),
   });
 
   const { state, data: liveInfo, refresh, tryRefresh } = controller;
 
-  async function refreshLiveInfo(roomIds: number[]): Promise<ILiveInfo[]> {
+  async function refreshLiveInfo(roomIds: number[]): Promise<APILiveInfo[]> {
     if (!roomIds?.length) return [];
     const result = [];
-    const data: ILiveInfo | ILiveInfo[] = await $fetch(
+    const data: APILiveInfo | APILiveInfo[] = await $fetch(
       `/api/showroom/live_info?room_id=${roomIds?.join(",")}&_=${new Date().getTime()}`
     );
     if (Array.isArray(data)) {
@@ -35,3 +36,7 @@ export const useLiveInfos = defineStore("liveInfos", () => {
     clear,
   };
 });
+
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useLiveInfos, import.meta.hot));
+}

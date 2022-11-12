@@ -1,0 +1,302 @@
+<template>
+  <div
+    ref="container"
+    class="relative [&>canvas]:absolute [&>canvas]:top-0 [&>canvas]:left-0 select-none w-full h-full"
+    :class="{
+      '[&>canvas]:h-full [&>canvas]:left-1/2 [&>canvas]:-translate-x-1/2': !isFullscreen || isLandscape,
+      '[&>canvas]:w-full  [&>canvas]:top-1/2 [&>canvas]:-translate-y-1/2': isFullscreen && !isLandscape,
+      '!bg-black': isFullscreen,
+    }"
+  >
+    <canvas ref="bgCanvas" width="1920" height="1080">Your browser does not support the canvas element.</canvas>
+    <canvas ref="stCanvas" width="1920" height="1080">Your browser does not support the canvas element.</canvas>
+    <canvas ref="fgCanvas" width="1920" height="1080">Your browser does not support the canvas element.</canvas>
+    <div
+      id="canvasControl"
+      class="text-xl md:text-2xl px-3 py-2.5 md:px-4 md:py-3.5 absolute top-0 left-0 right-0 bottom-0 flex flex-col justify-end"
+    >
+      <div
+        class="flex text-white items-center gap-2.5 md:gap-3.5 relative [&>button]:select-none hover:[&>button]:bg-gray-300/25 [&>button]:rounded-md [&_button]:flex [&>button]:p-1"
+      >
+        <button aria-label="Show Slider" @click="showSlider = !showSlider">
+          <Icon
+            :class="{
+              '-rotate-180': showSlider,
+            }"
+            name="ph:caret-down-bold"
+            class="duration-[250ms] transition-transform"
+          />
+        </button>
+        <div
+          :class="{
+            'translate-y-[120%] invisible opacity-0': !showSlider,
+            visible: showSlider,
+          }"
+          class="flex-1 flex items-center relative duration-[300ms] transition-[transform,visibility,opacity]"
+        >
+          <div
+            class="text-xs font-bold md:text-sm absolute bottom-[calc(100%_+_5px)]"
+            :class="{ 'lg:!text-2xl': isFullscreen }"
+          >
+            {{ moment(selectedTime).format("LLLL") }}
+          </div>
+          <input
+            id="timeslider"
+            ref="timeslider"
+            type="range"
+            min="0"
+            max="1000"
+            v-model="sliderVal"
+            class="w-full [&::-webkit-slider-thumb]:cursor-pointer [&::-moz-range-thumb]:cursor-pointer"
+          />
+        </div>
+        <Popover>
+          <PopoverButton aria-label="Setting" class="rounded-md p-1 hover:bg-gray-300/25"
+            ><Icon name="ph:gear-six-fill"
+          /></PopoverButton>
+          <Transition
+            enter-active-class="transition duration-200 ease-out"
+            enter-from-class="translate-y-2 translate-x-1 opacity-0"
+            enter-to-class="translate-y-0 translate-x-0 opacity-100"
+            leave-active-class="transition duration-150 ease-in"
+            leave-from-class="translate-y-0 translate-x-x opacity-100"
+            leave-to-class="translate-y-2 translate-x-1 opacity-0"
+          >
+            <PopoverPanel class="absolute bottom-[calc(100%_+_8px)] right-2 bg-[rgba(28,28,28,.9)] rounded-md">
+              <div class="text-base flex flex-col py-1.5">
+                <SwitchGroup>
+                  <div role="button" class="flex px-4 py-2.5 hover:bg-gray-300/25">
+                    <SwitchLabel class="mr-4 flex-1 cursor-pointer select-none">Animation</SwitchLabel>
+                    <Switch
+                      v-model="isAnimated"
+                      :class="isAnimated ? 'bg-blue-600' : 'bg-gray-200'"
+                      class="relative inline-flex h-6 w-11 items-center rounded-full"
+                    >
+                      <span class="sr-only">Enable Animation</span>
+                      <span
+                        :class="isAnimated ? 'translate-x-6' : 'translate-x-1'"
+                        class="inline-block h-4 w-4 transform rounded-full bg-white transition"
+                      />
+                    </Switch>
+                  </div>
+                </SwitchGroup>
+                <SwitchGroup>
+                  <div role="button" class="flex px-4 py-2.5 hover:bg-gray-300/25">
+                    <SwitchLabel class="mr-4 flex-1 cursor-pointer select-none">Show Screenshot</SwitchLabel>
+                    <Switch
+                      v-model="showScreenshot"
+                      :class="showScreenshot ? 'bg-blue-600' : 'bg-gray-200'"
+                      class="relative inline-flex h-6 w-11 items-center rounded-full"
+                    >
+                      <span class="sr-only">Enable Member Screenshot</span>
+                      <span
+                        :class="showScreenshot ? 'translate-x-6' : 'translate-x-1'"
+                        class="inline-block h-4 w-4 transform rounded-full bg-white transition"
+                      />
+                    </Switch>
+                  </div>
+                </SwitchGroup>
+                <!-- <button class="px-4 py-2.5 hover:bg-gray-300/25">Refresh</button> -->
+              </div>
+            </PopoverPanel>
+          </Transition>
+        </Popover>
+        <button aria-label="Fullscreen" @click="toggleFullscreen">
+          <Icon v-if="!isFullscreen" name="tabler:maximize" />
+          <Icon v-else name="tabler:minimize" />
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts" setup>
+import { Popover, PopoverButton, PopoverPanel, Switch, SwitchLabel, SwitchGroup } from "@headlessui/vue";
+import { useFullscreen, useScreenOrientation, useLocalStorage } from "@vueuse/core";
+import { StageShowroom } from "~~/library/canvas/showroom/stage";
+import ShowroomBackground from "~~/library/canvas/showroom/background";
+import ShowroomForeground from "~~/library/canvas/showroom/foreground";
+import moment from "moment";
+const { $avatarURL, $giftUrl, $fansProfileURL } = useNuxtApp();
+const props = defineProps<{
+  memberImage: string;
+  date: ILiveDate;
+  background: string;
+  screenshot?: IScreenshotData;
+  stageList: IStageList[];
+  users: Map<number, IFansCompact>;
+  giftData: IGiftsLogData;
+}>();
+
+const stageTime = ref({
+  start: props.date?.start ? new Date(props.date.start).getTime() : null,
+  end: props.date?.end ? new Date(props.date.end).getTime() : null,
+});
+const container = ref<HTMLElement | null>(null);
+const stCanvas = ref<HTMLCanvasElement | null>(null);
+const bgCanvas = ref<HTMLCanvasElement | null>(null);
+const fgCanvas = ref<HTMLCanvasElement | null>(null);
+
+const showSlider = ref(false);
+const sliderVal = ref(1000);
+const stage = new StageShowroom();
+const showScreenshot = useLocalStorage("showScreenshot", true);
+const isAnimated = useLocalStorage("enableAnimation", true);
+const foreground = new ShowroomForeground();
+const background = new ShowroomBackground(props.memberImage, showScreenshot.value);
+watch(showScreenshot, (val) => {
+  background.screenshots.setShowScreenshot(val);
+});
+
+watch(isAnimated, (val) => {
+  if (val) {
+    stage.start();
+  } else {
+    stage.stop();
+  }
+});
+
+function getFansRankList() {
+  return props.stageList[stageNum.value].list.map<IStageFans>((i) => {
+    const fans = props.users.get(i);
+    return {
+      id: i,
+      name: fans?.name ?? "Not Found!",
+      avatar: $avatarURL(fans?.avatar_id ?? 1),
+    };
+  });
+}
+
+const selectedTime = computed(() => {
+  const percent = Number(sliderVal.value) / 1000;
+  const range = (stageTime?.value?.end ?? 0) - (stageTime?.value?.start ?? 0);
+  return (stageTime?.value?.start ?? 0) + range * percent;
+});
+
+watch(selectedTime, (time) => {
+  background.setDate(time);
+});
+
+const stageNum = computed(() => {
+  const time = selectedTime.value;
+  for (const [i, stage] of props.stageList?.entries()) {
+    if (new Date(stage.date).getTime() >= time) {
+      return i;
+    }
+  }
+  return props.stageList?.length - 1 ?? 0;
+});
+
+const timeout = ref<NodeJS.Timeout>();
+watch(stageNum, (val) => {
+  if (timeout.value) clearTimeout(timeout.value);
+  timeout.value = setTimeout(() => {
+    stage.setFans(getFansRankList());
+  }, 50);
+});
+
+const podiumGifts = computed<IPodiumGift[]>(() => {
+  const gifts: IPodiumGift[] = [];
+  for (const fansGift of props?.giftData?.log ?? []) {
+    for (const gift of fansGift.gifts) {
+      const g = props?.giftData?.list.find((i) => gift.id === i.id);
+      if (g && g.point >= 10000) {
+        for (const _i of Array(gift.num).keys()) {
+          gifts.push({
+            ...g,
+            img: $giftUrl(g.id),
+            date: new Date(gift.date).getTime(),
+          });
+        }
+      }
+    }
+  }
+  return gifts;
+});
+
+onMounted(() => {
+  if (!stCanvas.value || !bgCanvas.value || !fgCanvas.value) throw new Error("Canvas not found!");
+  stage.setAnimated(isAnimated.value);
+  stage.inject(stCanvas.value);
+  stage.setFans(getFansRankList());
+  background.inject(bgCanvas.value);
+  background.loadBackground(props.background);
+  background.setPodiumGifts(podiumGifts.value);
+  background.screenshots.set(props.screenshot!);
+  background.setDate(selectedTime.value);
+  foreground.inject(fgCanvas.value);
+});
+
+useEventListener(container, "click", async (e: MouseEvent) => {
+  const tagName = (e.target as HTMLElement)?.tagName.toLowerCase();
+  if ((e.target as HTMLElement)?.id === "timeslider") return;
+  if (tagName === "svg" || tagName === "button") return;
+  const rect = stCanvas.value!.getBoundingClientRect();
+  const x = ((e.clientX - rect.left) / rect.width) * stCanvas.value!.width;
+  const y = ((e.clientY - rect.top) / rect.height) * stCanvas.value!.height;
+  const userId = stage.getClickedUser(x, y);
+  if (userId) {
+    window.open($fansProfileURL(userId), "_blank")!.focus();
+    // const response = await $fetch("/api/user/profile?user_id=" + userId);
+    // console.log(response);
+  }
+  // const url = $config.screenshotURL(
+  //   props.liveInfo.screenshot.folder,
+  //   String(props.liveInfo.screenshot.list[Math.floor(props.liveInfo.screenshot.list.length * Math.random())]),
+  //   props.liveInfo.screenshot.format
+  // );
+  // console.log(url);
+});
+
+const { width, height } = useWindowSize();
+const isLandscape = computed(() => {
+  const aspetRatio = 16 / 13;
+  if (width.value / height.value > aspetRatio) {
+    return true;
+  }
+  return false;
+});
+
+const { isSupported, orientation, lockOrientation, unlockOrientation } = useScreenOrientation();
+const { isFullscreen, toggle } = useFullscreen(container);
+
+async function toggleFullscreen() {
+  if (!isFullscreen.value) {
+    const o = orientation.value;
+    await toggle();
+    if (["portrait-primary", "portrait-secondary", "portrait"].includes(o ?? "")) {
+      if (isSupported.value) await lockOrientation("landscape").catch(() => {});
+    }
+  } else {
+    unlockOrientation();
+    await toggle();
+  }
+}
+
+const focused = useWindowFocus();
+
+watch(focused, (isFocus) => {
+  if (!stage.isAnimated) return;
+  if (isFocus) {
+    stage.unpause();
+  } else {
+    stage.pause();
+  }
+});
+
+function togglePause() {
+  if (stage.isPaused) {
+    stage.unpause();
+  } else {
+    stage.pause();
+  }
+}
+
+function toggleAnimated() {
+  if (stage.isAnimated) {
+    stage.stop();
+  } else {
+    stage.start();
+  }
+}
+</script>

@@ -14,7 +14,7 @@ export default defineNuxtPlugin(() => {
     return REGEX_MOBILE1.test(userAgent) || REGEX_MOBILE2.test(userAgent.substring(0, 4));
   };
 
-  let userAgent = "";
+  let userAgent: string | undefined = "";
   if (useRequestHeaders()["user-agent"]) {
     userAgent = useRequestHeaders()["user-agent"];
   } else if (typeof navigator !== "undefined") {
@@ -24,7 +24,7 @@ export default defineNuxtPlugin(() => {
   return {
     provide: {
       device: {
-        isMobile: isMobile(userAgent),
+        isMobile: isMobile(userAgent ?? ""),
       },
     },
   };

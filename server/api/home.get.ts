@@ -1,4 +1,4 @@
-import { getRecents } from "./showroom/recents.get";
+import { getRecents } from "./showroom/recent/index.get";
 import cache from "~~/library/utils/cache";
 import { getStats } from "./showroom/stats.get";
 

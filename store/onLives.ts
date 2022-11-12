@@ -1,10 +1,11 @@
+import { acceptHMRUpdate, skipHydrate, storeToRefs, defineStore } from "pinia";
 import JSONSerializer from "~~/library/serializer/json";
 import { useLiveInfos } from "./liveInfos";
 
 export const useOnLives = defineStore("onLives", () => {
   const controller = useLocalStoreController<INowLive[]>("onlives", refreshLives, {
     expiredIn: 10000,
-    serializer: new JSONSerializer(null),
+    serializer: new JSONSerializer<INowLive[]>([]),
   });
   const { state, data: lives, refresh, tryRefresh } = controller;
 
@@ -22,7 +23,7 @@ export const useOnLives = defineStore("onLives", () => {
 
   async function refreshLives(): Promise<IMember[]> {
     const data: IMember[] = await $fetch("/api/showroom/now_live");
-    if (data?.length && isDifferent(data, lives.value)) {
+    if (data?.length && isDifferent(data, lives.value ?? [])) {
       liveInfoStore.refresh(data?.map((i) => i.room_id));
     } else if (!data?.length) {
       liveInfoStore.clear();
@@ -30,13 +31,17 @@ export const useOnLives = defineStore("onLives", () => {
     return data;
   }
 
+  async function refreshLiveInfo() {
+    liveInfoStore.refresh(lives.value?.map((i) => i.room_id));
+  }
+
   function isLive(roomId: number) {
     return livesMap.value?.has(roomId);
   }
 
-  function removeLive(roomId) {
-    lives.value = lives.value?.filter((i) => i.room_id !== roomId);
-    liveInfo.value = liveInfo.value?.filter((i) => i.room_id !== roomId);
+  function removeLive(roomId: number) {
+    lives.value = lives.value?.filter((i) => i.room_id !== roomId) as INowLive[];
+    liveInfo.value = liveInfo.value?.filter((i) => i.room_id !== roomId) as APILiveInfo[];
   }
 
   function isDifferent(newData: INowLive[], oldData: INowLive[]) {
@@ -48,7 +53,7 @@ export const useOnLives = defineStore("onLives", () => {
     return false;
   }
 
-  function getStartDate(roomId) {
+  function getStartDate(roomId: number) {
     const room = liveInfo?.value?.find((i) => i.room_id === roomId);
     if (!room || room.is_error === true) return null;
     if (!room.is_live) {
@@ -64,6 +69,11 @@ export const useOnLives = defineStore("onLives", () => {
     tryRefresh,
     refresh,
     getStartDate,
+    refreshLiveInfo,
     isLive,
   };
 });
+
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useOnLives, import.meta.hot));
+}

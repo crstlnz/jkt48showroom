@@ -1,12 +1,17 @@
 <template>
   <div class="text-center py-2 md:py-3 flex gap-3">
-    <NuxtLink class="h-20 aspect-square relative cursor-pointer drop-shadow-sm rounded-full overflow-hidden" to="/">
+    <NuxtLink
+      class="h-[4.5rem] md:h-20 aspect-square relative cursor-pointer drop-shadow-sm rounded-full overflow-hidden"
+      to="/"
+    >
       <LazyImage lazy="false" class="w-full h-full" :src="$fixCloudinary(data.img)" />
     </NuxtLink>
-
     <div class="info text-left flex flex-col flex-1 w-0">
       <div class="name flex flex-1 gap-2">
-        <h3 class="font-bold text-ellipsis whitespace-nowrap overflow-hidden flex-1" :title="data.name">
+        <h3
+          class="font-bold text-ellipsis whitespace-nowrap overflow-hidden flex-1 text-sm md:text-base"
+          :title="data.name"
+        >
           {{ data.name }}
         </h3>
         <div
@@ -34,17 +39,13 @@
           </svg>
         </div>
       </div>
-      <ul class="mt-1 space-y-1 [&>li]:flex [&>li]:gap-1.5 text-sm">
-        <!-- <li v-if="recent.live_info?.viewers">
-          <i class="i ph:users-bold font-bold"></i>
-          {{ $util.numberFormat(recent.live_info.viewers) }}
-        </li> -->
+      <ul class="mt-1 space-y-1 [&>li]:flex [&>li]:gap-1 text-xs md:text-sm">
         <li>
-          <i class="i ph:clock-bold"></i>
+          <Icon name="ph:clock-bold" class="self-center text-sm md:text-base" />
           {{ $time.fromNow(data.date) }}
         </li>
       </ul>
-      <div class="mt-2 pt-2 border-t-2 border-t-gray-50 dark:border-t-dark-2 flex justify-end">
+      <div class="mt-2 pt-2 border-t-2 border-t-gray-50 dark:border-t-dark-2 flex justify-end text-sm md:text-base">
         <ul>
           <li><a target="_blank" :href="$liveURL(data.url)">View</a></li>
         </ul>

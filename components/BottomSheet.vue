@@ -15,7 +15,7 @@
         >
           <RecycleScroller
             ref="scroller"
-            class="overflow-y-auto h-[80vh] bg-white dark:bg-dark-1 overscroll-contain"
+            class="overflow-y-auto roundedscrollbar h-[80vh] bg-white dark:bg-dark-1 overscroll-contain"
             :class="{ 'no-scrollbar': $device.isMobile }"
             :items="items"
             :item-size="120"
@@ -146,14 +146,6 @@ export default {
       let percent = 0;
       let swipeDetector;
       if (scroller && sheet) {
-        // const finishDrag = (x, y) => {
-        //   this.isDrag = false;
-        //   const isSwipe = swipeDetector ? swipeDetector.finish(x, y) : false;
-        //   if (percent > 40 || isSwipe) {
-        //     return this.close();
-        //   }
-        //   sheet.style.transform = null;
-        // };
         this.dragListener = this.$createDragListener(scroller);
         let isScrolling = false;
         let isDragging = false;
@@ -182,7 +174,6 @@ export default {
             }
           }
         });
-
         this.dragListener.on("end", ({ x, y }) => {
           isScrolling = false;
           isDragging = false;
@@ -200,7 +191,6 @@ export default {
       if (percent > 40 || isSwipe) {
         return this.close();
       }
-
       this.$refs.sheet.style.transform = null;
     },
     listenDrag() {
@@ -210,35 +200,22 @@ export default {
         let swipeDetector;
         let percent = 0;
         this.dragListener2 = this.$createDragListener(navbar);
-
-        // const finishDrag = (x, y) => {
-        //   this.isDrag = false;
-        //   const isSwipe = swipeDetector ? swipeDetector.finish(x, y) : false;
-        //   if (percent > 40 || isSwipe) {
-        //     return this.close();
-        //   }
-        //   sheet.style.transform = null;
-        // };
-
         this.dragListener2.on("start", ({ x, y, e }) => {
           e.stopPropagation();
           if (e.cancelable) e.preventDefault();
           this.isDrag = true;
           swipeDetector = this.$createSwipeDetector(x, y);
         });
-
         this.dragListener2.on("move", ({ x, y }) => {
           if (y <= 0 || x <= 0 || x >= window.innerWidth || y >= window.innerHeight) {
             this.finishDrag(x, y, percent, swipeDetector);
           } else {
             const deltaY = swipeDetector ? swipeDetector.getDistanceY(y) : 0;
             percent = (deltaY / sheet.clientHeight) * 100;
-
             percent = percent < 0 ? 0 : percent;
             sheet.style.transform = `translateY(${percent}%)`;
           }
         });
-
         this.dragListener2.on("end", ({ x, y }) => {
           this.finishDrag(x, y, percent, swipeDetector);
         });

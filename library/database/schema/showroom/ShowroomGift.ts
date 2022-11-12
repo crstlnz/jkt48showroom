@@ -1,6 +1,6 @@
-import { Schema } from "mongoose";
+import { Schema, model } from "mongoose";
 
-const giftSchema = new Schema({
+const giftSchema = new Schema<IShowroomGift>({
   gift_id: {
     type: Number,
     unique: true,
@@ -25,8 +25,4 @@ const giftSchema = new Schema({
 });
 
 giftSchema.index({ gift_id: 1 }, { unique: true });
-
-export default {
-  name: "Showroom_Gift",
-  schema: giftSchema,
-};
+export default model("Showroom_Gift", giftSchema);

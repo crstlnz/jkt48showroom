@@ -45,7 +45,7 @@ const {
   pending,
   refresh,
 } = useMyFetch(
-  "/api/showroom/recents",
+  "/api/showroom/recent",
   { ...query.value },
   {
     initialCache: false,
@@ -91,7 +91,7 @@ function buildQuery(): RecentsQuery {
   return q;
 }
 
-function buildURL(_query) {
+function buildURL(_query: Object) {
   // if ($device.isMobile) return;
   const q = { ..._query };
   const def = defaultQuery;

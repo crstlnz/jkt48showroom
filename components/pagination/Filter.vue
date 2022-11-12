@@ -99,25 +99,16 @@
 
 <script lang="ts" setup>
 import { Combobox, ComboboxInput, ComboboxOptions, ComboboxOption } from "@headlessui/vue";
-import { useFuse } from "@vueuse/integrations/useFuse";
 
-const {
-  data: members,
-  pending,
-  refresh,
-} = useAxios("/api/showroom/members", null, {
-  fetchOnStart: false,
-});
-
-const qq = ref("");
-const qTimeout = ref(undefined);
-function inputEvent($event) {
-  if (!members.value && !pending.value) refresh();
-  if (qTimeout.value) clearTimeout(qTimeout.value);
-  qTimeout.value = setTimeout(() => {
-    qq.value = $event.target.value;
-  }, 300);
-}
+// const qq = ref("");
+// const qTimeout = ref(undefined);
+// function inputEvent($event) {
+//   if (!members.value && !pending.value) refresh();
+//   if (qTimeout.value) clearTimeout(qTimeout.value);
+//   qTimeout.value = setTimeout(() => {
+//     qq.value = $event.target.value;
+//   }, 300);
+// }
 
 // const fuse = ref(undefined);
 // watch(members, (val: ApiShowroomMember[]) => {
@@ -130,9 +121,9 @@ function inputEvent($event) {
 //   const result = fuse.value.search(qq.value);
 //   return result.map((i) => i.item) as ApiShowroomMember[];
 // });
-const memba = computed(() => members.value);
+// const memba = computed(() => members.value);
 
-const { results: filteredMembers } = useFuse<IMember>(qq, memba);
+// const { results: filteredMembers } = useFuse<IMember>(qq, memba);
 
 // const filteredMembers = computed(() => {
 //   const m = members.value ?? [];

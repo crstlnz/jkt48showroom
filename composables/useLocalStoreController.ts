@@ -16,13 +16,15 @@ export default function <T>(
     expiredIn: 3600000,
     expire: true,
     serializer: null,
-    allowExpiredData: true,
+    allowExpiredData: false,
   };
 
   const willExpire = opts?.expire ?? defaultOptions.expire;
   const expiredIn = opts?.expiredIn ?? defaultOptions.expiredIn;
   const serializer = opts?.serializer ?? defaultOptions.serializer;
   const allowExpiredData = opts?.allowExpiredData ?? defaultOptions.allowExpiredData;
+  // const pending = useState("pending", () => false);
+  // const error = useState("error", () => false);
   const pending = ref(false);
   const error = ref(false);
 
@@ -31,7 +33,7 @@ export default function <T>(
   });
   const lastFetch = useLocalStorage(`lf-${id}`, 0 as number);
 
-  if (data.value && isExpired()) {
+  if (data.value && isExpired() && !allowExpiredData) {
     data.value = null;
     lastFetch.value = 0;
   }
