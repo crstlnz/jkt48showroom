@@ -1,7 +1,7 @@
 <template>
   <div class="pt-4 md:pt-6 xl:pt-8">
     <Error v-if="error" message="Something Error!" imgSrc="/svg/error.svg" />
-    <div v-else class="flex flex-col gap-3 md:gap-4">
+    <div v-else class="flex flex-col gap-3 md:gap-4 p-1 md:p-0">
       <div class="flex lg:flex-row flex-col rounded-xl gap-3 md:gap-4">
         <LazyImage
           class="rounded-xl w-full lg:w-auto lg:h-48 aspect-video border-gray-50 box-border border-2 dark:border-none"
@@ -9,11 +9,13 @@
           :alt="data!.room_info.name + ' Display Picture'"
         />
         <div class="lg:flex lg:flex-col justify-end space-y-2 flex-1">
-          <div class="flex justify-between lg:justify-start">
-            <h1 class="font-bold text-2xl text-center">
+          <div class="flex justify-between lg:justify-start items-center gap-2 lg:gap-0">
+            <h1 class="font-bold text-xl lg:text-2xl text-center truncate">
               {{ data!.room_info.name }}
             </h1>
-            <div class="rounded-xl w-fit text-white font-bold [&>div]:px-3 [&>div]:py-1.5 overflow-hidden">
+            <div
+              class="rounded-xl w-fit h-fit text-white font-bold [&>div]:px-3 [&>div]:py-1.5 overflow-hidden text-xs md:text-sm lg:text-base"
+            >
               <div class="bg-sky-400" v-if="data!.room_info.is_group">Official</div>
               <div class="bg-red-500" v-else-if="data!.room_info.is_graduate">Graduated</div>
               <div class="bg-green-500" v-else>Active</div>

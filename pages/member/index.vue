@@ -14,18 +14,21 @@
     <div v-else-if="!members?.length">
       <Error message="Data not found :(" img-src="/svg/no_data.svg" />
     </div>
-    <div
-      v-else
-      class="py-4 md:py-6 xl:py-8 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-4 md:gap-6 xl:gap-8"
-    >
+    <div v-else>
       <!-- v-infinite-scroll="onLoadMore" -->
-      <MemberCard
-        v-for="member in data"
-        class="shadow-sm"
-        :key="member.room_id"
-        :member="member"
-        :is-live="onLives.isLive(member.room_id)"
-      />
+      <TransitionGroup
+        name="list"
+        tag="div"
+        class="py-4 md:py-6 xl:py-8 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-4 md:gap-6 xl:gap-8"
+      >
+        <MemberCard
+          v-for="member in data"
+          class="shadow-sm"
+          :key="member.room_id"
+          :member="member"
+          :is-live="onLives.isLive(member.room_id)"
+        />
+      </TransitionGroup>
     </div>
   </div>
 </template>
