@@ -1,0 +1,55 @@
+nolive: Tidak ada live saat ini 😭
+nonext: Tidak ada jadwal live untuk saat ini 😔
+member: Member
+livecount: Jumlah live
+mostlive: Live terbanyak
+topmember: Member teratas
+mostviewer: Penonton terbanyak
+more: Selengkapnya
+fansranking: Ranking fans
+topfans: Fans teratas
+nextlive: Jadwal live
+recentlive: Live terakhir
+weeklystats: Data mingguan
+monthlystats: Data bulanan
+showonshowroom: Lihat di Showroom
+view: Lihat
+viewer: Penonton
+totalgift: Jumlah hadiah
+duration: Durasi
+moreinfo: Info lebih lanjut
+viewprofile: Lihat Profil
+fansgift: Hadiah Fans
+sort:
+  latest: Terbaru
+  oldest: Terlama
+  mostgift: Gift Terbanyak
+  mostviews: Penonton Terbanyak
+  apply: Terapkan
+data:
+  nomore: Tidak ada data lagi :(
+  nodata: Tidak ada data!
+  notfound: Data tidak dapat ditemukan!
+  failed: Gagal mengambil data!
+  error: Terjadi kesalahan
+  retry: Muat ulang
+changelang: Ubah bahasa
+error:
+  pagenotfound: Halaman tidak ditemukan!
+  unknown: Terjadi kesalahan!
+  unavailable: Server sedang sibuk, coba lagi nanti!
+redirectme: Kembali
+scrolltop: Ke atas
+filter: Saring
+giftempty : Tidak ada hadiah!
+srview:
+  tips:
+    ss: Tampilkan screenshot live
+    animation: Aktifkan animasi
+  btn:
+    showscreenshot: Tampilkan screenshot
+    animation: Animasi
+search: Cari
+date:
+  start: Mulai
+  end: Selesai

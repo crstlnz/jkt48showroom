@@ -1,0 +1,55 @@
+nolive: No current live right now 😭
+nonext: No schedule right now 😔
+member: Member | Members
+livecount: Live count
+mostlive: Most live
+topmember: Top member
+mostviewer: Most viewer
+more: More
+fansranking: Fans ranking
+topfans: Top fans
+nextlive: Next live
+recentlive: Recent live
+weeklystats: Weekly stats
+monthlystats: Monthly stats
+showonshowroom: Show on Showroom
+view: View
+viewer: Viewer | Viewers
+totalgift: Total gift
+duration: Duration
+moreinfo: More info
+viewprofile: View Profile
+fansgift: Fans Gift
+sort:
+  latest: Latest
+  oldest: Oldest
+  mostgift: Most Gift
+  mostviews: Most Views
+  apply: Apply
+data:
+  nomore: No more data :(
+  nodata: No data!
+  notfound: Sorry, but the requested data is not found!
+  failed: Data fetching failed!
+  error: An error occured
+  retry: Retry
+changelang: Change language
+error:
+  pagenotfound: Page not found!
+  unknown: An error occured!
+  unavailable: Service temporarily unavailable, Try again later!
+redirectme: Redirect me
+scrolltop: Scroll top
+filter: Filter
+giftempty : No gift!
+srview:
+  tips:
+    ss: Show live screenshot
+    animation: Enable Animation 
+  btn:
+    showscreenshot: Show screenshot
+    animation: Animation
+search: Search
+date:
+  start: Start date
+  end: End date

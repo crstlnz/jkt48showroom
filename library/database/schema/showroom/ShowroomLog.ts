@@ -1,11 +1,9 @@
-/* eslint-disable no-sequences */
-/* eslint-disable no-console */
 /* eslint-disable camelcase */
 import { Schema, model, Model } from "mongoose";
-import config from "~/config";
 import Showroom from "./Showroom";
 import ShowroomGift from "./ShowroomGift";
 import ShowroomUser from "./ShowroomUser";
+import config from "~/config";
 
 interface IShowroomLogModel extends Model<IShowroomLog> {
   getDetails(id: string | number): Promise<IShowroomLogDetail>;
@@ -151,7 +149,9 @@ showroomLogSchema.virtual("user_list", {
   foreignField: "user_id",
 });
 
-showroomLogSchema.statics.getDetails = async function (data_id: string | number): Promise<IShowroomLogDetail> {
+showroomLogSchema.statics.getDetails = async function (
+  data_id: string | number
+): Promise<IShowroomLogDetail | null> {
   const doc = await this.findOne({ data_id })
     .populate({
       path: "user_list",
@@ -159,7 +159,9 @@ showroomLogSchema.statics.getDetails = async function (data_id: string | number)
     })
     .populate({
       path: "room_info",
-      options: { select: "-_id name img url -room_id member_data is_graduate is_group" },
+      options: {
+        select: "-_id name img url -room_id member_data is_graduate is_group",
+      },
     })
     .populate({
       path: "gift_data.gift_list",
@@ -171,7 +173,10 @@ showroomLogSchema.statics.getDetails = async function (data_id: string | number)
 
   const viewer = doc.live_info?.penonton
     ? {
-        history: doc.live_info?.penonton?.history?.map((i) => ({ num: i.num, date: i.waktu.toISOString() })),
+        history: doc.live_info?.penonton?.history?.map((i) => ({
+          num: i.num,
+          date: i.waktu.toISOString(),
+        })),
         peak: doc.live_info?.penonton?.peak,
       }
     : undefined;
@@ -181,14 +186,24 @@ showroomLogSchema.statics.getDetails = async function (data_id: string | number)
       name: doc.room_info?.name ?? "Member not found!",
       img: doc.room_info?.img ?? config.errorPicture,
       url: doc.room_info?.url ?? "",
-      is_graduate: doc.room_info?.member_data?.isGraduate ?? doc.room_info.is_group ?? false,
-      is_group: doc.room_info?.is_group,
+      is_graduate:
+        doc.room_info?.member_data?.isGraduate ??
+        doc.room_info?.is_group ??
+        false,
+      is_group: doc.room_info?.is_group ?? false,
     },
     live_info: {
       screenshot: doc.live_info?.screenshot,
       background_image: doc.live_info?.background_image,
-      stage_list: doc.live_info?.stage_list?.map((i) => ({ date: i.date, list: i.list })),
-      viewer,
+      stage_list:
+        doc.live_info?.stage_list?.map<IStageList>((i) => ({
+          date: i.date,
+          list: i.list,
+        })) ?? [],
+      viewer: {
+        history: viewer?.history ?? [],
+        peak: viewer?.peak ?? 0,
+      },
       date: {
         start: doc.live_info?.start_date.toISOString(),
         end: doc.live_info?.end_date.toISOString(),
@@ -203,20 +218,28 @@ showroomLogSchema.statics.getDetails = async function (data_id: string | number)
             date: g.date.toISOString(),
           })),
         })),
-        list: doc.gift_data?.gift_list?.map((g) => ({
-          id: g.gift_id,
-          free: g.free,
-          point: g.point,
-        })),
+        list:
+          doc.gift_data?.gift_list?.map((g) => ({
+            id: g.gift_id,
+            free: g.free,
+            point: g.point,
+          })) ?? [],
       },
     },
     jpn_rate: doc.jpn_rate,
     room_id: doc.room_id,
     total_point: doc.total_point,
-    users: doc.users?.map((u) => ({ id: u.user_id, avatar_id: u.avatar_id, name: u.name })),
+    users: doc.users?.map((u) => ({
+      id: u.user_id,
+      avatar_id: u.avatar_id,
+      name: u.name,
+    })),
     created_at: doc.created_at.toISOString(),
   };
 };
 
 showroomLogSchema.index({ data_id: 1 }, { unique: true });
-export default model<IShowroomLog, IShowroomLogModel>("ShowroomLog", showroomLogSchema);
+export default model<IShowroomLog, IShowroomLogModel>(
+  "ShowroomLog",
+  showroomLogSchema
+);

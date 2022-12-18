@@ -2,10 +2,11 @@ import Fuse from "fuse.js";
 import { getMembers } from "../members.get";
 import ShowroomLog from "~~/library/database/schema/showroom/ShowroomLog";
 import config from "~~/config";
-export default defineEventHandler(async (event): Promise<IApiRecents> => await getRecents(useQuery(event)));
+import sleep from "~~/library/utils/sleep";
+export default defineEventHandler(async (event): Promise<IApiRecents> => await getRecents(getQuery(event)));
 export { getRecents };
 
-async function getRecents(qq = null): Promise<IApiRecents> {
+async function getRecents(qq: any = null): Promise<IApiRecents> {
   let page = 1;
   const perpage = 10;
   const query: RecentsQuery = qq ?? {};
@@ -18,7 +19,7 @@ async function getRecents(qq = null): Promise<IApiRecents> {
     MOST_VIEWS,
   }
   const sort = sortType[String(query.sort)?.toUpperCase()] ?? sortType.LATEST;
-  function getSort(sort): string {
+  function getSort(sort: sortType): string {
     switch (sort) {
       case sortType.LATEST:
         return "-_id";
@@ -34,7 +35,7 @@ async function getRecents(qq = null): Promise<IApiRecents> {
   }
 
   let members = await getMembers();
-  let logs = [];
+  let logs = [] as any[];
   let total = 0;
 
   const search = query.search ? String(query.search) ?? "" : "";
@@ -96,7 +97,7 @@ async function getRecents(qq = null): Promise<IApiRecents> {
 
     total = await ShowroomLog.count(options);
   }
-
+  // await sleep(5000);
   return {
     recents: logs.map<IRecent>((i) => ({
       data_id: i.data_id,

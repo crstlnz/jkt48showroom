@@ -18,7 +18,7 @@
       <div
         class="flex text-white items-center gap-2.5 md:gap-3.5 relative [&>button]:select-none hover:[&>button]:bg-gray-300/25 [&>button]:rounded-md [&_button]:flex [&>button]:p-1"
       >
-        <button aria-label="Show Slider" @click="showSlider = !showSlider">
+        <button aria-label="Show Slider" type="button" @click="showSlider = !showSlider">
           <Icon
             :class="{
               '-rotate-180': showSlider,
@@ -38,15 +38,15 @@
             class="text-xs font-bold md:text-sm absolute bottom-[calc(100%_+_5px)]"
             :class="{ 'lg:!text-2xl': isFullscreen }"
           >
-            {{ moment(selectedTime).format("LLLL") }}
+            {{ $moment(selectedTime).format("LLLL") }}
           </div>
           <input
             id="timeslider"
             ref="timeslider"
+            v-model="sliderVal"
             type="range"
             min="0"
             max="1000"
-            v-model="sliderVal"
             class="w-full [&::-webkit-slider-thumb]:cursor-pointer [&::-moz-range-thumb]:cursor-pointer"
           />
         </div>
@@ -66,13 +66,15 @@
               <div class="text-base flex flex-col py-1.5">
                 <SwitchGroup>
                   <div role="button" class="flex px-4 py-2.5 hover:bg-gray-300/25">
-                    <SwitchLabel class="mr-4 flex-1 cursor-pointer select-none">Animation</SwitchLabel>
+                    <SwitchLabel class="mr-4 flex-1 cursor-pointer select-none">{{
+                      $t("srview.btn.animation")
+                    }}</SwitchLabel>
                     <Switch
                       v-model="isAnimated"
                       :class="isAnimated ? 'bg-blue-600' : 'bg-gray-200'"
                       class="relative inline-flex h-6 w-11 items-center rounded-full"
                     >
-                      <span class="sr-only">Enable Animation</span>
+                      <span class="sr-only">{{ $t("srview.tips.animation") }}</span>
                       <span
                         :class="isAnimated ? 'translate-x-6' : 'translate-x-1'"
                         class="inline-block h-4 w-4 transform rounded-full bg-white transition"
@@ -82,13 +84,15 @@
                 </SwitchGroup>
                 <SwitchGroup>
                   <div role="button" class="flex px-4 py-2.5 hover:bg-gray-300/25">
-                    <SwitchLabel class="mr-4 flex-1 cursor-pointer select-none">Show Screenshot</SwitchLabel>
+                    <SwitchLabel class="mr-4 flex-1 cursor-pointer select-none">{{
+                      $t("srview.btn.showscreenshot")
+                    }}</SwitchLabel>
                     <Switch
                       v-model="showScreenshot"
                       :class="showScreenshot ? 'bg-blue-600' : 'bg-gray-200'"
                       class="relative inline-flex h-6 w-11 items-center rounded-full"
                     >
-                      <span class="sr-only">Enable Member Screenshot</span>
+                      <span class="sr-only">{{ $t("srview.tips.ss") }}</span>
                       <span
                         :class="showScreenshot ? 'translate-x-6' : 'translate-x-1'"
                         class="inline-block h-4 w-4 transform rounded-full bg-white transition"
@@ -96,12 +100,11 @@
                     </Switch>
                   </div>
                 </SwitchGroup>
-                <!-- <button class="px-4 py-2.5 hover:bg-gray-300/25">Refresh</button> -->
               </div>
             </PopoverPanel>
           </Transition>
         </Popover>
-        <button aria-label="Fullscreen" @click="toggleFullscreen">
+        <button aria-label="Fullscreen" type="button" @click="toggleFullscreen">
           <Icon v-if="!isFullscreen" name="tabler:maximize" />
           <Icon v-else name="tabler:minimize" />
         </button>
@@ -116,7 +119,6 @@ import { useFullscreen, useScreenOrientation, useLocalStorage } from "@vueuse/co
 import { StageShowroom } from "~~/library/canvas/showroom/stage";
 import ShowroomBackground from "~~/library/canvas/showroom/background";
 import ShowroomForeground from "~~/library/canvas/showroom/foreground";
-import moment from "moment";
 const { $avatarURL, $giftUrl, $fansProfileURL } = useNuxtApp();
 const props = defineProps<{
   memberImage: string;
@@ -179,7 +181,7 @@ watch(selectedTime, (time) => {
 
 const stageNum = computed(() => {
   const time = selectedTime.value;
-  for (const [i, stage] of props.stageList?.entries()) {
+  for (const [i, stage] of props.stageList?.entries() ?? []) {
     if (new Date(stage.date).getTime() >= time) {
       return i;
     }
@@ -188,7 +190,7 @@ const stageNum = computed(() => {
 });
 
 const timeout = ref<NodeJS.Timeout>();
-watch(stageNum, (val) => {
+watch(stageNum, () => {
   if (timeout.value) clearTimeout(timeout.value);
   timeout.value = setTimeout(() => {
     stage.setFans(getFansRankList());
@@ -228,9 +230,7 @@ onMounted(() => {
 });
 
 useEventListener(container, "click", async (e: MouseEvent) => {
-  const tagName = (e.target as HTMLElement)?.tagName.toLowerCase();
-  if ((e.target as HTMLElement)?.id === "timeslider") return;
-  if (tagName === "svg" || tagName === "button") return;
+  if ((e.target as HTMLElement)?.id !== "canvasControl") return;
   const rect = stCanvas.value!.getBoundingClientRect();
   const x = ((e.clientX - rect.left) / rect.width) * stCanvas.value!.width;
   const y = ((e.clientY - rect.top) / rect.height) * stCanvas.value!.height;

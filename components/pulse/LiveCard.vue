@@ -1,5 +1,7 @@
 <template>
-  <div class="pulse-color-2 animate-pulse h-[228px] md:h-[302px] lg:h-[320px] xl:h-[360px] shadow-md rounded-xl"></div>
+  <div
+    class="pulse-color-2 animate-pulse h-[228px] md:h-[302px] lg:h-[320px] xl:h-[360px] shadow-md rounded-xl"
+  ></div>
   <!-- <div
     class="p-3 sm:p-4 md:p-5 bg-slate-50/50 shadow-md dark:bg-dark-2/50 rounded-xl gap-2 md:gap-3 xl:gap-5 flex flex-col relative overflow-hidden"
   >

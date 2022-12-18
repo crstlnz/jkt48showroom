@@ -6,17 +6,27 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
+      IS_DEV: process.env.NODE_ENV === "development",
       baseURL: process.env.BASE_URL,
     },
   },
+  alias: {
+    pinia: "/node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia.mjs",
+  },
   modules: [
-    "@nuxtjs/i18n",
     "nuxt-icon",
     "@nuxtjs/google-fonts",
     "@nuxtjs/tailwindcss",
     "@nuxtjs/color-mode",
     "@vueuse/nuxt",
-    ["@pinia/nuxt"],
+    [
+      "@pinia/nuxt",
+      {
+        autoImports: ["storeToRefs", "acceptHMRUpdate", "defineStore", "acceptHMRUpdate", "skipHydrate"],
+      },
+    ],
+    "@nuxtjs/i18n",
+    "@nuxtjs/html-validator",
   ],
   css: ["~/assets/css/style.scss"],
   colorMode: {
@@ -45,25 +55,55 @@ export default defineNuxtConfig({
         "/api/user/profile": {
           target: "https://www.showroom-live.com/api/user/profile",
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api\/user\/profile/, ""),
+          rewrite: (path: string) => path.replace(/^\/api\/user\/profile/, ""),
         },
       },
     },
   },
   i18n: {
     baseUrl: process.env.BASE_URL,
+
     strategy: "no_prefix",
-    // locales: [
-    //   { code: "en", iso: "en-US", file: "en.js", dir: "ltr", name: "EN" },
-    //   { code: "id", iso: "id-ID", file: "id.js", dir: "ltr", name: "ID" },
-    //   // { code: "en", iso: "en-US", file: "en.ts", dir: "ltr", name: "English" },
-    //   // { code: "id", iso: "id-ID", file: "id.ts", dir: "ltr", name: "Bahasa Indonesia" },
-    // ],
-    // locales: ["en", "id"],
-    // langDir: "locales/",
-    // lazy: true,
+    locales: [
+      { code: "en", iso: "en-US", file: "en.yaml", dir: "ltr", name: "EN" },
+      { code: "id", iso: "id-ID", file: "id.yaml", dir: "ltr", name: "ID" },
+    ],
+    langDir: "locales",
+    lazy: true,
     defaultLocale: "en",
     vueI18n: {
+      datetimeFormats: {
+        en: {
+          short: {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          },
+          long: {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            weekday: "long",
+            hour: "numeric",
+            minute: "numeric",
+          },
+        },
+        id: {
+          short: {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          },
+          long: {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            weekday: "long",
+            hour: "numeric",
+            minute: "numeric",
+          },
+        },
+      },
       numberFormats: {
         "en-US": {
           currency: {
@@ -86,6 +126,36 @@ export default defineNuxtConfig({
           },
         },
       },
+    },
+  },
+  htmlValidator: {
+    usePrettier: true,
+    logLevel: "verbose",
+    failOnError: false,
+    options: {
+      extends: ["html-validate:document", "html-validate:recommended", "html-validate:standard"],
+      rules: {
+        "svg-focusable": "off",
+        "no-unknown-elements": "error",
+        // Conflicts or not needed as we use prettier formatting
+        "void-style": "off",
+        "no-trailing-whitespace": "off",
+        // Conflict with Nuxt defaults
+        "require-sri": "off",
+        "attribute-boolean-style": "off",
+        "doctype-style": "off",
+        // Unreasonable rule
+        "no-inline-style": "off",
+      },
+    },
+  },
+  typescript: {
+    shim: false,
+  },
+  nitro: {
+    compressPublicAssets: true,
+    prerender: {
+      routes: ["/sitemap.xml"],
     },
   },
 });

@@ -1,4 +1,4 @@
-import { skipHydrate, acceptHMRUpdate, defineStore } from "pinia";
+import { defineStore, skipHydrate, acceptHMRUpdate } from "~/node_modules/@pinia/nuxt/dist/runtime/composables";
 import JSONSerializer from "~~/library/serializer/json";
 
 export const useLiveInfos = defineStore("liveInfos", () => {
@@ -13,9 +13,9 @@ export const useLiveInfos = defineStore("liveInfos", () => {
   async function refreshLiveInfo(roomIds: number[]): Promise<APILiveInfo[]> {
     if (!roomIds?.length) return [];
     const result = [];
-    const data: APILiveInfo | APILiveInfo[] = await $fetch(
-      `/api/showroom/live_info?room_id=${roomIds?.join(",")}&_=${new Date().getTime()}`
-    );
+    const roomId = roomIds?.join(",");
+    const date = new Date().getTime();
+    const data: APILiveInfo | APILiveInfo[] = await $fetch(`/api/showroom/live_info?room_id=${roomId}&_=${date}`);
     if (Array.isArray(data)) {
       result.push(...data);
     } else if (data.is_error === false) {

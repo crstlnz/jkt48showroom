@@ -3,9 +3,9 @@
     class="pagination flex gap-2 select-none text-xs md:text-sm xl:text-base leading-7 sm:leading-8 xl:leading-10 text"
   >
     <button
+      ref="left"
       aria-label="Previous Page"
       type="button"
-      ref="left"
       class="group rounded-full bg-white dark:bg-dark-1 h-7 w-7 sm:h-8 sm:w-8 xl:h-10 xl:w-10 relative cursor-pointer shadow-sm transition duration-300 overflow-hidden active:scale-95 hover:text-white hover:bg-second-2"
       @click="prev"
     >
@@ -22,10 +22,10 @@
     </button>
     <div class="flex rounded-[40px] bg-white dark:bg-dark-1 h-7 sm:h-8 xl:h-10 shadow-sm px-2 relative">
       <button
-        aria-label="Go to Page"
-        type="button"
         v-for="[index, dot] in dots.entries()"
         :key="index"
+        aria-label="Go to Page"
+        type="button"
         :class="{ active: dot == page }"
         class="dot h-7 w-7 sm:h-8 sm:w-8 xl:h-10 xl:w-10 text-center rounded-lg hover:text-second-2 transition duration-300 cursor-pointer mx-1"
         @click="changePage(dot)"
@@ -34,9 +34,9 @@
       </button>
     </div>
     <button
+      ref="right"
       aria-label="Next Page"
       type="button"
-      ref="right"
       class="group rounded-full bg-white dark:bg-dark-1 h-7 w-7 sm:h-8 sm:w-8 xl:h-10 xl:w-10 relative cursor-pointer shadow-sm transition duration-300 overflow-hidden active:scale-95 hover:text-white hover:bg-second-2"
       @click="next"
     >
@@ -56,7 +56,7 @@
 
 <script>
 /* eslint-disable eqeqeq */
-/* eslint-disable vue/no-mutating-props */
+
 export default {
   props: {
     page: {
@@ -84,6 +84,7 @@ export default {
       },
     },
   },
+  emits: ["pageChange"],
   computed: {
     dots() {
       const page = this.page;

@@ -1,11 +1,12 @@
 class CanvasUtil {
   canvas?: HTMLCanvasElement;
-  ctx?: CanvasRenderingContext2D;
-  animationId: number;
+  ctx!: CanvasRenderingContext2D | null;
+  animationId!: number | 0;
 
   get height(): number {
     return this.canvas?.height ?? 0;
   }
+
   get width(): number {
     return this.canvas?.width ?? 0;
   }
@@ -15,7 +16,7 @@ class CanvasUtil {
     this.ctx = this.canvas.getContext("2d");
   }
 
-  static async createImage(src, cross = false): Promise<HTMLImageElement> {
+  static createImage(src: string, cross = false): Promise<HTMLImageElement> {
     return new Promise((resolve, reject) => {
       const image = new Image();
       if (cross) image.crossOrigin = "*";
@@ -25,7 +26,11 @@ class CanvasUtil {
     });
   }
 
-  static createImageCallback(src, onload: () => any = null, onerror: () => any = null): HTMLImageElement {
+  static createImageCallback(
+    src: string,
+    onload: (() => unknown) | null = null,
+    onerror: (() => unknown) | null = null
+  ): HTMLImageElement {
     const image = new Image();
     image.onload = onload;
     image.onerror = onerror;
@@ -33,7 +38,7 @@ class CanvasUtil {
     return image;
   }
 
-  draw(_time: number = 0) {
+  draw(_time = 0) {
     throw new Error("No draw function!");
   }
 

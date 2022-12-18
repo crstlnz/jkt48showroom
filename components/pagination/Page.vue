@@ -3,13 +3,13 @@
     <PaginationFilter
       class="lg:max-h-[calc(100vh_-_96px_-_20px)] lg:top-[96px] overflow-y-auto lg:w-[260px] xl:w-[320px] lg:sticky h-fit rounded-xl bg-white dark:bg-dark-1 p-4 shadow-sm"
       :query="query"
-      @apply="(filter) => $emit('filter', filter)"
+      @apply="(filter) => setFilter(filter)"
     />
     <div class="flex-1 lg:w-0">
       <div class="flex flex-col sm:flex-row justify-between items-center mt-3 mb-4 lg:mb-6">
-        <h1 class="text-2xl sm:text-xl md:text-2xl xl:text-3xl font-bold mb-3 sm:mb-0 !leading-[40px]">
-          Recents Showroom
-        </h1>
+        <h2 class="text-2xl sm:text-xl md:text-2xl xl:text-3xl font-bold mb-3 sm:mb-0 !leading-[40px]">
+          {{ $t("recentlive") }}
+        </h2>
         <div>
           <div class="relative h-10">
             <Transition name="fade-abs" class="fade-abs">
@@ -21,7 +21,7 @@
                 :page="query.page"
                 :max-dots="dots"
                 :total="totalPage"
-                @page-change="(page) => $emit('pageChange', page)"
+                @page-change="(page : number) => changePage(page)"
               />
             </Transition>
           </div>
@@ -46,17 +46,17 @@
                   <img v-else src="/img/empty-box.png" alt="Empty!" class="w-full mx-auto" />
                 </div>
                 <div>
-                  <h2 v-if="error" class="text-xl lg:text-3xl mb-1">An error occured</h2>
-                  <h2 v-else class="text-lg lg:text-2xl mb-1">Sorry, but the requested data is not found!</h2>
+                  <h2 v-if="error" class="text-xl lg:text-3xl mb-1">{{ $t("data.error") }}</h2>
+                  <h2 v-else class="text-lg lg:text-2xl mb-1">{{ $t("data.notfound") }}</h2>
                   <button
+                    v-if="error"
                     aria-label="Retry"
                     type="button"
-                    v-if="error"
                     class="hover:text-second-2 text-sm lg:text-base"
                     href="/"
-                    @click="$emit('refresh')"
+                    @click="refresh()"
                   >
-                    Retry
+                    {{ $t("data.retry") }}
                   </button>
                 </div>
               </div>
@@ -74,7 +74,7 @@
                   :page="query.page"
                   :max-dots="dots"
                   :total="totalPage"
-                  @page-change="(page) => $emit('pageChange', page)"
+                  @page-change="(page : number) => changePage(page)"
                 />
               </div>
             </div>
@@ -86,37 +86,22 @@
 </template>
 
 <script lang="ts" setup>
-import { breakpointsTailwind, useBreakpoints } from "@vueuse/core";
+import { breakpointsTailwind, useBreakpoints, useScroll } from "@vueuse/core";
+const fetch = await useRecentFetch();
+const { data: res, query, totalPage, pending, error } = fetch.data;
+const { changePage, refresh, setFilter, onQueryChange } = fetch;
+const data = computed(() => {
+  return res.value?.recents ?? [];
+});
 
-defineProps({
-  query: {
-    type: Object,
-    required: true,
-  },
-  data: {
-    type: Array<IRecent>,
-    default() {
-      return [];
-    },
-  },
-  totalPage: {
-    type: Number,
-    default() {
-      return 1;
-    },
-  },
-  pending: {
-    type: Boolean,
-    default() {
-      return true;
-    },
-  },
-  error: {
-    type: Boolean,
-    default() {
-      return false;
-    },
-  },
+const windowEl = ref<Window | null>(null);
+const { y } = useScroll(windowEl, { behavior: "smooth" });
+onMounted(() => {
+  windowEl.value = window;
+});
+
+onQueryChange(() => {
+  y.value = 0;
 });
 
 const isMedium = useBreakpoints(breakpointsTailwind).smaller("md");

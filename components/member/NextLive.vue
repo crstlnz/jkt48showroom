@@ -1,19 +1,20 @@
 <template>
   <div class="text-center py-2 md:py-3 flex gap-3">
     <NuxtLink
+      aria-label="View profile"
       class="h-[4.5rem] md:h-20 aspect-square relative cursor-pointer drop-shadow-sm rounded-full overflow-hidden"
       to="/"
     >
-      <LazyImage lazy="false" class="w-full h-full" :src="$fixCloudinary(data.img)" />
+      <LazyImage lazy="false" class="w-full h-full" :alt="data.name" :src="$fixCloudinary(data.img)" />
     </NuxtLink>
     <div class="info text-left flex flex-col flex-1 w-0">
       <div class="name flex flex-1 gap-2">
-        <h3
+        <h2
           class="font-bold text-ellipsis whitespace-nowrap overflow-hidden flex-1 text-sm md:text-base"
           :title="data.name"
         >
           {{ data.name }}
-        </h3>
+        </h2>
         <div
           v-if="data.is_graduate"
           class="graduated w-6 h-6 p-[3px] text-white bg-red-500 rounded-full"
@@ -42,12 +43,14 @@
       <ul class="mt-1 space-y-1 [&>li]:flex [&>li]:gap-1 text-xs md:text-sm">
         <li>
           <Icon name="ph:clock-bold" class="self-center text-sm md:text-base" />
-          {{ $time.fromNow(data.date) }}
+          <div>{{ date }}</div>
         </li>
       </ul>
       <div class="mt-2 pt-2 border-t-2 border-t-gray-50 dark:border-t-dark-2 flex justify-end text-sm md:text-base">
         <ul>
-          <li><a target="_blank" :href="$liveURL(data.url)">View</a></li>
+          <li>
+            <a target="_blank" :href="$liveURL(data.url)">{{ $t("view") }}</a>
+          </li>
         </ul>
       </div>
     </div>
@@ -56,7 +59,9 @@
 
 <script lang="ts" setup>
 import { LazyImage } from "#components";
-defineProps<{
+const props = defineProps<{
   data: INextLive;
 }>();
+const { $fromNow } = useNuxtApp();
+const date = $fromNow(props.data.date);
 </script>

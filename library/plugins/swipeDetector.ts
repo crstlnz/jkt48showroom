@@ -91,7 +91,7 @@ class SwipeDetector {
   }
 
   finish(x: number, y: number) {
-    const speed = this.getSpeed(x, y); // speed in pixer per 100ms
+    const speed = this.getSpeed(x, y); // speed in pixer per 100
     return this.getOtherDiff(x, y) <= this.otherMaxDist && speed >= this.minSpeed;
   }
 }

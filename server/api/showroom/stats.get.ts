@@ -1,5 +1,6 @@
-import ShowroomLog from "~~/library/database/schema/showroom/ShowroomLog";
+/* eslint-disable camelcase */
 import { getMembers } from "./members.get";
+import ShowroomLog from "~~/library/database/schema/showroom/ShowroomLog";
 import cache from "~~/library/utils/cache";
 
 const type = "weekly";
@@ -9,7 +10,11 @@ export { getStats, calculateFansPoints };
 
 async function getStats(): Promise<IShowroomStats> {
   const dateRange = getDateRange(type);
-  const data = await cache.fetch<IShowroomStats>(type, () => fetchData(dateRange), 2629800000);
+  const data = await cache.fetch<IShowroomStats>(
+    type,
+    () => fetchData(dateRange),
+    2629800000
+  );
   if (data?.date?.to === dateRange.to) return data;
   const newData = await fetchData(dateRange);
   cache.set(type, newData);
@@ -18,7 +23,11 @@ async function getStats(): Promise<IShowroomStats> {
 
 async function fetchData(dateRange: IDateRange): Promise<IShowroomStats> {
   const members = await getMembers();
-  if (!members) throw createError({ statusCode: 500, statusMessage: "Failed to fetch data!" });
+  if (!members)
+    throw createError({
+      statusCode: 500,
+      statusMessage: "Failed to fetch data!",
+    });
 
   const select = {
     room_info: 1,
@@ -66,7 +75,8 @@ async function fetchData(dateRange: IDateRange): Promise<IShowroomStats> {
   });
   const statsLive: IStats[] = [
     {
-      title: "Total Live",
+      title: "Live Count",
+      key: "livecount",
       value: all.member.reduce((a, b) => a + b?.live_count ?? 0, 0),
     },
   ];
@@ -78,14 +88,18 @@ async function fetchData(dateRange: IDateRange): Promise<IShowroomStats> {
       ...[
         {
           title: "Most Live",
+          key: "mostlive",
           img: {
             title: mostLive.name,
             src: mostLive.img,
           },
-          value: `${mostLive.live_count} ${mostLive.live_count > 1 ? "Lives" : "Live"}`,
+          value: `${mostLive.live_count} ${
+            mostLive.live_count > 1 ? "Lives" : "Live"
+          }`,
         },
         {
           title: "Top Member",
+          key: "topmember",
           img: {
             title: topMember.name,
             src: topMember.img,
@@ -93,7 +107,8 @@ async function fetchData(dateRange: IDateRange): Promise<IShowroomStats> {
           value: topMember.name,
         },
         {
-          title: "Most Views",
+          title: "Most Viewer",
+          key: "mostviewer",
           img: {
             title: mostViews.name,
             src: mostViews.img,
@@ -101,13 +116,15 @@ async function fetchData(dateRange: IDateRange): Promise<IShowroomStats> {
           value:
             mostViews.avg_viewer > 1000
               ? `${(mostViews.avg_viewer / 1000).toFixed(2)}K Viewers`
-              : `${mostViews.avg_viewer} ${mostViews.avg_viewer > 1 ? "Viewers" : "Viewer"}`,
+              : `${mostViews.avg_viewer} ${
+                  mostViews.avg_viewer > 1 ? "Viewers" : "Viewer"
+                }`,
         },
       ]
     );
   }
   return {
-    type: type,
+    type,
     ranks: all,
     stats: statsLive,
     date: {
@@ -128,8 +145,10 @@ function getDateRange(type: IDateRangeType): IDateRange {
     date.setDate(1);
     to = new Date(date.setHours(0, 0, 0, 0));
     from = new Date(date.setMonth(to.getMonth() - 1));
+  } else {
+    to = date;
+    from = date;
   }
-
   return {
     from: from.toISOString(),
     to: to.toISOString(),
@@ -147,9 +166,9 @@ function calculateRanks(logs: IShowroomLog[]): CalculatedRanks {
   for (const log of logs) {
     if (memberRanks.has(log.room_id)) {
       const member = memberRanks.get(log.room_id);
-      member.live_count += 1;
-      member.total_viewer += log?.live_info?.penonton?.peak ?? 0;
-      member.point += log.total_point;
+      member!.live_count += 1;
+      member!.total_viewer += log?.live_info?.penonton?.peak ?? 0;
+      member!.point += log.total_point;
     } else {
       memberRanks.set(log.room_id, {
         room_id: log.room_id,
@@ -188,7 +207,10 @@ function calculateRanks(logs: IShowroomLog[]): CalculatedRanks {
   };
 }
 
-function calculateFansPoints(usersData: IFansCompact[], stageList: IStageList[]) {
+function calculateFansPoints(
+  usersData: IFansCompact[],
+  stageList: IStageList[]
+) {
   const fansRanks: Map<string | number, number> = new Map();
   const users: Map<string | number, IFans> = new Map();
   for (const user of usersData) {
@@ -203,7 +225,7 @@ function calculateFansPoints(usersData: IFansCompact[], stageList: IStageList[])
     for (const [i, id] of stage.list.entries()) {
       const point = getRankPoints(i);
       if (fansRanks.has(id)) {
-        fansRanks.set(id, fansRanks.get(id) + point);
+        fansRanks.set(id, (fansRanks.get(id) ?? 0) + point);
       } else {
         fansRanks.set(id, point);
       }
@@ -211,19 +233,22 @@ function calculateFansPoints(usersData: IFansCompact[], stageList: IStageList[])
   }
 
   return Array.from(fansRanks, ([user_id, fans_point]): IStatFans => {
-    const user = users.get(user_id) ?? { name: "User not found!", avatar_id: 1 };
+    const user = users.get(user_id) ?? {
+      name: "User not found!",
+      avatar_id: 1,
+    };
     return {
       id: Number(user_id),
       name: user.name,
       avatar_id: user.avatar_id,
-      fans_point: fans_point,
+      fans_point,
     };
   })
     .sort((a, b) => b.fans_point - a.fans_point)
     .slice(0, 100);
 }
 
-function getRankPoints(rank) {
+function getRankPoints(rank: number) {
   if (rank < 4) {
     return 165 + (4 - rank) * 15;
   } else if (rank < 14) {

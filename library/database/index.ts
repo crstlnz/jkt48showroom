@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import mongoose from "mongoose";
+mongoose.set("strictQuery", process.env.NODE_ENV === "development" ? "throw" : false);
 const connection = mongoose.connection;
 connection.on("close", () => {
   console.log(`MongoDB closed!`);

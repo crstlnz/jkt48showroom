@@ -1,6 +1,6 @@
-import { acceptHMRUpdate, skipHydrate, storeToRefs, defineStore } from "pinia";
-import JSONSerializer from "~~/library/serializer/json";
+import { defineStore, storeToRefs, acceptHMRUpdate } from "~/node_modules/@pinia/nuxt/dist/runtime/composables";
 import { useLiveInfos } from "./liveInfos";
+import JSONSerializer from "~~/library/serializer/json";
 
 export const useOnLives = defineStore("onLives", () => {
   const controller = useLocalStoreController<INowLive[]>("onlives", refreshLives, {
@@ -31,7 +31,7 @@ export const useOnLives = defineStore("onLives", () => {
     return data;
   }
 
-  async function refreshLiveInfo() {
+  function refreshLiveInfo() {
     liveInfoStore.refresh(lives.value?.map((i) => i.room_id));
   }
 
@@ -41,7 +41,7 @@ export const useOnLives = defineStore("onLives", () => {
 
   function removeLive(roomId: number) {
     lives.value = lives.value?.filter((i) => i.room_id !== roomId) as INowLive[];
-    liveInfo.value = liveInfo.value?.filter((i) => i.room_id !== roomId) as APILiveInfo[];
+    liveInfo.value = liveInfo.value?.filter((i: any) => i.room_id !== roomId) as APILiveInfo[];
   }
 
   function isDifferent(newData: INowLive[], oldData: INowLive[]) {
@@ -54,7 +54,7 @@ export const useOnLives = defineStore("onLives", () => {
   }
 
   function getStartDate(roomId: number) {
-    const room = liveInfo?.value?.find((i) => i.room_id === roomId);
+    const room = liveInfo?.value?.find((i: any) => i.room_id === roomId);
     if (!room || room.is_error === true) return null;
     if (!room.is_live) {
       removeLive(roomId);

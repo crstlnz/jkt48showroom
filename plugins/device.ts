@@ -11,7 +11,10 @@ export default defineNuxtPlugin(() => {
     "i"
   );
   const isMobile = (userAgent: string) => {
-    return REGEX_MOBILE1.test(userAgent) || REGEX_MOBILE2.test(userAgent.substring(0, 4));
+    return (
+      REGEX_MOBILE1.test(userAgent) ||
+      REGEX_MOBILE2.test(userAgent.substring(0, 4))
+    );
   };
 
   let userAgent: string | undefined = "";

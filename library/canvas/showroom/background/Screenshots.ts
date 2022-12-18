@@ -1,22 +1,26 @@
 import CanvasUtil from "../canvasUtil";
-import config from "~/config";
 import ShowroomBackground from ".";
+import config from "~/config";
 const { cloudinaryURL } = config;
 
 class ScreenshotManager {
   list: Map<number, HTMLImageElement>;
   ids: number[];
   id: number; // picked ss id
-  screenshot: HTMLImageElement; // picked ss
+  screenshot: HTMLImageElement | undefined; // picked ss
   parent: ShowroomBackground;
   processId: number;
   showScreenshot: boolean;
   folder: string;
   format: string;
-  defaultImage: HTMLImageElement;
+  defaultImage: HTMLImageElement | undefined;
   isLoaded: boolean;
 
-  constructor(parent: ShowroomBackground, defaultImage: string, showScreenshot: boolean) {
+  constructor(
+    parent: ShowroomBackground,
+    defaultImage: string,
+    showScreenshot: boolean
+  ) {
     this.list = new Map();
     this.ids = [];
     this.parent = parent;
@@ -24,6 +28,9 @@ class ScreenshotManager {
     this.showScreenshot = showScreenshot;
     this.isLoaded = false;
     this.loadDefaultImage(defaultImage);
+    this.id = 0;
+    this.folder = "";
+    this.format = "";
   }
 
   setShowScreenshot(val: boolean) {
@@ -45,15 +52,11 @@ class ScreenshotManager {
   }
 
   loadDefaultImage(src: string) {
-    this.defaultImage = CanvasUtil.createImageCallback(
-      src,
-      () => {
-        if (!this.showScreenshot) {
-          this.parent.requestDraw();
-        }
-      },
-      () => {}
-    );
+    this.defaultImage = CanvasUtil.createImageCallback(src, () => {
+      if (!this.showScreenshot) {
+        this.parent.requestDraw();
+      }
+    });
   }
 
   loadScreenshots(setSS = false) {
@@ -72,7 +75,7 @@ class ScreenshotManager {
     }
   }
 
-  async setDate(date: number) {
+  setDate(date: number) {
     this.processId++;
     const processId = this.processId;
     const num = this.ids.length;
@@ -96,10 +99,22 @@ class ScreenshotManager {
       y: this.parent.height * 0.25695 - size.height / 2,
     };
     if (this.showScreenshot && this.screenshot) {
-      this.parent.ctx.drawImage(this.screenshot, pos.x, pos.y, size.width, size.height);
-    } else {
-      this.parent.ctx.drawImage(this.defaultImage, pos.x, pos.y, size.width, size.height);
-    }
+      if (this.parent.ctx)
+        this.parent.ctx.drawImage(
+          this.screenshot,
+          pos.x,
+          pos.y,
+          size.width,
+          size.height
+        );
+    } else if (this.parent.ctx && this.defaultImage)
+      this.parent.ctx.drawImage(
+        this.defaultImage,
+        pos.x,
+        pos.y,
+        size.width,
+        size.height
+      );
   }
 }
 

@@ -5,6 +5,7 @@ export default class JSONSerializer<T> implements Serializer<T> {
   constructor(def: T) {
     this.default = def;
   }
+
   read(raw: string): T {
     try {
       return JSON.parse(raw);
@@ -12,6 +13,7 @@ export default class JSONSerializer<T> implements Serializer<T> {
       return this.default;
     }
   }
+
   write(value: T): string {
     return JSON.stringify(value);
   }

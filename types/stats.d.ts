@@ -1,3 +1,14 @@
+type IDateRangeType = "weekly" | "monthly";
+type IDateRange = {
+  from: string;
+  to: string;
+};
+
+type StatsOptions = {
+  room_id: number | number[];
+  "live_info.end_date": object;
+  is_dev?: null | boolean;
+};
 interface IStatMember {
   room_id: number;
   name: string;
@@ -23,6 +34,7 @@ interface IStatFans {
 
 interface IStats {
   title: string;
+  key?: string;
   img?: {
     title: string;
     src: string;
@@ -42,15 +54,3 @@ interface IShowroomStats {
     to: string;
   };
 }
-
-type IDateRangeType = "weekly" | "monthly";
-type IDateRange = {
-  from: string;
-  to: string;
-};
-
-type StatsOptions = {
-  room_id: number | number[];
-  "live_info.end_date": object;
-  is_dev?: null | boolean;
-};

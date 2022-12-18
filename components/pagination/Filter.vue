@@ -42,6 +42,17 @@
         </div>
       </Combobox>
     </div> -->
+    <div class="bg-slate-100/60 dark:bg-dark-2/60 py-2 px-3 rounded-xl">
+      <input
+        ref="searchinput"
+        v-model="search"
+        :aria-label="$t('search')"
+        :placeholder="`${$t('search')}...`"
+        type="text"
+        class="w-full bg-transparent outline-none"
+        @keyup.enter="apply"
+      />
+    </div>
     <ul
       class="overflow-hidden rounded-xl bg-slate-100/60 dark:bg-dark-2/60 max-h-[250px] overflow-y-auto overflow-x-hidden"
     >
@@ -59,7 +70,7 @@
           }"
           @click="setSort(key)"
         >
-          {{ getSortName(key) }}
+          {{ $t(getSortKey(key)) }}
         </button>
       </li>
     </ul>
@@ -86,59 +97,21 @@
       </button>
     </div>
     <button
-      type="button"
       ref="applyBtn"
+      type="button"
       :disabled="!isEnabled"
       class="p-2 lg:p-3 hover bg-second-2/80 hover:bg-second-2 select-none rounded-xl w-full text-center text-white font-bold active:scale-95 transition-transform disabled:active:scale-100 disabled:bg-second-2/40 disabled:text-gray-400 disabled:dark:text-gray-500"
       @click="apply"
     >
-      Apply
+      {{ $t("sort.apply") }}
     </button>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { Combobox, ComboboxInput, ComboboxOptions, ComboboxOption } from "@headlessui/vue";
+import { useFocus } from "@vueuse/core";
 
-// const qq = ref("");
-// const qTimeout = ref(undefined);
-// function inputEvent($event) {
-//   if (!members.value && !pending.value) refresh();
-//   if (qTimeout.value) clearTimeout(qTimeout.value);
-//   qTimeout.value = setTimeout(() => {
-//     qq.value = $event.target.value;
-//   }, 300);
-// }
-
-// const fuse = ref(undefined);
-// watch(members, (val: ApiShowroomMember[]) => {
-//   // fuse.value = new Fuse(val ?? [], { keys: ["name", "description"] });
-// });
-
-// const filteredMembers = computed((): ApiShowroomMember[] => {
-//   if (qq.value === "") return members.value;
-//   if (!fuse.value) return [];
-//   const result = fuse.value.search(qq.value);
-//   return result.map((i) => i.item) as ApiShowroomMember[];
-// });
-// const memba = computed(() => members.value);
-
-// const { results: filteredMembers } = useFuse<IMember>(qq, memba);
-
-// const filteredMembers = computed(() => {
-//   const m = members.value ?? [];
-//   return qq.value === ""
-//     ? m
-//     : m?.filter((member) => {
-//         return member.name.toLowerCase().includes(qq.value.toLowerCase());
-//       });
-// });
-// watch(members, (d) => console.log("Member Loaded"));
-const selectedMembers = ref([]);
-watch(selectedMembers, (val) => {
-  // if(!members.value && )
-});
-
+const { $device } = useNuxtApp();
 const props = defineProps({
   members: {
     type: Array,
@@ -155,7 +128,6 @@ const props = defineProps({
 });
 
 const search = ref(props.query.search);
-
 const emit = defineEmits(["apply"]);
 const temp = ref<RecentsQuery>({});
 const isEnabled = computed(() => {
@@ -178,16 +150,16 @@ enum sortType {
   MOST_VIEWS,
 }
 
-function getSortName(sort: any) {
+function getSortKey(sort: sortType): string {
   switch (sort) {
     case sortType.LATEST:
-      return "Latest";
+      return "sort.latest";
     case sortType.OLDEST:
-      return "Oldest";
+      return "sort.oldest";
     case sortType.MOST_GIFT:
-      return "Most Gift";
+      return "sort.mostgift";
     case sortType.MOST_VIEWS:
-      return "Most Views";
+      return "sort.mostviews";
   }
 }
 
@@ -200,10 +172,12 @@ const isActive = (bool: boolean) => {
 };
 
 const setGraduated = (bool: boolean) => {
-  const newVal = bool ? "graduated" : "active";
+  const getFilter = (b: boolean) => (b ? "graduated" : "active");
+  const newVal = getFilter(bool);
   if (temp.value.filter !== undefined) {
-    if (newVal === temp.value.filter) {
-      return (temp.value.filter = undefined);
+    if (temp.value.filter === newVal) {
+      if (props.query.filter === "all") return (temp.value.filter = undefined);
+      return (temp.value.filter = "all");
     }
     return (temp.value.filter = newVal);
   }
@@ -213,7 +187,21 @@ const setGraduated = (bool: boolean) => {
   } else {
     temp.value.filter = newVal;
   }
-  // temp.value.graduated = val === undefined || bool !== val ? bool : bool === props.query.graduated ? undefined : null;
+  // if (temp.value.filter !== undefined) {
+  //   if (newVal === props.query.filter) {
+  //     return (temp.value.filter = undefined);
+  //   } else if (newVal === temp.value.filter) {
+  //     return (temp.value.filter = bool ? 'all');
+  //   }
+  //   return (temp.value.filter = newVal);
+  // }
+
+  // if (props.query.filter === newVal) {
+  //   temp.value.filter = "all";
+  // } else {
+  //   temp.value.filter = newVal;
+  // }
+  // // temp.value.graduated = val === undefined || bool !== val ? bool : bool === props.query.graduated ? undefined : null;
 };
 
 const setSort = (key: string | number) => {
@@ -223,7 +211,11 @@ const setSort = (key: string | number) => {
   }
   temp.value.sort = keyString;
 };
+
+const searchinput = ref(null);
+const { focused } = useFocus(searchinput);
 const apply = () => {
+  if ($device.isMobile) focused.value = false;
   const q = { ...temp.value, search: search.value };
   for (const key of Object.keys(props.query)) {
     if (!Object.hasOwn(q, key)) {
@@ -242,94 +234,3 @@ const clearSearch = () => {
   }
 };
 </script>
-
-<!-- <script>
-/* eslint-disable eqeqeq */
-export default {
-  props: {
-    query: {
-      type: Object,
-      default() {
-        return {};
-      },
-    },
-  },
-  data() {
-    return {
-      search: this.query.search,
-      sortTypes: [
-        { name: "Latest", key: "latest" },
-        { name: "Oldest", key: "oldest" },
-        { name: "Most Views", key: "most_views" },
-        { name: "Most Gifts", key: "most_gift" },
-        // { name: 'Least Gifts', key: 'least_gift' },
-      ],
-      filterTemp: [],
-      temp: {},
-    };
-  },
-  computed: {
-    isEnabled() {
-      if (Object.keys(this.temp).length || this.search !== this.query.search) return true;
-      return false;
-    },
-  },
-  mounted() {
-    const searchInput = this.$refs.searchInput;
-    const applyBtn = this.$refs.applyBtn;
-    if (searchInput && applyBtn) {
-      searchInput.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-          event.preventDefault();
-          applyBtn.click();
-        }
-      });
-    }
-  },
-  methods: {
-    clearSearch() {
-      this.search = "";
-      if (this.isEnabled) this.apply();
-    },
-    setGraduated(bool) {
-      let temp = this.temp.graduated;
-      const query = this.query.graduated;
-      if (temp === undefined) temp = query;
-      if (temp === bool) {
-        temp = null;
-      } else {
-        temp = bool;
-      }
-
-      if (temp === query) return this.$delete(this.temp, "graduated");
-      this.$set(this.temp, "graduated", temp);
-    },
-    checkGraduated(bool) {
-      const temp = this.temp.graduated;
-      const query = this.query.graduated;
-      if (temp !== undefined) {
-        return temp === bool;
-      }
-      return query === bool;
-    },
-    setSort(key) {
-      if (key === this.query.sort) {
-        return this.$delete(this.temp, "sort");
-      }
-      this.$set(this.temp, "sort", key);
-    },
-    apply() {
-      const temp = { ...this.temp, search: this.search };
-      for (const key of Object.keys(this.query)) {
-        if (!Object.hasOwn(temp, key)) {
-          temp[key] = this.query[key];
-        }
-      }
-
-      // const success = this.onApply(temp);
-      // if (success) this.temp = {};
-      this.$emit("apply", temp);
-    },
-  },
-};
-</script> -->

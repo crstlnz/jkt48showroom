@@ -1,5 +1,3 @@
-import util from "../library/plugins/util";
-import time from "../library/plugins/time";
 import config from "~~/config";
 import SwipeDetector from "~~/library/plugins/swipeDetector";
 import DragListener from "~~/library/plugins/dragListener";
@@ -14,17 +12,15 @@ export default defineNuxtPlugin(() => {
         }
         return url;
       },
-      util,
-      time,
-      createSwipeDetector: (x: number, y: number, mode: string) => new SwipeDetector(x, y, mode),
-      createDragListener: (el: any) => new DragListener(el),
+      createSwipeDetector: (x: number, y: number, mode: string): SwipeDetector => new SwipeDetector(x, y, mode),
+      createDragListener: (el: unknown): DragListener => new DragListener(el),
       ...config,
       currency(num: number, type: CurrencyType = "sr") {
         const { n: $n } = useI18n();
-        if (type == "sr") {
+        if (type === "sr") {
           return `${$n(num)} G`;
         } else {
-          if (type == "jpy") return $n(num * 1.1, "currency", "ja-JP");
+          if (type === "jpy") return $n(num * 1.1, "currency", "ja-JP");
           return $n(num * 1.1 * 105.5, "currency", "id-ID");
         }
       },
