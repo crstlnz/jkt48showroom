@@ -1,6 +1,7 @@
 <template>
   <div class="text-center py-2 md:py-3 flex gap-3">
     <NuxtLink
+      aria-label="View profile"
       class="h-[4.5rem] md:h-20 aspect-square relative cursor-pointer drop-shadow-sm rounded-full overflow-hidden"
       to="/"
     >
@@ -14,12 +15,12 @@
 
     <div class="info text-left flex flex-col flex-1 w-0">
       <div class="name flex flex-1 gap-2">
-        <h3
+        <h2
           class="font-bold text-ellipsis whitespace-nowrap overflow-hidden flex-1 text-sm md:text-base"
           :title="recent.member?.name"
         >
           {{ recent.member?.name }}
-        </h3>
+        </h2>
         <div
           v-if="recent.member?.is_graduate"
           class="graduated w-6 h-6 p-[3px] text-white bg-red-500 rounded-full"
@@ -52,16 +53,16 @@
         </li>
         <li>
           <Icon name="ph:clock-bold" class="self-center text-sm md:text-base" />
-          {{
-            $time.fromNow(
-              recent.live_info && recent.live_info?.date?.end ? recent.live_info.date.end : recent.created_at
-            )
-          }}
+          <div>
+            {{ date }}
+          </div>
         </li>
       </ul>
       <div class="mt-2 pt-2 border-t-2 border-t-gray-50 dark:border-t-dark-2 flex justify-end text-sm md:text-base">
         <ul>
-          <li><a :href="`/recent/${recent.data_id}`" target="_blank">Detail</a></li>
+          <li>
+            <a :href="`/recent/${recent.data_id}`" target="_blank">Detail</a>
+          </li>
         </ul>
       </div>
     </div>
@@ -70,7 +71,13 @@
 
 <script lang="ts" setup>
 import { LazyImage } from "#components";
-defineProps<{
+const props = defineProps<{
   recent: IRecent;
 }>();
+const { $fromNow } = useNuxtApp();
+const date = $fromNow(
+  props.recent.live_info && props.recent.live_info?.date?.end
+    ? props.recent.live_info.date.end
+    : props.recent.created_at
+);
 </script>

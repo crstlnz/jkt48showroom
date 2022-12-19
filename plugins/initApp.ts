@@ -1,6 +1,6 @@
 import { useOnLives } from "~~/store/onLives";
 import { useMembers } from "~/store/members";
-export default defineNuxtPlugin(({ hook, $nextTick }) => {
+export default defineNuxtPlugin(({ hook }) => {
   const members = useMembers();
   hook("app:created", async () => {
     await members.load();

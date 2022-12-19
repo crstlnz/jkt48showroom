@@ -1,4 +1,4 @@
-import moment from "moment";
+import moment from "~/library/utils/moment";
 const secondsTime = {
   year: 31536000,
   month: 2628000,
@@ -25,7 +25,7 @@ interface IStringDuration {
   remainingTime: number;
 }
 
-const indo: IDateString = {
+const indonesian: IDateString = {
   year: "tahun",
   month: "bulan",
   day: "hari",
@@ -43,15 +43,15 @@ const english: IDateString = {
   second: "second",
 };
 
-const dateString: IDateString = english;
-
-function getStringDuration(time: any): IStringDuration {
+type LocaleType = "en" | "id";
+function getStringDuration(time: number, locale: LocaleType | null = null): IStringDuration {
+  const dateString: IDateString = locale === "en" || locale === null ? english : indonesian;
   if (time >= secondsTime.year) {
     // 1 year
     const num = Math.floor(time / secondsTime.year);
     return {
       string: `${num} ${dateString.year}`,
-      num: num,
+      num,
       type: "year",
       remainingTime: time - num * secondsTime.year,
     };
@@ -59,7 +59,7 @@ function getStringDuration(time: any): IStringDuration {
     const num = Math.floor(time / secondsTime.month);
     return {
       string: `${num} ${dateString.month}`,
-      num: num,
+      num,
       type: "month",
       remainingTime: time - num * secondsTime.month,
     };
@@ -67,7 +67,7 @@ function getStringDuration(time: any): IStringDuration {
     const num = Math.floor(time / secondsTime.day);
     return {
       string: `${num} ${dateString.day}`,
-      num: num,
+      num,
       type: "day",
       remainingTime: time - num * secondsTime.day,
     };
@@ -75,7 +75,7 @@ function getStringDuration(time: any): IStringDuration {
     const num = Math.floor(time / secondsTime.hour);
     return {
       string: `${num} ${dateString.hour}`,
-      num: num,
+      num,
       type: "hour",
       remainingTime: time - num * secondsTime.hour,
     };
@@ -83,7 +83,7 @@ function getStringDuration(time: any): IStringDuration {
     const num = Math.floor(time / secondsTime.minute);
     return {
       string: `${num} ${dateString.minute}`,
-      num: num,
+      num,
       type: "minute",
       remainingTime: time - num * secondsTime.minute,
     };
@@ -98,18 +98,19 @@ function getStringDuration(time: any): IStringDuration {
 }
 
 export default {
-  fromNow(time: any) {
+  fromNow(time: Date | string) {
     return moment(time).fromNow();
   },
-  formatSR(time: any) {
+  formatSR(time: Date | string) {
     return moment(time).format("h:mm A") + "~";
   },
 
-  detailDuration(time1: any, time2: any) {
+  detailDuration(time1: Date | string | number, time2: Date | string | number, lang: LocaleType | null = null) {
+    if (!lang) lang = "en";
     const time = Math.floor(Math.abs(new Date(time1).getTime() - new Date(time2).getTime()) / 1000); // in seconds
-    function get(time: any, res: any[] = []): any[] {
-      const data = getStringDuration(time);
-      if ("english" === "english") {
+    function get(time: number, res: unknown[] = []): unknown[] {
+      const data = getStringDuration(time, lang);
+      if (lang === "en") {
         res.push(data.string + (data.num > 1 ? "s" : ""));
       } else {
         res.push(data.string);

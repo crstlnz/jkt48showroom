@@ -1,4 +1,7 @@
-import { acceptHMRUpdate, defineStore } from "pinia";
+import {
+  defineStore,
+  acceptHMRUpdate,
+} from "~/node_modules/@pinia/nuxt/dist/runtime/composables";
 
 export const useMembers = defineStore("members", () => {
   const error = useState("error", () => false);

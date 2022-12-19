@@ -5,12 +5,12 @@
         <img :src="imgSrc" :alt="alt ?? 'Error!'" class="w-full mx-auto aspect-[100/67] dark:brightness-125" />
       </div>
       <div>
-        <h1 class="text-xl md:text-2xl xl:text-4xl mb-1 font-semibold text-slate-800 dark:text-slate-100">
+        <h2 class="text-xl md:text-2xl xl:text-4xl mb-1 font-semibold text-slate-800 dark:text-slate-100">
           {{ message }}
-        </h1>
-        <a class="hover:text-second-2 text-xs md:text-md xl:text-base inline-block mt-4" :href="url ?? '/'"
-          >Redirect me</a
-        >
+        </h2>
+        <a class="hover:text-second-2 text-xs md:text-md xl:text-base inline-block mt-4" :href="url ?? '/'">{{
+          $t("redirectme")
+        }}</a>
       </div>
     </div>
   </div>

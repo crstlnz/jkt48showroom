@@ -20,35 +20,38 @@
           </template>
         </ClientOnly>
       </div>
-      <h2 class="text-xl sm:text-2xl font-bold relative">Live Now</h2>
+      <h2 class="text-xl sm:text-2xl font-bold relative">Live</h2>
     </div>
     <ClientOnly>
       <div v-if="lives.pending && lives.data == null" key="loading">
         <div class="h-4 md:h-5 w-20 rounded-xl animate-pulse pulse-color" />
       </div>
-      <div v-else key="data" class="text-xs md:text-sm opacity-60">{{ lives.data?.length }} Members</div>
-      <template #fallback key="server">
-        <div class="h-4 md:h-5 w-20 rounded-xl animate-pulse pulse-color" />
+      <div v-else key="data" class="text-xs md:text-sm opacity-60">
+        {{ lives.data?.length ?? 0 }}
+        {{ $t("member", lives.data?.length ?? 0) }}
+      </div>
+      <template #fallback>
+        <div key="server" class="h-4 md:h-5 w-20 rounded-xl animate-pulse pulse-color" />
       </template>
     </ClientOnly>
   </div>
   <ClientOnly>
     <div
       v-if="lives.pending && lives.data === null"
-      class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 md:gap-4 xl:gap-5 p-3 md:p-4 xl:p-5 bg-white dark:bg-dark-1 rounded-xl"
+      class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-3 md:gap-4 xl:gap-5 p-3 md:p-4 xl:p-5 bg-white dark:bg-dark-1 rounded-xl"
     >
       <PulseLiveCard></PulseLiveCard>
     </div>
     <div
       v-else-if="lives.error"
-      class="flex flex-col justify-center items-center bg-white dark:bg-dark-1 w-full rounded-xl gap-2 md:gap-3 xl:gap-4 pb-5 xl:pb-8 xl:pt-2 text-xs md:text-sm"
+      class="flex flex-col justify-center items-center bg-white dark:bg-dark-1 w-full rounded-xl gap-2 md:gap-3 xl:gap-5 pb-5 xl:pb-8 xl:pt-2 text-xs md:text-sm"
     >
       <img class="w-72 max-w-[70%] aspect-square" src="/svg/error.svg" />
-      Data fetching failed! 😥
+      {{ $t("data.failed") }}
     </div>
     <div
       v-else-if="lives.data?.length"
-      class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 md:gap-4 xl:gap-5 p-3 md:p-4 xl:p-5 bg-white dark:bg-dark-1 rounded-xl"
+      class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-3 md:gap-4 xl:gap-5 p-3 md:p-4 xl:p-5 bg-white dark:bg-dark-1 rounded-xl"
     >
       <MemberLiveCard
         v-for="live in lives.data.values()"
@@ -65,7 +68,7 @@
     >
       <div class="aspect-square gap-2 md:gap-3 text-xs md:text-sm pb-6 text-center flex flex-col justify-center">
         <img class="mx-auto w-72 max-w-[80%] aspect-square" alt="No member onlive" src="/svg/space.svg" />
-        No Live
+        {{ $t("nolive") }}
       </div>
     </div>
     <template #fallback>
@@ -79,7 +82,6 @@
 </template>
 
 <script lang="ts" setup>
-import { storeToRefs } from "pinia";
 import { useOnLives } from "~/store/onLives";
 const onLives = useOnLives();
 const { lives, liveInfo } = storeToRefs(onLives);

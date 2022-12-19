@@ -22,7 +22,6 @@ module.exports = {
     "@typescript-eslint/no-empty-function": "warn",
     "no-unreachable": "warn",
     "require-await": "warn",
-    "scss(unknownAtRules)": "ignore",
     "prettier/prettier": ["off", { singleQuote: true }],
   },
   // compilerOptions: {

@@ -10,26 +10,17 @@ interface LocalStoreControllerOptions<T> {
 export default function <T>(
   id: string,
   fetchData: (...args: any[]) => Promise<T>,
-  opts: LocalStoreControllerOptions<T> = null
+  opts: LocalStoreControllerOptions<T> = {}
 ) {
-  const defaultOptions: LocalStoreControllerOptions<T> = {
-    expiredIn: 3600000,
-    expire: true,
-    serializer: null,
-    allowExpiredData: false,
-  };
-
-  const willExpire = opts?.expire ?? defaultOptions.expire;
-  const expiredIn = opts?.expiredIn ?? defaultOptions.expiredIn;
-  const serializer = opts?.serializer ?? defaultOptions.serializer;
-  const allowExpiredData = opts?.allowExpiredData ?? defaultOptions.allowExpiredData;
-  // const pending = useState("pending", () => false);
-  // const error = useState("error", () => false);
+  const willExpire = opts?.expire ?? true;
+  const expiredIn = opts?.expiredIn ?? 3600000;
+  const serializer = opts?.serializer;
+  const allowExpiredData = opts?.allowExpiredData ?? false;
   const pending = ref(false);
   const error = ref(false);
 
   const data: Ref<T | null> = useLocalStorage(`data-${id}`, null as T, {
-    serializer: serializer,
+    serializer,
   });
   const lastFetch = useLocalStorage(`lf-${id}`, 0 as number);
 
@@ -42,12 +33,12 @@ export default function <T>(
     return new Date().getTime() - lastFetch.value > expiredIn;
   }
 
-  async function tryRefresh(...args: any[]) {
+  function tryRefresh(...args: unknown[]) {
     if (willExpire && !pending.value && !isExpired()) return;
     refresh(...args);
   }
 
-  async function refresh(...args: any[]) {
+  async function refresh(...args: unknown[]) {
     try {
       pending.value = true;
       const res: T = await fetchData(args);
@@ -61,6 +52,7 @@ export default function <T>(
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function set(value: T) {
     data.value = value;
   }

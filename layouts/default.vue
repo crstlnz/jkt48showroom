@@ -14,7 +14,7 @@
       :height="4"
       color="repeating-linear-gradient(to right,#6eff94 0%,#0addfc 50%,#3482F6 100%)"
     />
-    <nav ref="nav" class="fixed z-[1000] top-0 left-0 right-0 bg-white dark:bg-dark-1 shadow-sm">
+    <nav class="fixed z-[1000] top-0 left-0 right-0 bg-white dark:bg-dark-1 shadow-sm">
       <div class="container h-16 flex items-center mx-auto px-4 md:px-3 flex-row-reverse md:flex-row">
         <button
           key="burger"
@@ -31,8 +31,7 @@
 
         <div class="flex-1 md:flex-none w-0 md:w-auto items-center flex">
           <NuxtLink class="text-2xl py-2 hover:text-blue-400 inline-block font-bold truncate" to="/"
-            >JKT48 Showroom
-            <!-- {{ $t("nolive") }} -->
+            ><h1>JKT48 Showroom</h1>
           </NuxtLink>
         </div>
 
@@ -52,7 +51,7 @@
           <li
             class="flex gap-4 md:pl-6 md:border-l-2 dark:border-slate-100/30 py-4 md:py-0.5 items-center justify-center"
           >
-            <!-- <LangSwitch></LangSwitch> -->
+            <LangSwitch></LangSwitch>
             <button
               type="button"
               aria-label="Toggle Dark Mode"
@@ -74,7 +73,12 @@
     </nav>
 
     <div class="container mt-16 px-3 mx-auto flex-1">
-      <slot />
+      <NuxtErrorBoundary @error="handleError">
+        <template #error>
+          <Error :message="$t('error.unknown')" :alt="$t('error.unknown')" img-src="/svg/error.svg" :url="'/'" />
+        </template>
+        <slot />
+      </NuxtErrorBoundary>
     </div>
 
     <footer class="py-10 font-bold flex items-center justify-center">
@@ -91,7 +95,7 @@ const i18nHead = useLocaleHead({
 });
 useHead({
   htmlAttrs: {
-    lang: i18nHead.value.htmlAttrs!.lang,
+    lang: i18nHead.value.htmlAttrs?.lang,
     dir: i18nHead.value.htmlAttrs?.dir,
   },
   title: "JKT48 Showroom",
@@ -105,7 +109,11 @@ useHead({
       content: "JKT48 Showroom Logs",
     },
   ],
-  link: [...(i18nHead.value.link || []), { rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
+  link: [
+    ...(i18nHead.value.link || []),
+    { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
+    { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
+  ],
 });
 const menuOpen = ref(false);
 const menus = [
@@ -142,4 +150,11 @@ watch(route, () => {
     menuOpen.value = false;
   });
 });
+
+const { IS_DEV } = useRuntimeConfig();
+
+function handleError(error: any) {
+  // eslint-disable-next-line no-console
+  if (IS_DEV) console.log(error);
+}
 </script>

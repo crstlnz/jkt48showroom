@@ -2,7 +2,8 @@
   // https://v3.nuxtjs.org/concepts/typescript
   "extends": "./.nuxt/tsconfig.json",
   "compilerOptions": {
-    "types": ["@nuxtjs/i18n",]
+    "suppressImplicitAnyIndexErrors": true
+    // "types": ["@nuxtjs/i18n",]
     // "types": ["offscreencanvas"]
   }
 }

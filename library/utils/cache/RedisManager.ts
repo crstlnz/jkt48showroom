@@ -1,3 +1,4 @@
+import { RedisCommandArgument } from "@redis/client/dist/lib/commands";
 import redis from "~/library/redis";
 
 interface WithExpire<T> {
@@ -13,13 +14,13 @@ class RedisManager {
     this.delay = 1000;
   }
 
-  sleep(ms) {
+  sleep(ms: number) {
     return new Promise((resolve) => {
       setTimeout(resolve, ms);
     });
   }
 
-  parse(value) {
+  parse(value: any) {
     try {
       return JSON.parse(value);
     } catch (e) {
@@ -27,14 +28,18 @@ class RedisManager {
     }
   }
 
-  async get<T>(key, withExpire = false, retry = 0): Promise<T | WithExpire<T>> {
+  async get<T>(
+    key: RedisCommandArgument | string | number,
+    withExpire = false,
+    retry = 0
+  ): Promise<T | WithExpire<T> | null> {
     if (retry > 0) await this.sleep(this.delay);
     try {
-      const d = await redis.get(key);
+      const d = await redis.get(key as RedisCommandArgument);
       if (!d) return null;
       const data = this.parse(d);
       if (!withExpire) return data as T;
-      const expireIn = await redis.pTTL(key);
+      const expireIn = await redis.pTTL(key as RedisCommandArgument);
       return {
         expireIn,
         data,
@@ -48,13 +53,18 @@ class RedisManager {
     }
   }
 
-  async set(key: string, value: string | object, ms = 3600000, retry = 0) {
+  async set(
+    key: string,
+    value: string | object,
+    ms = 3600000,
+    retry = 0
+  ): Promise<void> {
     if (retry > 0) await this.sleep(this.delay);
     try {
-      return await redis.set(key, JSON.stringify(value), { PX: ms });
+      await redis.set(key, JSON.stringify(value), { PX: ms });
     } catch (e) {
       if (retry < this.maxRetry) {
-        return await this.set(key, value, ms, retry + 1);
+        await this.set(key, value, ms, retry + 1);
       } else {
         throw e;
       }

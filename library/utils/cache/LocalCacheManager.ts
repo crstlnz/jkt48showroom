@@ -3,7 +3,7 @@ interface Value {
   expireIn: number;
   date: number;
 }
-const setValue = (value, ms): Value => ({
+const setValue = (value: string | object | number, ms: number): Value => ({
   value,
   expireIn: ms,
   date: new Date().getTime(),
@@ -15,12 +15,12 @@ class LocalCacheManager {
     this.map = new Map();
   }
 
-  set(key, value, ms = 3600000) {
+  set(key: string | number, value: any, ms = 3600000) {
     if (!key) throw new Error("No Key");
     this.map.set(key, setValue(value, ms));
   }
 
-  get(key) {
+  get(key: string | number) {
     return this.map.get(key)?.value;
   }
 
@@ -28,16 +28,21 @@ class LocalCacheManager {
     this.map.clear();
   }
 
-  has(key) {
+  has(key: string | number) {
     return this.map.has(key);
   }
 
-  valid(key) {
+  valid(key: string | number) {
     if (!this.map.has(key)) return false;
     const d = this.map.get(key);
-    if (new Date().getTime() - new Date(d.date).getTime() < d.expireIn) return true;
+    if (
+      new Date().getTime() - new Date(d?.date ?? 0).getTime() <
+      (d?.expireIn ?? 0)
+    )
+      return true;
     return false;
   }
 }
 
 export default LocalCacheManager;
+export { Value };

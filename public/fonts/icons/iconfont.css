@@ -1,12 +1,10 @@
-
 @font-face {
   font-family: "Iconify Explorer Font";
   src: url("./iconfont.eot");
   src: url("./iconfont.eot") format("embedded-opentype"),
-       url("./iconfont.ttf") format("truetype"),
-       url("./iconfont.woff") format("woff"),
-       url("./iconfont.woff2") format("woff2"),
-       url("./iconfont.svg") format("svg");
+    url("./iconfont.ttf") format("truetype"),
+    url("./iconfont.woff") format("woff"),
+    url("./iconfont.woff2") format("woff2"), url("./iconfont.svg") format("svg");
   font-weight: normal;
   font-style: normal;
 }
@@ -19,128 +17,126 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-
 .i.ph\:check-bold:before {
-content: "\e001";
+  content: "\e001";
 }
 
 .i.ph\:check-circle-bold:before {
-content: "\e002";
+  content: "\e002";
 }
 
 .i.ph\:circle-wavy-check-bold:before {
-content: "\e003";
+  content: "\e003";
 }
 
 .i.ph\:circle-wavy-check-fill:before {
-content: "\e004";
+  content: "\e004";
 }
 
 .i.ph\:clock:before {
-content: "\e005";
+  content: "\e005";
 }
 
 .i.ph\:clock-bold:before {
-content: "\e006";
+  content: "\e006";
 }
 
 .i.ph\:coin-bold:before {
-content: "\e007";
+  content: "\e007";
 }
 
 .i.ph\:coins-bold:before {
-content: "\e008";
+  content: "\e008";
 }
 
 .i.ph\:currency-circle-dollar-bold:before {
-content: "\e009";
+  content: "\e009";
 }
 
 .i.ph\:diamonds-four:before {
-content: "\e00a";
+  content: "\e00a";
 }
 
 .i.ph\:diamonds-four-bold:before {
-content: "\e00b";
+  content: "\e00b";
 }
 
 .i.ph\:dots-three-circle:before {
-content: "\e00c";
+  content: "\e00c";
 }
 
 .i.ph\:dots-three-circle-bold:before {
-content: "\e00d";
+  content: "\e00d";
 }
 
 .i.ph\:dots-three-circle-fill:before {
-content: "\e00e";
+  content: "\e00e";
 }
 
 .i.ph\:dots-three-outline-fill:before {
-content: "\e00f";
+  content: "\e00f";
 }
 
 .i.ph\:dots-three-outline-vertical-fill:before {
-content: "\e010";
+  content: "\e010";
 }
 
 .i.ph\:gift-bold:before {
-content: "\e011";
+  content: "\e011";
 }
 
 .i.ph\:graduation-cap:before {
-content: "\e012";
+  content: "\e012";
 }
 
 .i.ph\:graduation-cap-bold:before {
-content: "\e013";
+  content: "\e013";
 }
 
 .i.ph\:infinity-bold:before {
-content: "\e014";
+  content: "\e014";
 }
 
 .i.ph\:info-bold:before {
-content: "\e015";
+  content: "\e015";
 }
 
 .i.ph\:microphone-stage:before {
-content: "\e016";
+  content: "\e016";
 }
 
 .i.ph\:microphone-stage-bold:before {
-content: "\e017";
+  content: "\e017";
 }
 
 .i.ph\:moon-bold:before {
-content: "\e018";
+  content: "\e018";
 }
 
 .i.ph\:presentation-chart-bold:before {
-content: "\e019";
+  content: "\e019";
 }
 
 .i.ph\:sun-bold:before {
-content: "\e01a";
+  content: "\e01a";
 }
 
 .i.ph\:user-bold:before {
-content: "\e01b";
+  content: "\e01b";
 }
 
 .i.ph\:users:before {
-content: "\e01c";
+  content: "\e01c";
 }
 
 .i.ph\:users-bold:before {
-content: "\e01d";
+  content: "\e01d";
 }
 
 .i.ph\:video-camera-bold:before {
-content: "\e01e";
+  content: "\e01e";
 }
 
 .i.ph\:x-bold:before {
-content: "\e01f";
+  content: "\e01f";
 }
-

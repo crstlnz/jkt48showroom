@@ -8,11 +8,13 @@ const userSchema = new Schema({
   },
   image: {
     type: String,
-    default: "https://image.showroom-cdn.com/showroom-prod/assets/img/no_profile.jpg",
+    default:
+      "https://image.showroom-cdn.com/showroom-prod/assets/img/no_profile.jpg",
   },
   avatar_url: {
     type: String,
-    default: "https://image.showroom-cdn.com/showroom-prod/image/avatar/1.png?v=87",
+    default:
+      "https://image.showroom-cdn.com/showroom-prod/image/avatar/1.png?v=87",
   },
   avatar_id: {
     type: Number,

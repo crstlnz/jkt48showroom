@@ -13,7 +13,7 @@ class InfiniteScroll extends EventEmitter {
   lastScroll: number;
   checkAfterFinish: boolean;
   // emit load
-  constructor(window) {
+  constructor(window: any) {
     super();
     this.window = window;
     this.state = state.IDLE;
@@ -24,7 +24,7 @@ class InfiniteScroll extends EventEmitter {
     this.start();
   }
 
-  setTrigger(num) {
+  setTrigger(num: number) {
     this.trigger = num;
   }
 
@@ -37,7 +37,7 @@ class InfiniteScroll extends EventEmitter {
     this.listener.removeAll();
   }
 
-  onScroll(e) {
+  onScroll(e: any) {
     this.emit("scroll", { x: window.scrollX, y: window.scrollY, e });
     const last = this.lastScroll;
     this.lastScroll = window.scrollY;
@@ -46,12 +46,15 @@ class InfiniteScroll extends EventEmitter {
     }
   }
 
-  setCheckAfterFinish(bool) {
+  setCheckAfterFinish(bool: boolean) {
     this.checkAfterFinish = bool;
   }
 
   checkTrigger() {
-    const percent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+    const percent =
+      (window.scrollY /
+        (document.documentElement.scrollHeight - window.innerHeight)) *
+      100;
     if (percent > this.trigger) {
       this.state = state.LOADING;
       this.emit("load");

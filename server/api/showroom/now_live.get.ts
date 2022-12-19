@@ -1,43 +1,29 @@
-import axios from "axios";
 import { parse } from "node-html-parser";
 import { getMembers } from "./members.get";
+import ShowroomAPI from "~~/library/api/showroom";
 import cache from "~~/library/utils/cache";
 import config from "~/config";
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
 export default defineEventHandler(async (): Promise<INowLive[]> => {
-  // const nowLive = [...(await getNowLive())];
-  // nowLive.push({
-  //   name: "Beby/ベビー",
-  //   img: "https://res.cloudinary.com/haymzm4wp/image/upload/v1659596759/jkt48/stage48/Beby%20Chaesara%20Anadila.jpg",
-  //   url: "/Beby_Chaesara",
-  //   // room_id: 318114,
-  //   room_id: 258181,
-  //   is_graduate: true,
-  //   is_group: false,
-  //   room_exists: true,
-  // });
   return await getNowLive();
 });
 export { getNowLive, getNowLiveDirect, getNowLiveIndirect, getNowLiveCookies };
 const time = 60000;
 async function getNowLive(): Promise<INowLive[]> {
-  return await cache.fetch<INowLive[]>("now_live", getNowLiveCookies, time).catch(() => []);
+  return await cache
+    .fetch<INowLive[]>("now_live", getNowLiveCookies, time)
+    .catch(() => []);
 }
 
-async function getNowLiveDirect(membersData: IMember[] = null): Promise<INowLive[]> {
+async function getNowLiveDirect(
+  membersData: IMember[] | null = null
+): Promise<INowLive[]> {
   const members: IMember[] = membersData ?? (await getMembers());
-  const promises: Promise<INowLive>[] = [];
+  const promises: Promise<INowLive | null>[] = [];
   for (const member of members) {
     promises.push(
-      (async (): Promise<INowLive> => {
+      (async (): Promise<INowLive | null> => {
         try {
-          const { data } = await axios.get(config.isLiveURL, {
-            params: {
-              room_id: member.room_id,
-              _: new Date().getTime(),
-            },
-          });
+          const data = await ShowroomAPI.isLive(member.room_id);
           if (!data.ok) return null;
           return {
             name: member.name,
@@ -55,7 +41,7 @@ async function getNowLiveDirect(membersData: IMember[] = null): Promise<INowLive
     );
   }
   const data = await Promise.all(promises);
-  return data.filter((i) => i);
+  return data.filter((i) => i) as INowLive[];
 }
 
 async function getNowLiveCookies(): Promise<INowLive[]> {
@@ -68,10 +54,12 @@ async function getNowLiveCookies(): Promise<INowLive[]> {
   if (!response.ok) throw new Error("Failed to fetch showroom page!");
   const result = await response.text();
   const document = parse(result);
-  const elements = document.querySelectorAll("#js-genre-section-all .js-follow-li");
+  const elements = document.querySelectorAll(
+    "#js-genre-section-all .js-follow-li"
+  );
   const roomInfo = new Map();
   for (const el of elements) {
-    const roomId = el.querySelector(".room-url").getAttribute("data-room-id");
+    const roomId = el?.querySelector(".room-url")?.getAttribute("data-room-id");
     if (roomId && !isNaN(Number(roomId))) {
       const isLive = !!el.querySelector(".is-onlive");
       roomInfo.set(Number(roomId), isLive);
@@ -106,13 +94,15 @@ async function getNowLiveCookies(): Promise<INowLive[]> {
 
 async function getNowLiveIndirect(): Promise<INowLive[]> {
   const members: IMember[] = await getMembers();
-  const { data: res } = await axios.get(`${config.onLivesURL}?_=${new Date().getTime()}`);
-  const all = res.onlives.reduce((a, b) => {
+  const res = await ShowroomAPI.onlives();
+  const all = res.onlives.reduce((a: any, b: any) => {
     a.push(...b.lives);
     return a;
   }, []);
   const lives: IMember[] = [];
-  for (const member of members) if (all.some((m) => m.room_id === member.room_id)) lives.push({ ...member });
+  for (const member of members)
+    if (all.some((m: any) => m.room_id === member.room_id))
+      lives.push({ ...member });
   return lives.map<INowLive>((m) => ({
     name: m.name,
     img: m.img,

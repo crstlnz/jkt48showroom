@@ -17,6 +17,7 @@
         />
       </div>
       <button
+        type="button"
         class="aspect-square w-5 md:w-6 rounded-full hover:bg-slate-300/50 flex justify-center items-center cursor-pointer select-none z-10"
         @click="openMenu = !openMenu"
       >
@@ -27,9 +28,9 @@
     <NuxtLink
       :tabindex="openMenu ? -1 : null"
       disabled
+      aria-label="View profile"
       :class="{ 'pointer-events-none': openMenu }"
       class="z-0 h-20 md:h-24 lg:h-28 aspect-square drop-shadow-sm gap-0.5 rounded-full overflow-hidden mx-auto"
-      to="/wew"
       no-prefetch
     >
       <LazyImage
@@ -38,22 +39,24 @@
         :src="$fixCloudinary(live.img)"
       />
     </NuxtLink>
-    <h3 class="font-bold text-sm md:text-lg text-center line-clamp-2 flex-1 h-0">
+    <h2 class="font-bold text-sm md:text-lg text-center line-clamp-2 flex-1 h-0">
       {{ live.name }}
-    </h3>
+    </h2>
     <div
       v-if="!pending"
       class="bg-red-500 rounded-xl px-2 py-1 md:px-3 md:py-2 mx-auto text-white md:font-semibold text-xs"
     >
-      <div v-if="startDate">{{ $time.formatSR(startDate) }}</div>
+      <div v-if="startDate">{{ date }}</div>
       <div v-else>
         Error
-        <button @click="$emit('refreshliveinfo')"><Icon name="ion:md-refresh" class="text-base self-center" /></button>
+        <button type="button" @click="$emit('refreshliveinfo')">
+          <Icon name="ion:md-refresh" class="text-base self-center" />
+        </button>
       </div>
     </div>
     <div v-else class="h-6 md:h-8 w-[74px] animate-pulse bg-red-500 mx-auto rounded-xl" />
     <a
-      :tabindex="openMenu ? -1 : null"
+      :tabindex="openMenu ? -1 : undefined"
       :href="$liveURL(live.url)"
       target="_blank"
       class="flex justify-center items-center gap-1.5 w-full text-center p-2 md:px-5 md:py-3 cursor-pointer bg-blue-500 hover:bg-blue-600 rounded-xl mx-auto font-semibold text-white text-xs sm:text-sm md:text-base"
@@ -89,10 +92,13 @@
 
 <script lang="ts" setup>
 import { LazyImage } from "#components";
-defineProps<{ live: INowLive; startDate: string | null; pending: boolean }>();
+const { $formatSR } = useNuxtApp();
+const props = defineProps<{ live: INowLive; startDate: string | null; pending: boolean }>();
+defineEmits(["refreshliveinfo"]);
 const openMenu = ref(false);
 const container = ref(null);
-const listener = ref(undefined);
+const listener = ref<any>(undefined);
+const date = $formatSR(props.startDate);
 watch(openMenu, (isOpen) => {
   if (isOpen) {
     listener.value = onClickOutside(container, () => (openMenu.value = false));

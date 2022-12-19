@@ -1,9 +1,9 @@
-type RecentsQuery = {
+interface RecentsQuery {
   sort?: string;
   search?: string;
   page?: number;
   filter?: "graduated" | "active" | "all";
-};
+}
 
 interface ILiveInfo {
   penonton: {
@@ -164,3 +164,4 @@ type WorkerMessage = CanvasWorker | CommandWorker;
 
 declare module "vue-virtual-scroller";
 declare module "cors";
+declare module "vue-twitter-timeline";

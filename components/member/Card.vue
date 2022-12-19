@@ -36,23 +36,25 @@
       <LazyImage
         lazy="false"
         class="brightness-100 relative transition-all duration-200 w-full h-full"
+        :alt="member.name + 'display picture'"
         :src="$fixCloudinary(member.img)"
       />
     </a>
     <NuxtLink
-      :tabindex="openMenu ? -1 : null"
       v-else
+      :tabindex="openMenu ? -1 : null"
       class="h-20 md:h-24 xl:h-28 aspect-square relative group text-white font-bold drop-shadow-sm flex justify-center items-center gap-0.5 rounded-full overflow-hidden mx-auto"
     >
       <LazyImage
         lazy="false"
+        aria-label="View profile"
         class="brightness-100 relative transition-all duration-200 w-full h-full"
         :src="$fixCloudinary(member.img)"
       />
     </NuxtLink>
-    <h3 class="text-sm md:text-base xl:text-lg font-bold text-center truncate">
+    <h2 class="text-sm md:text-base xl:text-lg font-bold text-center truncate">
       {{ member.name }}
-    </h3>
+    </h2>
     <div
       class="rounded-full text-white select-none mx-auto text-xs px-2.5 py-1"
       :class="member.is_group ? 'bg-sky-400' : member.is_graduate ? 'bg-red-500' : 'bg-green-500'"
@@ -60,14 +62,14 @@
     >
       {{ member.is_group ? "Official" : member.is_graduate ? "Graduated" : "Active" }}
     </div>
-    <div class="text-xs md:text-sm text-center hidden md:line-clamp-2 lg:line-clamp-3 xl:line-clamp-4">
+    <div class="text-xs md:text-sm text-center line-clamp-2 sm:line-clamp-3 xl:line-clamp-4">
       {{ member.description?.length ? member.description : "No Description." }}
     </div>
     <NuxtLink
       :to="`/member/${member.room_id}`"
       :tabindex="openMenu ? -1 : null"
       class="min-w-[80%] flex items-center justify-center gap-1.5 mt-auto px-5 py-2 xl:py-3 cursor-pointer bg-blue-500 hover:bg-blue-600 rounded-xl mx-auto font-semibold text-white text-xs md:text-sm xl:text-base truncate"
-      ><Icon name="ph:user-fill" class="seft-center text-base md:text-lg" />View Profile</NuxtLink
+      ><Icon name="ph:user-fill" class="seft-center text-base md:text-lg" />{{ $t("viewprofile") }}</NuxtLink
     >
 
     <div
@@ -93,7 +95,7 @@ defineProps<{
   isLive: boolean;
 }>();
 const openMenu = ref(false);
-const listener = ref(undefined);
+const listener = ref<any>(undefined);
 const container = ref(null);
 watch(openMenu, (isOpen) => {
   if (isOpen) {

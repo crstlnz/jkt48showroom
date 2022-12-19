@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-2 bg-white dark:bg-dark-1 shadow-sm p-3 md:p-4 rounded-xl">
+  <div class="space-y-2 bg-white dark:bg-dark-1 shadow-sm p-4 md:p-5 rounded-xl">
     <div class="flex items-center gap-1.5">
       <div class="w-1 h-5 inline-block rounded-l-sm" :class="iconClass" />
       <h2 class="text-lg lg:text-xl font-bold flex-1">{{ title }}</h2>

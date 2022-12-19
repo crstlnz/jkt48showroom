@@ -1,4 +1,4 @@
-import LocalCacheManager from "./LocalCacheManager";
+import LocalCacheManager, { Value } from "./LocalCacheManager";
 import RedisManager from "./RedisManager";
 
 type cacheType = "redis" | "local" | "auto";
@@ -12,6 +12,7 @@ class CacheManager {
     this.cache = new LocalCacheManager();
     this.redis = new RedisManager();
     this.cacheType = cache;
+    this.initType = cache;
   }
 
   disableRedis(ms = 1800000) {
@@ -31,14 +32,14 @@ class CacheManager {
         this.disableRedis();
       }
     } else if (this.cacheType === "auto") {
-      await this.redis.set(key, value, ms).catch(() => {});
+      await this.redis.set(key, value, ms).catch();
       this.cache.set(key, value, ms);
     }
     // fail, use Map() / redistype local
     this.cache.set(key, value, ms);
   }
 
-  async get<T>(key) {
+  async get<T>(key: number | string) {
     if (this.cacheType === "redis") {
       try {
         await this.redis.get(key);
@@ -47,10 +48,12 @@ class CacheManager {
       }
     } else if (this.cacheType === "auto") {
       if (!this.cache.valid(key)) {
-        const cache = await this.redis.get<T>(key, true).catch(() => null);
+        const cache = (await this.redis
+          .get<T>(key, true)
+          .catch(() => null)) as Value;
         if (!cache) return null;
-        this.cache.set(key, cache.data, cache.expireIn);
-        return cache.data;
+        this.cache.set(key, cache.value, cache.expireIn);
+        return cache.value;
       }
       return this.cache.get(key);
     }
@@ -66,7 +69,11 @@ class CacheManager {
     await this.redis.clear();
   }
 
-  async fetch<T>(key: string, fetchData: (...args) => Promise<string | object | []>, ms = 3600000): Promise<T> {
+  async fetch<T>(
+    key: string,
+    fetchData: (...args: unknown[]) => Promise<string | object | []>,
+    ms = 3600000
+  ): Promise<T> {
     const data = await this.get(key);
     if (data) {
       return data as T;

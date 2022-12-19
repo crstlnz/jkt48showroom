@@ -131,9 +131,19 @@ body {
   transition: var(--switch-duration);
 }
 
+.text-stroke {
+  text-shadow: 2px 0 #fff, -2px 0 #fff, 0 2px #fff, 0 -2px #fff, 1px 1px #fff, -1px -1px #fff, 1px -1px #fff,
+    -1px 1px #fff;
+}
+
 .dark {
   ::-webkit-scrollbar-thumb {
     background: rgb(60, 60, 60);
+  }
+
+  .text-stroke {
+    text-shadow: 2px 0 #252525, -2px 0 #252525, 0 2px #252525, 0 -2px #252525, 1px 1px #252525, -1px -1px #252525,
+      1px -1px #252525, -1px 1px #252525;
   }
 }
 
@@ -287,6 +297,16 @@ body {
 }
 .list-enter-from,
 .list-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.tooltip-bottom-enter-active,
+.tooltip-bottom-leave-active {
+  transition: all 0.8s ease;
+}
+.tooltip-bottom-enter-from,
+.tooltip-bottom-leave-to {
   opacity: 0;
   transform: translateY(30px);
 }

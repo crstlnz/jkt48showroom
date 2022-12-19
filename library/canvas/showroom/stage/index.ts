@@ -3,7 +3,7 @@ import { FansAvatar, FansRankings } from "./StageFans";
 import stagePositions from "./StagePosition";
 import calculationTime from "~~/library/utils/calculationTime";
 class StageShowroom extends CanvasUtil {
-  fansRanks: FansRankings;
+  fansRanks: FansRankings | undefined;
   lastDraw: number;
   deltaTime: number;
   time: number;
@@ -17,23 +17,30 @@ class StageShowroom extends CanvasUtil {
     this.lastDraw = 0;
     this.speed = 0.0015;
     this.isAnimated = isAnimated;
+    this.deltaTime = 0;
+    this.isPaused = false;
   }
 
   pause() {
     this.isPaused = true;
   }
 
-  setAnimated(val) {
+  setAnimated(val: boolean) {
     this.isAnimated = val;
   }
 
-  getClickedUser(x, y): number | null {
+  getClickedUser(x: number, y: number): number | null {
     if (!this.fansRanks) return null;
     const padding = 5;
     const size = this.width * FansAvatar.defaultSize + padding;
     for (const fans of this.fansRanks.ranks) {
-      if (x > fans.x - size / 2 && x < fans.x + size / 2 && y > fans.y - size && y < fans.y) {
-        return fans.id;
+      if (
+        x > fans.x - size / 2 &&
+        x < fans.x + size / 2 &&
+        y > fans.y - size &&
+        y < fans.y
+      ) {
+        return fans.id ?? null;
       }
     }
     return null;
@@ -54,8 +61,8 @@ class StageShowroom extends CanvasUtil {
     this.requestDraw();
   }
 
-  async setFans(fans: IStageFans[]) {
-    calculationTime(() => this.fansRanks?.set(fans), "Fans Rank");
+  setFans(fans: IStageFans[]) {
+    calculationTime(async () => await this.fansRanks?.set(fans), "Fans Rank");
   }
 
   inject(canvas: HTMLCanvasElement): void {
@@ -64,11 +71,12 @@ class StageShowroom extends CanvasUtil {
     this.requestDraw();
   }
 
-  draw(time: number = 0) {
+  draw(time = 0) {
     this.clear();
     this.setDeltaTime(time);
-    this.fansRanks.draw(this.deltaTime);
-    if (this.isAnimated && !this.isPaused) requestAnimationFrame((time) => this.draw(time));
+    if (this.fansRanks) this.fansRanks.draw(this.deltaTime);
+    if (this.isAnimated && !this.isPaused)
+      requestAnimationFrame((time) => this.draw(time));
   }
 
   setDeltaTime(time: number) {

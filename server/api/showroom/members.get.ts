@@ -10,7 +10,9 @@ const jkt48officialId = 332503;
 
 const time = 3600000; // 1 hour
 async function getMembers(): Promise<IMember[]> {
-  return await cache.fetch<IMember[]>("jkt48members", fetchData, time).catch(() => []);
+  return await cache
+    .fetch<IMember[]>("jkt48members", fetchData, time)
+    .catch(() => []);
 }
 
 async function fetchData(): Promise<IMember[]> {
@@ -34,14 +36,14 @@ async function fetchData(): Promise<IMember[]> {
           group: member.group,
           room_id: member.room_id,
           room_exists: member.room_exists ?? false,
-          is_graduate: member.member_data?.isGraduate ?? jkt48officialId !== member.room_id,
+          is_graduate:
+            member.member_data?.isGraduate ??
+            jkt48officialId !== member.room_id,
           is_group: jkt48officialId === member.room_id,
         };
       })
       .sort((a, b) => a.name.localeCompare(b.name));
   } catch (e) {
-    // eslint-disable-next-line no-console
-    // console.log(e);
     return [];
   }
 }
