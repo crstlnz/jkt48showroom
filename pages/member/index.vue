@@ -1,3 +1,55 @@
+<script lang="ts" setup>
+// import { useInfiniteScroll } from "@vueuse/core";
+import { useOnLives } from '~~/store/onLives'
+import { useMembers } from '~~/store/members'
+const onLives = useOnLives()
+const memberState = useMembers()
+const { members, pending, error } = storeToRefs(memberState)
+// const data = ref<IMember[]>([]);
+const page = ref(1)
+const perpage = ref(16)
+function getPage (p: number): IMember[] {
+  return members.value?.slice(perpage.value * (p - 1), perpage.value * p) ?? []
+}
+const data = ref<IMember[]>(getPage(page.value))
+
+const mounted = ref(false)
+const noMoreData = ref(false)
+onMounted(() => {
+  setInterval(() => {
+    if (noMoreData.value) { return }
+    page.value += 1
+    const newData = getPage(page.value)
+    if (newData?.length) {
+      data.value.push(...getPage(page.value))
+    } else {
+      page.value -= 1
+      noMoreData.value = true
+    }
+  }, 200)
+  // data.value.push(...(members.value ?? []));
+  mounted.value = true
+})
+
+// onMounted(() => {
+//   useInfiniteScroll(
+//     window,
+//     () => {
+//       if (noMoreData.value) return;
+//       page.value += 1;
+//       const newData = getPage(page.value);
+//       if (newData?.length) {
+//         data.value.push(...getPage(page.value));
+//       } else {
+//         page.value -= 1;
+//         noMoreData.value = true;
+//       }
+//     },
+//     { distance: 50 }
+//   );
+// });
+</script>
+
 <template>
   <div>
     <div v-if="error">
@@ -34,55 +86,3 @@
     </div>
   </div>
 </template>
-
-<script lang="ts" setup>
-// import { useInfiniteScroll } from "@vueuse/core";
-import { useOnLives } from "~~/store/onLives";
-import { useMembers } from "~~/store/members";
-const onLives = useOnLives();
-const memberState = useMembers();
-const { members, pending, error } = storeToRefs(memberState);
-// const data = ref<IMember[]>([]);
-const page = ref(1);
-const perpage = ref(16);
-function getPage(p: number): IMember[] {
-  return members.value?.slice(perpage.value * (p - 1), perpage.value * p) ?? [];
-}
-const data = ref<IMember[]>(getPage(page.value));
-
-const mounted = ref(false);
-const noMoreData = ref(false);
-onMounted(() => {
-  setInterval(() => {
-    if (noMoreData.value) return;
-    page.value += 1;
-    const newData = getPage(page.value);
-    if (newData?.length) {
-      data.value.push(...getPage(page.value));
-    } else {
-      page.value -= 1;
-      noMoreData.value = true;
-    }
-  }, 200);
-  // data.value.push(...(members.value ?? []));
-  mounted.value = true;
-});
-
-// onMounted(() => {
-//   useInfiniteScroll(
-//     window,
-//     () => {
-//       if (noMoreData.value) return;
-//       page.value += 1;
-//       const newData = getPage(page.value);
-//       if (newData?.length) {
-//         data.value.push(...getPage(page.value));
-//       } else {
-//         page.value -= 1;
-//         noMoreData.value = true;
-//       }
-//     },
-//     { distance: 50 }
-//   );
-// });
-</script>

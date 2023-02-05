@@ -1,3 +1,10 @@
+<script lang="ts" setup>
+import { useOnLives } from '~/store/onLives'
+const onLives = useOnLives()
+const { lives } = storeToRefs(onLives)
+
+</script>
+
 <template>
   <div class="flex justify-between items-center mt-2 xl:mt-3">
     <div class="flex gap-1">
@@ -20,7 +27,9 @@
           </template>
         </ClientOnly>
       </div>
-      <h2 class="text-xl sm:text-2xl font-bold relative">Live</h2>
+      <h2 class="text-xl sm:text-2xl font-bold relative">
+        Live
+      </h2>
     </div>
     <ClientOnly>
       <div v-if="lives.pending && lives.data == null" key="loading">
@@ -40,13 +49,13 @@
       v-if="lives.pending && lives.data === null"
       class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-3 md:gap-4 xl:gap-5 p-3 md:p-4 xl:p-5 bg-white dark:bg-dark-1 rounded-xl"
     >
-      <PulseLiveCard></PulseLiveCard>
+      <PulseLiveCard />
     </div>
     <div
       v-else-if="lives.error"
       class="flex flex-col justify-center items-center bg-white dark:bg-dark-1 w-full rounded-xl gap-2 md:gap-3 xl:gap-5 pb-5 xl:pb-8 xl:pt-2 text-xs md:text-sm"
     >
-      <img class="w-72 max-w-[70%] aspect-square" src="/svg/error.svg" />
+      <img class="w-72 max-w-[70%] aspect-square" src="/svg/error.svg">
       {{ $t("data.failed") }}
     </div>
     <div
@@ -57,9 +66,6 @@
         v-for="live in lives.data.values()"
         :key="live.room_id"
         :live="live"
-        :pending="liveInfo.pending"
-        :start-date="onLives.getStartDate(live.room_id)"
-        @refreshliveinfo="refreshLiveInfo"
       />
     </div>
     <div
@@ -67,7 +73,7 @@
       class="flex flex-col justify-center items-center bg-white dark:bg-dark-1 w-full rounded-xl md:min-h-[404px]"
     >
       <div class="aspect-square gap-2 md:gap-3 text-xs md:text-sm pb-6 text-center flex flex-col justify-center">
-        <img class="mx-auto w-72 max-w-[80%] aspect-square" alt="No member onlive" src="/svg/space.svg" />
+        <img class="mx-auto w-72 max-w-[80%] aspect-square" alt="No member onlive" src="/svg/space.svg">
         {{ $t("nolive") }}
       </div>
     </div>
@@ -75,18 +81,8 @@
       <div
         class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 md:gap-4 xl:gap-5 p-3 md:p-4 xl:p-5 bg-white dark:bg-dark-1 rounded-xl"
       >
-        <PulseLiveCard></PulseLiveCard>
+        <PulseLiveCard />
       </div>
     </template>
   </ClientOnly>
 </template>
-
-<script lang="ts" setup>
-import { useOnLives } from "~/store/onLives";
-const onLives = useOnLives();
-const { lives, liveInfo } = storeToRefs(onLives);
-
-function refreshLiveInfo() {
-  onLives.refreshLiveInfo();
-}
-</script>

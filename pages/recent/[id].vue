@@ -1,3 +1,89 @@
+<script lang="ts" setup>
+import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
+import c from '~~/app.config'
+import { LazyImage } from '#components'
+const { $duration } = useNuxtApp()
+const config = useRuntimeConfig()
+const route = useRoute()
+const { data, error } = await useFetch(`/api/showroom/recent/${route.params.id}`, {
+  baseURL: config.public.baseURL
+})
+
+const breakpoints = useBreakpoints(breakpointsTailwind)
+const isMobileSize = breakpoints.smallerOrEqual('md')
+
+const duration = $duration(
+  new Date(data.value?.live_info.date.end ?? 0),
+  new Date(data.value?.live_info.date.start ?? 0)
+)
+
+if (!data?.value) { throw createError({ statusCode: 404, statusMessage: 'Data not found!' }) }
+
+const users = computed<Map<number, IFansCompact>>(() => {
+  const users = new Map<number, IFansCompact>()
+  if (!data?.value?.users) { return users }
+  const u = data?.value?.users
+  for (const user of u) {
+    users.set(user.id, user)
+  }
+  return users
+})
+
+const gifts = computed<Map<number, IGiftImg>>(() => {
+  const gifts = new Map<number, IGiftImg>()
+  if (!data?.value?.live_info?.gift) { return gifts }
+  const g = data?.value?.live_info.gift.list
+  for (const gift of g) {
+    gifts.set(gift.id, {
+      id: gift.id,
+      free: gift.free,
+      point: gift.point,
+      img: c.giftUrl(gift?.id ?? 0)
+    })
+  }
+  return gifts
+})
+
+const calculatedGift = computed<IFansGift[]>(() => {
+  try {
+    if (!data?.value?.live_info?.gift?.log) { return [] }
+    const log = data?.value.live_info.gift.log
+    const mapped = log.map<IFansGift>((i) => {
+      const user = users.value.get(i.user_id)
+      const giftMap = new Map<number, IGifts>()
+      for (const gift of i.gifts) {
+        if (giftMap.has(gift.id)) {
+          const g = giftMap.get(gift.id)
+          if (g) { g.num += gift.num }
+        } else {
+          const g = gifts.value.get(gift.id)
+          if (!g) { continue }
+          giftMap.set(gift.id, {
+            num: gift.num,
+            id: g.id,
+            free: g.free,
+            point: g.point,
+            img: g.img,
+            date: gift.date
+          })
+        }
+      }
+      return {
+        name: user?.name ?? 'User not Found!',
+        id: user?.id ?? 0,
+        avatar: c.avatarURL(user?.avatar_id ?? 1),
+        avatar_id: user?.avatar_id ?? 1,
+        total: i.total,
+        gifts: Array.from(giftMap.values()).sort((a, b) => b.point - a.point)
+      }
+    })
+    return mapped
+  } catch (e) {
+    return []
+  }
+})
+</script>
+
 <template>
   <div class="pt-4 md:pt-6 xl:pt-8">
     <Error v-if="error" message="Something Error!" img-src="/svg/error.svg" />
@@ -7,7 +93,7 @@
       >
         <LazyImage
           class="rounded-xl w-full lg:w-auto lg:h-48 aspect-video border-gray-50 box-border border-2 dark:border-none"
-          :src="$fixCloudinary(data?.room_info.img ?? '')"
+          :src="data?.room_info.img ?? ''"
           :alt="data?.room_info.name + ' Display Picture'"
         />
 
@@ -15,9 +101,15 @@
           <div
             class="bottom-0 right-2 shadow-sm rounded-xl w-fit h-fit text-white font-bold [&>div]:px-3 [&>div]:py-1.5 overflow-hidden text-xs md:text-sm lg:text-base"
           >
-            <div v-if="data?.room_info.is_group" class="bg-sky-400">Official</div>
-            <div v-else-if="data?.room_info.is_graduate" class="bg-red-500">Graduated</div>
-            <div v-else class="bg-green-500">Active</div>
+            <div v-if="data?.room_info.is_group" class="bg-sky-400">
+              Official
+            </div>
+            <div v-else-if="data?.room_info.is_graduate" class="bg-red-500">
+              Graduated
+            </div>
+            <div v-else class="bg-green-500">
+              Active
+            </div>
           </div>
           <h2 class="font-bold text-lg md:text-xl lg:text-2xl flex-1 truncate">
             {{ data?.room_info.name }}
@@ -64,19 +156,25 @@
             <div class="mb-1.5 font-semibold">
               {{ duration }}
             </div>
-            <div class="flex items-center justify-center gap-1"><Icon name="ph:timer-fill" />{{ $t("duration") }}</div>
+            <div class="flex items-center justify-center gap-1">
+              <Icon name="ph:timer-fill" />{{ $t("duration") }}
+            </div>
           </div>
           <div v-if="data?.live_info?.viewer" class="shadow-sm">
             <div class="mb-1.5 font-semibold">
-              {{ data?.live_info?.viewer?.peak }}
+              {{ $n(data?.live_info?.viewer?.peak) }}
             </div>
-            <div class="flex items-center justify-center gap-1"><Icon name="ph:users-fill" /> {{ $t("viewer") }}</div>
+            <div class="flex items-center justify-center gap-1">
+              <Icon name="ph:users-fill" /> {{ $t("viewer") }}
+            </div>
           </div>
           <div class="shadow-sm">
             <div class="mb-1.5 font-semibold">
               {{ $currency(data?.total_point ?? 0) }}
             </div>
-            <div class="flex items-center justify-center gap-1"><Icon name="bx:bxs-gift" />{{ $t("totalgift") }}</div>
+            <div class="flex items-center justify-center gap-1">
+              <Icon name="bx:bxs-gift" />{{ $t("totalgift") }}
+            </div>
           </div>
         </div>
       </div>
@@ -86,13 +184,13 @@
         <div
           class="flex-1 lg:w-auto overflow-hidden aspect-[16/13] xl:aspect-[16/10.5] pulse-color rounded-xl shadow-sm"
         >
-          <ClientOnly v-if="data?.live_info?.stage_list">
+          <ClientOnly v-if="data?.live_info?.stage_list?.length">
             <ShowroomView
               :member-image="data?.room_info?.img"
               :date="data?.live_info?.date"
               :background="
                 data?.live_info?.background_image ??
-                'https://image.showroom-cdn.com/showroom-prod/assets/img/room/background/default.png'
+                  'https://image.showroom-cdn.com/showroom-prod/assets/img/room/background/default.png'
               "
               :screenshot="data?.live_info?.screenshot"
               :live-info="data?.live_info"
@@ -101,206 +199,21 @@
               :gift-data="data?.live_info.gift"
             />
             <template #fallback>
-              <div class="h-full w-full overflow-hidden pulse-color animate-pulse"></div>
+              <div class="h-full w-full overflow-hidden pulse-color animate-pulse" />
             </template>
           </ClientOnly>
           <div v-else class="text-3xl font-bold w-full h-full flex items-center justify-center bg-zinc-600 text-white">
             No data
           </div>
         </div>
-        <div class="relative w-full md:h-auto md:w-[300px] lg:w-[380px] rounded-xl bg-white dark:bg-dark-1 shadow-sm">
+        <div class="relative w-full min-h-[350px] md:h-auto md:w-[300px] lg:w-[380px] rounded-xl bg-white dark:bg-dark-1 shadow-sm">
           <div class="md:absolute md:top-0 md:left-0 md:right-0 md:bottom-0 rounded-xl overflow-hidden z-0">
-            <GiftScroll :gifts="calculatedGift" :page-mode="isMobileSize" />
+            <ClientOnly>
+              <GiftScroll :gifts="calculatedGift" :page-mode="isMobileSize" />
+            </ClientOnly>
           </div>
         </div>
       </div>
-      <!-- <GiftScroll
-          v-if="isMobileSize"
-          class="rounded-xl overflow-hidden bg-white dark:bg-dark-1 shadow-sm"
-          page-mode
-          :gifts="calculatedGift"
-        /> -->
-
-      <!-- <DynamicScroller
-        class="h-full w-full roundedscrollbar"
-        :min-item-size="169"
-        :buffer="0"
-        :prerender="30"
-        :items="[
-          ...calculatedGift,
-          ...calculatedGift,
-          ...calculatedGift,
-          ...calculatedGift,
-          ...calculatedGift,
-          ...calculatedGift,
-          ...calculatedGift,
-          ...calculatedGift,
-          ...calculatedGift,
-        ]"
-        key-field="id"
-        page-mode
-      >
-        <template v-slot="{ item, index, active }">
-          <DynamicScrollerItem :item="item" :active="active" :size-dependencies="[item.gifts]" :data-index="index">
-            <div class="bg-white dark:bg-dark-1 p-3 md:p-4 rounded-xl flex gap-3 md:gap-4">
-              <img
-                class="hover:bg-slate-200 bg-slate-100/80 p-2 rounded-xl w-20 h-20"
-                :key="item.avatar_id + item.id"
-                :src="$avatarURL(item.avatar_id)"
-                alt=""
-              />
-              <div class="flex-1 w-0">
-                <div class="text-lg font-semibold">{{ item.name }}</div>
-                <div class="grid grid-cols-12 gap-1.5">
-                  <div v-for="gift in item.gifts" class="relative">
-                    <img :src="gift.img" alt="" class="aspect-square w-full h-full" />
-                    <div
-                      class="absolute bottom-[-5px] right-[-5px] bg-blue-500 text-white font-semibold text-[10px] rounded-full shadow-md aspect-square w-5 text-center leading-5"
-                    >
-                      2
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </DynamicScrollerItem>
-        </template>
-      </DynamicScroller> -->
-      <!-- <h2 class="text-2xl font-bold my-2">Fans Gifts</h2>
-      <RecycleScroller
-        :min-item-size="176"
-        :prerender="20"
-        :items="[
-          ...calculatedGift,
-          ...calculatedGift,
-          ...calculatedGift,
-          ...calculatedGift,
-          ...calculatedGift,
-          ...calculatedGift,
-          ...calculatedGift,
-          ...calculatedGift,
-          ...calculatedGift,
-          ...calculatedGift,
-          ...calculatedGift,
-          ...calculatedGift,
-          ...calculatedGift,
-          ...calculatedGift,
-          ...calculatedGift,
-          ...calculatedGift,
-          ...calculatedGift,
-          ...calculatedGift,
-          ...calculatedGift,
-          ...calculatedGift,
-          ...calculatedGift,
-          ...calculatedGift,
-          ...calculatedGift,
-          ...calculatedGift,
-          ...calculatedGift,
-          ...calculatedGift,
-          ...calculatedGift,
-          ...calculatedGift,
-        ]"
-        key-field="id"
-        v-slot="{ item }"
-        :buffer="500"
-      >
-        <div class="bg-white dark:bg-dark-1 p-3 md:p-4 rounded-xl flex gap-3 md:gap-4">
-          <img
-            class="hover:bg-slate-100 p-2 rounded-xl"
-            :key="item.avatar_id + item.id"
-            :src="$avatarURL(item.avatar_id)"
-            alt=""
-          />
-          <div>
-            <div class="text-lg font-semibold">{{ item.name }}</div>
-            <div>List hadiah</div>
-          </div>
-        </div>
-      </RecycleScroller> -->
     </div>
   </div>
 </template>
-
-<script lang="ts" setup>
-import { breakpointsTailwind, useBreakpoints } from "@vueuse/core";
-import c from "~/config";
-import { LazyImage } from "#components";
-const { $duration } = useNuxtApp();
-const config = useRuntimeConfig();
-const route = useRoute();
-const { data, error } = await useFetch(`/api/showroom/recent/${route.params.id}`, {
-  baseURL: config.public.baseURL,
-});
-
-const breakpoints = useBreakpoints(breakpointsTailwind);
-const isMobileSize = breakpoints.smallerOrEqual("md");
-
-const duration = $duration(
-  new Date(data.value?.live_info.date.end ?? 0),
-  new Date(data.value?.live_info.date.start ?? 0)
-);
-
-if (!data?.value) throw createError({ statusCode: 404, statusMessage: "Data not found!" });
-
-const users = computed<Map<number, IFansCompact>>(() => {
-  const users = new Map<number, IFansCompact>();
-  if (!data?.value?.users) return users;
-  const u = data?.value?.users;
-  for (const user of u) {
-    users.set(user.id, user);
-  }
-  return users;
-});
-
-const gifts = computed<Map<number, IGiftImg>>(() => {
-  const gifts = new Map<number, IGiftImg>();
-  if (!data?.value?.live_info?.gift) return gifts;
-  const g = data?.value?.live_info.gift.list;
-  for (const gift of g) {
-    gifts.set(gift.id, {
-      id: gift.id,
-      free: gift.free,
-      point: gift.point,
-      img: c.giftUrl(gift?.id ?? 0),
-    });
-  }
-  return gifts;
-});
-
-const calculatedGift = computed<IFansGift[]>(() => {
-  try {
-    if (!data?.value?.live_info?.gift?.log) return [];
-    const log = data?.value.live_info.gift.log;
-    const mapped = log.map<IFansGift>((i) => {
-      const user = users.value.get(i.user_id);
-      const giftMap = new Map<number, IGifts>();
-      for (const gift of i.gifts) {
-        if (giftMap.has(gift.id)) {
-          giftMap.get(gift.id)!.num += gift.num;
-        } else {
-          const g = gifts.value.get(gift.id);
-          giftMap.set(gift.id, {
-            num: gift.num,
-            id: g!.id,
-            free: g!.free,
-            point: g!.point,
-            img: g!.img,
-            date: gift.date,
-          });
-        }
-      }
-      return {
-        name: user?.name ?? "User not Found!",
-        id: user?.id ?? 0,
-        avatar: c.avatarURL(user?.avatar_id ?? 1),
-        avatar_id: user?.avatar_id ?? 1,
-        total: i.total,
-        gifts: Array.from(giftMap.values()).sort((a, b) => b.point - a.point),
-      };
-    });
-    return mapped;
-  } catch (e) {
-    return [];
-  }
-});
-</script>

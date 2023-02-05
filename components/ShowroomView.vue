@@ -1,3 +1,192 @@
+<script lang="ts" setup>
+import { Popover, PopoverButton, PopoverPanel, Switch, SwitchLabel, SwitchGroup } from '@headlessui/vue'
+import { useFullscreen, useScreenOrientation, useLocalStorage } from '@vueuse/core'
+import { StageShowroom } from '~~/library/canvas/showroom/stage'
+import ShowroomBackground from '~~/library/canvas/showroom/background'
+import ShowroomForeground from '~~/library/canvas/showroom/foreground'
+const { $avatarURL, $giftUrl, $fansProfileURL } = useNuxtApp()
+const props = defineProps<{
+  memberImage: string;
+  date: ILiveDate;
+  background: string;
+  screenshot?: IScreenshotData;
+  stageList: IStageList[];
+  users: Map<number, IFansCompact>;
+  giftData: IGiftsLogData;
+}>()
+
+const stageTime = ref({
+  start: props.date?.start ? new Date(props.date.start).getTime() : null,
+  end: props.date?.end ? new Date(props.date.end).getTime() : null
+})
+const container = ref<HTMLElement | null>(null)
+const stCanvas = ref<HTMLCanvasElement | null>(null)
+const bgCanvas = ref<HTMLCanvasElement | null>(null)
+const fgCanvas = ref<HTMLCanvasElement | null>(null)
+
+const showSlider = ref(false)
+const sliderVal = ref(1000)
+const stage = new StageShowroom()
+const showScreenshot = useLocalStorage('showScreenshot', true)
+const isAnimated = useLocalStorage('enableAnimation', true)
+const foreground = new ShowroomForeground()
+const background = new ShowroomBackground(props.memberImage, showScreenshot.value)
+watch(showScreenshot, (val) => {
+  background.screenshots.setShowScreenshot(val)
+})
+
+watch(isAnimated, (val) => {
+  if (val) {
+    stage.start()
+  } else {
+    stage.stop()
+  }
+})
+
+function getFansRankList () {
+  if (!props.stageList?.length) { return [] }
+  return props.stageList[stageNum.value].list.map<IStageFans>((i) => {
+    const fans = props.users.get(i)
+    return {
+      id: i,
+      name: fans?.name ?? 'Not Found!',
+      avatar: $avatarURL(fans?.avatar_id ?? 1)
+    }
+  })
+}
+
+const selectedTime = computed(() => {
+  const percent = Number(sliderVal.value) / 1000
+  const range = (stageTime?.value?.end ?? 0) - (stageTime?.value?.start ?? 0)
+  return (stageTime?.value?.start ?? 0) + range * percent
+})
+
+watch(selectedTime, (time) => {
+  background.setDate(time)
+})
+
+const stageNum = computed(() => {
+  const time = selectedTime.value
+  for (const [i, stage] of props.stageList?.entries() ?? []) {
+    if (new Date(stage.date).getTime() >= time) {
+      return i
+    }
+  }
+  return props.stageList?.length - 1 ?? 0
+})
+
+const timeout = ref<NodeJS.Timeout>()
+watch(stageNum, () => {
+  if (timeout.value) { clearTimeout(timeout.value) }
+  timeout.value = setTimeout(() => {
+    stage.setFans(getFansRankList())
+  }, 50)
+})
+
+const podiumGifts = computed<IPodiumGift[]>(() => {
+  const gifts: IPodiumGift[] = []
+  for (const fansGift of props?.giftData?.log ?? []) {
+    for (const gift of fansGift.gifts) {
+      const g = props?.giftData?.list.find(i => gift.id === i.id)
+      if (g && (g.point >= 10000)) {
+        for (let i = 0; i < gift.num; i++) {
+          gifts.push({
+            ...g,
+            img: $giftUrl(g.id),
+            date: new Date(gift.date).getTime()
+          })
+        }
+      }
+    }
+  }
+  return gifts
+})
+
+onMounted(() => {
+  if (!stCanvas.value || !bgCanvas.value || !fgCanvas.value) { throw new Error('Canvas not found!') }
+  stage.setAnimated(isAnimated.value)
+  stage.inject(stCanvas.value)
+  stage.setFans(getFansRankList())
+  background.inject(bgCanvas.value)
+  background.loadBackground(props.background)
+  background.setPodiumGifts(podiumGifts.value)
+  background.screenshots.set(props.screenshot!)
+  background.setDate(selectedTime.value)
+  foreground.inject(fgCanvas.value)
+})
+
+useEventListener(container, 'click', (e: MouseEvent) => {
+  if ((e.target as HTMLElement)?.id !== 'canvasControl') { return }
+  const rect = stCanvas.value!.getBoundingClientRect()
+  const x = ((e.clientX - rect.left) / rect.width) * stCanvas.value!.width
+  const y = ((e.clientY - rect.top) / rect.height) * stCanvas.value!.height
+  const userId = stage.getClickedUser(x, y)
+  if (userId) {
+    window.open($fansProfileURL(userId), '_blank')!.focus()
+    // const response = await $fetch("/api/user/profile?user_id=" + userId);
+    // console.log(response);
+  }
+  // const url = $config.screenshotURL(
+  //   props.liveInfo.screenshot.folder,
+  //   String(props.liveInfo.screenshot.list[Math.floor(props.liveInfo.screenshot.list.length * Math.random())]),
+  //   props.liveInfo.screenshot.format
+  // );
+  // console.log(url);
+})
+
+const { width, height } = useWindowSize()
+const isLandscape = computed(() => {
+  const aspetRatio = 16 / 13
+  if (width.value / height.value > aspetRatio) {
+    return true
+  }
+  return false
+})
+
+const { isSupported, orientation, lockOrientation, unlockOrientation } = useScreenOrientation()
+const { isFullscreen, toggle } = useFullscreen(container)
+
+async function toggleFullscreen () {
+  if (!isFullscreen.value) {
+    const o = orientation.value
+    await toggle()
+    if (['portrait-primary', 'portrait-secondary', 'portrait'].includes(o ?? '')) {
+      if (isSupported.value) { await lockOrientation('landscape') }
+    }
+  } else {
+    unlockOrientation()
+    await toggle()
+  }
+}
+
+const focused = useWindowFocus()
+
+watch(focused, (isFocus) => {
+  if (!stage.isAnimated) { return }
+  if (isFocus) {
+    stage.unpause()
+  } else {
+    stage.pause()
+  }
+})
+
+// function togglePause() {
+//   if (stage.isPaused) {
+//     stage.unpause();
+//   } else {
+//     stage.pause();
+//   }
+// }
+
+// function toggleAnimated() {
+//   if (stage.isAnimated) {
+//     stage.stop();
+//   } else {
+//     stage.start();
+//   }
+// }
+</script>
+
 <template>
   <div
     ref="container"
@@ -48,12 +237,12 @@
             min="0"
             max="1000"
             class="w-full [&::-webkit-slider-thumb]:cursor-pointer [&::-moz-range-thumb]:cursor-pointer"
-          />
+          >
         </div>
         <Popover>
-          <PopoverButton aria-label="Setting" class="rounded-md p-1 hover:bg-gray-300/25"
-            ><Icon name="ph:gear-six-fill"
-          /></PopoverButton>
+          <PopoverButton aria-label="Setting" class="rounded-md p-1 hover:bg-gray-300/25">
+            <Icon name="ph:gear-six-fill" />
+          </PopoverButton>
           <Transition
             enter-active-class="transition duration-200 ease-out"
             enter-from-class="translate-y-2 translate-x-1 opacity-0"
@@ -66,9 +255,11 @@
               <div class="text-base flex flex-col py-1.5">
                 <SwitchGroup>
                   <div role="button" class="flex px-4 py-2.5 hover:bg-gray-300/25">
-                    <SwitchLabel class="mr-4 flex-1 cursor-pointer select-none">{{
-                      $t("srview.btn.animation")
-                    }}</SwitchLabel>
+                    <SwitchLabel class="mr-4 flex-1 cursor-pointer select-none">
+                      {{
+                        $t("srview.btn.animation")
+                      }}
+                    </SwitchLabel>
                     <Switch
                       v-model="isAnimated"
                       :class="isAnimated ? 'bg-blue-600' : 'bg-gray-200'"
@@ -84,9 +275,11 @@
                 </SwitchGroup>
                 <SwitchGroup>
                   <div role="button" class="flex px-4 py-2.5 hover:bg-gray-300/25">
-                    <SwitchLabel class="mr-4 flex-1 cursor-pointer select-none">{{
-                      $t("srview.btn.showscreenshot")
-                    }}</SwitchLabel>
+                    <SwitchLabel class="mr-4 flex-1 cursor-pointer select-none">
+                      {{
+                        $t("srview.btn.showscreenshot")
+                      }}
+                    </SwitchLabel>
                     <Switch
                       v-model="showScreenshot"
                       :class="showScreenshot ? 'bg-blue-600' : 'bg-gray-200'"
@@ -112,191 +305,3 @@
     </div>
   </div>
 </template>
-
-<script lang="ts" setup>
-import { Popover, PopoverButton, PopoverPanel, Switch, SwitchLabel, SwitchGroup } from "@headlessui/vue";
-import { useFullscreen, useScreenOrientation, useLocalStorage } from "@vueuse/core";
-import { StageShowroom } from "~~/library/canvas/showroom/stage";
-import ShowroomBackground from "~~/library/canvas/showroom/background";
-import ShowroomForeground from "~~/library/canvas/showroom/foreground";
-const { $avatarURL, $giftUrl, $fansProfileURL } = useNuxtApp();
-const props = defineProps<{
-  memberImage: string;
-  date: ILiveDate;
-  background: string;
-  screenshot?: IScreenshotData;
-  stageList: IStageList[];
-  users: Map<number, IFansCompact>;
-  giftData: IGiftsLogData;
-}>();
-
-const stageTime = ref({
-  start: props.date?.start ? new Date(props.date.start).getTime() : null,
-  end: props.date?.end ? new Date(props.date.end).getTime() : null,
-});
-const container = ref<HTMLElement | null>(null);
-const stCanvas = ref<HTMLCanvasElement | null>(null);
-const bgCanvas = ref<HTMLCanvasElement | null>(null);
-const fgCanvas = ref<HTMLCanvasElement | null>(null);
-
-const showSlider = ref(false);
-const sliderVal = ref(1000);
-const stage = new StageShowroom();
-const showScreenshot = useLocalStorage("showScreenshot", true);
-const isAnimated = useLocalStorage("enableAnimation", true);
-const foreground = new ShowroomForeground();
-const background = new ShowroomBackground(props.memberImage, showScreenshot.value);
-watch(showScreenshot, (val) => {
-  background.screenshots.setShowScreenshot(val);
-});
-
-watch(isAnimated, (val) => {
-  if (val) {
-    stage.start();
-  } else {
-    stage.stop();
-  }
-});
-
-function getFansRankList() {
-  return props.stageList[stageNum.value].list.map<IStageFans>((i) => {
-    const fans = props.users.get(i);
-    return {
-      id: i,
-      name: fans?.name ?? "Not Found!",
-      avatar: $avatarURL(fans?.avatar_id ?? 1),
-    };
-  });
-}
-
-const selectedTime = computed(() => {
-  const percent = Number(sliderVal.value) / 1000;
-  const range = (stageTime?.value?.end ?? 0) - (stageTime?.value?.start ?? 0);
-  return (stageTime?.value?.start ?? 0) + range * percent;
-});
-
-watch(selectedTime, (time) => {
-  background.setDate(time);
-});
-
-const stageNum = computed(() => {
-  const time = selectedTime.value;
-  for (const [i, stage] of props.stageList?.entries() ?? []) {
-    if (new Date(stage.date).getTime() >= time) {
-      return i;
-    }
-  }
-  return props.stageList?.length - 1 ?? 0;
-});
-
-const timeout = ref<NodeJS.Timeout>();
-watch(stageNum, () => {
-  if (timeout.value) clearTimeout(timeout.value);
-  timeout.value = setTimeout(() => {
-    stage.setFans(getFansRankList());
-  }, 50);
-});
-
-const podiumGifts = computed<IPodiumGift[]>(() => {
-  const gifts: IPodiumGift[] = [];
-  for (const fansGift of props?.giftData?.log ?? []) {
-    for (const gift of fansGift.gifts) {
-      const g = props?.giftData?.list.find((i) => gift.id === i.id);
-      if (g && g.point >= 10000) {
-        for (const _i of Array(gift.num).keys()) {
-          gifts.push({
-            ...g,
-            img: $giftUrl(g.id),
-            date: new Date(gift.date).getTime(),
-          });
-        }
-      }
-    }
-  }
-  return gifts;
-});
-
-onMounted(() => {
-  if (!stCanvas.value || !bgCanvas.value || !fgCanvas.value) throw new Error("Canvas not found!");
-  stage.setAnimated(isAnimated.value);
-  stage.inject(stCanvas.value);
-  stage.setFans(getFansRankList());
-  background.inject(bgCanvas.value);
-  background.loadBackground(props.background);
-  background.setPodiumGifts(podiumGifts.value);
-  background.screenshots.set(props.screenshot!);
-  background.setDate(selectedTime.value);
-  foreground.inject(fgCanvas.value);
-});
-
-useEventListener(container, "click", async (e: MouseEvent) => {
-  if ((e.target as HTMLElement)?.id !== "canvasControl") return;
-  const rect = stCanvas.value!.getBoundingClientRect();
-  const x = ((e.clientX - rect.left) / rect.width) * stCanvas.value!.width;
-  const y = ((e.clientY - rect.top) / rect.height) * stCanvas.value!.height;
-  const userId = stage.getClickedUser(x, y);
-  if (userId) {
-    window.open($fansProfileURL(userId), "_blank")!.focus();
-    // const response = await $fetch("/api/user/profile?user_id=" + userId);
-    // console.log(response);
-  }
-  // const url = $config.screenshotURL(
-  //   props.liveInfo.screenshot.folder,
-  //   String(props.liveInfo.screenshot.list[Math.floor(props.liveInfo.screenshot.list.length * Math.random())]),
-  //   props.liveInfo.screenshot.format
-  // );
-  // console.log(url);
-});
-
-const { width, height } = useWindowSize();
-const isLandscape = computed(() => {
-  const aspetRatio = 16 / 13;
-  if (width.value / height.value > aspetRatio) {
-    return true;
-  }
-  return false;
-});
-
-const { isSupported, orientation, lockOrientation, unlockOrientation } = useScreenOrientation();
-const { isFullscreen, toggle } = useFullscreen(container);
-
-async function toggleFullscreen() {
-  if (!isFullscreen.value) {
-    const o = orientation.value;
-    await toggle();
-    if (["portrait-primary", "portrait-secondary", "portrait"].includes(o ?? "")) {
-      if (isSupported.value) await lockOrientation("landscape").catch(() => {});
-    }
-  } else {
-    unlockOrientation();
-    await toggle();
-  }
-}
-
-const focused = useWindowFocus();
-
-watch(focused, (isFocus) => {
-  if (!stage.isAnimated) return;
-  if (isFocus) {
-    stage.unpause();
-  } else {
-    stage.pause();
-  }
-});
-
-function togglePause() {
-  if (stage.isPaused) {
-    stage.unpause();
-  } else {
-    stage.pause();
-  }
-}
-
-function toggleAnimated() {
-  if (stage.isAnimated) {
-    stage.stop();
-  } else {
-    stage.start();
-  }
-}
-</script>

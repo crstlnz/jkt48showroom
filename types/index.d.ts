@@ -30,7 +30,7 @@ interface IShowroomRecents {
   };
 }
 
-interface INowLive {
+interface IRoomLive {
   name: string;
   img: string;
   url: string;
@@ -38,7 +38,8 @@ interface INowLive {
   is_graduate: boolean;
   is_group: boolean;
   room_exists: boolean;
-  // start_date: string;
+  started_at: string | number;
+  streaming_url_list: ShowroomAPI.StreamingURL[];
 }
 
 // _id: '6245e2fe1a8860fba4cdaccd',
@@ -165,3 +166,4 @@ type WorkerMessage = CanvasWorker | CommandWorker;
 declare module "vue-virtual-scroller";
 declare module "cors";
 declare module "vue-twitter-timeline";
+declare module 'hls.js/dist/hls.min.js';

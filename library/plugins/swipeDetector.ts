@@ -5,95 +5,95 @@ enum Modes {
   LEFT,
 }
 class SwipeDetector {
-  startX: number;
-  startY: number;
-  startTime: Date;
-  otherMaxDist: number;
-  minSpeed: number;
-  mode: Modes;
-  constructor(x: number, y: number, mode = "down") {
-    this.startX = x;
-    this.startY = y;
-    this.startTime = new Date();
-    this.otherMaxDist = 100; // maximum distance other axis
-    this.minSpeed = 80; // minimal speed for valid swipe in pixel per 100ms
-    this.mode = this.getMode(mode);
+  startX: number
+  startY: number
+  startTime: Date
+  otherMaxDist: number
+  minSpeed: number
+  mode: Modes
+  constructor (x: number, y: number, mode = 'down') {
+    this.startX = x
+    this.startY = y
+    this.startTime = new Date()
+    this.otherMaxDist = 100 // maximum distance other axis
+    this.minSpeed = 80 // minimal speed for valid swipe in pixel per 100ms
+    this.mode = this.getMode(mode)
   }
 
-  setSpeed(num: number) {
-    this.minSpeed = num;
+  setSpeed (num: number) {
+    this.minSpeed = num
   }
 
-  getMode(mod: string) {
-    let m = 1;
+  getMode (mod: string) {
+    let m = 1
     switch (mod) {
-      case "right":
-        m = Modes.RIGHT;
-        break;
-      case "up":
-        m = Modes.UP;
-        break;
-      case "left":
-        m = Modes.LEFT;
-        break;
+      case 'right':
+        m = Modes.RIGHT
+        break
+      case 'up':
+        m = Modes.UP
+        break
+      case 'left':
+        m = Modes.LEFT
+        break
       default:
-        m = Modes.DOWN;
-        break;
+        m = Modes.DOWN
+        break
     }
-    return m;
+    return m
   }
 
-  getDistanceY(y: number) {
-    return y - this.startY;
+  getDistanceY (y: number) {
+    return y - this.startY
   }
 
-  getDistanceX(x: number) {
-    return x - this.startX;
+  getDistanceX (x: number) {
+    return x - this.startX
   }
 
-  getSpeed(x: number, y: number) {
-    let distance = 0;
+  getSpeed (x: number, y: number) {
+    let distance = 0
     switch (this.mode) {
       case Modes.LEFT:
-        distance = this.getDistanceX(x) * -1;
-        break;
+        distance = this.getDistanceX(x) * -1
+        break
       case Modes.RIGHT:
-        distance = this.getDistanceX(x);
-        break;
+        distance = this.getDistanceX(x)
+        break
       case Modes.UP:
-        distance = this.getDistanceY(y) * -1;
-        break;
+        distance = this.getDistanceY(y) * -1
+        break
       case Modes.DOWN:
-        distance = this.getDistanceY(y);
-        break;
+        distance = this.getDistanceY(y)
+        break
     }
-    return (distance / (new Date().getTime() - this.startTime.getTime())) * 100;
+    return (distance / (new Date().getTime() - this.startTime.getTime())) * 100
   }
 
-  getOtherDiff(x: number, y: number) {
-    let diff = 0;
+  getOtherDiff (x: number, y: number) {
+    let diff = 0
     switch (this.mode) {
       case Modes.LEFT:
-        diff = Math.abs(this.startY - y);
-        break;
+        diff = Math.abs(this.startY - y)
+        break
       case Modes.RIGHT:
-        diff = Math.abs(this.startY - y);
-        break;
+        diff = Math.abs(this.startY - y)
+        break
       case Modes.UP:
-        diff = Math.abs(this.startX - x);
-        break;
+        diff = Math.abs(this.startX - x)
+        break
       case Modes.DOWN:
-        diff = Math.abs(this.startX - x);
-        break;
+        diff = Math.abs(this.startX - x)
+        break
     }
 
-    return diff;
+    return diff
   }
 
-  finish(x: number, y: number) {
-    const speed = this.getSpeed(x, y); // speed in pixer per 100
-    return this.getOtherDiff(x, y) <= this.otherMaxDist && speed >= this.minSpeed;
+  finish (x: number, y: number) {
+    const speed = this.getSpeed(x, y) // speed in pixer per 100
+    return this.getOtherDiff(x, y) <= this.otherMaxDist && speed >= this.minSpeed
   }
 }
 
-export default SwipeDetector;
+export default SwipeDetector

@@ -1,31 +1,31 @@
 export default function (id: string) {
-  const route = useRoute();
-  const router = useRouter();
-  const state = ref(false);
+  const route = useRoute()
+  const router = useRouter()
+  const state = ref(false)
 
   if (route.query[id] !== undefined) {
     const query = {
-      ...route.query,
-    };
-    delete query[id];
+      ...route.query
+    }
+    delete query[id]
     router.push({
       path: route.path,
-      query,
-    });
+      query
+    })
   }
 
   watch(
     () => route.query,
     (to, from) => {
-      const tQ = to[id];
-      const fQ = from[id];
+      const tQ = to[id]
+      const fQ = from[id]
       if (tQ === undefined && fQ === null) {
-        state.value = false;
+        state.value = false
       } else if (tQ === null && fQ === undefined) {
-        state.value = true;
+        state.value = true
       }
     }
-  );
+  )
 
   // watch(state, async (_state) => {
   //   if (_state) {
@@ -42,19 +42,19 @@ export default function (id: string) {
   //   }
   // });
 
-  function setState(_state: boolean) {
+  function setState (_state: boolean) {
     if (_state) {
       const query = {
-        ...route.query,
-      };
-      query[id] = null;
+        ...route.query
+      }
+      query[id] = null
       router.push({
         path: route.path,
-        query,
-      });
+        query
+      })
     } else {
-      router.back();
+      router.back()
     }
   }
-  return { state, setState };
+  return { state, setState }
 }

@@ -1,34 +1,22 @@
-<template>
-  <div v-if="isLoading" class="pulse-color animate-pulse inline-block"></div>
-  <img
-    v-else
-    ref="lazyImage"
-    class="lazyImage object-cover object-center"
-    :alt="!error ? alt : 'Image Error'"
-    :src="!error ? src : '/img/img-error.jpg'"
-    loading="lazy"
-  />
-</template>
-
 <script lang="ts" setup>
-import { useImage } from "@vueuse/core";
+import { useImage } from '@vueuse/core'
 const props = defineProps({
   src: {
     type: String,
-    default: "",
+    default: ''
   },
   alt: {
     type: String,
-    default: "",
+    default: ''
   },
   transparent: {
     type: Boolean,
     required: false,
-    default: false,
-  },
-});
-const lazyImage = ref(null);
-const { isLoading, error } = useImage({ src: props.src });
+    default: false
+  }
+})
+const lazyImage = ref(null)
+const { isLoading, error } = useImage({ src: props.src })
 
 // onMounted(() => {
 //   const el = lazyImage?.value;
@@ -45,6 +33,18 @@ const { isLoading, error } = useImage({ src: props.src });
 //   }
 // });
 </script>
+
+<template>
+  <div v-if="isLoading" class="pulse-color animate-pulse inline-block" />
+  <img
+    v-else
+    ref="lazyImage"
+    class="lazyImage object-cover object-center"
+    :alt="!error ? alt : 'Image Error'"
+    :src="!error ? src : '/img/img-error.jpg'"
+    loading="lazy"
+  >
+</template>
 
 <style lang="scss">
 // .lazyContainer {

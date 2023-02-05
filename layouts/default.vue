@@ -1,5 +1,82 @@
+<script lang="ts" setup>
+const i18nHead = useLocaleHead({
+  addDirAttribute: true,
+  identifierAttribute: 'id',
+  addSeoAttributes: true
+})
+useHead({
+  htmlAttrs: {
+    lang: i18nHead.value.htmlAttrs?.lang,
+    dir: i18nHead.value.htmlAttrs?.dir
+  },
+  title: 'JKT48 Showroom',
+  meta: [
+    ...(i18nHead.value.meta || []),
+    { charset: 'utf-8' },
+    { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+    {
+      hid: 'description',
+      name: 'description',
+      content: 'JKT48 Showroom Logs'
+    }
+  ],
+  link: [
+    ...(i18nHead.value.link || []),
+    { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+    { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+  ]
+})
+const menuOpen = ref(false)
+const menus = [
+  {
+    title: 'Home',
+    url: '/',
+    mobile: false
+  },
+  {
+    title: 'Recent',
+    url: '/recent',
+    mobile: true
+  },
+  {
+    title: 'Member',
+    url: '/member',
+    mobile: true
+  },
+  {
+    title: 'Watch',
+    url: '/watch/rina0129',
+    mobile: true
+  }
+]
+const colorMode = useColorMode()
+function toggleDark () {
+  if (colorMode.value === 'dark') {
+    colorMode.preference = 'light'
+  } else {
+    colorMode.preference = 'dark'
+  }
+}
+function toggleMenu () {
+  menuOpen.value = !menuOpen.value
+}
+const route = useRoute()
+watch(route, () => {
+  nextTick(() => {
+    menuOpen.value = false
+  })
+})
+
+const { IS_DEV } = useRuntimeConfig()
+
+function handleError (error: any) {
+  // eslint-disable-next-line no-console
+  if (IS_DEV) { console.log(error) }
+}
+</script>
+
 <template>
-  <div class="w-full h-full flex flex-col">
+  <div class="w-full min-h-[100vh] flex flex-col">
     <transition name="fade">
       <div
         v-if="menuOpen"
@@ -8,12 +85,7 @@
         @click="toggleMenu"
       />
     </transition>
-    <NuxtLoadingIndicator
-      class="absolute top-0 z-[101]"
-      :throttle="300"
-      :height="4"
-      color="repeating-linear-gradient(to right,#6eff94 0%,#0addfc 50%,#3482F6 100%)"
-    />
+
     <nav class="fixed z-[1000] top-0 left-0 right-0 bg-white dark:bg-dark-1 shadow-sm">
       <div class="container h-16 flex items-center mx-auto px-4 md:px-3 flex-row-reverse md:flex-row">
         <button
@@ -24,14 +96,17 @@
           class="burger nav-btn"
           @click="toggleMenu"
         >
-          <span></span>
-          <span></span>
-          <span></span>
+          <span />
+          <span />
+          <span />
         </button>
 
         <div class="flex-1 md:flex-none w-0 md:w-auto items-center flex">
-          <NuxtLink class="text-2xl py-2 hover:text-blue-400 inline-block font-bold truncate" to="/"
-            ><h1>JKT48 Showroom</h1>
+          <NuxtLink
+            class="text-2xl py-2 hover:text-blue-400 inline-block font-bold truncate"
+            to="/"
+          >
+            <h1>JKT48 Showroom</h1>
           </NuxtLink>
         </div>
 
@@ -51,7 +126,7 @@
           <li
             class="flex gap-4 md:pl-6 md:border-l-2 dark:border-slate-100/30 py-4 md:py-0.5 items-center justify-center"
           >
-            <LangSwitch></LangSwitch>
+            <LangSwitch />
             <button
               type="button"
               aria-label="Toggle Dark Mode"
@@ -81,80 +156,8 @@
       </NuxtErrorBoundary>
     </div>
 
-    <footer class="py-10 font-bold flex items-center justify-center">
+    <footer class="pt-14 pb-10 font-bold flex items-center justify-center">
       Created by<a class="ml-1" target="_blank" href="https://twitter.com/crstlnz">@crstlnz</a>
     </footer>
   </div>
 </template>
-
-<script lang="ts" setup>
-const i18nHead = useLocaleHead({
-  addDirAttribute: true,
-  identifierAttribute: "id",
-  addSeoAttributes: true,
-});
-useHead({
-  htmlAttrs: {
-    lang: i18nHead.value.htmlAttrs?.lang,
-    dir: i18nHead.value.htmlAttrs?.dir,
-  },
-  title: "JKT48 Showroom",
-  meta: [
-    ...(i18nHead.value.meta || []),
-    { charset: "utf-8" },
-    { name: "viewport", content: "width=device-width, initial-scale=1" },
-    {
-      hid: "description",
-      name: "description",
-      content: "JKT48 Showroom Logs",
-    },
-  ],
-  link: [
-    ...(i18nHead.value.link || []),
-    { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
-    { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
-  ],
-});
-const menuOpen = ref(false);
-const menus = [
-  {
-    title: "Home",
-    url: "/",
-    mobile: false,
-  },
-  {
-    title: "Recent",
-    url: "/recent",
-    mobile: true,
-  },
-  {
-    title: "Member",
-    url: "/member",
-    mobile: true,
-  },
-];
-const colorMode = useColorMode();
-function toggleDark() {
-  if (colorMode.value === "dark") {
-    colorMode.preference = "light";
-  } else {
-    colorMode.preference = "dark";
-  }
-}
-function toggleMenu() {
-  menuOpen.value = !menuOpen.value;
-}
-const route = useRoute();
-watch(route, () => {
-  nextTick(() => {
-    menuOpen.value = false;
-  });
-});
-
-const { IS_DEV } = useRuntimeConfig();
-
-function handleError(error: any) {
-  // eslint-disable-next-line no-console
-  if (IS_DEV) console.log(error);
-}
-</script>

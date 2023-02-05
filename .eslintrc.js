@@ -1,30 +1,30 @@
 module.exports = {
-  // root: true,
+  root: true,
   env: {
     browser: true,
-    es2021: true,
-    node: true,
+    es2021: true
   },
   extends: [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended",
-    "@nuxtjs/eslint-config-typescript",
-    "plugin:nuxt/recommended",
-    "plugin:prettier/recommended",
+    'plugin:@typescript-eslint/recommended',
+    '@nuxtjs/eslint-config-typescript',
+    'plugin:vue/vue3-recommended',
+    'plugin:nuxt/recommended'
   ],
-  plugins: ["@typescript-eslint"],
-  // add your custom rules here
-  rules: {
-    "vue/multi-word-component-names": "off",
-    "no-unused-vars": "off",
-    "@typescript-eslint/no-unused-vars": "warn",
-    "@typescript-eslint/no-empty-function": "warn",
-    "no-unreachable": "warn",
-    "require-await": "warn",
-    "prettier/prettier": ["off", { singleQuote: true }],
+  overrides: [
+  ],
+  parserOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module'
   },
-  // compilerOptions: {
-  //   types: ["@nuxt/types"],
-  // },
-};
+  plugins: [
+    'vue'
+  ],
+  rules: {
+    'no-console': 'warn',
+    'no-unused-vars': 'warn',
+    '@typescript-eslint/no-unused-vars': 'warn',
+    '@typescript-eslint/no-explicit-any': 'off',
+    'vue/multi-word-component-names': 'off',
+    curly: ['error', 'multi-line']
+  }
+}

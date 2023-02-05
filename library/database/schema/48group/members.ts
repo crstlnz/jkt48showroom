@@ -1,26 +1,26 @@
-import { Schema, model } from "mongoose";
+import { Schema, model } from 'mongoose'
 export default model<I48Member>(
-  "Member",
+  'Member',
   new Schema<I48Member>({
     name: {
       type: String,
-      required: true,
+      required: true
     },
     isGraduate: {
       type: Boolean,
-      required: true,
+      required: true
     },
     group: {
-      type: String,
+      type: String
     },
     description: {
-      type: String,
+      type: String
     },
     img: {
-      type: String,
+      type: String
     },
     stage48: {
-      type: String,
-    },
+      type: String
+    }
   })
-);
+)

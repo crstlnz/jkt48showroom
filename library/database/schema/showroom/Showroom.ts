@@ -1,48 +1,48 @@
-import { Schema, model } from "mongoose";
-import Member from "../48group/members";
+import { Schema, model } from 'mongoose'
+import Member from '../48group/members'
 const ShowroomSchema = new Schema<IShowroomMember>({
   name: {
     type: String,
-    required: true,
+    required: true
   },
   img: {
     type: String,
-    required: true,
+    required: true
   },
   img_square: {
-    type: String,
+    type: String
   },
   description: {
-    type: String,
+    type: String
   },
   group: {
-    type: String,
+    type: String
   },
   url: {
     type: String,
-    required: true,
+    required: true
   },
   room_id: {
     type: Number,
     required: true,
-    unique: true,
+    unique: true
   },
   room_exists: {
     type: Boolean,
-    default: true,
+    default: true
   },
   is_active: {
     type: Boolean,
-    default: true,
+    default: true
   },
   is_group: {
     type: Boolean,
-    default: false,
+    default: false
   },
   member_data: {
     type: Schema.Types.ObjectId,
-    ref: Member,
-  },
-});
+    ref: Member
+  }
+})
 
-export default model<IShowroomMember>("Showroom", ShowroomSchema);
+export default model<IShowroomMember>('Showroom', ShowroomSchema)

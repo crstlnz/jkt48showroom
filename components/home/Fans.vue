@@ -1,7 +1,22 @@
+<script lang="ts" setup>
+import { LazyImage, BottomSheet } from '#components'
+defineProps<{
+  data: IStatFans[];
+}>()
+// const openRankFans = ref(false);
+const bottomSheet = ref<typeof BottomSheet | null>(null)
+function openRankFans (evt: any) {
+  if (!bottomSheet.value?.isOpen) { return bottomSheet.value?.open(evt.target) }
+  bottomSheet.value?.close()
+}
+</script>
+
 <template>
   <div class="bg-white dark:bg-dark-1 rounded-xl p-4 md:p-5 space-y-1 shadow-sm">
     <div class="flex justify-between items-center">
-      <h2 class="text-lg font-bold">{{ $t("topfans") }}</h2>
+      <h2 class="text-lg font-bold">
+        {{ $t("topfans") }}
+      </h2>
       <button class="hover:text-second-2" href="#" type="button" @click="openRankFans">
         {{ $t("more") }}
       </button>
@@ -31,13 +46,15 @@
         <div
           class="flex justify-start items-center gap-4 py-1 min-h-[120px] px-6 hover:bg-slate-300/30 dark:hover:bg-dark-3/30 border-r border-slate-100/60 dark:border-dark-2/80"
         >
-          <div class="font-semibold">{{ index + 1 }}</div>
+          <div class="font-semibold">
+            {{ index + 1 }}
+          </div>
           <img
             lazy="false"
             class="bg-transparent transition-colors rounded-xl p-2 w-28 h-28 cursor-pointer"
             :alt="item.name"
             :src="$avatarURL(item.avatar_id)"
-          />
+          >
           <div class="flex-1 w-0">
             <a :href="$fansProfileURL(item.id)" target="_blank" class="font-semibold">
               {{ item.name }}
@@ -48,16 +65,3 @@
     </BottomSheet>
   </div>
 </template>
-
-<script lang="ts" setup>
-import { LazyImage, BottomSheet } from "#components";
-defineProps<{
-  data: IStatFans[];
-}>();
-// const openRankFans = ref(false);
-const bottomSheet = ref<typeof BottomSheet | null>(null);
-function openRankFans(evt: any) {
-  if (!bottomSheet.value?.isOpen) return bottomSheet.value?.open(evt.target);
-  bottomSheet.value?.close();
-}
-</script>

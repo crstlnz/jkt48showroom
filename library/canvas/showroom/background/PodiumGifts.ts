@@ -1,35 +1,36 @@
-import ShowroomBackground from "./index";
+import ShowroomBackground from './index'
 
 class PodiumGift {
-  x: number;
-  y: number;
-  date: number;
-  img: HTMLImageElement;
+  x: number
+  y: number
+  date: number
+  img: HTMLImageElement
 
-  static size = 0.08;
+  static size = 0.08
 
-  constructor(
+  constructor (
     img: HTMLImageElement,
     date: number,
-    giftAreaSize: ShowroomBackground["giftAreaSize"],
-    giftAreaPos: ShowroomBackground["giftAreaPos"]
+    giftAreaSize: ShowroomBackground['giftAreaSize'],
+    giftAreaPos: ShowroomBackground['giftAreaPos']
   ) {
     this.x =
       giftAreaPos.x -
       giftAreaSize.width / 2 +
-      Math.random() * giftAreaSize.width;
+      Math.random() * giftAreaSize.width
     this.y =
       giftAreaPos.y -
       giftAreaSize.height / 2 +
-      Math.random() * giftAreaSize.height;
-    this.img = img;
-    this.date = date;
+      Math.random() * giftAreaSize.height
+    this.img = img
+    this.date = date
   }
 
-  draw(ctx: CanvasRenderingContext2D) {
-    const size = ctx.canvas.width * PodiumGift.size;
-    ctx.drawImage(this.img, this.x - size / 2, this.y - size, size, size);
+  draw (ctx: CanvasRenderingContext2D) {
+    const size = ctx.canvas.width * PodiumGift.size
+    console.log(this.x, this.y)
+    ctx.drawImage(this.img, this.x - size / 2, this.y - size, size, size)
   }
 }
 
-export default PodiumGift;
+export default PodiumGift

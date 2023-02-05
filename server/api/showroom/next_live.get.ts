@@ -1,16 +1,16 @@
 // import { parse } from "node-html-parser";
-import { getMembers } from "./members.get";
-import cache from "~~/library/utils/cache";
-import ShowroomAPI from "~/library/api/showroom";
+import { getMembers } from './members.get'
+import cache from '~~/library/utils/cache'
+import { getNextLive as fetchNextLive } from '~/library/api/showroom'
 export default defineEventHandler(async () => {
-  return await getNextLive();
-});
+  return await getNextLive()
+})
 
-export { getNextLive };
+export { getNextLive }
 
-const time = 10800000; // 3 hours
-async function getNextLive(): Promise<INextLive[]> {
-  return await cache.fetch<INextLive[]>("next_live", () => getDirectNextLive(), time).catch(() => []);
+const time = 10800000 // 3 hours
+async function getNextLive (): Promise<INextLive[]> {
+  return await cache.fetch<INextLive[]>('next_live', () => getDirectNextLive(), time).catch(() => [])
 }
 
 // async function getNextLiveCookies(): Promise<INextLive[]> {
@@ -66,16 +66,16 @@ async function getNextLive(): Promise<INextLive[]> {
 //   return res;
 // }
 
-async function getDirectNextLive(membersData: IMember[] | null = null): Promise<INextLive[]> {
+async function getDirectNextLive (membersData: IMember[] | null = null): Promise<INextLive[]> {
   try {
-    const members: IMember[] = (membersData ?? (await getMembers())).filter((i) => i.room_exists);
-    const promises: Promise<INextLive | null>[] = [];
+    const members: IMember[] = (membersData ?? (await getMembers())).filter(i => i.room_exists)
+    const promises: Promise<INextLive | null>[] = []
     for (const member of members) {
       promises.push(
         (async (): Promise<INextLive | null> => {
           try {
-            const data = await ShowroomAPI.nextLive(member.room_id);
-            if (!data.epoch) return null;
+            const data = await fetchNextLive(member.room_id)
+            if (!data.epoch) { return null }
             return {
               img: member.img,
               url: member.url,
@@ -84,18 +84,18 @@ async function getDirectNextLive(membersData: IMember[] | null = null): Promise<
               is_graduate: member.is_graduate,
               is_group: member.is_group,
               room_exists: member.room_exists,
-              date: new Date(data.epoch * 1000).toISOString(),
-            };
+              date: new Date(data.epoch * 1000).toISOString()
+            }
           } catch (e) {
-            return null;
+            return null
           }
         })()
-      );
+      )
     }
-    let data: INextLive[] = (await Promise.all(promises)).filter((i) => i) as INextLive[];
-    data = data.filter((i) => new Date(i.date).getTime() - new Date().getTime() > 0);
-    return data;
+    let data: INextLive[] = (await Promise.all(promises)).filter(i => i) as INextLive[]
+    data = data.filter(i => new Date(i.date).getTime() - new Date().getTime() > 0)
+    return data
   } catch (e) {
-    return [];
+    return []
   }
 }

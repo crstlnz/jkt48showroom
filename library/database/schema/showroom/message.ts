@@ -1,23 +1,23 @@
-import { Schema } from "mongoose";
+import { Schema } from 'mongoose'
 
 export default {
-  name: "Showroom_Message",
+  name: 'Showroom_Message',
   schema: new Schema({
     data_id: {
       type: String,
-      required: true,
+      required: true
     },
     message_id: {
       type: String,
-      required: true,
+      required: true
     },
     channel_id: {
       type: String,
-      required: true,
+      required: true
     },
     bot_id: {
       type: String,
-      required: true,
-    },
-  }),
-};
+      required: true
+    }
+  })
+}

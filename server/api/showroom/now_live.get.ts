@@ -1,30 +1,31 @@
-import { parse } from "node-html-parser";
-import { getMembers } from "./members.get";
-import ShowroomAPI from "~~/library/api/showroom";
-import cache from "~~/library/utils/cache";
-import config from "~/config";
-export default defineEventHandler(async (): Promise<INowLive[]> => {
-  return await getNowLive();
-});
-export { getNowLive, getNowLiveDirect, getNowLiveIndirect, getNowLiveCookies };
-const time = 60000;
-async function getNowLive(): Promise<INowLive[]> {
+import { getMembers } from './members.get'
+import { getRoomStatus, getAllFollows, getIsLive, getOnlives, getStreamingURL } from '~~/library/api/showroom'
+
+import cache from '~~/library/utils/cache'
+export default defineEventHandler(async (): Promise<IRoomLive[]> => {
+  return await getNowLive()
+})
+export { getNowLive, getNowLiveDirect, getNowLiveIndirect, getNowLiveCookies }
+const time = 0
+async function getNowLive (): Promise<IRoomLive[]> {
   return await cache
-    .fetch<INowLive[]>("now_live", getNowLiveCookies, time)
-    .catch(() => []);
+    .fetch<IRoomLive[]>('now_live', () => getNowLiveCookies(), time)
+    .catch(() => [])
 }
 
-async function getNowLiveDirect(
+async function getNowLiveDirect (
   membersData: IMember[] | null = null
-): Promise<INowLive[]> {
-  const members: IMember[] = membersData ?? (await getMembers());
-  const promises: Promise<INowLive | null>[] = [];
+): Promise<IRoomLive[]> {
+  const members: IMember[] = membersData ?? await getMembers()
+  const promises: Promise<IRoomLive | null>[] = []
   for (const member of members) {
     promises.push(
-      (async (): Promise<INowLive | null> => {
+      (async (): Promise<IRoomLive | null> => {
         try {
-          const data = await ShowroomAPI.isLive(member.room_id);
-          if (!data.ok) return null;
+          const data = await getIsLive(member.room_id)
+          if (!data.ok) { return null } // if 'ok',this room is on live
+          const status = await getRoomStatus({ room_url_key: member.url.startsWith('/') ? member.url.slice(1) : member.url })
+          const streamURLS = await getStreamingURL({ room_id: member.room_id })
           return {
             name: member.name,
             img: member.img,
@@ -33,83 +34,94 @@ async function getNowLiveDirect(
             is_graduate: member.is_graduate,
             is_group: member.is_group,
             room_exists: member.room_exists,
-          };
+            started_at: (status.started_at ?? 0) * 1000,
+            streaming_url_list: streamURLS.streaming_url_list ?? []
+          }
         } catch (e) {
-          return null;
+          return null
         }
       })()
-    );
+    )
   }
-  const data = await Promise.all(promises);
-  return data.filter((i) => i) as INowLive[];
+  const data = await Promise.all(promises)
+  return data.filter(i => i) as IRoomLive[]
 }
 
-async function getNowLiveCookies(): Promise<INowLive[]> {
-  const members: IMember[] = [...(await getMembers())];
-  const response = await fetch(config.followURL, {
-    headers: {
-      Cookie: `sr_id=${process.env.SR_TOKEN};`,
-    },
-  });
-  if (!response.ok) throw new Error("Failed to fetch showroom page!");
-  const result = await response.text();
-  const document = parse(result);
-  const elements = document.querySelectorAll(
-    "#js-genre-section-all .js-follow-li"
-  );
-  const roomInfo = new Map();
-  for (const el of elements) {
-    const roomId = el?.querySelector(".room-url")?.getAttribute("data-room-id");
-    if (roomId && !isNaN(Number(roomId))) {
-      const isLive = !!el.querySelector(".is-onlive");
-      roomInfo.set(Number(roomId), isLive);
-    }
+async function getNowLiveCookies (membersData: IMember[] | null = null): Promise<IRoomLive[]> {
+  const members: IMember[] = membersData ?? await getMembers()
+  const rooms = await getAllFollows().catch(_ => [])
+  const roomMap = new Map<string, ShowroomAPI.RoomFollow>()
+  const result : Promise<IRoomLive>[] = []
+  const missing = []
+
+  for (const room of rooms) {
+    roomMap.set(room.room_id, room)
   }
 
-  const res: INowLive[] = [];
-  const missing = [];
   for (const member of members) {
-    if (roomInfo.has(member.room_id)) {
-      if (roomInfo.get(member.room_id))
-        res.push({
-          name: member.name,
-          img: member.img,
-          url: member.url,
-          room_id: member.room_id,
-          is_graduate: member.is_graduate,
-          is_group: member.is_group,
-          room_exists: member.room_exists,
-        });
+    const room = roomMap.get(String(member.room_id))
+    if (room) {
+      if (room.is_online) {
+        result.push((async () => {
+          const streamURLS = await getStreamingURL({ room_id: room.room_id })
+          const RoomStatus = await getRoomStatus({ room_url_key: room.room_url_key })
+          return {
+            name: room.room_name,
+            img: room.image_l,
+            url: room.room_url_key,
+            room_id: Number(room.room_id),
+            started_at: (RoomStatus.started_at ?? 0) * 1000,
+            is_graduate: member.is_graduate,
+            is_group: member.is_group,
+            room_exists: member.room_exists,
+            streaming_url_list: streamURLS.streaming_url_list ?? []
+          }
+        })())
+      }
     } else if (member.room_exists) {
-      missing.push(member);
+      missing.push(member)
     }
   }
 
+  const lives = []
+  lives.push(...await Promise.all(result))
   if (missing.length) {
-    const missingMember = await getNowLiveDirect(missing);
-    res.push(...missingMember);
+    console.log(missing)
+    lives.push(...await getNowLiveDirect(missing))
   }
-  return res;
+  return lives
 }
 
-async function getNowLiveIndirect(): Promise<INowLive[]> {
-  const members: IMember[] = await getMembers();
-  const res = await ShowroomAPI.onlives();
-  const all = res.onlives.reduce((a: any, b: any) => {
-    a.push(...b.lives);
-    return a;
-  }, []);
-  const lives: IMember[] = [];
-  for (const member of members)
-    if (all.some((m: any) => m.room_id === member.room_id))
-      lives.push({ ...member });
-  return lives.map<INowLive>((m) => ({
-    name: m.name,
-    img: m.img,
-    url: m.url,
-    room_id: m.room_id,
-    is_graduate: m.is_graduate,
-    is_group: m.is_group,
-    room_exists: m.room_exists,
-  }));
+async function getNowLiveIndirect (membersData: IMember[] | null = null): Promise<IRoomLive[]> {
+  const members: IMember[] = membersData ?? await getMembers()
+  const memberMap = new Map<string| number, IMember>()
+  for (const member of members) {
+    memberMap.set(member.room_id, member)
+  }
+
+  const res = await getOnlives()
+  const all : ShowroomAPI.OnlivesRoom[] = res.onlives.reduce((a: any, b: any) => {
+    a.push(...b.lives)
+    return a
+  }, [])
+
+  const result : IRoomLive[] = []
+  for (const room of all) {
+    const member = memberMap.get(room.room_id)
+    if (member) {
+      result.push({
+        name: room.main_name,
+        img: room.image,
+        url: room.room_url_key,
+        room_id: room.room_id,
+        started_at: (room.started_at ?? 0) * 1000,
+        is_graduate: member.is_graduate,
+        is_group: member.is_group,
+        room_exists: member.room_exists,
+        streaming_url_list: room.streaming_url_list ?? []
+      })
+    }
+  }
+
+  return result
 }

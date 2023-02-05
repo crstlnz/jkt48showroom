@@ -1,20 +1,20 @@
-import { Serializer } from "@vueuse/core";
+import { Serializer } from '@vueuse/core'
 
 export default class JSONSerializer<T> implements Serializer<T> {
-  default: T;
-  constructor(def: T) {
-    this.default = def;
+  default: T
+  constructor (def: T) {
+    this.default = def
   }
 
-  read(raw: string): T {
+  read (raw: string): T {
     try {
-      return JSON.parse(raw);
+      return JSON.parse(raw)
     } catch (e) {
-      return this.default;
+      return this.default
     }
   }
 
-  write(value: T): string {
-    return JSON.stringify(value);
+  write (value: T): string {
+    return JSON.stringify(value)
   }
 }

@@ -1,3 +1,11 @@
+<script lang="ts" setup>
+const props = defineProps<{
+  recent: IRecent;
+}>()
+const { $fromNow } = useNuxtApp()
+const date = $fromNow(props.recent.live_info?.date?.end)
+</script>
+
 <template>
   <div class="rounded-xl bg-white dark:bg-dark-1 p-3 md:p-4 shadow-sm">
     <div class="flex gap-3 md:gap-4">
@@ -8,10 +16,10 @@
       >
         <img
           lazy="false"
-          class="group-hover:brightness-50 brightness-[98%] relative cursor-pointer transition-all duration-200 w-full h-full bg-slate-200 dark:bg-dark-3 text-xs md:text-sm lg:text-base"
+          class="group-hover:brightness-50 brightness-[98%] object-cover relative cursor-pointer transition-all duration-200 w-full h-full bg-slate-200 dark:bg-dark-3 text-xs md:text-sm lg:text-base"
           :alt="recent.member?.name + 'Display Picture'"
-          :src="$fixCloudinary(recent.member?.img_alt ?? '')"
-        />
+          :src="recent.member?.img_alt ?? ''"
+        >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="h-8 w-8 inline-block top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 invisible opacity-0 absolute group-hover:opacity-100 group-hover:visible"
@@ -34,7 +42,9 @@
         <ul class="space-y-1 [&>li]:flex [&>li]:gap-2 text-xs md:text-sm lg:text-base">
           <li class="flex items-center">
             <Icon name="bx:bxs-gift" class="bg-yellow-500 text-white rounded-full w-auto h-5 lg:h-6 p-1" />
-            <div class="inline-block align-baseline">{{ $currency(recent.points) }}</div>
+            <div class="inline-block align-baseline">
+              {{ $currency(recent.points) }}
+            </div>
           </li>
           <li v-if="recent.live_info?.viewers != null" class="flex items-center">
             <Icon name="mingcute:user-2-fill" class="bg-sky-500 text-white rounded-full w-auto h-5 lg:h-6 p-1" />
@@ -52,11 +62,3 @@
     </div>
   </div>
 </template>
-
-<script lang="ts" setup>
-const props = defineProps<{
-  recent: IRecent;
-}>();
-const { $fromNow } = useNuxtApp();
-const date = $fromNow(props.recent.live_info?.date?.end);
-</script>

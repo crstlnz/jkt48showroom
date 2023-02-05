@@ -1,3 +1,156 @@
+<script lang="ts" setup>
+import { DynamicScroller } from 'vue-virtual-scroller'
+import { onClickOutside, useEventListener } from '@vueuse/core'
+import type DragListener from '~~/library/plugins/dragListener'
+import type SwipeDetector from '~~/library/plugins/swipeDetector'
+const props = withDefaults(
+  defineProps<{
+    id?: string
+    title?: string
+    items?: any[]
+    sizeDependencies?: string
+  }>(),
+  {
+    id: 'bottomSheet',
+    title: '',
+    items: () => [],
+    sizeDependencies: ''
+  }
+)
+
+const { $device, $createDragListener, $createSwipeDetector } = useNuxtApp()
+const isOpen = ref(false)
+const isDrag = ref(false)
+const background = ref(null)
+const dragBody = ref<DragListener | null>(null)
+const dragNavbar = ref<DragListener | null>(null)
+const navbar = ref<HTMLElement | null>(null)
+const sheet = ref<HTMLElement | null>(null)
+const scroller = ref<typeof DynamicScroller | null>(null)
+let setState: (_state: boolean) => void
+if ($device.isMobile) {
+  const { state: openState, setState: setFun } = useQueryState(props.id)
+  setState = setFun
+  watch(openState, (state) => {
+    if (state) { openSheet() } else { closeSheet() }
+  })
+}
+
+useEventListener(background, 'touchmove', evt => evt.preventDefault())
+const cleanup = ref<any>(undefined)
+watch(isOpen, (open) => {
+  nextTick(() => {
+    if (open) {
+      cleanup.value = onClickOutside(sheet, () => close(), { ignore: [ignore] })
+      return startListener()
+    } else if (cleanup.value) { cleanup.value() }
+    return stopListener()
+  })
+})
+
+function listenDrag () {
+  if (navbar.value && sheet.value) {
+    let swipeDetector: SwipeDetector
+    let percent = 0
+    dragNavbar.value = $createDragListener(navbar.value)
+    dragNavbar.value?.on('start', ({ x, y, e }) => {
+      e.stopPropagation()
+      if (e.cancelable) { e.preventDefault() }
+      isDrag.value = true
+      swipeDetector = $createSwipeDetector(x, y)
+    })
+    dragNavbar.value?.on('move', ({ x, y }) => {
+      if (y <= 0 || x <= 0 || x >= window.innerWidth || y >= window.innerHeight) {
+        finishDrag(x, y, percent, swipeDetector)
+      } else {
+        const deltaY = swipeDetector ? swipeDetector.getDistanceY(y) : 0
+        percent = (deltaY / (sheet.value?.clientHeight ?? 0)) * 100
+        percent = percent < 0 ? 0 : percent
+        if (sheet.value) { sheet.value.style.transform = `translateY(${percent}%)` }
+      }
+    })
+    dragNavbar.value?.on('end', ({ x, y }) => {
+      finishDrag(x, y, percent, swipeDetector)
+    })
+  }
+}
+
+function finishDrag (x: number, y: number, percent: number, swipeDetector: SwipeDetector) {
+  isDrag.value = false
+  const isSwipe = swipeDetector ? swipeDetector.finish(x, y) : false
+  if (percent > 40 || isSwipe) { return close() }
+
+  if (sheet.value) { sheet.value.style.transform = 'none' }
+}
+
+function startListener () {
+  listenDrag()
+  let percent = 0
+  let swipeDetector: SwipeDetector
+  if (scroller.value && sheet.value) {
+    dragBody.value = $createDragListener(scroller.value.$el)
+    let isScrolling = false
+    let isDragging = false
+    dragBody.value?.on('move', ({ x, y, e }) => {
+      const isTop = scroller.value.$el.scrollTop === 0
+      if (isTop && !isScrolling) {
+        if (!isDrag.value) {
+          if (e.cancelable) { e.preventDefault() }
+          isDrag.value = true
+          swipeDetector = $createSwipeDetector(x, y)
+        } else if (y <= 0 || x <= 0 || x >= window.innerWidth || y >= window.innerHeight) {
+          finishDrag(x, y, percent, swipeDetector)
+        } else {
+          const deltaY = swipeDetector ? swipeDetector.getDistanceY(y) : 0
+          percent = (deltaY / (sheet.value?.clientHeight ?? 0)) * 100
+          if (percent >= 0) {
+            isDragging = true
+            if (e.cancelable) { e.preventDefault() }
+            if (sheet.value) { sheet.value.style.transform = `translateY(${percent}%)` }
+          } else if (isDragging) {
+            if (e.cancelable) { e.preventDefault() }
+          } else {
+            isScrolling = true
+            isDrag.value = false
+          }
+        }
+      }
+    })
+
+    dragBody.value?.on('end', ({ x, y }) => {
+      isScrolling = false
+      isDragging = false
+      finishDrag(x, y, percent, swipeDetector)
+    })
+  }
+}
+
+function stopListener () {
+  if (dragBody.value) { dragBody.value.destroy() }
+  if (dragNavbar.value) { dragNavbar.value.destroy() }
+}
+
+const ignore = ref<HTMLElement | null>(null)
+
+function openSheet (el: HTMLElement | null = null) {
+  ignore.value = el
+  isOpen.value = true
+}
+function closeSheet () {
+  isOpen.value = false
+}
+
+function open (el: HTMLElement | null = null) {
+  if ($device.isMobile) { setState(true) } else { openSheet(el) }
+}
+
+function close () {
+  if ($device.isMobile) { setState(false) } else { closeSheet() }
+}
+
+defineExpose({ open, close, isOpen })
+</script>
+
 <template>
   <div class="absolute">
     <transition name="sheet">
@@ -27,7 +180,7 @@
                 <div
                   v-if="$device.isMobile"
                   class="absolute top-1.5 left-1/2 -translate-x-1/2 h-[3px] w-14 bg-slate-400/40 dark:bg-dark-3/90 rounded-sm"
-                ></div>
+                />
                 <h2 ref="navbar" class="px-5 text-xl font-bold leading-[4rem] select-none flex-1">
                   {{ title }}
                 </h2>
@@ -68,188 +221,3 @@
     </transition>
   </div>
 </template>
-
-<script lang="ts" setup>
-// import "vue-virtual-scroller/dist/vue-virtual-scroller.css";
-import { RecycleScroller } from "vue-virtual-scroller";
-import { useEventListener, onClickOutside } from "@vueuse/core";
-import DragListener from "~~/library/plugins/dragListener";
-import SwipeDetector from "~~/library/plugins/swipeDetector";
-const props = withDefaults(
-  defineProps<{
-    id?: string;
-    title?: string;
-    items?: any[];
-    sizeDependencies?: string;
-  }>(),
-  {
-    id: "bottomSheet",
-    title: "",
-    items: () => [],
-  }
-);
-
-// if (route.query[props.id] !== undefined) {
-//   const _q = { ...route.query };
-//   delete _q[props.id];
-//   router.replace({ query: { ..._q } });
-// }
-
-// watch(
-//   () => route.query,
-//   (to, from) => {
-//     if ($device.isMobile) {
-//       const tQ = to[props.id];
-//       const fQ = from[props.id];
-//       if (tQ === undefined && fQ === null) {
-//         close();
-//       }
-//     }
-//   }
-// );
-
-const { $device, $createDragListener, $createSwipeDetector } = useNuxtApp();
-const isOpen = ref(false);
-const isDrag = ref(false);
-const background = ref(null);
-const dragBody = ref<DragListener | null>(null);
-const dragNavbar = ref<DragListener | null>(null);
-const navbar = ref<HTMLElement | null>(null);
-const sheet = ref<HTMLElement | null>(null);
-const scroller = ref<typeof RecycleScroller | null>(null);
-let setState: (_state: boolean) => void;
-if ($device.isMobile) {
-  const { state: openState, setState: setFun } = useQueryState(props.id);
-  setState = setFun;
-  watch(openState, (state) => {
-    if (state) {
-      openSheet();
-    } else {
-      closeSheet();
-    }
-  });
-}
-
-useEventListener(background, "touchmove", (evt) => evt.preventDefault());
-const cleanup = ref<any>(undefined);
-watch(isOpen, (open) => {
-  nextTick(() => {
-    if (open) {
-      cleanup.value = onClickOutside(sheet, () => close(), { ignore: [ignore] });
-      return startListener();
-    } else if (cleanup.value) cleanup.value();
-    return stopListener();
-  });
-});
-
-function listenDrag() {
-  if (navbar.value && sheet.value) {
-    let swipeDetector: SwipeDetector;
-    let percent = 0;
-    dragNavbar.value = $createDragListener(navbar.value);
-    dragNavbar.value?.on("start", ({ x, y, e }) => {
-      e.stopPropagation();
-      if (e.cancelable) e.preventDefault();
-      isDrag.value = true;
-      swipeDetector = $createSwipeDetector(x, y);
-    });
-    dragNavbar.value?.on("move", ({ x, y }) => {
-      if (y <= 0 || x <= 0 || x >= window.innerWidth || y >= window.innerHeight) {
-        finishDrag(x, y, percent, swipeDetector);
-      } else {
-        const deltaY = swipeDetector ? swipeDetector.getDistanceY(y) : 0;
-        percent = (deltaY / (sheet.value?.clientHeight ?? 0)) * 100;
-        percent = percent < 0 ? 0 : percent;
-        sheet.value!.style.transform = `translateY(${percent}%)`;
-      }
-    });
-    dragNavbar.value?.on("end", ({ x, y }) => {
-      finishDrag(x, y, percent, swipeDetector);
-    });
-  }
-}
-
-function finishDrag(x: number, y: number, percent: number, swipeDetector: SwipeDetector) {
-  isDrag.value = false;
-  const isSwipe = swipeDetector ? swipeDetector.finish(x, y) : false;
-  if (percent > 40 || isSwipe) {
-    return close();
-  }
-  sheet.value!.style.transform = "none";
-}
-
-function startListener() {
-  listenDrag();
-  let percent = 0;
-  let swipeDetector: SwipeDetector;
-  if (scroller.value && sheet.value) {
-    dragBody.value = $createDragListener(scroller.value.$el);
-    let isScrolling = false;
-    let isDragging = false;
-    dragBody.value?.on("move", ({ x, y, e }) => {
-      const isTop = scroller.value.$el.scrollTop === 0;
-      if (isTop && !isScrolling) {
-        if (!isDrag.value) {
-          if (e.cancelable) e.preventDefault();
-          isDrag.value = true;
-          swipeDetector = $createSwipeDetector(x, y);
-        } else if (y <= 0 || x <= 0 || x >= window.innerWidth || y >= window.innerHeight) {
-          finishDrag(x, y, percent, swipeDetector);
-        } else {
-          const deltaY = swipeDetector ? swipeDetector.getDistanceY(y) : 0;
-          percent = (deltaY / (sheet.value?.clientHeight ?? 0)) * 100;
-          if (percent >= 0) {
-            isDragging = true;
-            if (e.cancelable) e.preventDefault();
-            sheet.value!.style.transform = `translateY(${percent}%)`;
-          } else if (isDragging) {
-            if (e.cancelable) e.preventDefault();
-          } else {
-            isScrolling = true;
-            isDrag.value = false;
-          }
-        }
-      }
-    });
-
-    dragBody.value?.on("end", ({ x, y }) => {
-      isScrolling = false;
-      isDragging = false;
-      finishDrag(x, y, percent, swipeDetector);
-    });
-  }
-}
-
-function stopListener() {
-  if (dragBody.value) dragBody.value.destroy();
-  if (dragNavbar.value) dragNavbar.value.destroy();
-}
-
-const ignore = ref<HTMLElement | null>(null);
-
-function openSheet(el: HTMLElement | null = null) {
-  ignore.value = el;
-  isOpen.value = true;
-}
-function closeSheet() {
-  isOpen.value = false;
-}
-
-function open(el: HTMLElement | null = null) {
-  if ($device.isMobile) {
-    setState(true);
-  } else {
-    openSheet(el);
-  }
-}
-
-function close() {
-  if ($device.isMobile) {
-    setState(false);
-  } else {
-    closeSheet();
-  }
-}
-
-defineExpose({ open, close, isOpen });
-</script>
