@@ -1,7 +1,25 @@
+<script lang="ts" setup>
+import { LazyImage } from '#components'
+defineProps<{
+  member: IMember;
+  isLive: boolean;
+}>()
+const openMenu = ref(false)
+const listener = ref<any>(undefined)
+const container = ref(null)
+watch(openMenu, (isOpen) => {
+  if (isOpen) {
+    listener.value = onClickOutside(container, () => (openMenu.value = false))
+  } else {
+    listener?.value()
+  }
+})
+</script>
+
 <template>
   <div
     ref="container"
-    class="px-4 xl:px-5 py-8 md:py-8 xl:py-10 bg-white dark:bg-dark-1 rounded-xl gap-2 md:gap-3 xl:gap-4 flex flex-col relative overflow-hidden"
+    class="px-4 xl:px-5 py-8 md:py-8 xl:py-10 bg-white dark:bg-dark-1 rounded-xl gap-2 md:gap-3 xl:gap-4 flex flex-col relative overflow-hidden aspect-[10/14] md:aspect-[10/13]"
   >
     <div class="flex justify-between items-center absolute left-0 right-0 top-0 p-2.5 md:p-3 lg:p-4">
       <div>
@@ -12,7 +30,9 @@
               <div class="w-full aspect-square rounded-full" />
             </div>
           </div>
-          <div class="text-red-500 font-semibold hidden sm:block">Live</div>
+          <div class="text-red-500 font-semibold hidden sm:block">
+            Live
+          </div>
         </div>
       </div>
       <button
@@ -37,7 +57,7 @@
         lazy="false"
         class="brightness-100 relative transition-all duration-200 w-full h-full"
         :alt="member.name + 'display picture'"
-        :src="$fixCloudinary(member.img)"
+        :src="$fixCloudinary(member.img_alt ?? '')"
       />
     </a>
     <NuxtLink
@@ -49,28 +69,29 @@
         lazy="false"
         aria-label="View profile"
         class="brightness-100 relative transition-all duration-200 w-full h-full"
-        :src="$fixCloudinary(member.img)"
+        :src="$fixCloudinary(member.img_alt ?? '')"
       />
     </NuxtLink>
     <h2 class="text-sm md:text-base xl:text-lg font-bold text-center truncate">
       {{ member.name }}
     </h2>
     <div
-      class="rounded-full text-white select-none mx-auto text-xs px-2.5 py-1"
+      class="rounded-full text-white select-none mx-auto text-[10px] md:text-xs xl:text-sm px-2.5 py-1"
       :class="member.is_group ? 'bg-sky-400' : member.is_graduate ? 'bg-red-500' : 'bg-green-500'"
       :title="`${member.is_group ? 'Official' : member.is_graduate ? 'Graduated' : 'Active'} Member`"
     >
       {{ member.is_group ? "Official" : member.is_graduate ? "Graduated" : "Active" }}
     </div>
-    <div class="text-xs md:text-sm text-center line-clamp-2 sm:line-clamp-3 xl:line-clamp-4">
+    <div class="text-xs md:text-sm text-center hidden sm:line-clamp-2 md:line-clamp-3 xl:line-clamp-4">
       {{ member.description?.length ? member.description : "No Description." }}
     </div>
     <NuxtLink
       :to="`/member/${member.room_id}`"
       :tabindex="openMenu ? -1 : null"
-      class="min-w-[80%] flex items-center justify-center gap-1.5 mt-auto px-5 py-2 xl:py-3 cursor-pointer bg-blue-500 hover:bg-blue-600 rounded-xl mx-auto font-semibold text-white text-xs md:text-sm xl:text-base truncate"
-      ><Icon name="ph:user-fill" class="seft-center text-base md:text-lg" />{{ $t("viewprofile") }}</NuxtLink
+      class="mt-auto min-w-[80%] flex items-center justify-center gap-1.5 px-5 py-2 xl:py-3 cursor-pointer bg-blue-500 hover:bg-blue-600 rounded-xl mx-auto font-semibold text-white text-[10px] sm:text-xs md:text-sm xl:text-base truncate"
     >
+      <Icon name="ph:user-fill" class="seft-center text-xs sm:text-base md:text-lg" />{{ $t("viewprofile") }}
+    </NuxtLink>
 
     <div
       class="absolute visible flex flex-col justify-center p-3 sm:p-4 md:p-5 bg-red-500 top-0 left-0 w-full h-full transition-[transform,visibility] duration-300 rounded-t-xl z-[9] text-white"
@@ -87,21 +108,3 @@
     </div>
   </div>
 </template>
-
-<script lang="ts" setup>
-import { LazyImage } from "#components";
-defineProps<{
-  member: IMember;
-  isLive: boolean;
-}>();
-const openMenu = ref(false);
-const listener = ref<any>(undefined);
-const container = ref(null);
-watch(openMenu, (isOpen) => {
-  if (isOpen) {
-    listener.value = onClickOutside(container, () => (openMenu.value = false));
-  } else {
-    listener?.value();
-  }
-});
-</script>

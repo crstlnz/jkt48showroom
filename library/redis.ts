@@ -1,5 +1,8 @@
 /* eslint-disable no-console */
+import dotenv from 'dotenv'
 import { createClient } from 'redis'
+dotenv.config()
+
 const client = createClient({
   url: process.env.REDIS_URI
 })

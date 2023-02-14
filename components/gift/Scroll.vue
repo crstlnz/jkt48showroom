@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-// import "vue-virtual-scroller/dist/vue-virtual-scroller.css";
 defineProps<{ gifts: IFansGift[]; pageMode?: boolean }>()
 function getNumColor (num: number) {
   if (num < 10) {
@@ -36,13 +35,12 @@ function getNumColor (num: number) {
 
     <template #default="{ item, index, active }">
       <DynamicScrollerItem :item="item" :active="active" :size-dependencies="[item.gifts]" :data-index="index">
-        <div class="p-3 md:p-4 border-b-2 border-slate-100/60 dark:border-dark-2/60 space-y-2">
+        <div :key="item.id" class="p-3 md:p-4 border-b-2 border-slate-100/60 dark:border-dark-2/60 space-y-2">
           <div class="text-lg font-bold truncate" :title="item.name">
             {{ item.name }}
           </div>
           <div class="flex gap-2.5 md:gap-3.5">
             <img
-              :key="item.avatar_id + item.id"
               class="hover:bg-slate-200 bg-slate-100/90 dark:bg-slate-100/5 hover:dark:bg-slate-300/10 p-2 rounded-lg w-[70px] h-[70px] lg:w-20 lg:h-20"
               :src="$avatarURL(item.avatar_id)"
               :alt="`${item.name} Avatar`"

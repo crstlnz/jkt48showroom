@@ -6,13 +6,13 @@ import config from '~~/app.config'
 export default defineEventHandler(async (event): Promise<IApiRecents> => await getRecents(getQuery(event)))
 export { getRecents }
 
-const group = ['jkt48', 'hinatazaka46'].includes(config.group ?? 'all') ? config.group : 'all'
+// const group = ['jkt48', 'hinatazaka46'].includes(config.group ?? 'all') ? config.group : 'all'
 async function getRecents (qq: any = null): Promise<IApiRecents> {
   let page = 1
   const perpage = 10
   const query: RecentsQuery = qq ?? {}
-  if (query.page) { page = Number(query.page) ?? 1 }
-  if (page < 1) { page = 1 }
+  if (query.page) page = Number(query.page) ?? 1
+  if (page < 1) page = 1
   enum sortType {
     LATEST,
     OLDEST,
@@ -86,6 +86,20 @@ async function getRecents (qq: any = null): Promise<IApiRecents> {
       .sort(getSort(sort))
       .skip((page - 1) * perpage)
       .limit(perpage)
+      // .populate({
+      //   path: 'room_info',
+      //   // select: '-_id name image url -room_id',
+      //   populate: [
+      //     {
+      //       path: 'image'
+      //       // select: '-_id url -date'
+      //     },
+      //     {
+      //       path: 'image_alt'
+      //       // select: '-_id url -date'
+      //     }
+      //   ]
+      // })
       .populate({
         path: 'room_info',
         select: '-_id name img url -room_id member_data',
@@ -103,8 +117,10 @@ async function getRecents (qq: any = null): Promise<IApiRecents> {
       data_id: i.data_id,
       member: {
         name: i.room_info?.name ?? 'Member not Found!',
-        img: i.room_info?.member_data?.img ?? i.room_info?.img ?? config.errorPicture,
-        img_alt: i.room_info?.img ?? config.errorPicture,
+        // img: i.room_info?.image?.url ?? i.room_info?.image_alt?.url ?? config.errorPicture,
+        // img_alt: i.room_info?.image_alt?.url ?? i.room_info?.image?.url ?? config.errorPicture,
+        img_alt: i.room_info?.member_data?.img ?? i.room_info?.img ?? config.errorPicture,
+        img: i.room_info?.img ?? config.errorPicture,
         url: i.room_info?.url ?? '',
         is_graduate: i.room_info?.member_data?.isGraduate ?? i.room_id === 332503
       },

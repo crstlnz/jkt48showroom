@@ -1,11 +1,12 @@
-type IDateRangeType = "weekly" | "monthly";
+type IDateRangeType = "weekly" | "monthly" | 'quarterly';
+
 type IDateRange = {
   from: string;
   to: string;
 };
 
 type StatsOptions = {
-  room_id: number | number[];
+  room_id?: number | number[];
   "live_info.end_date": object;
   is_dev?: null | boolean;
 };

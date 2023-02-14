@@ -1,3 +1,16 @@
+<script lang="ts" setup>
+import { LazyImage } from '#components'
+const props = defineProps<{
+  recent: IRecent;
+}>()
+const { $fromNow } = useNuxtApp()
+const date = $fromNow(
+  props.recent.live_info && props.recent.live_info?.date?.end
+    ? props.recent.live_info.date.end
+    : props.recent.created_at
+)
+</script>
+
 <template>
   <div class="text-center py-2 md:py-3 flex gap-3">
     <NuxtLink
@@ -9,7 +22,7 @@
         lazy="false"
         class="w-full h-full"
         :alt="recent.member?.name + 'Display Picture'"
-        :src="$fixCloudinary(recent.member?.img)"
+        :src="$fixCloudinary(recent.member?.img_alt ?? '')"
       />
     </NuxtLink>
 
@@ -61,23 +74,10 @@
       <div class="mt-2 pt-2 border-t-2 border-t-gray-50 dark:border-t-dark-2 flex justify-end text-sm md:text-base">
         <ul>
           <li>
-            <a :href="`/recent/${recent.data_id}`" target="_blank">Detail</a>
+            <a :href="`/recent/${recent.data_id}`" aria-label="Detailed log data" target="_blank">Details</a>
           </li>
         </ul>
       </div>
     </div>
   </div>
 </template>
-
-<script lang="ts" setup>
-import { LazyImage } from "#components";
-const props = defineProps<{
-  recent: IRecent;
-}>();
-const { $fromNow } = useNuxtApp();
-const date = $fromNow(
-  props.recent.live_info && props.recent.live_info?.date?.end
-    ? props.recent.live_info.date.end
-    : props.recent.created_at
-);
-</script>

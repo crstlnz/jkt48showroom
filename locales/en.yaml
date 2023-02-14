@@ -10,8 +10,6 @@ fansranking: Fans ranking
 topfans: Top fans
 nextlive: Next live
 recentlive: Recent live
-weeklystats: Weekly stats
-monthlystats: Monthly stats
 showonshowroom: Show on Showroom
 view: View
 viewlive: View Live
@@ -28,6 +26,7 @@ sort:
   mostviews: Most Views
   apply: Apply
 data:
+  notenough: Not enough data available 🥲
   nomore: No more data :(
   nodata: No data!
   notfound: Sorry, but the requested data is not found!
@@ -54,3 +53,10 @@ search: Search
 date:
   start: Start date
   end: End date
+  started: Started from {date}
+stats:
+  title: Statistics
+  weekly: 7 Days
+  monthly: 4 Weeks
+  quarterly: 3 Months
+  error : An error occured!

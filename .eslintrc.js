@@ -6,9 +6,9 @@ module.exports = {
   },
   extends: [
     'plugin:@typescript-eslint/recommended',
-    '@nuxtjs/eslint-config-typescript',
     'plugin:vue/vue3-recommended',
-    'plugin:nuxt/recommended'
+    'plugin:nuxt/recommended',
+    '@nuxtjs/eslint-config-typescript'
   ],
   overrides: [
   ],
@@ -25,6 +25,9 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': 'warn',
     '@typescript-eslint/no-explicit-any': 'off',
     'vue/multi-word-component-names': 'off',
-    curly: ['error', 'multi-line']
+    curly: ['error', 'multi-line'],
+    'vue/component-tags-order': ['error', {
+      order: ['script', 'template', 'style']
+    }]
   }
 }

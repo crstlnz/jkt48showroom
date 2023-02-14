@@ -1,3 +1,130 @@
+<script lang="ts" setup>
+import { useFocus } from '@vueuse/core'
+
+const { $device } = useNuxtApp()
+const props = defineProps({
+  members: {
+    type: Array,
+    default () {
+      return []
+    }
+  },
+  query: {
+    type: Object,
+    default () {
+      return {}
+    }
+  }
+})
+
+const search = ref(props.query.search)
+const emit = defineEmits(['apply'])
+const temp = ref<RecentsQuery>({})
+const isEnabled = computed(() => {
+  if (Object.keys(temp.value).length || search.value !== props.query.search) return true
+  return false
+})
+
+watch(
+  () => props.query,
+  (newVal) => {
+    search.value = newVal.search
+    temp.value = {}
+  }
+)
+
+enum sortType {
+  LATEST,
+  OLDEST,
+  MOST_GIFT,
+  MOST_VIEWS,
+}
+
+function getSortKey (sort: sortType): string {
+  switch (sort) {
+    case sortType.LATEST:
+      return 'sort.latest'
+    case sortType.OLDEST:
+      return 'sort.oldest'
+    case sortType.MOST_GIFT:
+      return 'sort.mostgift'
+    case sortType.MOST_VIEWS:
+      return 'sort.mostviews'
+  }
+}
+
+const isActive = (bool: boolean) => {
+  const val = temp.value.filter ?? props.query.filter
+  if ((val !== undefined && val === 'graduated') || val === 'active') {
+    return (val === 'graduated') === bool
+  }
+  return false
+}
+
+const setGraduated = (bool: boolean) => {
+  const getFilter = (b: boolean) => (b ? 'graduated' : 'active')
+  const newVal = getFilter(bool)
+  if (temp.value.filter !== undefined) {
+    if (temp.value.filter === newVal) {
+      if (props.query.filter === 'all') return (temp.value.filter = undefined)
+      return (temp.value.filter = 'all')
+    }
+    return (temp.value.filter = newVal)
+  }
+
+  if (props.query.filter === newVal) {
+    temp.value.filter = 'all'
+  } else {
+    temp.value.filter = newVal
+  }
+  // if (temp.value.filter !== undefined) {
+  //   if (newVal === props.query.filter) {
+  //     return (temp.value.filter = undefined);
+  //   } else if (newVal === temp.value.filter) {
+  //     return (temp.value.filter = bool ? 'all');
+  //   }
+  //   return (temp.value.filter = newVal);
+  // }
+
+  // if (props.query.filter === newVal) {
+  //   temp.value.filter = "all";
+  // } else {
+  //   temp.value.filter = newVal;
+  // }
+  // // temp.value.graduated = val === undefined || bool !== val ? bool : bool === props.query.graduated ? undefined : null;
+}
+
+const setSort = (key: string | number) => {
+  const keyString = sortType[key]?.toLowerCase()
+  if (keyString === props.query.sort) {
+    return delete temp.value.sort
+  }
+  temp.value.sort = keyString
+}
+
+const searchinput = ref(null)
+const { focused } = useFocus(searchinput)
+const apply = () => {
+  if ($device.isMobile) focused.value = false
+  const q = { ...temp.value, search: search.value }
+  for (const key of Object.keys(props.query)) {
+    if (!Object.hasOwn(q, key)) {
+      q[key] = props.query[key]
+    }
+  }
+  emit('apply', q)
+}
+
+const clearSearch = () => {
+  if (!isEnabled.value) {
+    search.value = ''
+    apply()
+  } else {
+    search.value = ''
+  }
+}
+</script>
+
 <template>
   <div class="space-y-4">
     <!-- todo -->
@@ -51,7 +178,7 @@
         type="text"
         class="w-full bg-transparent outline-none"
         @keyup.enter="apply"
-      />
+      >
     </div>
     <ul
       class="overflow-hidden rounded-xl bg-slate-100/60 dark:bg-dark-2/60 max-h-[250px] overflow-y-auto overflow-x-hidden"
@@ -107,130 +234,3 @@
     </button>
   </div>
 </template>
-
-<script lang="ts" setup>
-import { useFocus } from "@vueuse/core";
-
-const { $device } = useNuxtApp();
-const props = defineProps({
-  members: {
-    type: Array,
-    default() {
-      return [];
-    },
-  },
-  query: {
-    type: Object,
-    default() {
-      return {};
-    },
-  },
-});
-
-const search = ref(props.query.search);
-const emit = defineEmits(["apply"]);
-const temp = ref<RecentsQuery>({});
-const isEnabled = computed(() => {
-  if (Object.keys(temp.value).length || search.value !== props.query.search) return true;
-  return false;
-});
-
-watch(
-  () => props.query,
-  (newVal) => {
-    search.value = newVal.search;
-    temp.value = {};
-  }
-);
-
-enum sortType {
-  LATEST,
-  OLDEST,
-  MOST_GIFT,
-  MOST_VIEWS,
-}
-
-function getSortKey(sort: sortType): string {
-  switch (sort) {
-    case sortType.LATEST:
-      return "sort.latest";
-    case sortType.OLDEST:
-      return "sort.oldest";
-    case sortType.MOST_GIFT:
-      return "sort.mostgift";
-    case sortType.MOST_VIEWS:
-      return "sort.mostviews";
-  }
-}
-
-const isActive = (bool: boolean) => {
-  const val = temp.value.filter ?? props.query.filter;
-  if ((val !== undefined && val === "graduated") || val === "active") {
-    return (val === "graduated") === bool;
-  }
-  return false;
-};
-
-const setGraduated = (bool: boolean) => {
-  const getFilter = (b: boolean) => (b ? "graduated" : "active");
-  const newVal = getFilter(bool);
-  if (temp.value.filter !== undefined) {
-    if (temp.value.filter === newVal) {
-      if (props.query.filter === "all") return (temp.value.filter = undefined);
-      return (temp.value.filter = "all");
-    }
-    return (temp.value.filter = newVal);
-  }
-
-  if (props.query.filter === newVal) {
-    temp.value.filter = "all";
-  } else {
-    temp.value.filter = newVal;
-  }
-  // if (temp.value.filter !== undefined) {
-  //   if (newVal === props.query.filter) {
-  //     return (temp.value.filter = undefined);
-  //   } else if (newVal === temp.value.filter) {
-  //     return (temp.value.filter = bool ? 'all');
-  //   }
-  //   return (temp.value.filter = newVal);
-  // }
-
-  // if (props.query.filter === newVal) {
-  //   temp.value.filter = "all";
-  // } else {
-  //   temp.value.filter = newVal;
-  // }
-  // // temp.value.graduated = val === undefined || bool !== val ? bool : bool === props.query.graduated ? undefined : null;
-};
-
-const setSort = (key: string | number) => {
-  const keyString = sortType[key]?.toLowerCase();
-  if (keyString === props.query.sort) {
-    return delete temp.value.sort;
-  }
-  temp.value.sort = keyString;
-};
-
-const searchinput = ref(null);
-const { focused } = useFocus(searchinput);
-const apply = () => {
-  if ($device.isMobile) focused.value = false;
-  const q = { ...temp.value, search: search.value };
-  for (const key of Object.keys(props.query)) {
-    if (!Object.hasOwn(q, key)) {
-      q[key] = props.query[key];
-    }
-  }
-  emit("apply", q);
-};
-
-const clearSearch = () => {
-  if (!isEnabled.value) {
-    search.value = "";
-    apply();
-  } else {
-    search.value = "";
-  }
-};
-</script>

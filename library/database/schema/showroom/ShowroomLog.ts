@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 import { Schema, model, Model } from 'mongoose'
+import IdolMember from '../48group/IdolMember'
 import Showroom from './Showroom'
 import ShowroomGift from './ShowroomGift'
 import ShowroomUser from './ShowroomUser'
@@ -136,6 +137,12 @@ showroomLogSchema.virtual('room_info', {
   foreignField: 'room_id',
   justOne: true
 })
+// showroomLogSchema.virtual('room_info', {
+//   ref: IdolMember,
+//   localField: 'room_id',
+//   foreignField: 'showroom.room_id',
+//   justOne: true
+// })
 
 showroomLogSchema.virtual('gift_data.gift_list', {
   ref: ShowroomGift,

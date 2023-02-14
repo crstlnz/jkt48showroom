@@ -42,12 +42,12 @@ const menus = [
     title: 'Member',
     url: '/member',
     mobile: true
-  },
-  {
-    title: 'Watch',
-    url: '/watch/rina0129',
-    mobile: true
   }
+  // {
+  //   title: 'Watch',
+  //   url: '/watch/rina0129',
+  //   mobile: true
+  // }
 ]
 const colorMode = useColorMode()
 function toggleDark () {

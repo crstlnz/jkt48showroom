@@ -1,13 +1,10 @@
-import {
-  defineStore,
-  acceptHMRUpdate
-} from '~/node_modules/@pinia/nuxt/dist/runtime/composables'
-
 export const useMembers = defineStore('members', () => {
-  const error = useState('error', () => false)
-  const loading = useState('loading', () => false)
-  const members = useState<IMember[] | null>('members', () => null)
-
+  // const error = useState('error', () => false)
+  // const loading = useState('loading', () => false)
+  // const members = useState<IMember[] | null>('members', () => null)
+  const error = ref(false)
+  const loading = ref(false)
+  const members = ref<IMember[]>([])
   async function load () {
     try {
       loading.value = true

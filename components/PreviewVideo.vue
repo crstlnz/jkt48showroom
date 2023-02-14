@@ -7,13 +7,13 @@ const video = ref<HTMLMediaElement>()
 const hls = ref()
 const videoLoaded = ref(false)
 const isMuted = ref(true)
-function buffer() {
+function buffer () {
   if (process.server) return
   if (Hls.isSupported() && video.value) {
     hls.value = new Hls({
       enableWorker: true,
       lowLatencyMode: true,
-      backBufferLength: 90,
+      backBufferLength: 90
     })
     hls.value.loadSource(props.src)
     hls.value.attachMedia(video.value)
@@ -22,33 +22,29 @@ function buffer() {
     })
 
     setTimeout(() => {
-      if (video.value)
-        video.value.muted = isMuted.value
+      if (video.value) { video.value.muted = isMuted.value }
     }, 600)
   }
 }
 
-function play() {
-  if (process.server)
-    return
+function play () {
+  if (process.server) { return }
   if (video.value) {
     video.value.muted = isMuted.value
     video.value.play()
   }
 }
 
-function stop() {
-  if (process.server)
-    return
+function stop () {
+  if (process.server) { return }
   if (hls.value) {
     hls.value.destroy()
     videoLoaded.value = false
-    if (video.value)
-      video.value.muted = true
+    if (video.value) { video.value.muted = true }
   }
 }
 
-function toggleMute() {
+function toggleMute () {
   if (video.value) {
     video.value.muted = !video.value.muted
     isMuted.value = video.value.muted
@@ -56,8 +52,7 @@ function toggleMute() {
 }
 
 onMounted(() => {
-  if (video.value)
-    video.value.muted = true
+  if (video.value) { video.value.muted = true }
 })
 
 defineExpose({ play, stop, buffer })

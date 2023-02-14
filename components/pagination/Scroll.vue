@@ -1,7 +1,84 @@
+<script lang="ts" setup>
+// import "vue-virtual-scroller/dist/vue-virtual-scroller.css";
+import { useScroll, onClickOutside } from '@vueuse/core'
+const fetch = await useRecentFetch({ changeRoute: false, mode: 'infinite' })
+const { data: res, query, pending, error } = fetch.data
+const { changePage, refresh, setFilter, onQueryChange } = fetch
+const filterOpen = ref(false)
+function toggleFilter () {
+  if (filterOpen.value) {
+    closeFilter()
+  } else {
+    openFilter()
+  }
+}
+
+function openFilter () {
+  filterOpen.value = true
+}
+
+function closeFilter () {
+  filterOpen.value = false
+}
+
+function applyFilter (filter: any) {
+  setFilter(filter)
+  isEnded.value = false
+  filterOpen.value = false
+}
+
+const listener = ref<any>(undefined)
+const filterContainer = ref(null)
+const isLoadDelayed = ref(false) // if next page must be loaded but the filter div is open;
+
+watch(filterOpen, (isOpen) => {
+  if (isOpen) {
+    listener.value = onClickOutside(filterContainer, () => (filterOpen.value = false))
+  } else {
+    if (isLoadDelayed.value) {
+      isLoadDelayed.value = false
+      checkTrigger()
+    }
+    listener?.value()
+  }
+})
+
+function scrollToTop () {
+  y.value = 0
+}
+
+onQueryChange(() => {
+  dataset.value = []
+  scrollToTop()
+})
+const el = ref<Window | null>(null)
+onMounted(() => {
+  el.value = window
+})
+
+const { y, arrivedState } = useScroll(el, { behavior: 'smooth' })
+const isTop = computed(() => arrivedState.top)
+const dataset = ref(res.value?.recents)
+watch(res, (val) => {
+  if ((val?.recents.length ?? 0) === 0) return (isEnded.value = true)
+  dataset.value?.push(...(val?.recents ?? []))
+})
+
+const isEnded = ref(false)
+const { checkTrigger } = useInfiniteScroll(
+  () => {
+    if (isEnded.value) return
+    if (filterOpen.value) return (isLoadDelayed.value = true)
+    if (!pending.value) changePage((res.value?.page ?? 1) + 1)
+  },
+  { distance: 120 }
+)
+</script>
+
 <template>
   <div>
     <Transition name="fade">
-      <div v-if="filterOpen" class="fixed bottom-0 top-0 left-0 right-0 bg-black/30 dark:bg-black/50 z-40"></div>
+      <div v-if="filterOpen" class="fixed bottom-0 top-0 left-0 right-0 bg-black/30 dark:bg-black/50 z-40" />
     </Transition>
     <div
       ref="filterContainer"
@@ -42,14 +119,18 @@
       </Transition>
     </div>
     <div class="flex mb-2 items-end justify-between">
-      <div class="font-bold text-xl">{{ $t("recentlive") }}</div>
-      <button type="button" class="font-bold" @click="toggleFilter">Filter</button>
+      <div class="font-bold text-xl">
+        {{ $t("recentlive") }}
+      </div>
+      <button type="button" class="font-bold" @click="toggleFilter">
+        Filter
+      </button>
     </div>
 
     <div ref="content" class="relative z-10">
       <transition name="fade-abs">
-        <div v-if="pending && (dataset?.length ?? 0) == 0" key="loading" class="space-y-2 md:space-y-4">
-          <PulseRecentDetailCard v-for="index in Array(10).keys()" :key="index">Loading</PulseRecentDetailCard>
+        <div v-if="pending && (dataset?.length ?? 0) === 0" key="loading" class="space-y-2 md:space-y-4">
+          <PulseRecentDetailCard v-for="index in Array(10).keys()" :key="index" />
         </div>
         <div
           v-else-if="error || !dataset || !dataset.length"
@@ -57,33 +138,43 @@
         >
           <div class="space-y-5">
             <div class="mx-auto w-4/5 lg:w-[350px]">
-              <img v-if="error" src="/img/security-error.png" alt="An Error Occured!" class="w-full mx-auto" />
-              <img v-else src="/img/empty-box.png" alt="Empty!" class="w-full mx-auto" />
+              <img v-if="error" src="/img/security-error.png" alt="An Error Occured!" class="w-full mx-auto">
+              <img v-else src="/img/empty-box.png" alt="Empty!" class="w-full mx-auto">
             </div>
             <div v-if="error">
-              <h2 class="text-xl lg:text-3xl mb-1">{{ $t("data.error") }}</h2>
+              <h2 class="text-xl lg:text-3xl mb-1">
+                {{ $t("data.error") }}
+              </h2>
               <button type="button" class="hover:text-second-2 text-sm lg:text-base" href="/" @click="() => refresh()">
                 {{ $t("data.retry") }}
               </button>
             </div>
             <div v-else>
-              <h2 class="text-lg lg:text-2xl mb-1">{{ $t("data.notfound") }}</h2>
+              <h2 class="text-lg lg:text-2xl mb-1">
+                {{ $t("data.notfound") }}
+              </h2>
             </div>
           </div>
         </div>
 
-        <div v-else key="loaded" class="space-y-2 md:space-y-4">
-          <DynamicScroller :prerender="10" :min-item-size="136" :items="dataset" key-field="data_id" page-mode>
-            <template #default="{ item, index, active }">
-              <DynamicScrollerItem :item="item" :active="active" :data-index="index">
-                <div class="pb-2.5 sm:pb-3 md:pb-4">
-                  <MemberRecentCard :key="item.data_id" :recent="item" />
-                </div>
-              </DynamicScrollerItem>
-            </template>
-          </DynamicScroller>
-          <!-- <MemberRecentCard v-for="d in dataset" :key="d.data_id" :recent="d" /> -->
-        </div>
+        <DynamicScroller
+          v-else
+          key="loaded"
+          :prerender="10"
+          :min-item-size="136"
+          :items="dataset"
+          key-field="data_id"
+          page-mode
+        >
+          <template #default="{ item, index, active }">
+            <DynamicScrollerItem :item="item" :active="active" :data-index="index">
+              <div class="pb-2.5 sm:pb-3 md:pb-4">
+                <MemberRecentCard :key="item.data_id" :recent="item" />
+              </div>
+            </DynamicScrollerItem>
+          </template>
+        </DynamicScroller>
+      <!-- <MemberRecentCard v-for="d in dataset" :key="d.data_id" :recent="d" /> -->
       </transition>
     </div>
 
@@ -93,223 +184,18 @@
     >
       <transition name="fade" mode="out-in">
         <div v-if="pending" key="spinner" class="lds-ring">
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
+          <div />
+          <div />
+          <div />
+          <div />
         </div>
-        <div v-else-if="isEnded" key="nomore">{{ $t("data.nomore") }}</div>
+        <div v-else-if="isEnded" key="nomore">
+          {{ $t("data.nomore") }}
+        </div>
       </transition>
     </div>
   </div>
 </template>
-
-<script lang="ts" setup>
-// import "vue-virtual-scroller/dist/vue-virtual-scroller.css";
-import { useScroll, onClickOutside } from "@vueuse/core";
-const fetch = await useRecentFetch({ changeRoute: false, mode: "infinite" });
-const { data: res, query, pending, error } = fetch.data;
-const { changePage, refresh, setFilter, onQueryChange } = fetch;
-const filterOpen = ref(false);
-function toggleFilter() {
-  if (filterOpen.value) {
-    closeFilter();
-  } else {
-    openFilter();
-  }
-}
-
-function openFilter() {
-  filterOpen.value = true;
-}
-
-function closeFilter() {
-  filterOpen.value = false;
-}
-
-function applyFilter(filter: any) {
-  setFilter(filter);
-  filterOpen.value = false;
-}
-
-const listener = ref<any>(undefined);
-const filterContainer = ref(null);
-const isLoadDelayed = ref(false); // if next page must be loaded but the filter div is open;
-
-watch(filterOpen, (isOpen) => {
-  if (isOpen) {
-    listener.value = onClickOutside(filterContainer, () => (filterOpen.value = false));
-  } else {
-    if (isLoadDelayed.value) {
-      isLoadDelayed.value = false;
-      checkTrigger();
-    }
-    listener?.value();
-  }
-});
-
-function scrollToTop() {
-  y.value = 0;
-}
-
-onQueryChange(() => {
-  dataset.value = [];
-  scrollToTop();
-});
-const el = ref<Window | null>(null);
-onMounted(() => {
-  el.value = window;
-});
-
-const { y, arrivedState } = useScroll(el, { behavior: "smooth" });
-const isTop = computed(() => arrivedState.top);
-const dataset = ref(res.value?.recents);
-watch(res, (val) => {
-  if ((val?.recents.length ?? 0) === 0) return (isEnded.value = true);
-  dataset.value?.push(...(val?.recents ?? []));
-});
-
-const isEnded = ref(false);
-const { checkTrigger } = useInfiniteScroll(
-  () => {
-    if (isEnded.value) return;
-    if (filterOpen.value) return (isLoadDelayed.value = true);
-    if (!pending.value) changePage((res.value?.page ?? 1) + 1);
-  },
-  { distance: 120 }
-);
-
-// onMounted(() => {
-//   useInfiniteScroll(
-//     window,
-//     () => {
-//       if (noMoreData.value) return;
-//       page.value += 1;
-//       const newData = getPage(page.value);
-//       if (newData?.length) {
-//         data.value.push(...getPage(page.value));
-//       } else {
-//         page.value -= 1;
-//         noMoreData.value = true;
-//       }
-//     },
-//     { distance: 10 }
-//   );
-// });
-</script>
-
-<!-- <script>
-export default {
-  props: {
-    state: {
-      type: Object,
-      required: true,
-    },
-    firstLoad: {
-      type: Boolean,
-      required: true,
-    },
-    query: {
-      type: Object,
-      required: true,
-    },
-    // page: {
-    //   type: Number,
-    //   default() {
-    //     return 1
-    //   },
-    // },
-    dataSet: {
-      type: Array,
-      default() {
-        return [];
-      },
-    },
-    totalPage: {
-      type: Number,
-      default() {
-        return 1;
-      },
-    },
-    onPageChange: {
-      type: Function,
-      default() {
-        return () => {};
-      },
-    },
-    onFilter: {
-      type: Function,
-      default() {
-        return () => {};
-      },
-    },
-    noMoreData: {
-      type: Boolean,
-      default() {
-        return false;
-      },
-    },
-  },
-  data() {
-    return {
-      infiniteScroll: null,
-      showLoading: false,
-      isTop: true,
-    };
-  },
-  watch: {
-    dataSet(value, old) {
-      if (!this.infiniteScroll) return;
-      if (!value.length) {
-        this.infiniteScroll.destroy();
-      }
-      this.infiniteScroll.finishLoading();
-    },
-    noMoreData(value) {
-      if (value) this.infiniteScroll.destroy();
-    },
-  },
-  mounted() {
-    const success = this.startInfiniteScroll();
-    if (!success) this.$nextTick(() => this.startInfiniteScroll());
-  },
-  beforeUnmount() {
-    if (this.infiniteScroll) this.infiniteScroll.destroy();
-  },
-  methods: {
-    scrollToTop() {
-      if (window) window.scrollTo({ top: 0 });
-    },
-    toggleLoading() {
-      this.showLoading = !this.showLoading;
-    },
-    startInfiniteScroll() {
-      if (window) {
-        this.infiniteScroll = new this.$infiniteScroll(window);
-        this.infiniteScroll.on("load", () => {
-          if (!this.firstLoad) {
-            this.$nextTick(() => {
-              this.onPageChange(this.query.page + 1);
-              // console.log('LOADING PAGE', this.query.page + 1)
-            });
-          }
-        });
-
-        const content = this.$refs.content;
-
-        this.infiniteScroll.on("scroll", ({ x, y, e }) => {
-          if (content) {
-            const isTop = y < content.offsetTop;
-            if (this.isTop !== isTop) this.isTop = isTop;
-          }
-        });
-        return true;
-      }
-      return false;
-    },
-  },
-};
-</script> -->
 
 <style lang="scss">
 .lds-ring {

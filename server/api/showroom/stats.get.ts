@@ -1,23 +1,34 @@
 /* eslint-disable camelcase */
 import { getMembers } from './members.get'
+import { getDateRange } from '~~/library/utils'
 import ShowroomLog from '~~/library/database/schema/showroom/ShowroomLog'
 import cache from '~~/library/utils/cache'
+import calculationTime from '~~/library/utils/calculationTime'
 
-const type = 'weekly'
-export default defineEventHandler(async () => await getStats())
-
-export { getStats, calculateFansPoints }
-
-async function getStats (): Promise<IShowroomStats> {
-  const dateRange = getDateRange(type)
-  const data = await cache.fetch<IShowroomStats>(type, () => fetchData(dateRange), 2629800000)
-  if (data?.date?.to === dateRange.to) { return data }
-  const newData = await fetchData(dateRange)
-  cache.set(type, newData)
-  return newData
+function isIDateRangeType (value: string): value is IDateRangeType {
+  return ['weekly', 'monthly', 'quarterly'].includes(value)
 }
 
-async function fetchData (dateRange: IDateRange): Promise<IShowroomStats> {
+export default defineEventHandler(async (event) => {
+  const query = getQuery(event)
+  const type = isIDateRangeType(query.type as string) ? query.type : undefined
+  return await getStats(type as IDateRangeType)
+})
+
+export { getStats, calculateFansPoints, getDateRange }
+
+async function getStats (type : IDateRangeType = 'quarterly'): Promise<IShowroomStats> {
+  const dateRange = getDateRange(type)
+  const data = await cache.fetch<IShowroomStats>(type, () => fetchData(type), 2629800000)
+  if (data?.date?.to === dateRange.to) { return data }
+  return await fetchData(type)
+}
+
+async function fetchData (type : IDateRangeType): Promise<IShowroomStats> {
+  const dateRange = {
+    from: getDateRange('quarterly').from,
+    to: getDateRange('weekly').to
+  } // get all data and then convert it to monthly and weekly
   const members = await getMembers()
   if (!members) {
     throw createError({
@@ -50,9 +61,7 @@ async function fetchData (dateRange: IDateRange): Promise<IShowroomStats> {
     }
   }
   if (!process.env.IS_DEV) { option.is_dev = false }
-  const logs = await ShowroomLog.find(option, select)
-    .sort('live_info.end_date')
-    .limit(200)
+  const logs = await calculationTime(async () => await ShowroomLog.find(option, select)
     .lean()
     .populate({
       path: 'room_info',
@@ -61,8 +70,30 @@ async function fetchData (dateRange: IDateRange): Promise<IShowroomStats> {
         path: 'member_data',
         select: '-_id isGraduate img'
       }
-    })
-  const all = calculateRanks(logs as unknown as IShowroomLog[])
+    })) as unknown as IShowroomLog[]
+
+  const weekly = generate(logs, 'weekly')
+  const monthly = generate(logs, 'monthly')
+  const quarterly = generate(logs, 'quarterly')
+
+  cache.set(weekly.type, weekly)
+  cache.set(monthly.type, monthly)
+  cache.set(quarterly.type, quarterly)
+
+  if (type === 'quarterly') {
+    return quarterly
+  } else if (type === 'monthly') {
+    return monthly
+  } else {
+    return weekly
+  }
+}
+
+function generate (logs :IShowroomLog[], type : IDateRangeType) {
+  const dateRange = getDateRange(type)
+
+  logs = logs.filter(i => new Date(i.live_info.start_date).getTime() >= new Date(dateRange.from).getTime() && new Date(i.live_info.start_date).getTime() <= new Date(dateRange.to).getTime())
+  const all = calculateRanks(logs)
   const memberList = all.member.map((i) => {
     return {
       ...i,
@@ -124,27 +155,6 @@ async function fetchData (dateRange: IDateRange): Promise<IShowroomStats> {
       from: dateRange.from,
       to: dateRange.to
     }
-  }
-}
-
-function getDateRange (type: IDateRangeType): IDateRange {
-  const date = new Date()
-  let to: Date, from: Date
-  if (type === 'weekly') {
-    date.setDate(date.getDate() - (date.getDay() || 7) - 7)
-    from = new Date(date.setHours(24, 0, 0, 0))
-    to = new Date(date.setDate(date.getDate() + 7))
-  } else if (type === 'monthly') {
-    date.setDate(1)
-    to = new Date(date.setHours(0, 0, 0, 0))
-    from = new Date(date.setMonth(to.getMonth() - 1))
-  } else {
-    to = date
-    from = date
-  }
-  return {
-    from: from.toISOString(),
-    to: to.toISOString()
   }
 }
 

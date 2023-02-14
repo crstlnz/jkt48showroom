@@ -6,7 +6,7 @@ export default defineEventHandler(async (): Promise<IRoomLive[]> => {
   return await getNowLive()
 })
 export { getNowLive, getNowLiveDirect, getNowLiveIndirect, getNowLiveCookies }
-const time = 0
+const time = 10000
 async function getNowLive (): Promise<IRoomLive[]> {
   return await cache
     .fetch<IRoomLive[]>('now_live', () => getNowLiveCookies(), time)
@@ -86,7 +86,6 @@ async function getNowLiveCookies (membersData: IMember[] | null = null): Promise
   const lives = []
   lives.push(...await Promise.all(result))
   if (missing.length) {
-    console.log(missing)
     lives.push(...await getNowLiveDirect(missing))
   }
   return lives

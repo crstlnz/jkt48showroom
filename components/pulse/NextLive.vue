@@ -20,7 +20,7 @@
       >
         <ul>
           <li>
-            <div class="h-6 w-16 pulse-color animate-pulse rounded-xl"></div>
+            <div class="h-6 w-16 pulse-color animate-pulse rounded-xl" />
           </li>
         </ul>
       </div>

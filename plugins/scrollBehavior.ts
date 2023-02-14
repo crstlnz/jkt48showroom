@@ -30,7 +30,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         return { el: to.hash, top: _getHashElementScrollMarginTop(to.hash) }
       }
 
-      return { left: 0, top: 0, behavior: 'smooth' }
+      if (from.fullPath === to.fullPath || to.path === to.fullPath) return { left: 0, top: 0, behavior: 'smooth' }
     }
 
     return new Promise((resolve) => {

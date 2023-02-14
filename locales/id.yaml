@@ -10,8 +10,6 @@ fansranking: Ranking fans
 topfans: Fans teratas
 nextlive: Jadwal live
 recentlive: Live terakhir
-weeklystats: Data mingguan
-monthlystats: Data bulanan
 showonshowroom: Lihat di Showroom
 view: Lihat
 viewlive: Buka Live
@@ -28,6 +26,7 @@ sort:
   mostviews: Penonton Terbanyak
   apply: Terapkan
 data:
+  notenough: Data yang tersedia tidak cukup 🥲
   nomore: Tidak ada data lagi :(
   nodata: Tidak ada data!
   notfound: Data tidak dapat ditemukan!
@@ -54,3 +53,10 @@ search: Cari
 date:
   start: Mulai
   end: Selesai
+  started: Mulai dari {date}
+stats:
+  title: Statistik
+  weekly: 7 Hari
+  monthly: 4 Minggu
+  quarterly: 3 Bulan
+  error : An error occured!

@@ -28,6 +28,9 @@ class RedisManager {
     }
   }
 
+  async get<T>(key: RedisCommandArgument | string | number, withExpire?: true, retry? : number): Promise<WithExpire<T> | null>
+  async get<T>(key: RedisCommandArgument | string | number, withExpire?: false, retry? : number): Promise<T | null>
+  async get<T>(key: RedisCommandArgument | string | number, withExpire?: boolean, retry? : number): Promise<WithExpire<T> | T | null>
   async get<T> (
     key: RedisCommandArgument | string | number,
     withExpire = false,
@@ -37,13 +40,14 @@ class RedisManager {
     try {
       const d = await redis.get(key as RedisCommandArgument)
       if (!d) { return null }
-      const data = this.parse(d)
-      if (!withExpire) { return data as T }
+      const data = this.parse(d) as T
+      if (!withExpire) return data
       const expireIn = await redis.pTTL(key as RedisCommandArgument)
+      if (expireIn <= 0) return null
       return {
         expireIn,
         data
-      }
+      } as WithExpire<T>
     } catch (e) {
       if (retry < this.maxRetry) {
         return await this.get(key, withExpire, retry + 1)

@@ -18,7 +18,7 @@ const date = $fromNow(props.recent.live_info?.date?.end)
           lazy="false"
           class="group-hover:brightness-50 brightness-[98%] object-cover relative cursor-pointer transition-all duration-200 w-full h-full bg-slate-200 dark:bg-dark-3 text-xs md:text-sm lg:text-base"
           :alt="recent.member?.name + 'Display Picture'"
-          :src="recent.member?.img_alt ?? ''"
+          :src="recent.member?.img ?? ''"
         >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -58,7 +58,7 @@ const date = $fromNow(props.recent.live_info?.date?.end)
       <div>
         {{ date }}
       </div>
-      <a :href="`/recent/${recent.data_id}`" target="_blank" class="font-bold">Details</a>
+      <a :href="`/recent/${recent.data_id}`" aria-label="Detailed log data" target="_blank" class="font-bold">Details</a>
     </div>
   </div>
 </template>

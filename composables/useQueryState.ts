@@ -9,6 +9,7 @@ export default function (id: string) {
     }
     delete query[id]
     router.push({
+      ...route,
       path: route.path,
       query
     })
@@ -49,6 +50,7 @@ export default function (id: string) {
       }
       query[id] = null
       router.push({
+        ...route,
         path: route.path,
         query
       })

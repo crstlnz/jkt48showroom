@@ -1,11 +1,11 @@
 <script setup>
-const { locale, locales, setLocale } = useI18n();
+const { locale, locales, setLocale } = useI18n()
 const otherLocale = computed(() => {
-  return locales.value.find((i) => i.code !== locale.value);
-});
+  return locales.value.find(i => i.code !== locale.value)
+})
 const currentLocale = computed(() => {
-  return locales.value.find((i) => i.code === locale.value);
-});
+  return locales.value.find(i => i.code === locale.value)
+})
 </script>
 <template>
   <button

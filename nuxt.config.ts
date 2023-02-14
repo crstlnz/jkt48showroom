@@ -1,6 +1,9 @@
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
   ssr: true,
+  routeRules: {
+    '/api/**': { cors: true }
+  },
   app: {
     pageTransition: { name: 'page', mode: 'out-in' }
   },
@@ -11,19 +14,21 @@ export default defineNuxtConfig({
     }
   },
   modules: [
+    // '@nuxt/devtools',
+    '@nuxtjs/device',
     'nuxt-icon',
     '@nuxtjs/google-fonts',
     '@nuxtjs/tailwindcss',
     '@nuxtjs/color-mode',
     '@vueuse/nuxt',
+    '@nuxtjs/i18n',
+    '@nuxtjs/html-validator',
     [
       '@pinia/nuxt',
       {
-        autoImports: ['storeToRefs', 'acceptHMRUpdate', 'defineStore', 'acceptHMRUpdate', 'skipHydrate']
+        autoImports: ['storeToRefs', 'defineStore', 'acceptHMRUpdate', 'skipHydrate']
       }
-    ],
-    '@nuxtjs/i18n',
-    '@nuxtjs/html-validator'
+    ]
   ],
   css: ['~/assets/css/style.scss'],
   colorMode: {
@@ -64,7 +69,6 @@ export default defineNuxtConfig({
   },
   i18n: {
     baseUrl: process.env.BASE_URL,
-
     strategy: 'no_prefix',
     locales: [
       { code: 'en', iso: 'en-US', file: 'en.yaml', dir: 'ltr', name: 'EN' },
@@ -74,6 +78,7 @@ export default defineNuxtConfig({
     lazy: true,
     defaultLocale: 'en',
     vueI18n: {
+      legacy: false,
       datetimeFormats: {
         en: {
           short: {

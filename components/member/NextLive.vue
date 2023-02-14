@@ -1,3 +1,12 @@
+<script lang="ts" setup>
+import { LazyImage } from '#components'
+const props = defineProps<{
+  data: INextLive;
+}>()
+const { $fromNow } = useNuxtApp()
+const date = $fromNow(props.data.date)
+</script>
+
 <template>
   <div class="text-center py-2 md:py-3 flex gap-3">
     <NuxtLink
@@ -56,12 +65,3 @@
     </div>
   </div>
 </template>
-
-<script lang="ts" setup>
-import { LazyImage } from "#components";
-const props = defineProps<{
-  data: INextLive;
-}>();
-const { $fromNow } = useNuxtApp();
-const date = $fromNow(props.data.date);
-</script>

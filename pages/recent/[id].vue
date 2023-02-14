@@ -209,6 +209,16 @@ const calculatedGift = computed<IFansGift[]>(() => {
         <div class="relative w-full min-h-[350px] md:h-auto md:w-[300px] lg:w-[380px] rounded-xl bg-white dark:bg-dark-1 shadow-sm">
           <div class="md:absolute md:top-0 md:left-0 md:right-0 md:bottom-0 rounded-xl overflow-hidden z-0">
             <ClientOnly>
+              <template #fallback>
+                <div
+                  class="p-4 md:p-5 bg-white/90 dark:bg-dark-1/90 backdrop-blur-sm text-xl font-bold border-b-2 border-slate-100/60 dark:border-dark-2/60 -z-10"
+                >
+                  {{ $t("fansgift") }}
+                </div>
+                <div class="w-full mt-8 md:mt-9 lg:mt-10 flex justify-center items-center">
+                  <Spinner class="w-8 h-8 md:w-9 md:h-9" />
+                </div>
+              </template>
               <GiftScroll :gifts="calculatedGift" :page-mode="isMobileSize" />
             </ClientOnly>
           </div>

@@ -15,6 +15,6 @@ const urls = {
 }
 
 export default {
-  group: 'all', // jkt48, hinatazaka or all
+  group: 'jkt48', // jkt48, hinatazaka or all
   ...urls
 }

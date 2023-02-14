@@ -1,3 +1,89 @@
+<script>
+/* eslint-disable eqeqeq */
+
+export default {
+  props: {
+    page: {
+      type: Number,
+      default () {
+        return 1
+      }
+    },
+    total: {
+      type: Number,
+      default () {
+        return 1
+      }
+    },
+    maxDots: {
+      type: Number,
+      default () {
+        return 7
+      }
+    },
+    separator: {
+      type: String,
+      default () {
+        return '...'
+      }
+    }
+  },
+  emits: ['pageChange'],
+  computed: {
+    dots () {
+      const page = this.page
+      const dots = []
+      if (this.total < this.maxDots) {
+        for (let i = 1; i <= this.total; i++) {
+          dots.push(i)
+        }
+        return dots
+      }
+
+      const lrNum = this.maxDots / 2 - 1 // left and right number
+      if (page > lrNum && page < this.total - lrNum + 1) {
+        dots.push(1)
+        dots.push(this.separator)
+        const n = this.maxDots - 4
+        const f = Math.floor(n / 2)
+        for (let i = 0; i < n; i++) {
+          dots.push(page - f + i)
+        }
+        dots.push(this.separator)
+        dots.push(this.total)
+      } else {
+        dots.push(this.separator)
+        const n = Math.floor(this.maxDots / 2)
+
+        for (let i = 0; i < n; i++) {
+          dots.unshift(n - i)
+        }
+
+        for (let i = n - 1; i >= 0; i--) {
+          dots.push(this.total - i)
+        }
+      }
+      return dots
+    }
+  },
+  methods: {
+    next () {
+      if (this.page == this.total) return
+      this.$emit('pageChange', this.page + 1)
+    },
+    prev () {
+      if (this.page == 1) return
+      this.$emit('pageChange', this.page - 1)
+    },
+    changePage (val) {
+      if (isNaN(val)) return
+      if (val < 1 || val > this.total) return
+      this.$emit('pageChange', val)
+    }
+  }
+}
+</script>
+
 <template>
   <div
     class="pagination flex gap-2 select-none text-xs md:text-sm xl:text-base leading-7 sm:leading-8 xl:leading-10 text"
@@ -53,92 +139,6 @@
     </button>
   </div>
 </template>
-
-<script>
-/* eslint-disable eqeqeq */
-
-export default {
-  props: {
-    page: {
-      type: Number,
-      default() {
-        return 1;
-      },
-    },
-    total: {
-      type: Number,
-      default() {
-        return 1;
-      },
-    },
-    maxDots: {
-      type: Number,
-      default() {
-        return 7;
-      },
-    },
-    separator: {
-      type: String,
-      default() {
-        return "...";
-      },
-    },
-  },
-  emits: ["pageChange"],
-  computed: {
-    dots() {
-      const page = this.page;
-      const dots = [];
-      if (this.total < this.maxDots) {
-        for (let i = 1; i <= this.total; i++) {
-          dots.push(i);
-        }
-        return dots;
-      }
-
-      const lrNum = this.maxDots / 2 - 1; // left and right number
-      if (page > lrNum && page < this.total - lrNum + 1) {
-        dots.push(1);
-        dots.push(this.separator);
-        const n = this.maxDots - 4;
-        const f = Math.floor(n / 2);
-        for (let i = 0; i < n; i++) {
-          dots.push(page - f + i);
-        }
-        dots.push(this.separator);
-        dots.push(this.total);
-      } else {
-        dots.push(this.separator);
-        const n = Math.floor(this.maxDots / 2);
-
-        for (let i = 0; i < n; i++) {
-          dots.unshift(n - i);
-        }
-
-        for (let i = n - 1; i >= 0; i--) {
-          dots.push(this.total - i);
-        }
-      }
-      return dots;
-    },
-  },
-  methods: {
-    next() {
-      if (this.page == this.total) return;
-      this.$emit("pageChange", this.page + 1);
-    },
-    prev() {
-      if (this.page == 1) return;
-      this.$emit("pageChange", this.page - 1);
-    },
-    changePage(val) {
-      if (isNaN(val)) return;
-      if (val < 1 || val > this.total) return;
-      this.$emit("pageChange", val);
-    },
-  },
-};
-</script>
 
 <style lang="scss">
 .pagination {

@@ -1,5 +1,13 @@
+<script lang="ts" setup>
+const { data: next, pending: isLoading } = useFetch('/api/showroom/next_live', {
+  server: false
+})
+
+const mustLoading = ref(false)
+</script>
+
 <template>
-  <div v-if="isLoading">
+  <div v-if="(isLoading || mustLoading)">
     <PulseNextLive v-for="n in 6" :key="n" />
   </div>
   <div v-else-if="next?.length" class="">
@@ -13,15 +21,10 @@
         src="/svg/schedule.svg"
         alt="Empty"
         class="max-w-[400px] w-[50%] aspect-square mx-auto dark:brightness-110"
-      />
-      <div class="text-xs">{{ $t("nonext") }}</div>
+      >
+      <div class="text-xs">
+        {{ $t("nonext") }}
+      </div>
     </div>
   </div>
 </template>
-
-<script lang="ts" setup>
-const config = useRuntimeConfig();
-const { data: next, pending: isLoading } = useFetch("/api/showroom/next_live", {
-  baseURL: config.public.baseURL,
-});
-</script>
