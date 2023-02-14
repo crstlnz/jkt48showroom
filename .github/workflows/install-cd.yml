@@ -38,8 +38,8 @@ jobs:
             git stash
             git pull origin master
             git status
-            pnpm i
-            pnpm build
+            npx pnpm i
+            npx pnpm build
             cd ~/apps
             pm2 start ecosystem.config.js
             pm2 save
