@@ -31,7 +31,7 @@ jobs:
           script: |
             whoami
             node -v
-            cd ~
+            cd ~/apps
             pm2 stop ecosystem.config.js
             cd ~/apps/jkt48showroom
             ls
@@ -40,6 +40,6 @@ jobs:
             git status
             pnpm i
             pnpm build
-            cd ~
+            cd ~/apps
             pm2 start ecosystem.config.js
             pm2 save
