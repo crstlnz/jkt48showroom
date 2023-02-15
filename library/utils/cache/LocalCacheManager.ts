@@ -24,6 +24,10 @@ class LocalCacheManager {
     return this.map.get(key)?.value
   }
 
+  delete (key : string | number) {
+    return this.map.delete(key)
+  }
+
   clear () {
     this.map.clear()
   }

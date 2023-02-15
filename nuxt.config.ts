@@ -160,9 +160,6 @@ export default defineNuxtConfig({
     shim: false
   },
   nitro: {
-    compressPublicAssets: true,
-    prerender: {
-      routes: ['/sitemap.xml']
-    }
+    compressPublicAssets: true
   }
 })

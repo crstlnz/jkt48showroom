@@ -1,6 +1,6 @@
 {
   "name": "jkt48showroom",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "engines": {
     "node": ">=16.18.x"
   },

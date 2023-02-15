@@ -10,15 +10,14 @@ interface CacheOptions {
 }
 
 class CacheManager {
-  cacheType: cacheType
+  private cacheType: cacheType
+  private cache: LocalCacheManager
+  private redis: RedisManager
+  private key? : string
   initType: cacheType
-  cache: LocalCacheManager
-  redis: RedisManager
-  key? : string
   /**
-   * The constructor function is used to create a new instance of the CacheManager class
-   * @param {CacheOptions} [opts] - cacheType is type of the cache
-   * @param {CacheOptions} [opts] - key is additional string before the given key (for multiple cache purpose)
+   * @param {CacheOptions} [opts.cacheType] - cacheType is type of the cache
+   * @param {CacheOptions} [opts.key] - key is additional string before the given key (for multiple cache purpose)
    */
   constructor (opts? : CacheOptions) {
     this.cache = new LocalCacheManager()
@@ -35,32 +34,30 @@ class CacheManager {
     }, ms)
   }
 
-  async set (key: string, value: string | object, ms = 3600000) {
+  async set (key: string | number, value: string | object, ms = 3600000) {
     if (!key) { throw new Error('No Key') }
-    if (this.key) key = `${this.key}-${key}`
-
+    key = this.getKey(key)
     if (this.cacheType === 'redis') {
       try {
         return await this.redis.set(key, value, ms)
       } catch (e) {
-        this.disableRedis()
+        return
       }
     } else if (this.cacheType === 'auto') {
       await this.redis.set(key, value, ms).catch()
       this.cache.set(key, value, ms)
     }
-    // fail, use Map() / redistype local
     this.cache.set(key, value, ms)
   }
 
   async get<T> (key: number | string) {
     if (!key) { throw new Error('No Key') }
-    if (this.key) key = `${this.key}-${key}`
+    key = this.getKey(key)
     if (this.cacheType === 'redis') {
       try {
-        return await this.redis.get<T>(key, true).catch(() => null)
+        return await this.redis.get<T>(key, false).catch(() => null)
       } catch (e) {
-        this.disableRedis()
+        return null
       }
     } else if (this.cacheType === 'auto') {
       if (!this.cache.valid(key)) {
@@ -82,13 +79,21 @@ class CacheManager {
     await this.redis.clear()
   }
 
+  async delete (key: number | string) {
+    if (!key) { throw new Error('No Key') }
+    key = this.getKey(key)
+    if (this.cacheType === 'redis' || this.cacheType === 'auto') {
+      await this.redis.delete(key).catch(_ => null)
+    }
+    if (this.cacheType !== 'redis') this.cache.delete(key)
+  }
+
   async fetch<T> (
-    key: string,
+    key: string | number,
     fetchData: (...args: unknown[]) => Promise<string | object | []>,
     ms = 3600000
   ): Promise<T> {
     if (!key) { throw new Error('No Key') }
-    if (this.key) key = `${this.key}-${key}`
     const data = await this.get(key)
     if (data) {
       return data as T
@@ -98,6 +103,10 @@ class CacheManager {
       return data as T
     }
   }
+
+  getKey (key : string | number) {
+    return this.key ? `${this.key}-${key}` : key
+  }
 }
 
-export default new CacheManager({ key: appConfig.group })
+export default new CacheManager({ key: appConfig.group, cacheType: 'redis' })

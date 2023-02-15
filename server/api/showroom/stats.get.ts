@@ -61,7 +61,7 @@ async function fetchData (type : IDateRangeType): Promise<IShowroomStats> {
     }
   }
   if (!process.env.IS_DEV) { option.is_dev = false }
-  const logs = await calculationTime(async () => await ShowroomLog.find(option, select)
+  const logs = await ShowroomLog.find(option, select)
     .lean()
     .populate({
       path: 'room_info',
@@ -70,7 +70,7 @@ async function fetchData (type : IDateRangeType): Promise<IShowroomStats> {
         path: 'member_data',
         select: '-_id isGraduate img'
       }
-    })) as unknown as IShowroomLog[]
+    }) as unknown as IShowroomLog[]
 
   const weekly = generate(logs, 'weekly')
   const monthly = generate(logs, 'monthly')

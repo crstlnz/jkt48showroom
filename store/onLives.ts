@@ -18,6 +18,22 @@ export const useOnLives = defineStore('onLives', () => {
 
   async function refreshLives (): Promise<IRoomLive[]> {
     return await $fetch('/api/showroom/now_live')
+    // TODO remove this
+    // const data = await $fetch('/api/showroom/onlives')
+    // const re = (data.onlives[0]?.lives ?? []).splice(0, 3).map((i) => {
+    //   return {
+    //     name: i.main_name ?? 'Sule',
+    //     img: i.image ?? 'https://static.showroom-live.com/image/room/cover/ee38ccf437e220f7ce8149c1c8aac94d6dca66734334bdad84c94bf41e78d3e0_square_s.png?v=1670924861',
+    //     url: i.room_url_key ?? '',
+    //     room_id: i.room_id ?? 0,
+    //     is_graduate: false,
+    //     is_group: false,
+    //     room_exists: true,
+    //     streaming_url_list: i.streaming_url_list ?? [],
+    //     started_at: i.started_at * 1000
+    //   }
+    // })
+    // return [...await $fetch('/api/showroom/now_live'), ...re]
   }
 
   function isLive (roomId: number) {
