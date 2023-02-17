@@ -60,3 +60,7 @@ stats:
   monthly: 4 Weeks
   quarterly: 3 Months
   error : An error occured!
+page:
+  title:
+    member: Member List
+    recent: Recent Live

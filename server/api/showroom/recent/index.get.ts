@@ -23,15 +23,15 @@ async function getRecents (qq: any = null): Promise<IApiRecents> {
   function getSort (sort: sortType): string {
     switch (sort) {
       case sortType.LATEST:
-        return '-_id'
+        return '-live_info.end_date'
       case sortType.OLDEST:
-        return '_id'
+        return 'live_info.end_date'
       case sortType.MOST_GIFT:
         return '-total_point'
       case sortType.MOST_VIEWS:
         return '-live_info.penonton.peak'
       default:
-        return '-_id'
+        return '-live_info.end_date'
     }
   }
 

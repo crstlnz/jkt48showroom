@@ -60,3 +60,7 @@ stats:
   monthly: 4 Minggu
   quarterly: 3 Bulan
   error : An error occured!
+page:
+  title:
+    member: Daftar Member
+    recent: Live Terakhir

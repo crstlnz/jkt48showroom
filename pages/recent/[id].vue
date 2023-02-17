@@ -82,6 +82,10 @@ const calculatedGift = computed<IFansGift[]>(() => {
     return []
   }
 })
+
+useHead({
+  title: `${data.value?.room_info?.name} Log`
+})
 </script>
 
 <template>

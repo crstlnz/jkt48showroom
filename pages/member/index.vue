@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useOnLives } from '~~/store/onLives'
 import { useMembers } from '~~/store/members'
+const { t: $t } = useI18n()
 const onLives = useOnLives()
 const memberState = useMembers()
 const { members, pending, error } = storeToRefs(memberState)
@@ -11,6 +12,7 @@ async function getPage (pageNumber : number, pageSize : number) : Promise<unknow
   return [...(members.value ?? [])?.slice(num, num + pageSize)]
 }
 
+useHead({ title: computed(() => $t('page.title.member')) })
 </script>
 
 <template>

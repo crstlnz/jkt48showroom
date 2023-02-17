@@ -2,7 +2,8 @@
 export default defineNuxtConfig({
   ssr: true,
   routeRules: {
-    '/api/**': { cors: true }
+    '/**': { cache: { maxAge: 3600, staleMaxAge: 10 } },
+    '/api/**': { cors: true, cache: { maxAge: 30, staleMaxAge: 10 } }
   },
   app: {
     pageTransition: { name: 'page', mode: 'out-in' }
@@ -28,8 +29,14 @@ export default defineNuxtConfig({
       {
         autoImports: ['storeToRefs', 'defineStore', 'acceptHMRUpdate', 'skipHydrate']
       }
-    ]
+    ],
+    'nuxt-delay-hydration'
   ],
+  delayHydration: {
+    // enables nuxt-delay-hydration in dev mode for testing
+    debug: process.env.NODE_ENV === 'development',
+    mode: 'mount'
+  },
   css: ['~/assets/css/style.scss'],
   colorMode: {
     preference: 'dark',
@@ -47,9 +54,6 @@ export default defineNuxtConfig({
       tailwindcss: {},
       autoprefixer: {}
     }
-  },
-  build: {
-    transpile: ['@headlessui/vue']
   },
   vite: {
     server: {

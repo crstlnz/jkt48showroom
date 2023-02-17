@@ -34,7 +34,6 @@ jobs:
             cd ~/apps
             pm2 stop ecosystem.config.js
             cd ~/apps/jkt48showroom
-            ls
             git stash
             git pull origin master
             git status

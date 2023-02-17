@@ -9,7 +9,7 @@ useHead({
     lang: i18nHead.value.htmlAttrs?.lang,
     dir: i18nHead.value.htmlAttrs?.dir
   },
-  title: 'JKT48 Showroom',
+  titleTemplate: title => title ? `${title} - JKT48 Showroom` : 'JKT48 Showroom',
   meta: [
     ...(i18nHead.value.meta || []),
     { charset: 'utf-8' },

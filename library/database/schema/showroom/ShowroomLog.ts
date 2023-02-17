@@ -1,6 +1,5 @@
 /* eslint-disable camelcase */
 import { Schema, model, Model } from 'mongoose'
-import IdolMember from '../48group/IdolMember'
 import Showroom from './Showroom'
 import ShowroomGift from './ShowroomGift'
 import ShowroomUser from './ShowroomUser'
@@ -220,7 +219,7 @@ showroomLogSchema.statics.getDetails = async function (data_id: string | number)
               num: g.num,
               date: g.date.toISOString()
             })) ?? []
-        })),
+        })).sort((a, b) => b.total - a.total),
         list:
           doc.gift_data?.gift_list?.map(g => ({
             id: g.gift_id,
