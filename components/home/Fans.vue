@@ -21,7 +21,6 @@ function openRankFans (evt: any) {
       </button>
     </div>
     <div class="whitespace-nowrap space-x-2 md:space-x-3 lg:space-x-4 fade-right overflow-hidden leading-[0px]">
-      <!-- <div v-for="fans in data.slice(0, 12)" :key="fans.id" class="bg-black w-40 aspect-square inline-block" /> -->
       <a
         v-for="fans in data.slice(0, 12)"
         :key="fans.id"

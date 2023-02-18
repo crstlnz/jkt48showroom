@@ -113,11 +113,8 @@ onMounted(() => {
         </h2>
       </div>
       <div v-if="!pending" class="text-xs md:text-sm opacity-60 sm:flex-1">
-        <!-- {{ new Date(data?.date?.from ?? 0).toLocaleDateString() }} -
-        {{ new Date(data?.date?.to ?? 0).toLocaleDateString() }} -->
         {{ fromDate }} - {{ toDate }}
       </div>
-      <!-- <div v-else classpulse-color animate-pulse h-4 md:h-5 w-[120px] md:w-[142px] rounded-xl="" /> -->
     </div>
     <div class="flex gap-1 justify-end max-sm:w-full bg-white dark:bg-dark-1 p-2 sm:p-1.5 rounded-[35px] overflow-hidden relative">
       <ClientOnly>
@@ -201,16 +198,6 @@ onMounted(() => {
       <HomeFans v-if="(data?.ranks?.fans?.length)" :key="data?.type ?? 'data'" :data="data?.ranks.fans" />
     </div>
   </div>
-
-  <!-- <Transition
-    mode="out-in"
-    enter-active-class="transition-[opacity,transform] duration-[250ms]"
-    leave-active-class="transition-[opacity,transform] duration-[250ms]"
-    enter-from-class="opacity-0 translate-y-2 "
-    leave-to-class="opacity-0 translate-y-2"
-  >
-
-  </Transition> -->
 </template>
 
 <style lang="scss">

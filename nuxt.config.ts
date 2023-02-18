@@ -2,10 +2,10 @@
 export default defineNuxtConfig({
   ssr: true,
   routeRules: {
-    '/**': { cache: { maxAge: 3600, staleMaxAge: 10 } },
     '/api/**': { cors: true, cache: { maxAge: 30, staleMaxAge: 10 } }
   },
   app: {
+    rootId: 'app',
     pageTransition: { name: 'page', mode: 'out-in' }
   },
   runtimeConfig: {
@@ -15,10 +15,9 @@ export default defineNuxtConfig({
     }
   },
   modules: [
-    // '@nuxt/devtools',
+    '@nuxt/devtools',
     '@nuxtjs/device',
     'nuxt-icon',
-    '@nuxtjs/google-fonts',
     '@nuxtjs/tailwindcss',
     '@nuxtjs/color-mode',
     '@vueuse/nuxt',
@@ -29,25 +28,13 @@ export default defineNuxtConfig({
       {
         autoImports: ['storeToRefs', 'defineStore', 'acceptHMRUpdate', 'skipHydrate']
       }
-    ],
-    'nuxt-delay-hydration'
+    ]
   ],
-  delayHydration: {
-    // enables nuxt-delay-hydration in dev mode for testing
-    debug: process.env.NODE_ENV === 'development',
-    mode: 'mount'
-  },
-  css: ['~/assets/css/style.scss'],
+  css: ['~/assets/css/fonts.scss', '~/assets/css/style.scss'],
   colorMode: {
     preference: 'dark',
     fallback: 'light',
     classSuffix: ''
-  },
-  googleFonts: {
-    families: {
-      Rubik: true,
-      Roboto: true
-    }
   },
   postcss: {
     plugins: {
@@ -78,6 +65,7 @@ export default defineNuxtConfig({
       { code: 'en', iso: 'en-US', file: 'en.yaml', dir: 'ltr', name: 'EN' },
       { code: 'id', iso: 'id-ID', file: 'id.yaml', dir: 'ltr', name: 'ID' }
     ],
+
     langDir: 'locales',
     lazy: true,
     defaultLocale: 'en',

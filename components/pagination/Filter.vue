@@ -127,48 +127,6 @@ const clearSearch = () => {
 
 <template>
   <div class="space-y-4">
-    <!-- todo -->
-    <!-- <div>
-      <Combobox v-model="selectedMembers" :display-value="(member) => member.name" multiple>
-        <div
-          class="relative flex items-center gap-2 border-2 border-transparent focus-within:border-second-2/60 ui-active:border-second-2/60 px-2 py-1 lg:p-2 rounded-xl bg-slate-100/60 dark:bg-dark-2/60 w-full"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="2.5"
-            stroke="currentColor"
-            class="w-5 h-5"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-            />
-          </svg>
-          <ComboboxInput class="flex-1 w-0 outline-none bg-transparent border-none" @change="inputEvent" />
-          <ComboboxOptions
-            class="absolute shadow-md bg-white dark:bg-dark-1 right-0 left-0 top-[calc(100%_+_8px)] border-2 border-slate-300 dark:border-gray-600 overflow-x-hidden rounded-lg max-h-[400px] overflow-y-auto"
-          >
-            <div v-if="pending" class="px-4 py-2">Loading...</div>
-            <div v-else-if="!members || !members.length || !filteredMembers.length" class="px-4 py-2">No Data.</div>
-            <ComboboxOption
-              v-for="member in filteredMembers"
-              v-else
-              :key="member.item.room_id"
-              :value="member.item"
-              class="cursor-pointer flex"
-            >
-              <div class="w-0 overflow-hidden ui-active:w-8 transition-[width] bg-blue-400" />
-              <div class="px-4 py-2 flex-1 w-0 truncate text-base">
-                {{ member.item?.name ?? "Member not Found!" }}
-              </div>
-            </ComboboxOption>
-          </ComboboxOptions>
-        </div>
-      </Combobox>
-    </div> -->
     <div class="bg-slate-100/60 dark:bg-dark-2/60 py-2 px-3 rounded-xl">
       <input
         ref="searchinput"

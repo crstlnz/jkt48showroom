@@ -14,13 +14,13 @@ export default defineNuxtPlugin((nuxtApp) => {
         return computed(() => timeFormat.detailDuration(dateFrom, dateTo, locale.value.code))
       },
       moment,
-      formatSR (time: MaybeRef<Date | string>) {
+      formatSR (time: MaybeRef<Date | string | number>) {
         if (!get(time)) { return null }
         const date = moment(new Date(get(time)).toISOString()).locale('en').format('h:mm A')
         if (date === 'Invalid date') { return null }
         return date + '~'
       },
-      toDateString  (time: MaybeRef<Date | string>) {
+      toDateString  (time: MaybeRef<Date | string | number>) {
         return computed(() => {
           if (!get(time)) { return null }
           const date = moment(new Date(get(time)).toISOString()).locale(locale.value.code).format('D MMM YY')

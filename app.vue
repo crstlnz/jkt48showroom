@@ -1,4 +1,14 @@
 <script lang="ts" setup>
+useHead({
+  noscript: [
+    { children: 'JavaScript is required' }
+  ],
+  link: [
+    { rel: 'preload', href: '/_nuxt/fonts/signika/regular.woff2', as: 'font', type: 'font/woff2', crossorigin: 'anonymous' },
+    { rel: 'preload', href: '/_nuxt/fonts/signika/700.woff2', as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }
+  ]
+})
+
 // TODO: Remove when https://github.com/vuejs/core/issues/5513 fixed
 const key = ref(0)
 const messages = [
@@ -18,7 +28,6 @@ if (typeof window !== 'undefined') {
       }
     })
   }
-
   // @ts-expect-error using arbitrary window key
   window.__vue5513 = true
 }

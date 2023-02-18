@@ -174,7 +174,6 @@ const { checkTrigger } = useInfiniteScroll(
             </DynamicScrollerItem>
           </template>
         </DynamicScroller>
-      <!-- <MemberRecentCard v-for="d in dataset" :key="d.data_id" :recent="d" /> -->
       </transition>
     </div>
 

@@ -9,8 +9,6 @@ const { data, pending, error } = useLazyFetch('/api/home', {
 
 <template>
   <div class="home">
-    <!-- <PulseHome v-if="pending" /> -->
-    <!-- <Error v-else-if="error" message="Something error :(" img-src="/svg/error.svg" /> -->
     <div class="flex flex-col gap-5 pt-4 md:pt-6 xl:pt-8">
       <HomeBanner class="rounded-xl overflow-hidden shadow-sm aspect-[38/9] lg:aspect-[95/9]" />
       <HomeLiveNow />

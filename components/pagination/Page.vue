@@ -55,7 +55,6 @@ const dots = computed(() => {
       </div>
 
       <div class="relative">
-        <!-- <Transition name="fade-abs" class="fade-abs" mode="in-out"> -->
         <div v-if="pending" :key="Math.random()" class="space-y-4">
           <PulseRecentDetailCard v-for="index in Array(10).keys()" :key="index" />
           <div class="mt-4 md:mt-6 xl:mt-8 sm:float-right">
@@ -95,7 +94,6 @@ const dots = computed(() => {
 
         <div v-else :key="Math.random() * 3" class="space-y-4">
           <MemberRecentCard v-for="d in data" :key="d.data_id" :recent="d" />
-          <!-- pagination -->
           <div class="mt-4 md:mt-6 xl:mt-8 sm:float-right">
             <div class="relative flex justify-center h-10">
               <PaginationControl
@@ -109,35 +107,7 @@ const dots = computed(() => {
             </div>
           </div>
         </div>
-        <!-- </Transition> -->
       </div>
     </div>
   </div>
 </template>
-
-<!-- <script>
-  export default {
-    data() {
-      return {
-        dots: 9,
-        resize: null,
-      };
-    },
-    mounted() {
-      if (window) {
-        this.changeDots();
-        this.resize = new this.$listener(window).add("resize", this.changeDots.bind(this));
-      }
-    },
-    beforeDestroy() {
-      if (this.resize) this.resize.remove("resize");
-    },
-    methods: {
-      changeDots() {
-        let dots = 9;
-        if (window.innerWidth < 640) dots = 7;
-        if (this.dots !== dots) this.dots = dots;
-      },
-    },
-  };
-  </script> -->

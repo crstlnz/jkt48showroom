@@ -4,12 +4,14 @@ const i18nHead = useLocaleHead({
   identifierAttribute: 'id',
   addSeoAttributes: true
 })
+
+const title = 'JKT48 Showroom'
 useHead({
   htmlAttrs: {
     lang: i18nHead.value.htmlAttrs?.lang,
     dir: i18nHead.value.htmlAttrs?.dir
   },
-  titleTemplate: title => title ? `${title} - JKT48 Showroom` : 'JKT48 Showroom',
+  titleTemplate: t => t ? `${t} - ${title}` : title,
   meta: [
     ...(i18nHead.value.meta || []),
     { charset: 'utf-8' },
@@ -106,7 +108,9 @@ function handleError (error: any) {
             class="text-2xl py-2 hover:text-blue-400 inline-block font-bold truncate"
             to="/"
           >
-            <h1>JKT48 Showroom</h1>
+            <h1 class="font-black hover:font-bold">
+              {{ title }}
+            </h1>
           </NuxtLink>
         </div>
 

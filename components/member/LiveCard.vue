@@ -124,18 +124,6 @@ async function refreshDate () {
         </div>
         <div section="preview-off" :class="{'bg-slate-200 dark:bg-dark-1/60' : isHovered && !isPreview && isSupported}" class="aspect-video relative top-0 overflow-hidden rounded-t-xl transition-colors">
           <div class="relative flex items-end justify-center left-0 right-0 top-0 bottom-0 h-full">
-            <!-- <div
-              :class="live.is_group ? 'bg-sky-400' : live.is_graduate ? 'bg-red-500' : 'bg-green-500'"
-              class="aspect-square w-5 md:w-6 rounded-full flex justify-center items-center text-white select-none absolute top-2 left-2 md:top-3 md:left-3 lg:top-4 lg:left-4 z-10"
-              :title="`${live.is_group ? 'Official' : live.is_graduate ? 'Graduated' : 'Active'} Member`"
-            >
-              <Icon
-                :name="
-                  live.is_group ? 'ic:round-check font-bold' : live.is_graduate ? 'ph:graduation-cap' : 'ph:microphone-stage'
-                "
-                class="i aspect-square text-xs md:text-sm"
-              />
-            </div> -->
             <div
               :class="{ 'pointer-events-none': openMenu }"
               class="w-full h-full overflow-hidden inline-block z-[1]"
@@ -163,9 +151,7 @@ async function refreshDate () {
               "
               class="i aspect-square text-xs md:text-xs font-bold"
             />
-            <div class="text-xs md:font-semibold leading-5">
-              <!-- {{ live.is_group ? 'Official' : !live.is_graduate ? 'Graduated' : 'Active' }} -->
-            </div>
+            <div class="text-xs md:font-semibold leading-5" />
           </div>
           <div
             class="md:font-semibold inline-block align-middle text-xs bg-red-500 h-5 px-1.5 leading-5 rounded-md text-white"
@@ -186,23 +172,7 @@ async function refreshDate () {
         <h2 class="font-bold text-base md:text-lg truncate flex-1" :title="live.name">
           {{ live.name }}
         </h2>
-        <div class="flex items-center gap-1.5 md:gap-2 xl:gap-2.5">
-          <!-- <div
-            class="bg-red-500 rounded-xl px-2 py-1 md:px-3 md:py-2 text-white md:font-semibold inline-block align-middle leading-3 text-[10px] md:text-[11px] xl:text-xs"
-          >
-            <div v-if="dateString">
-              {{ dateString }}
-            </div>
-            <div v-else>
-              Error
-              <Icon v-if="pending" name="bx:loader-alt" class="animate-spin" />
-              <button v-else type="button" @click="refreshDate">
-                <Icon name="ion:md-refresh" class="text-base self-center" />
-              </button>
-            </div>
-          </div> -->
-        </div>
-        <!-- <div v-else class="h-6 md:h-8 w-[74px] animate-pulse bg-red-500 mx-auto rounded-xl" /> -->
+        <div class="flex items-center gap-1.5 md:gap-2 xl:gap-2.5" />
         <a
           :tabindex="openMenu ? -1 : undefined"
           :href="$liveURL(live.url)"

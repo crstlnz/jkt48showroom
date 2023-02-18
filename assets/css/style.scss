@@ -37,17 +37,12 @@
   }
 }
 
-// @font-face {
-//   font-family: "Rubik","Roboto",sans-serif;
-//   src: url("/fonts/rubik/Rubik-VariableFont_wght.ttf") format("truetype");
-// }
-
 :root {
   --viewport-height: 100%;
 }
 
 * {
-  font-family: Rubik, Roboto, sans-serif;
+  font-family: Signika, "Noto Serif JP", sans-serif;
 }
 
 a:focus,
