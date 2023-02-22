@@ -50,31 +50,3 @@
         /* Modern Browsers */ url("/fonts/signika/700.ttf") format("truetype"),
         /* Safari, Android, iOS */ url("/fonts/signika/700.svg#Signika") format("svg"); /* Legacy iOS */
 }
-
-/* noto-serif-jp-regular - japanese */
-@font-face {
-    font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
-    font-family: "Noto Serif JP";
-    font-style: normal;
-    font-weight: 400;
-    src: url("/fonts/notoserifjp/regular.woff2") format("woff2"),
-        /* Chrome 36+, Opera 23+, Firefox 39+ */ url("/fonts/notoserifjp/regular.woff") format("woff"); /* Chrome 5+, Firefox 3.6+, IE 9+, Safari 5.1+ */
-}
-/* noto-serif-jp-600 - japanese */
-@font-face {
-    font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
-    font-family: "Noto Serif JP";
-    font-style: normal;
-    font-weight: 600;
-    src: url("/fonts/notoserifjp/600.woff2") format("woff2"),
-        /* Chrome 36+, Opera 23+, Firefox 39+ */ url("/fonts/notoserifjp/600.woff") format("woff"); /* Chrome 5+, Firefox 3.6+, IE 9+, Safari 5.1+ */
-}
-/* noto-serif-jp-700 - japanese */
-@font-face {
-    font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
-    font-family: "Noto Serif JP";
-    font-style: normal;
-    font-weight: 700;
-    src: url("/fonts/notoserifjp/700.woff2") format("woff2"),
-        /* Chrome 36+, Opera 23+, Firefox 39+ */ url("/fonts/notoserifjp/700.woff") format("woff"); /* Chrome 5+, Firefox 3.6+, IE 9+, Safari 5.1+ */
-}

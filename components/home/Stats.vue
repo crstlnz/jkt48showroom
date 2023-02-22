@@ -119,7 +119,7 @@ onMounted(() => {
     <div class="flex gap-1 justify-end max-sm:w-full bg-white dark:bg-dark-1 p-2 sm:p-1.5 rounded-[35px] overflow-hidden relative">
       <ClientOnly>
         <template #fallback>
-          <div v-for="key in statsTypes" :key="`loading-${key}`" class="text-sm md:text-base whitespace-nowrap px-3 max-sm:py-1.5 transition-all max-sm:flex-1 duration-300 sm:rounded-md opacity-60 hover:font-bold hover:opacity-80">
+          <div v-for="key in statsTypes" :key="`loading-${key}`" class="inline-block text-sm md:text-sm whitespace-nowrap px-4 py-1.5 max-sm:flex-1 duration-300 sm:rounded-md z-10 opacity-60">
             {{ $t(`stats.${key}`) }}
           </div>
         </template>

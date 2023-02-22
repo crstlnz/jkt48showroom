@@ -15,7 +15,6 @@ export default defineNuxtConfig({
     }
   },
   modules: [
-    '@nuxt/devtools',
     '@nuxtjs/device',
     'nuxt-icon',
     '@nuxtjs/tailwindcss',

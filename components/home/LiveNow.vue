@@ -69,9 +69,9 @@ const { data, pending, error } = storeToRefs(onLives)
     </div>
     <div
       v-else
-      class="flex flex-col justify-center items-center bg-white dark:bg-dark-1 w-full rounded-xl md:min-h-[404px] shadow-sm"
+      class="flex flex-col justify-center items-center bg-white dark:bg-dark-1 w-full rounded-xl  shadow-sm"
     >
-      <div class="aspect-square gap-2 md:gap-3 text-xs md:text-sm pb-6 text-center flex flex-col justify-center">
+      <div class="max-sm:aspect-square sm:h-[307.98px] md:h-[371.98px] lg:h-[285.11px] xl:h-[353.59px] 2xl:h-[355.45px] gap-2 md:gap-3 text-xs md:text-sm pb-6 text-center flex flex-col justify-center">
         <img class="mx-auto w-72 max-w-[80%] aspect-square" alt="No member onlive" src="/svg/space.svg">
         {{ $t("nolive") }}
       </div>

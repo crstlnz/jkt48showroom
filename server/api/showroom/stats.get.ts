@@ -3,7 +3,6 @@ import { getMembers } from './members.get'
 import { getDateRange } from '~~/library/utils'
 import ShowroomLog from '~~/library/database/schema/showroom/ShowroomLog'
 import cache from '~~/library/utils/cache'
-import calculationTime from '~~/library/utils/calculationTime'
 
 function isIDateRangeType (value: string): value is IDateRangeType {
   return ['weekly', 'monthly', 'quarterly'].includes(value)

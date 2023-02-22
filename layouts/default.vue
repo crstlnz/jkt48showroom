@@ -6,10 +6,13 @@ const i18nHead = useLocaleHead({
 })
 
 const title = 'JKT48 Showroom'
+const menuOpen = ref(false)
+
 useHead({
   htmlAttrs: {
     lang: i18nHead.value.htmlAttrs?.lang,
-    dir: i18nHead.value.htmlAttrs?.dir
+    dir: i18nHead.value.htmlAttrs?.dir,
+    class: () => menuOpen.value ? 'max-md:overflow-hidden' : ''
   },
   titleTemplate: t => t ? `${t} - ${title}` : title,
   meta: [
@@ -28,7 +31,6 @@ useHead({
     { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
   ]
 })
-const menuOpen = ref(false)
 const menus = [
   {
     title: 'Home',

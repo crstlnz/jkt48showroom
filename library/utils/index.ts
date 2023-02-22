@@ -14,25 +14,50 @@ export function isValidURL (str: string): boolean {
 
 export function getDateRange (type: IDateRangeType): IDateRange {
   const date = new Date()
+  date.setHours(0, 0, 0, -1)
+
   let to: Date, from: Date
   if (type === 'weekly') {
-    date.setDate(date.getDate() - (date.getDay() || 7) - 7)
-    from = new Date(date.setHours(24, 0, 0, 0))
-    to = new Date(date.setDate(date.getDate() + 7))
+    from = new Date(new Date(date).setDate(date.getDate() - 7))
+    to = new Date(date)
   } else if (type === 'monthly') {
-    date.setDate(1)
-    to = new Date(date.setHours(0, 0, 0, 0))
+    to = new Date(date)
     from = new Date(date.setMonth(to.getMonth() - 1))
   } else if (type === 'quarterly') {
-    date.setDate(1)
-    to = new Date(date.setHours(0, 0, 0, 0))
+    to = new Date(date)
     from = new Date(date.setMonth(to.getMonth() - 3))
   } else {
     to = date
     from = date
   }
+
+  from.setHours(0, 0, 0, 0)
   return {
     from: from.toISOString(),
     to: to.toISOString()
   }
 }
+// export function getDateRange (type: IDateRangeType): IDateRange {
+//   const date = new Date()
+//   let to: Date, from: Date
+//   if (type === 'weekly') {
+//     date.setDate(date.getDate() - (date.getDay() || 7) - 7)
+//     from = new Date(date.setHours(24, 0, 0, 0))
+//     to = new Date(date.setDate(date.getDate() + 7))
+//   } else if (type === 'monthly') {
+//     date.setDate(1)
+//     to = new Date(date.setHours(0, 0, 0, 0))
+//     from = new Date(date.setMonth(to.getMonth() - 1))
+//   } else if (type === 'quarterly') {
+//     date.setDate(1)
+//     to = new Date(date.setHours(0, 0, 0, 0))
+//     from = new Date(date.setMonth(to.getMonth() - 3))
+//   } else {
+//     to = date
+//     from = date
+//   }
+//   return {
+//     from: from.toISOString(),
+//     to: to.toISOString()
+//   }
+// }
