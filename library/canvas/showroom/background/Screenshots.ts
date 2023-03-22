@@ -43,7 +43,7 @@ class ScreenshotManager {
     this.parent.requestDraw()
   }
 
-  set (screenshots: IScreenshotData) {
+  set (screenshots: Database.IScreenshot) {
     this.folder = screenshots.folder
     this.format = screenshots.format
     this.list.clear()

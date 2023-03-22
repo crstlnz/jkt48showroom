@@ -37,15 +37,15 @@ export default {
 </script>
 
 <template>
-  <div class="space-y-2 bg-white dark:bg-dark-1 shadow-sm p-4 md:p-5 rounded-xl">
+  <div class="space-y-2 rounded-xl bg-white p-4 shadow-sm dark:bg-dark-1 md:p-5">
     <div class="flex items-center gap-1.5">
-      <div class="w-1 h-5 inline-block rounded-l-sm" :class="iconClass" />
-      <h2 class="text-lg lg:text-xl font-bold flex-1">
+      <div class="inline-block h-5 w-1 rounded-l-sm" :class="iconClass" />
+      <h2 class="flex-1 text-lg font-bold lg:text-xl">
         {{ title }}
       </h2>
       <NuxtLink
         v-if="more && !moreExtLink"
-        class="hover:text-second-2 text-xs lg:text-sm"
+        class="text-xs hover:text-second-2 lg:text-sm"
         :to="more"
         :class="moreClass"
         :aria-label="moreLabel"
@@ -54,7 +54,7 @@ export default {
       </NuxtLink>
       <a
         v-else-if="more"
-        class="hover:text-second-2 text-xs lg:text-sm"
+        class="text-xs hover:text-second-2 lg:text-sm"
         :href="more"
         target="_blank"
         :class="moreClass"

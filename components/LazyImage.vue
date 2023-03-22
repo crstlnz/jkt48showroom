@@ -35,7 +35,7 @@ const { isLoading, error } = useImage({ src: props.src })
 </script>
 
 <template>
-  <div v-if="isLoading" class="pulse-color animate-pulse inline-block" />
+  <div v-if="isLoading" class="pulse-color inline-block animate-pulse" />
   <img
     v-else
     ref="lazyImage"

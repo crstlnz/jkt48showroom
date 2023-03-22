@@ -62,7 +62,7 @@ class StageShowroom extends CanvasUtil {
   }
 
   setFans (fans: IStageFans[]) {
-    calculationTime(async () => await this.fansRanks?.set(fans), 'Fans Rank')
+    this.fansRanks?.set(fans)
   }
 
   inject (canvas: HTMLCanvasElement): void {

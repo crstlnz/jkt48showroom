@@ -1,6 +1,8 @@
 nolive: Tidak ada live saat ini 😭
 nonext: Tidak ada jadwal live untuk saat ini 😔
 member: Member
+giftlist: Daftar Gift
+user: Orang
 livecount: Jumlah live
 mostlive: Live terbanyak
 topmember: Member teratas
@@ -9,26 +11,38 @@ more: Selengkapnya
 fansranking: Ranking fans
 topfans: Fans teratas
 nextlive: Jadwal live
-recentlive: Live terakhir
 showonshowroom: Lihat di Showroom
 view: Lihat
 viewlive: Buka Live
 viewer: Penonton
 totalgift: Jumlah hadiah
+totalcomments: Komentar
 duration: Durasi
 moreinfo: Info lebih lanjut
 viewprofile: Lihat Profil
 fansgift: Hadiah Fans
 sort:
-  latest: Terbaru
-  oldest: Terlama
+  title: Urutkan
+  gift: Gift
+  duration: Durasi
+  date: Tanggal
+  views : Penonton
+  latest: Live Terbaru
+  oldest: Live Terlama
   mostgift: Gift Terbanyak
-  mostviews: Penonton Terbanyak
+  leastgift: Gift Tersedikit
+  mostviewers: Penonton Terbanyak
+  leastviewers: Penonton Tersedikit
+  longestduration: Durasi Terlama
+  shortestduration: Durasi Tercepat
   apply: Terapkan
+  order:
+    asc : "Ascending"
+    desc : "Descending"
 data:
   notenough: Data yang tersedia tidak cukup 🥲
   nomore: Tidak ada data lagi :(
-  nodata: Tidak ada data!
+  nodata: Tidak ada data
   notfound: Data tidak dapat ditemukan!
   failed: Gagal mengambil data!
   error: Terjadi kesalahan

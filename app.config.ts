@@ -1,4 +1,17 @@
 type GiftSize = 'small' | 'medium'
+
+const defaultRecentQuery : RecentsQuery = {
+  sort: 'date',
+  page: 1,
+  filter: 'all',
+  order: -1
+}
+
+function isSort (s : any) : s is sortType {
+  const sort : sortType[] = ['date', 'gift', 'views', 'duration']
+  return sort.includes(s)
+}
+
 const urls = {
   giftUrl: (id: string | number, type: GiftSize = 'small') =>
     `https://static.showroom-live.com/image/gift/${id}_${type === 'small' ? 's' : 'm'}.png`,
@@ -16,5 +29,7 @@ const urls = {
 
 export default {
   group: 'jkt48', // jkt48, hinatazaka or all
-  ...urls
+  ...urls,
+  defaultRecentQuery,
+  isSort
 }

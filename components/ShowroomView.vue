@@ -9,7 +9,7 @@ const props = defineProps<{
   memberImage: string;
   date: ILiveDate;
   background: string;
-  screenshot?: IScreenshotData;
+  screenshot?: Database.IScreenshot;
   stageList: IStageList[];
   users: Map<number, IFansCompact>;
   giftData: IGiftsLogData;
@@ -190,10 +190,10 @@ watch(focused, (isFocus) => {
 <template>
   <div
     ref="container"
-    class="relative [&>canvas]:absolute [&>canvas]:top-0 [&>canvas]:left-0 select-none w-full h-full"
+    class="relative h-full w-full select-none [&>canvas]:absolute [&>canvas]:top-0 [&>canvas]:left-0"
     :class="{
-      '[&>canvas]:h-full [&>canvas]:left-1/2 [&>canvas]:-translate-x-1/2': !isFullscreen || isLandscape,
-      '[&>canvas]:w-full  [&>canvas]:top-1/2 [&>canvas]:-translate-y-1/2': isFullscreen && !isLandscape,
+      '[&>canvas]:left-1/2 [&>canvas]:h-full [&>canvas]:-translate-x-1/2': !isFullscreen || isLandscape,
+      '[&>canvas]:top-1/2  [&>canvas]:w-full [&>canvas]:-translate-y-1/2': isFullscreen && !isLandscape,
       '!bg-black': isFullscreen,
     }"
   >
@@ -202,10 +202,10 @@ watch(focused, (isFocus) => {
     <canvas ref="fgCanvas" width="1920" height="1080">Your browser does not support the canvas element.</canvas>
     <div
       id="canvasControl"
-      class="text-xl md:text-2xl px-3 py-2.5 md:px-4 md:py-3.5 absolute top-0 left-0 right-0 bottom-0 flex flex-col justify-end"
+      class="absolute inset-0 flex flex-col justify-end px-3 py-2.5 text-xl md:px-4 md:py-3.5 md:text-2xl"
     >
       <div
-        class="flex text-white items-center gap-2.5 md:gap-3.5 relative [&>button]:select-none hover:[&>button]:bg-gray-300/25 [&>button]:rounded-md [&_button]:flex [&>button]:p-1"
+        class="relative flex items-center gap-2.5 text-white md:gap-3.5 [&>button]:select-none [&>button]:rounded-md [&>button]:p-1 hover:[&>button]:bg-gray-300/25 [&_button]:flex"
       >
         <button aria-label="Show Slider" type="button" @click="showSlider = !showSlider">
           <Icon
@@ -213,18 +213,18 @@ watch(focused, (isFocus) => {
               '-rotate-180': showSlider,
             }"
             name="ph:caret-down-bold"
-            class="duration-[250ms] transition-transform"
+            class="transition-transform duration-[250ms]"
           />
         </button>
         <div
           :class="{
-            'translate-y-[120%] invisible opacity-0': !showSlider,
+            'invisible translate-y-[120%] opacity-0': !showSlider,
             visible: showSlider,
           }"
-          class="flex-1 flex items-center relative duration-[300ms] transition-[transform,visibility,opacity]"
+          class="relative flex flex-1 items-center transition-[transform,visibility,opacity] duration-[300ms]"
         >
           <div
-            class="text-xs font-bold md:text-sm absolute bottom-[calc(100%_+_5px)]"
+            class="absolute bottom-[calc(100%_+_5px)] text-xs font-bold md:text-sm"
             :class="{ 'lg:!text-2xl': isFullscreen }"
           >
             {{ $moment(selectedTime).format("LLLL") }}
@@ -236,7 +236,7 @@ watch(focused, (isFocus) => {
             type="range"
             min="0"
             max="1000"
-            class="w-full [&::-webkit-slider-thumb]:cursor-pointer [&::-moz-range-thumb]:cursor-pointer"
+            class="w-full [&::-moz-range-thumb]:cursor-pointer [&::-webkit-slider-thumb]:cursor-pointer"
           >
         </div>
         <Popover>
@@ -251,8 +251,8 @@ watch(focused, (isFocus) => {
             leave-from-class="translate-y-0 translate-x-x opacity-100"
             leave-to-class="translate-y-2 translate-x-1 opacity-0"
           >
-            <PopoverPanel class="absolute bottom-[calc(100%_+_8px)] right-2 bg-[rgba(28,28,28,.9)] rounded-md">
-              <div class="text-base flex flex-col py-1.5">
+            <PopoverPanel class="absolute bottom-[calc(100%_+_8px)] right-2 rounded-md bg-[rgba(28,28,28,.9)]">
+              <div class="flex flex-col py-1.5 text-base">
                 <SwitchGroup>
                   <div role="button" class="flex px-4 py-2.5 hover:bg-gray-300/25">
                     <SwitchLabel class="mr-4 flex-1 cursor-pointer select-none">
@@ -268,7 +268,7 @@ watch(focused, (isFocus) => {
                       <span class="sr-only">{{ $t("srview.tips.animation") }}</span>
                       <span
                         :class="isAnimated ? 'translate-x-6' : 'translate-x-1'"
-                        class="inline-block h-4 w-4 transform rounded-full bg-white transition"
+                        class="inline-block h-4 w-4 rounded-full bg-white transition"
                       />
                     </Switch>
                   </div>
@@ -288,7 +288,7 @@ watch(focused, (isFocus) => {
                       <span class="sr-only">{{ $t("srview.tips.ss") }}</span>
                       <span
                         :class="showScreenshot ? 'translate-x-6' : 'translate-x-1'"
-                        class="inline-block h-4 w-4 transform rounded-full bg-white transition"
+                        class="inline-block h-4 w-4 rounded-full bg-white transition"
                       />
                     </Switch>
                   </div>

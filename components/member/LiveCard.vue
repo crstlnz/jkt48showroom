@@ -99,13 +99,13 @@ async function refreshDate () {
 <template>
   <div
     ref="container"
-    class="aspect-[20/30] lg:aspect-[20/28] bg-slate-50 dark:bg-dark-2 rounded-xl overflow-hidden origin-top transition-[transform,box-shadow,z-index] z-0 group relative will-change-transform duration-300"
-    :class="{'scale-[115%] md:scale-[118%] lg:scale=[122%] xl:scale-125 -translate-y-[10%] shadow-2xl z-50 shadow-black/50 dark:shadow-black/80': isPreview, 'shadow-sm ' : !isPreview}"
+    class="group relative z-0 aspect-[20/30] origin-top overflow-hidden rounded-xl bg-slate-50 transition-[transform,box-shadow,z-index] duration-300 will-change-transform dark:bg-dark-2 lg:aspect-[20/28]"
+    :class="{'lg:scale=[122%] z-50 -translate-y-[10%] scale-[115%] shadow-2xl shadow-black/50 dark:shadow-black/80 md:scale-[118%] xl:scale-125': isPreview, 'shadow-sm ' : !isPreview}"
   >
-    <div class="h-full flex flex-col">
+    <div class="flex h-full flex-col">
       <button
         type="button"
-        class="aspect-square w-5 md:w-6 rounded-full flex justify-center items-center cursor-pointer select-none z-[25] hover:bg-slate-500/40 hover:text-slate-700 dark:hover:text-slate-100 absolute right-0 m-2 md:m-3 xl:m-4"
+        class="absolute right-0 z-[25] m-2 flex aspect-square w-5 cursor-pointer select-none items-center justify-center rounded-full hover:bg-slate-500/40 hover:text-slate-700 dark:hover:text-slate-100 md:m-3 md:w-6 xl:m-4"
         :class="{
           '!text-white' : openMenu || isPreview,
           'bg-slate-500' : !openMenu || !isPreview
@@ -115,46 +115,46 @@ async function refreshDate () {
         <Icon v-if="!openMenu" name="ph:dots-three-outline-fill" class="aspect-square text-xs md:text-base" />
         <Icon v-else name="ph:x-bold" class="aspect-square text-xs md:text-base" />
       </button>
-      <div ref="hover" :class="{'cursor-pointer' : isSupported}" class="relative disable-highlight">
-        <div :class="isHovered && !isPreview && isSupported ? 'visible opacity-100' : 'invisible opacity-0'" class="z-10 absolute bottom-2 right-2 bg-black dark:bg-slate-200 text-white dark:text-black text-xs px-1.5 py-0.5 rounded-md">
+      <div ref="hover" :class="{'cursor-pointer' : isSupported}" class="disable-highlight relative">
+        <div :class="isHovered && !isPreview && isSupported ? 'visible opacity-100' : 'invisible opacity-0'" class="absolute bottom-2 right-2 z-10 rounded-md bg-black px-1.5 py-0.5 text-xs text-white dark:bg-slate-200 dark:text-black">
           Hover Me
         </div>
-        <div section="preview-on" :class="{'opacity-100 visible': isPreview, 'invisible opacity-0' : !isPreview}" class="absolute top-0 left-0 right-0 z-20 transition-opacity duration-[400ms]">
+        <div section="preview-on" :class="{'visible opacity-100': isPreview, 'invisible opacity-0' : !isPreview}" class="absolute inset-x-0 top-0 z-20 transition-opacity duration-[400ms]">
           <LazyPreviewVideo ref="preview" :src="streamingURL" :playing="playing" />
         </div>
-        <div section="preview-off" :class="{'bg-slate-200 dark:bg-dark-1/60' : isHovered && !isPreview && isSupported}" class="aspect-video relative top-0 overflow-hidden rounded-t-xl transition-colors">
-          <div class="relative flex items-end justify-center left-0 right-0 top-0 bottom-0 h-full">
+        <div section="preview-off" :class="{'bg-slate-200 dark:bg-dark-1/60' : isHovered && !isPreview && isSupported}" class="relative top-0 aspect-video overflow-hidden rounded-t-xl transition-colors">
+          <div class="relative inset-0 flex h-full items-end justify-center">
             <div
               :class="{ 'pointer-events-none': openMenu }"
-              class="w-full h-full overflow-hidden inline-block z-[1]"
+              class="z-[1] inline-block h-full w-full overflow-hidden"
               no-prefetch
             >
               <LazyImage
                 lazy="false"
-                class="brightness-100 relative transition-all duration-200 w-full h-full"
+                class="relative h-full w-full brightness-100 transition-all duration-200"
                 :src="$fixCloudinary(live.img)"
               />
             </div>
           </div>
         </div>
       </div>
-      <div class="px-2 md:px-3 lg:px-4 pb-3 md:pb-4 lg:pb-5 flex flex-col flex-1">
-        <div class="flex gap-1.5 items-center mt-2 mb-1 flex-wrap">
+      <div class="flex flex-1 flex-col px-2 pb-3 md:px-3 md:pb-4 lg:px-4 lg:pb-5">
+        <div class="mt-2 mb-1 flex flex-wrap items-center gap-1.5">
           <div
             :class="live.is_group ? 'bg-sky-400' : live.is_graduate ? 'bg-red-500' : 'bg-green-500'"
-            class="h-5 aspect-square flex justify-center items-center text-white select-none rounded-full"
+            class="flex aspect-square h-5 select-none items-center justify-center rounded-full text-white"
             :title="`${live.is_group ? 'Official' : live.is_graduate ? 'Graduated' : 'Active'} Member`"
           >
             <Icon
               :name="
                 live.is_group ? 'ph:check-circle-fill' : live.is_graduate ? 'ph:graduation-cap-fill' : 'ph:microphone-stage-fill'
               "
-              class="i aspect-square text-xs md:text-xs font-bold"
+              class="i aspect-square text-xs font-bold md:text-xs"
             />
-            <div class="text-xs md:font-semibold leading-5" />
+            <div class="text-xs leading-5 md:font-semibold" />
           </div>
           <div
-            class="md:font-semibold inline-block align-middle text-xs bg-red-500 h-5 px-1.5 leading-5 rounded-md text-white"
+            class="inline-block h-5 rounded-md bg-red-500 px-1.5 align-middle text-xs leading-5 text-white md:font-semibold"
             :title="dateString ? $t('date.started',{date:dateString}) : 'Start date not provided'"
           >
             <div v-if="dateString">
@@ -164,12 +164,12 @@ async function refreshDate () {
               Error
               <Icon v-if="pending" name="bx:loader-alt" class="animate-spin" />
               <button v-else type="button" @click="refreshDate">
-                <Icon name="ion:md-refresh" class="text-base self-center" />
+                <Icon name="ion:md-refresh" class="self-center text-base" />
               </button>
             </div>
           </div>
         </div>
-        <h2 class="font-bold text-base md:text-lg truncate flex-1" :title="live.name">
+        <h2 class="flex-1 truncate text-base font-bold md:text-lg" :title="live.name">
           {{ live.name }}
         </h2>
         <div class="flex items-center gap-1.5 md:gap-2 xl:gap-2.5" />
@@ -177,16 +177,16 @@ async function refreshDate () {
           :tabindex="openMenu ? -1 : undefined"
           :href="$liveURL(live.url)"
           target="_blank"
-          class="mt-auto flex justify-center items-center gap-1.5 w-full text-center p-2 md:px-5 md:py-3 cursor-pointer bg-blue-500 hover:bg-blue-600 rounded-xl lg:rounded-2xl mx-auto font-semibold text-white text-xs sm:text-sm md:text-base"
+          class="mx-auto mt-auto flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-blue-500 p-2 text-center text-xs font-semibold text-white hover:bg-blue-600 sm:text-sm md:px-5 md:py-3 md:text-base lg:rounded-2xl"
         ><Icon name="ph:video-camera-fill" class="seft-center text-base md:text-lg" /> {{ $t('viewlive') }}</a>
       </div>
       <div
-        class="absolute visible flex flex-col justify-center p-3 sm:p-4 md:p-5 bg-red-500 top-0 left-0 w-full h-full transition-[transform,visibility] duration-300 rounded-t-xl text-white z-20"
-        :class="{ 'translate-y-full invisible': !openMenu }"
+        class="visible absolute top-0 left-0 z-20 flex h-full w-full flex-col justify-center rounded-t-xl bg-red-500 p-3 text-white transition-[transform,visibility] duration-300 sm:p-4 md:p-5"
+        :class="{ 'invisible translate-y-full': !openMenu }"
       >
         <ul
           :class="{ 'no-scrollbar': $device.isMobile }"
-          class="flex flex-col text-lg [&>li]:cursor-pointer [&>li]:font-semibold [&>li]:my-3 [&>li]:px-4 [&>li]:text-center max-h-[75%] overflow-hidden overflow-y-auto"
+          class="flex max-h-[75%] flex-col overflow-hidden overflow-y-auto text-lg [&>li]:my-3 [&>li]:cursor-pointer [&>li]:px-4 [&>li]:text-center [&>li]:font-semibold"
         >
           <li>
             <NuxtLink to="/" no-prefetch>

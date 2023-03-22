@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+
 import Fuse from 'fuse.js'
 import { getMembers } from '../members.get'
 import ShowroomLog from '~~/library/database/schema/showroom/ShowroomLog'
@@ -7,32 +7,33 @@ export default defineEventHandler(async (event): Promise<IApiRecents> => await g
 export { getRecents }
 
 // const group = ['jkt48', 'hinatazaka46'].includes(config.group ?? 'all') ? config.group : 'all'
+
 async function getRecents (qq: any = null): Promise<IApiRecents> {
   let page = 1
-  const perpage = 10
+  const maxPerpage = 30
+  const perpage = Math.min(qq.perpage || 10, maxPerpage)
   const query: RecentsQuery = qq ?? {}
   if (query.page) page = Number(query.page) ?? 1
   if (page < 1) page = 1
-  enum sortType {
-    LATEST,
-    OLDEST,
-    MOST_GIFT,
-    MOST_VIEWS,
-  }
-  const sort = sortType[String(query.sort)?.toUpperCase()] ?? sortType.LATEST
+  const sort : sortType = config.isSort(query.sort) ? query.sort : 'date'
+  const order = parseInt((query.order ?? '-1') as string) || -1
+  // ORDER : if -1 is descending. if 1 is ascending
+
   function getSort (sort: sortType): string {
-    switch (sort) {
-      case sortType.LATEST:
-        return '-live_info.end_date'
-      case sortType.OLDEST:
-        return 'live_info.end_date'
-      case sortType.MOST_GIFT:
-        return '-total_point'
-      case sortType.MOST_VIEWS:
-        return '-live_info.penonton.peak'
-      default:
-        return '-live_info.end_date'
-    }
+    return `${order < 0 ? '-' : ''}${(() => {
+      switch (sort) {
+        case 'date':
+          return 'live_info.end_date'
+        case 'gift':
+          return 'total_point'
+        case 'views':
+          return 'live_info.penonton.peak'
+        case 'duration':
+          return 'live_info.duration'
+        default:
+          return 'live_info.end_date'
+      }
+    })()}`
   }
 
   let members = await getMembers()
@@ -71,6 +72,7 @@ async function getRecents (qq: any = null): Promise<IApiRecents> {
     logs = await ShowroomLog.find(options)
       .select({
         live_info: {
+          duration: 1,
           penonton: {
             peak: 1
           },
@@ -114,6 +116,7 @@ async function getRecents (qq: any = null): Promise<IApiRecents> {
   total = await ShowroomLog.count(options)
   return {
     recents: logs.map<IRecent>(i => ({
+      _id: i._id,
       data_id: i.data_id,
       member: {
         name: i.room_info?.name ?? 'Member not Found!',
@@ -126,6 +129,8 @@ async function getRecents (qq: any = null): Promise<IApiRecents> {
       },
       created_at: i.created_at.toISOString(),
       live_info: {
+        comments: i.live_info?.comments ?? undefined,
+        duration: i.live_info?.duration ?? 0,
         viewers: i.live_info?.penonton?.peak ?? undefined,
         date: {
           start: i.live_info.start_date.toISOString(),

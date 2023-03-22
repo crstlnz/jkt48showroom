@@ -14,13 +14,13 @@ onFocus(() => {
 </script>
 
 <template>
-  <div v-if="(pending && !data)" class="bg-white dark:bg-dark-1 overflow-hidden divide-y-2 divide-gray-50 dark:divide-dark-2">
+  <div v-if="(pending && !data)" class="divide-y-2 divide-gray-50 overflow-hidden bg-white dark:divide-dark-2 dark:bg-dark-1">
     <PulseRecentCard v-for="key in 5" :key="key" />
   </div>
   <div v-else>
     <div
       v-if="data?.recents"
-      class="bg-white dark:bg-dark-1 overflow-hidden divide-y-2 divide-gray-50 dark:divide-dark-2"
+      class="divide-y-2 divide-gray-50 overflow-hidden bg-white dark:divide-dark-2 dark:bg-dark-1"
     >
       <MemberRecent
         v-for="recent in data.recents.slice(0, 5)"
@@ -28,14 +28,14 @@ onFocus(() => {
         :recent="recent"
       />
     </div>
-    <div v-else class="bg-white dark:bg-dark-1 overflow-hidden">
+    <div v-else class="overflow-hidden bg-white dark:bg-dark-1">
       <div
-        class="text-center space-y-6 md:space-y-8 xl:space-y-10 aspect-square flex flex-col items-center justify-center"
+        class="flex aspect-square flex-col items-center justify-center space-y-6 text-center md:space-y-8 xl:space-y-10"
       >
         <img
           src="/svg/no_data.svg"
           alt="Empty"
-          class="max-w-[400px] w-[50%] aspect-square mx-auto dark:brightness-110"
+          class="mx-auto aspect-square w-[50%] max-w-[400px] dark:brightness-110"
         >
         <div class="text-xs">
           Sorry, but there is no recents right now :(

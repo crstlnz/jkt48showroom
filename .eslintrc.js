@@ -6,6 +6,7 @@ module.exports = {
   },
   extends: [
     'plugin:@typescript-eslint/recommended',
+    'plugin:tailwindcss/recommended',
     'plugin:vue/vue3-recommended',
     'plugin:nuxt/recommended',
     '@nuxtjs/eslint-config-typescript'
@@ -28,6 +29,7 @@ module.exports = {
     curly: ['error', 'multi-line'],
     'vue/component-tags-order': ['error', {
       order: ['script', 'template', 'style']
-    }]
+    }],
+    'tailwindcss/no-custom-classname': 'off'
   }
 }

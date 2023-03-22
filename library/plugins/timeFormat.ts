@@ -1,4 +1,3 @@
-import moment from '~/library/utils/moment'
 const secondsTime = {
   year: 31536000,
   month: 2628000,
@@ -98,14 +97,7 @@ function getStringDuration (time: number, locale: LocaleType | null = null): ISt
 }
 
 export default {
-  fromNow (time: Date | string) {
-    return moment(time).fromNow()
-  },
-  formatSR (time: Date | string) {
-    return moment(time).format('h:mm A') + '~'
-  },
-
-  detailDuration (time1: Date | string | number, time2: Date | string | number, lang: LocaleType | null = null) {
+  detailDuration (time1: Date | string | number, time2: Date | string | number, lang: LocaleType | null = null, max = Infinity) {
     if (!lang) { lang = 'en' }
     const time = Math.floor(Math.abs(new Date(time1).getTime() - new Date(time2).getTime()) / 1000) // in seconds
     function get (time: number, res: unknown[] = []): unknown[] {
@@ -120,6 +112,6 @@ export default {
       }
       return res
     }
-    return get(time).join(' ')
+    return get(time).splice(0, max).join(' ')
   }
 }

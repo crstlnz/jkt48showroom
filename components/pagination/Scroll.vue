@@ -2,6 +2,7 @@
 // import "vue-virtual-scroller/dist/vue-virtual-scroller.css";
 import { useScroll, onClickOutside } from '@vueuse/core'
 const fetch = await useRecentFetch({ changeRoute: false, mode: 'infinite' })
+const title = ref('')
 const { data: res, query, pending, error } = fetch.data
 const { changePage, refresh, setFilter, onQueryChange } = fetch
 const filterOpen = ref(false)
@@ -73,22 +74,29 @@ const { checkTrigger } = useInfiniteScroll(
   },
   { distance: 120 }
 )
+const showDuration = ref(false)
+defineEmits<{(e:'title', title: string):void}>()
 </script>
 
 <template>
   <div>
     <Transition name="fade">
-      <div v-if="filterOpen" class="fixed bottom-0 top-0 left-0 right-0 bg-black/30 dark:bg-black/50 z-40" />
+      <div v-if="filterOpen" class="fixed inset-0 z-40 bg-black/30 dark:bg-black/50" />
     </Transition>
     <div
       ref="filterContainer"
-      class="fixed z-[100] bottom-0 left-0 right-0 transition-transform duration-300 ease-in-out shadow-full"
+      class="shadow-full fixed inset-x-0 bottom-0 z-[100] transition-transform duration-300 ease-in-out"
       :class="{ 'translate-y-full': !filterOpen }"
     >
       <PaginationFilter
         key="filterDiv"
-        class="relative z-[90] bg-white dark:bg-dark-1 px-4 py-4 rounded-t-xl"
+        class="relative z-[90] rounded-t-xl bg-white p-4 dark:bg-dark-1"
         :query="query"
+        @show-duration="(show : boolean)=>showDuration=show"
+        @title="(t:string) => {
+          title = t
+          $emit('title',t)
+        }"
         @apply="(filter) => applyFilter(filter)"
       />
       <Transition
@@ -99,28 +107,28 @@ const { checkTrigger } = useInfiniteScroll(
       >
         <div
           v-if="!isTop"
-          class="flex absolute z-[50] mb-2.5 bottom-[100%] left-1/2 transition -translate-x-1/2 rounded-xl text-white font-bold overflow-hidden bg-second-2/95 w-[220px] max-w-[80%]"
+          class="absolute bottom-[100%] left-1/2 z-[50] mb-2.5 flex w-[220px] max-w-[80%] -translate-x-1/2 overflow-hidden rounded-xl bg-second-2/95 font-bold text-white transition"
         >
           <button
             type="button"
-            class="py-2.5 px-2 active:bg-blue-500 text-center flex-1 border-r border-second-2"
+            class="flex-1 border-r border-second-2 py-2.5 px-2 text-center active:bg-blue-500"
             @click="scrollToTop"
           >
-            {{ $t("scrolltop") }} <Icon name="ph:arrow-up-bold" class="text-base self-center" />
+            {{ $t("scrolltop") }} <Icon name="ph:arrow-up-bold" class="self-center text-base" />
           </button>
           <button
             type="button"
-            class="py-2.5 px-2 active:bg-blue-500 text-center flex-1 border-l border-second-2"
+            class="flex-1 border-l border-second-2 py-2.5 px-2 text-center active:bg-blue-500"
             @click="toggleFilter"
           >
-            {{ $t("filter") }} <Icon name="mdi:filter" class="text-base self-center" />
+            {{ $t("filter") }} <Icon name="mdi:filter" class="self-center text-base" />
           </button>
         </div>
       </Transition>
     </div>
-    <div class="flex mb-2 items-end justify-between">
-      <div class="font-bold text-xl">
-        {{ $t("recentlive") }}
+    <div class="mb-2 flex items-end justify-between">
+      <div class="text-xl font-bold">
+        {{ $t(title || "page.title.recent") }}
       </div>
       <button type="button" class="font-bold" @click="toggleFilter">
         Filter
@@ -134,23 +142,23 @@ const { checkTrigger } = useInfiniteScroll(
         </div>
         <div
           v-else-if="error || !dataset || !dataset.length"
-          class="text-center flex justify-center flex-col px-10 pt-10"
+          class="flex flex-col justify-center px-10 pt-10 text-center"
         >
           <div class="space-y-5">
             <div class="mx-auto w-4/5 lg:w-[350px]">
-              <img v-if="error" src="/img/security-error.png" alt="An Error Occured!" class="w-full mx-auto">
-              <img v-else src="/img/empty-box.png" alt="Empty!" class="w-full mx-auto">
+              <img v-if="error" src="/img/security-error.png" alt="An Error Occured!" class="mx-auto w-full">
+              <img v-else src="/img/empty-box.png" alt="Empty!" class="mx-auto w-full">
             </div>
             <div v-if="error">
-              <h2 class="text-xl lg:text-3xl mb-1">
+              <h2 class="mb-1 text-xl lg:text-3xl">
                 {{ $t("data.error") }}
               </h2>
-              <button type="button" class="hover:text-second-2 text-sm lg:text-base" href="/" @click="() => refresh()">
+              <button type="button" class="text-sm hover:text-second-2 lg:text-base" href="/" @click="() => refresh()">
                 {{ $t("data.retry") }}
               </button>
             </div>
             <div v-else>
-              <h2 class="text-lg lg:text-2xl mb-1">
+              <h2 class="mb-1 text-lg lg:text-2xl">
                 {{ $t("data.notfound") }}
               </h2>
             </div>
@@ -169,7 +177,7 @@ const { checkTrigger } = useInfiniteScroll(
           <template #default="{ item, index, active }">
             <DynamicScrollerItem :item="item" :active="active" :data-index="index">
               <div class="pb-2.5 sm:pb-3 md:pb-4">
-                <MemberRecentCard :key="item.data_id" :recent="item" />
+                <MemberRecentCard :key="item.data_id" :show-duration="showDuration" :recent="item" />
               </div>
             </DynamicScrollerItem>
           </template>
@@ -178,7 +186,7 @@ const { checkTrigger } = useInfiniteScroll(
     </div>
 
     <div
-      class="h-0 transition-[height] duration-300 flex justify-center items-center text-center leading-[5rem] -z-10"
+      class="-z-10 flex h-0 items-center justify-center text-center leading-[5rem] transition-[height] duration-300"
       :class="{ '!h-24': pending, '!h-16': isEnded }"
     >
       <transition name="fade" mode="out-in">

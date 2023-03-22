@@ -19,18 +19,18 @@ watch(openMenu, (isOpen) => {
 <template>
   <div
     ref="container"
-    class="px-4 xl:px-5 py-8 md:py-8 xl:py-10 bg-white dark:bg-dark-1 rounded-xl gap-2 md:gap-3 xl:gap-4 flex flex-col relative overflow-hidden aspect-[10/14] md:aspect-[10/13]"
+    class="relative flex aspect-[10/14] flex-col gap-2 overflow-hidden rounded-xl bg-white px-4 py-8 dark:bg-dark-1 md:aspect-[10/13] md:gap-3 md:py-8 xl:gap-4 xl:px-5 xl:py-10"
   >
-    <div class="flex justify-between items-center absolute left-0 right-0 top-0 p-2.5 md:p-3 lg:p-4">
+    <div class="absolute inset-x-0 top-0 flex items-center justify-between p-2.5 md:p-3 lg:p-4">
       <div>
         <div v-if="isLive" class="flex">
-          <div class="w-6 relative aspect-square">
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full w-2 bg-red-500">
-              <div class="absolute top-0 w-full aspect-square rounded-full bg-red-500 animate-ping" />
-              <div class="w-full aspect-square rounded-full" />
+          <div class="relative aspect-square w-6">
+            <div class="absolute top-1/2 left-1/2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-red-500">
+              <div class="absolute top-0 aspect-square w-full animate-ping rounded-full bg-red-500" />
+              <div class="aspect-square w-full rounded-full" />
             </div>
           </div>
-          <div class="text-red-500 font-semibold hidden sm:block">
+          <div class="hidden font-semibold text-red-500 sm:block">
             Live
           </div>
         </div>
@@ -38,11 +38,11 @@ watch(openMenu, (isOpen) => {
       <button
         type="button"
         aria-label="Open Card Menu"
-        class="aspect-square w-5 md:w-6 rounded-full hover:bg-slate-300/50 flex justify-center items-center cursor-pointer select-none z-10"
+        class="z-10 flex aspect-square w-5 cursor-pointer select-none items-center justify-center rounded-full hover:bg-slate-300/50 md:w-6"
         @click="openMenu = !openMenu"
       >
         <Icon v-if="!openMenu" name="ph:dots-three-outline-fill" class="aspect-square text-xs md:text-base" />
-        <Icon v-else name="ph:x-bold" class="aspect-square text-xs md:text-base text-white" />
+        <Icon v-else name="ph:x-bold" class="aspect-square text-xs text-white md:text-base" />
       </button>
     </div>
     <a
@@ -50,12 +50,12 @@ watch(openMenu, (isOpen) => {
       :tabindex="openMenu ? -1 : undefined"
       title="Member is on live!"
       :href="$liveURL(member.url)"
-      class="h-20 md:h-24 xl:h-28 aspect-square relative group text-white font-bold drop-shadow-sm flex justify-center items-center gap-0.5 rounded-full overflow-hidden mx-auto ring ring-offset-2 dark:ring-offset-dark-1 ring-red-500"
+      class="group relative mx-auto flex aspect-square h-20 items-center justify-center gap-0.5 overflow-hidden rounded-full font-bold text-white ring ring-red-500 ring-offset-2 drop-shadow-sm dark:ring-offset-dark-1 md:h-24 xl:h-28"
       target="_blank"
     >
       <LazyImage
         lazy="false"
-        class="brightness-100 relative transition-all duration-200 w-full h-full"
+        class="relative h-full w-full brightness-100 transition-all duration-200"
         :alt="member.name + 'display picture'"
         :src="$fixCloudinary(member.img_alt ?? '')"
       />
@@ -63,43 +63,43 @@ watch(openMenu, (isOpen) => {
     <NuxtLink
       v-else
       :tabindex="openMenu ? -1 : null"
-      class="h-20 md:h-24 xl:h-28 aspect-square relative group text-white font-bold drop-shadow-sm flex justify-center items-center gap-0.5 rounded-full overflow-hidden mx-auto"
+      class="group relative mx-auto flex aspect-square h-20 items-center justify-center gap-0.5 overflow-hidden rounded-full font-bold text-white drop-shadow-sm md:h-24 xl:h-28"
     >
       <LazyImage
         lazy="false"
         aria-label="View profile"
-        class="brightness-100 relative transition-all duration-200 w-full h-full"
+        class="relative h-full w-full brightness-100 transition-all duration-200"
         :src="$fixCloudinary(member.img_alt ?? '')"
       />
     </NuxtLink>
-    <h2 class="text-sm md:text-base xl:text-lg font-bold text-center truncate">
+    <h2 class="truncate text-center text-sm font-bold md:text-base xl:text-lg">
       {{ member.name }}
     </h2>
     <div
-      class="rounded-full text-white select-none mx-auto text-[10px] md:text-xs xl:text-sm px-2.5 py-1"
+      class="mx-auto select-none rounded-full px-2.5 py-1 text-[10px] text-white md:text-xs xl:text-sm"
       :class="member.is_group ? 'bg-sky-400' : member.is_graduate ? 'bg-red-500' : 'bg-green-500'"
       :title="`${member.is_group ? 'Official' : member.is_graduate ? 'Graduated' : 'Active'} Member`"
     >
       {{ member.is_group ? "Official" : member.is_graduate ? "Graduated" : "Active" }}
     </div>
-    <div class="text-xs md:text-sm text-center hidden sm:line-clamp-2 md:line-clamp-3 xl:line-clamp-4">
+    <div class="hidden text-center text-xs sm:line-clamp-2 md:text-sm md:line-clamp-3 xl:line-clamp-4">
       {{ member.description?.length ? member.description : "No Description." }}
     </div>
     <NuxtLink
       :to="`/member/${member.room_id}`"
       :tabindex="openMenu ? -1 : null"
-      class="mt-auto min-w-[80%] flex items-center justify-center gap-1.5 px-5 py-2 xl:py-3 cursor-pointer bg-blue-500 hover:bg-blue-600 rounded-xl mx-auto font-semibold text-white text-[10px] sm:text-xs md:text-sm xl:text-base truncate"
+      class="mx-auto mt-auto flex min-w-[80%] cursor-pointer items-center justify-center gap-1.5 truncate rounded-xl bg-blue-500 px-5 py-2 text-[10px] font-semibold text-white hover:bg-blue-600 sm:text-xs md:text-sm xl:py-3 xl:text-base"
     >
       <Icon name="ph:user-fill" class="seft-center text-xs sm:text-base md:text-lg" />{{ $t("viewprofile") }}
     </NuxtLink>
 
     <div
-      class="absolute visible flex flex-col justify-center p-3 sm:p-4 md:p-5 bg-red-500 top-0 left-0 w-full h-full transition-[transform,visibility] duration-300 rounded-t-xl z-[9] text-white"
-      :class="{ 'translate-y-full invisible': !openMenu }"
+      class="visible absolute top-0 left-0 z-[9] flex h-full w-full flex-col justify-center rounded-t-xl bg-red-500 p-3 text-white transition-[transform,visibility] duration-300 sm:p-4 md:p-5"
+      :class="{ 'invisible translate-y-full': !openMenu }"
     >
       <ul
         :class="{ 'no-scrollbar': $device.isMobile }"
-        class="flex flex-col text-lg [&>li]:cursor-pointer [&>li]:font-semibold [&>li]:my-3 [&>li]:px-4 [&>li]:text-center max-h-[75%] overflow-hidden overflow-y-auto"
+        class="flex max-h-[75%] flex-col overflow-hidden overflow-y-auto text-lg [&>li]:my-3 [&>li]:cursor-pointer [&>li]:px-4 [&>li]:text-center [&>li]:font-semibold"
       >
         <li>
           <a target="_blank" :href="$profileURL(member.room_id)">Showroom</a>

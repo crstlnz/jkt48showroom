@@ -1,28 +1,32 @@
 <script lang="ts" setup>
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   recent: IRecent;
-}>()
-const { $fromNow } = useNuxtApp()
+  showDuration? : boolean
+}>(), {
+  showDuration: false
+})
+const { $fromNow, $duration } = useNuxtApp()
 const date = $fromNow(props.recent.live_info?.date?.end)
+const duration = $duration(props.recent.live_info.duration, true)
 </script>
 
 <template>
-  <div class="rounded-xl bg-white dark:bg-dark-1 p-3 md:p-4 shadow-sm">
+  <div class="rounded-xl bg-white p-3 shadow-sm dark:bg-dark-1 md:p-4">
     <div class="flex gap-3 md:gap-4">
       <NuxtLink
         aria-label="View profile"
-        class="h-20 sm:h-24 md:h-28 lg:h-32 xl:h-36 relative group aspect-video text-white drop-shadow-sm font-bold flex justify-center items-center gap-0.5 overflow-hidden rounded-xl"
+        class="group relative flex aspect-video h-20 items-center justify-center gap-0.5 overflow-hidden rounded-xl font-bold text-white drop-shadow-sm sm:h-24 md:h-28 lg:h-32 xl:h-36"
         to="/"
       >
         <img
           lazy="false"
-          class="group-hover:brightness-50 brightness-[98%] object-cover relative cursor-pointer transition-all duration-200 w-full h-full bg-slate-200 dark:bg-dark-3 text-xs md:text-sm lg:text-base"
+          class="relative h-full w-full cursor-pointer bg-slate-200 object-cover text-xs brightness-[98%] transition-all duration-200 group-hover:brightness-50 dark:bg-dark-3 md:text-sm lg:text-base"
           :alt="recent.member?.name + 'Display Picture'"
           :src="recent.member?.img ?? ''"
         >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-8 w-8 inline-block top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 invisible opacity-0 absolute group-hover:opacity-100 group-hover:visible"
+          class="invisible absolute top-1/2 left-1/2 inline-block h-8 w-8 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:visible group-hover:opacity-100"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -35,28 +39,41 @@ const date = $fromNow(props.recent.live_info?.date?.end)
           />
         </svg>
       </NuxtLink>
-      <div class="flex-1 w-0 space-y-2 flex flex-col justify-between">
-        <h2 class="font-bold text-base md:text-lg lg:text-xl truncate">
-          {{ recent.member?.name }}
-        </h2>
-        <ul class="space-y-1 [&>li]:flex [&>li]:gap-2 text-xs md:text-sm lg:text-base">
+      <div class="flex w-0 flex-1 flex-col justify-between space-y-2">
+        <a :href="`/recent/${recent.data_id}`" aria-label="Detailed log data">
+          <h2 class="truncate text-base font-bold md:text-lg lg:text-xl">
+            {{ recent.member?.name }}
+          </h2>
+        </a>
+        <ul class="space-y-1 text-xs md:text-sm lg:text-base [&>li]:flex [&>li]:gap-2">
           <li class="flex items-center">
-            <Icon name="bx:bxs-gift" class="bg-yellow-500 text-white rounded-full w-auto h-5 lg:h-6 p-1" />
+            <Icon name="bx:bxs-gift" class="h-5 w-auto rounded-full bg-yellow-500 p-1 text-white lg:h-6" />
             <div class="inline-block align-baseline">
               {{ $currency(recent.points) }}
             </div>
           </li>
-          <li v-if="recent.live_info?.viewers != null" class="flex items-center">
-            <Icon name="mingcute:user-2-fill" class="bg-sky-500 text-white rounded-full w-auto h-5 lg:h-6 p-1" />
-            <div>{{ $n(recent.live_info?.viewers) + " " + $t("viewer", recent.live_info?.viewers) }}</div>
+          <li v-if="!(!showDuration && recent.live_info?.viewers == null)" class="flex items-center">
+            <Icon :name="showDuration ? 'ph:clock-countdown-bold':'mingcute:user-2-fill'" class="h-5 w-auto rounded-full  p-1 text-white lg:h-6" :class="showDuration? 'bg-red-400':'bg-sky-500'" />
+            <div v-if="!showDuration">
+              {{ recent.live_info?.viewers != null ? $n(recent.live_info?.viewers ?? 0) + " " + $t("viewer", recent.live_info?.viewers ?? 0) : $t('data.nodata') }}
+            </div>
+            <div v-else>
+              {{ duration }}
+            </div>
           </li>
         </ul>
       </div>
     </div>
 
-    <div class="flex justify-between mt-2 md:mt-2.5 text-sm sm:text-base md:text-lg">
-      <div>
-        {{ date }}
+    <div class="mt-2 flex justify-between text-sm sm:text-base md:mt-2.5 md:text-lg">
+      <div class="group flex cursor-pointer items-center gap-1.5">
+        <Icon name="ph:clock-bold" />
+        <div class="group-hover:hidden">
+          {{ date }}
+        </div>
+        <div class="hidden group-hover:block">
+          {{ $d(new Date(props.recent.live_info?.date?.end),'long') }}
+        </div>
       </div>
       <a :href="`/recent/${recent.data_id}`" aria-label="Detailed log data" target="_blank" class="font-bold">Details</a>
     </div>

@@ -1,5 +1,5 @@
 <template>
   <div
-    class="pulse-color-2 animate-pulse aspect-[20/30] lg:aspect-[20/28] shadow-md rounded-xl"
+    class="pulse-color-2 aspect-[20/30] animate-pulse rounded-xl shadow-md lg:aspect-[20/28]"
   />
 </template>

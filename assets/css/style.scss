@@ -1,42 +1,41 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 @import url("https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600;700&display=swap");
-@layer components {
-  .disable-highlight {
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .pulse-color {
-    @apply bg-gray-300 dark:bg-dark-3;
-  }
-
-  .pulse-color-2 {
-    @apply bg-gray-200 dark:bg-dark-2;
-  }
-
-  .nav-btn {
-    @apply w-9 h-9 flex hover:bg-dark-1 hover:bg-opacity-10 hover:dark:bg-gray-400 hover:dark:bg-opacity-10 rounded-lg;
-  }
-
-  .burger {
-    @apply md:hidden p-2 flex flex-col justify-around [&>span]:bg-slate-800 [&>span]:dark:bg-slate-100;
-  }
-
-  .fans-item {
-    @apply hidden [&:not(:nth-of-type(1n+5))]:inline-block min-[460px]:[&:not(:nth-of-type(1n+6))]:inline-block md:[&:not(:nth-of-type(1n+8))]:inline-block lg:[&:not(:nth-of-type(1n+11))]:inline-block xl:[&:not(:nth-of-type(1n+13))]:inline-block;
-  }
-
-  .grid-live-now {
-    @apply grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(180px,1fr))] xl:grid-cols-[repeat(auto-fill,minmax(220px,1fr))];
-  }
-
-  .fade-right {
-    mask-image: linear-gradient(to right, black calc(100% - 48px), transparent 100%);
-  }
+// @layer base {
+.disable-highlight {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-tap-highlight-color: transparent;
 }
+
+.pulse-color {
+  @apply bg-gray-300 dark:bg-dark-3;
+}
+
+.pulse-color-2 {
+  @apply bg-gray-200 dark:bg-dark-2;
+}
+
+.nav-btn {
+  @apply w-9 h-9 flex hover:bg-dark-1 hover:bg-opacity-10 hover:dark:bg-gray-400 hover:dark:bg-opacity-10 rounded-lg;
+}
+
+.burger {
+  @apply md:hidden p-2 flex flex-col justify-around [&>span]:bg-slate-800 [&>span]:dark:bg-slate-100;
+}
+
+.fans-item {
+  @apply hidden [&:not(:nth-of-type(1n+5))]:inline-block min-[460px]:[&:not(:nth-of-type(1n+6))]:inline-block md:[&:not(:nth-of-type(1n+8))]:inline-block lg:[&:not(:nth-of-type(1n+11))]:inline-block xl:[&:not(:nth-of-type(1n+13))]:inline-block;
+}
+
+.grid-live-now {
+  @apply grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(180px,1fr))] xl:grid-cols-[repeat(auto-fill,minmax(220px,1fr))];
+}
+
+.fade-right {
+  mask-image: linear-gradient(to right, black calc(100% - 48px), transparent 100%);
+}
+// }
 
 :root {
   --viewport-height: 100%;

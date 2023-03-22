@@ -29,6 +29,7 @@ async function getNowLiveDirect (
           return {
             name: member.name,
             img: member.img,
+            img_alt: member.img_alt,
             url: member.url,
             room_id: member.room_id,
             is_graduate: member.is_graduate,
@@ -68,6 +69,7 @@ async function getNowLiveCookies (membersData: IMember[] | null = null): Promise
           return {
             name: room.room_name,
             img: room.image_l,
+            img_alt: member.img_alt,
             url: room.room_url_key,
             room_id: Number(room.room_id),
             started_at: (RoomStatus.started_at ?? 0) * 1000,
@@ -111,6 +113,7 @@ async function getNowLiveIndirect (membersData: IMember[] | null = null): Promis
       result.push({
         name: room.main_name,
         img: room.image,
+        img_alt: member.img_alt,
         url: room.room_url_key,
         room_id: room.room_id,
         started_at: (room.started_at ?? 0) * 1000,

@@ -20,7 +20,7 @@ useHead({ title: computed(() => $t('page.title.member')) })
     <ClientOnly>
       <template #fallback>
         <div
-          class="py-4 md:py-6 xl:py-8 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-4 md:gap-6 xl:gap-8"
+          class="grid grid-cols-2 gap-2 py-4 sm:gap-4 md:grid-cols-3 md:gap-6 md:py-6 xl:grid-cols-4 xl:gap-8 xl:py-8"
         >
           <div
             v-for="i in 12"
@@ -34,7 +34,7 @@ useHead({ title: computed(() => $t('page.title.member')) })
       </div>
       <div
         v-else-if="pending"
-        class="py-4 md:py-6 xl:py-8 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-4 md:gap-6 xl:gap-8"
+        class="grid grid-cols-2 gap-2 py-4 sm:gap-4 md:grid-cols-3 md:gap-6 md:py-6 xl:grid-cols-4 xl:gap-8 xl:py-8"
       >
         <div
           v-for="i in 12"
@@ -50,7 +50,7 @@ useHead({ title: computed(() => $t('page.title.member')) })
         :length="members.length"
         :page-provider="getPage"
         :page-size="perpage"
-        class="py-4 md:py-6 xl:py-8 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-4 md:gap-6 xl:gap-8"
+        class="grid grid-cols-2 gap-2 py-4 sm:gap-4 md:grid-cols-3 md:gap-6 md:py-6 xl:grid-cols-4 xl:gap-8 xl:py-8"
       >
         <template #probe>
           <div class="item pulse-color" />

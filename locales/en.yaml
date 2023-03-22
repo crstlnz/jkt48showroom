@@ -1,6 +1,8 @@
-nolive: No current live right now 😭
+nolive: No one is live right now 😭
 nonext: No schedule right now 😔
 member: Member | Members
+giftlist: Gift List
+user: User | Users
 livecount: Live count
 mostlive: Most live
 topmember: Top member
@@ -9,26 +11,38 @@ more: More
 fansranking: Fans ranking
 topfans: Top fans
 nextlive: Next live
-recentlive: Recent live
 showonshowroom: Show on Showroom
 view: View
 viewlive: View Live
 viewer: Viewer | Viewers
 totalgift: Total gift
+totalcomments: Comments
 duration: Duration
 moreinfo: More info
 viewprofile: View Profile
 fansgift: Fans Gift
-sort:
-  latest: Latest
-  oldest: Oldest
+sort: 
+  title: "Sort"
+  gift : Gift
+  duration: Duration
+  date: Date
+  views : Viewer
+  latest: Latest Live
+  oldest: Oldest Live
   mostgift: Most Gift
-  mostviews: Most Views
+  leastgift: Least Gift
+  mostviewers: Most Viewers
+  leastviewers: Least Viewers
+  longestduration: Longest Duration
+  shortestduration: Shortest Duration
   apply: Apply
+  order:
+    asc : "Ascending"
+    desc : "Descending"
 data:
   notenough: Not enough data available 🥲
   nomore: No more data :(
-  nodata: No data!
+  nodata: No data
   notfound: Sorry, but the requested data is not found!
   failed: Data fetching failed!
   error: An error occured

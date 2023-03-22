@@ -104,22 +104,22 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col sm:flex-row justify-between items-center xl:mt-2 gap-4 sm:gap-8">
-    <div class="flex gap-0.5 sm:gap-1 md:gap-4 items-center flex-wrap max-sm:justify-between max-sm:w-full">
+  <div class="flex flex-col items-center justify-between gap-4 sm:flex-row sm:gap-8 xl:mt-2">
+    <div class="flex flex-wrap items-center gap-0.5 max-sm:w-full max-sm:justify-between sm:gap-1 md:gap-4">
       <div class="flex gap-1">
-        <Icon name="ph:presentation-chart-bold" class="text-xl sm:text-2xl self-center" />
-        <h2 class="text-xl sm:text-2xl font-bold">
+        <Icon name="ph:presentation-chart-bold" class="self-center text-xl sm:text-2xl" />
+        <h2 class="text-xl font-bold sm:text-2xl">
           {{ $t(`stats.title`) }}
         </h2>
       </div>
-      <div v-if="!pending" class="text-xs md:text-sm opacity-60 sm:flex-1">
+      <div v-if="!pending" class="text-xs opacity-60 sm:flex-1 md:text-sm">
         {{ fromDate }} - {{ toDate }}
       </div>
     </div>
-    <div class="flex gap-1 justify-end max-sm:w-full bg-white dark:bg-dark-1 p-2 sm:p-1.5 rounded-[35px] overflow-hidden relative">
+    <div class="relative flex justify-end gap-1 overflow-hidden rounded-[35px] bg-white p-2 dark:bg-dark-1 max-sm:w-full sm:p-1.5">
       <ClientOnly>
         <template #fallback>
-          <div v-for="key in statsTypes" :key="`loading-${key}`" class="inline-block text-sm md:text-sm whitespace-nowrap px-4 py-1.5 max-sm:flex-1 duration-300 sm:rounded-md z-10 opacity-60">
+          <div v-for="key in statsTypes" :key="`loading-${key}`" class="z-10 inline-block whitespace-nowrap px-4 py-1.5 text-center text-sm opacity-60 duration-300 max-sm:flex-1 sm:rounded-md md:text-sm">
             {{ $t(`stats.${key}`) }}
           </div>
         </template>
@@ -128,31 +128,31 @@ onMounted(() => {
           ref="typeButtons"
           :key="key"
           :data-type="key"
-          class="text-sm md:text-sm whitespace-nowrap px-4 py-1.5 transition-all max-sm:flex-1 duration-300 sm:rounded-md z-10 disable-highlight"
+          class="disable-highlight z-10 whitespace-nowrap px-4 py-1.5 text-center text-sm transition-all duration-300 max-sm:flex-1 sm:rounded-md md:text-sm"
           :class="{'font-bold text-white' : type === key, 'opacity-60 hover:font-bold hover:opacity-80' : type !== key}"
           type="button"
           @click="(type = key)"
         >
           {{ $t(`stats.${key}`) }}
         </button>
-        <div class="bg-blue-500 absolute w-20 h-full rounded-[35px] custom-ease" :style="{top: `${activeStyle?.top}px`,left: `${activeStyle?.left}px`, width: `${activeStyle?.width}px`,height: `${activeStyle?.height}px`}" />
+        <div class="custom-ease absolute h-full w-20 rounded-[35px] bg-blue-500" :style="{top: `${activeStyle?.top}px`,left: `${activeStyle?.left}px`, width: `${activeStyle?.width}px`,height: `${activeStyle?.height}px`}" />
       </ClientOnly>
     </div>
   </div>
 
   <div class="relative">
     <div v-if="(pending)" key="loading" class="space-y-2.5 sm:space-y-3 xl:space-y-4 ">
-      <div class="sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-3 xl:gap-4 rounded-lg md:rounded-none overflow-hidden max-sm:bg-white max-sm:dark:bg-dark-1 p-4 sm:p-0 max-sm:space-y-3">
-        <div v-for="key in 4" :key="key" class="animation-pulse sm:bg-white sm:dark:bg-dark-1 sm:p-5 sm:rounded-lg items-center gap-2 lg:gap-3 sm:shadow-sm flex">
-          <div class="flex-1 min-w-0 space-y-1 lg:space-y-2">
-            <div class="pulse-color animate-pulse w-16 h-4 lg:h-5 rounded-xl" />
-            <div class="pulse-color animate-pulse h-7 rounded-xl w-24" />
+      <div class="overflow-hidden rounded-lg p-4 max-sm:space-y-3 max-sm:bg-white max-sm:dark:bg-dark-1 sm:grid sm:grid-cols-2 sm:gap-3 sm:p-0 md:rounded-none lg:grid-cols-4 xl:gap-4">
+        <div v-for="key in 4" :key="key" class="animation-pulse flex items-center gap-2 sm:rounded-lg sm:bg-white sm:p-5 sm:shadow-sm sm:dark:bg-dark-1 lg:gap-3">
+          <div class="min-w-0 flex-1 space-y-1 lg:space-y-2">
+            <div class="pulse-color h-4 w-16 animate-pulse rounded-xl lg:h-5" />
+            <div class="pulse-color h-7 w-24 animate-pulse rounded-xl" />
           </div>
           <div
-            class="group rounded-full overflow-hidden h-14 w-14 lg:h-16 lg:w-16"
+            class="group h-14 w-14 overflow-hidden rounded-full lg:h-16 lg:w-16"
           >
             <div
-              class="pulse-color animate-pulse aspect-square max-w-16 max-h-16"
+              class="pulse-color max-w-16 aspect-square max-h-16 animate-pulse"
             />
           </div>
         </div>
@@ -161,33 +161,33 @@ onMounted(() => {
     </div>
 
     <div v-else :key="'data'" class="space-y-2.5 sm:space-y-3 xl:space-y-4">
-      <div v-if="(data?.stats?.length ?? 0) <= 1" class="bg-white dark:bg-dark-1 p-3 md:p-4 xl:p-5 rounded-xl shadow-sm ">
-        <div class="text-center pb-6">
-          <img src="/svg/empty-box.svg" :alt="$t('data.notenough')" class="w-72 max-w-[80%] aspect-[4/3] mx-auto">
+      <div v-if="(data?.stats?.length ?? 0) <= 1" class="rounded-xl bg-white p-3 shadow-sm dark:bg-dark-1 md:p-4 xl:p-5 ">
+        <div class="pb-6 text-center">
+          <img src="/svg/empty-box.svg" :alt="$t('data.notenough')" class="mx-auto aspect-[4/3] w-72 max-w-[80%]">
           {{ $t('data.notenough') }}
         </div>
       </div>
-      <div v-else class="sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-3 xl:gap-4 rounded-lg md:rounded-none overflow-hidden max-sm:bg-white max-sm:dark:bg-dark-1 p-4 sm:p-0 max-sm:space-y-3">
+      <div v-else class="overflow-hidden rounded-lg p-4 max-sm:space-y-3 max-sm:bg-white max-sm:dark:bg-dark-1 sm:grid sm:grid-cols-2 sm:gap-3 sm:p-0 md:rounded-none lg:grid-cols-4 xl:gap-4">
         <div
           v-for="stat in (data?.stats ?? []).slice(0, 4)"
           :key="(stat?.key ?? stat.title)"
-          class="sm:bg-white sm:dark:bg-dark-1 sm:p-5 sm:rounded-lg items-center gap-2 lg:gap-3 sm:shadow-sm flex"
+          class="flex items-center gap-2 sm:rounded-lg sm:bg-white sm:p-5 sm:shadow-sm sm:dark:bg-dark-1 lg:gap-3"
         >
-          <div class="flex-1 min-w-0 space-y-1 lg:space-y-2">
-            <div :key="data?.type ?? 'data'" class="opacity-60 text-xs lg:text-sm">
+          <div class="min-w-0 flex-1 space-y-1 lg:space-y-2">
+            <div :key="data?.type ?? 'data'" class="text-xs opacity-60 lg:text-sm">
               {{ stat?.key ? $t(stat?.key) : stat.title }}
             </div>
-            <div :key="data?.type ?? 'data'" class="text-lg xl:text-xl font-bold truncate">
+            <div :key="data?.type ?? 'data'" class="truncate text-lg font-bold xl:text-xl">
               {{ stat.value }}
             </div>
           </div>
           <div
             v-if="stat.img"
-            class="group rounded-full overflow-hidden h-14 w-14 lg:h-16 lg:w-16"
+            class="group h-14 w-14 overflow-hidden rounded-full lg:h-16 lg:w-16"
             :title="stat.img.title"
           >
             <img
-              class="group-hover:brightness-50 brightness-100 aspect-square cursor-pointer transition-all duration-200 max-w-16 max-h-16 object-cover"
+              class="max-w-16 aspect-square max-h-16 cursor-pointer object-cover brightness-100 transition-all duration-200 group-hover:brightness-50"
               :alt="stat.img.title"
               :src="$fixCloudinary(stat.img.src)"
             >

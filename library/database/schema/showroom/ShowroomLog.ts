@@ -1,15 +1,15 @@
-/* eslint-disable camelcase */
-import { Schema, model, Model } from 'mongoose'
+import type { Model } from 'mongoose'
+import { Schema, model } from 'mongoose'
 import Showroom from './Showroom'
 import ShowroomGift from './ShowroomGift'
 import ShowroomUser from './ShowroomUser'
-import config from '~~/app.config'
+import config from '@/app.config'
 
-interface IShowroomLogModel extends Model<IShowroomLog> {
-  getDetails(id: string | number): Promise<IShowroomLogDetail>;
+interface IShowroomLogModel extends Model<Database.IShowroomLog> {
+  getDetails(id: string | number): Promise<Database.IShowroomLogDetail>
 }
 
-const showroomLogSchema = new Schema<IShowroomLog, IShowroomLogModel>({
+const showroomLogSchema = new Schema<Database.IShowroomLog, IShowroomLogModel>({
   is_dev: {
     type: Boolean,
     default: false
@@ -25,6 +25,10 @@ const showroomLogSchema = new Schema<IShowroomLog, IShowroomLogModel>({
     unique: true
   },
   live_info: {
+    comments: {
+      num: Number,
+      users: Number
+    },
     screenshot: {
       folder: String,
       format: String,
@@ -71,6 +75,11 @@ const showroomLogSchema = new Schema<IShowroomLog, IShowroomLogModel>({
         default: 0
       }
     },
+    duration: {
+      index: true,
+      type: Number,
+      default: 0
+    },
     start_date: {
       type: Date,
       required: true
@@ -85,6 +94,18 @@ const showroomLogSchema = new Schema<IShowroomLog, IShowroomLogModel>({
     type: Number
   },
   gift_data: {
+    free_gifts: {
+      type: [
+        {
+          _id: false,
+          gift_id: Number,
+          point: Number,
+          num: Number
+
+        }
+      ],
+      default: []
+    },
     gift_id_list: { type: [Number], default: [] },
     gift_log: {
       type: [
@@ -110,6 +131,19 @@ const showroomLogSchema = new Schema<IShowroomLog, IShowroomLogModel>({
     default: 0,
     index: true
   },
+  record_dates: [
+    {
+      _id: false,
+      from: {
+        type: Date,
+        default: () => Date.now()
+      },
+      to: {
+        type: Date,
+        default: () => Date.now()
+      }
+    }
+  ],
   created_at: {
     type: Date,
     required: true
@@ -136,12 +170,6 @@ showroomLogSchema.virtual('room_info', {
   foreignField: 'room_id',
   justOne: true
 })
-// showroomLogSchema.virtual('room_info', {
-//   ref: IdolMember,
-//   localField: 'room_id',
-//   foreignField: 'showroom.room_id',
-//   justOne: true
-// })
 
 showroomLogSchema.virtual('gift_data.gift_list', {
   ref: ShowroomGift,
@@ -155,8 +183,8 @@ showroomLogSchema.virtual('user_list', {
   foreignField: 'user_id'
 })
 
-showroomLogSchema.statics.getDetails = async function (data_id: string | number): Promise<IShowroomLogDetail | null> {
-  const doc = await this.findOne({ data_id })
+showroomLogSchema.statics.getDetails = async function (dataId: string | number): Promise<Database.IShowroomLogDetail | null> {
+  const doc = await this.findOne({ data_id: dataId })
     .populate({
       path: 'user_list',
       options: { select: '-_id name avatar_url user_id image' }
@@ -173,7 +201,7 @@ showroomLogSchema.statics.getDetails = async function (data_id: string | number)
     })
     .lean()
 
-  if (!doc) { return null }
+  if (!doc) return null
 
   const viewer = doc.live_info?.penonton
     ? {
@@ -194,10 +222,11 @@ showroomLogSchema.statics.getDetails = async function (data_id: string | number)
       is_group: doc.room_info?.is_group ?? false
     },
     live_info: {
+      comments: doc.live_info?.comments,
       screenshot: doc.live_info?.screenshot,
       background_image: doc.live_info?.background_image,
       stage_list:
-        doc.live_info?.stage_list?.map<IStageList>(i => ({
+        doc.live_info?.stage_list?.map<Database.IStage>(i => ({
           date: i.date,
           list: i.list
         })) ?? [],
@@ -213,12 +242,11 @@ showroomLogSchema.statics.getDetails = async function (data_id: string | number)
         log: doc.gift_data?.gift_log?.map(i => ({
           total: i.total,
           user_id: i.user_id,
-          gifts:
-            i.gifts?.map(g => ({
-              id: g.gift_id,
-              num: g.num,
-              date: g.date.toISOString()
-            })) ?? []
+          gifts: i.gifts?.map(g => ({
+            id: g.gift_id,
+            num: g.num,
+            date: g.date.toISOString()
+          }))
         })).sort((a, b) => b.total - a.total),
         list:
           doc.gift_data?.gift_list?.map(g => ({
@@ -231,15 +259,14 @@ showroomLogSchema.statics.getDetails = async function (data_id: string | number)
     jpn_rate: doc.jpn_rate,
     room_id: doc.room_id,
     total_point: doc.total_point,
-    users:
-      doc.users?.map(u => ({
-        id: u.user_id,
-        avatar_id: u.avatar_id,
-        name: u.name
-      })) ?? [],
+    users: doc.users?.map(u => ({
+      id: u.user_id,
+      avatar_id: u.avatar_id,
+      name: u.name
+    })),
     created_at: doc.created_at.toISOString()
   }
 }
 
 showroomLogSchema.index({ data_id: 1 }, { unique: true })
-export default model<IShowroomLog, IShowroomLogModel>('ShowroomLog', showroomLogSchema)
+export default model<Database.IShowroomLog, IShowroomLogModel>('ShowroomLog', showroomLogSchema)

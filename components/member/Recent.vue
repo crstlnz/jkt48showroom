@@ -12,31 +12,33 @@ const date = $fromNow(
 </script>
 
 <template>
-  <div class="text-center py-2 md:py-3 flex gap-3">
+  <div class="flex gap-3 py-2 text-center md:py-3">
     <NuxtLink
       aria-label="View profile"
-      class="h-[4.5rem] md:h-20 aspect-square relative cursor-pointer drop-shadow-sm rounded-full overflow-hidden"
+      class="relative aspect-square h-[4.5rem] cursor-pointer overflow-hidden rounded-full drop-shadow-sm md:h-20"
       to="/"
     >
       <LazyImage
         lazy="false"
-        class="w-full h-full"
+        class="h-full w-full"
         :alt="recent.member?.name + 'Display Picture'"
         :src="$fixCloudinary(recent.member?.img_alt ?? '')"
       />
     </NuxtLink>
 
-    <div class="info text-left flex flex-col flex-1 w-0">
+    <div class="info flex w-0 flex-1 flex-col text-left">
       <div class="name flex flex-1 gap-2">
-        <h2
-          class="font-bold text-ellipsis whitespace-nowrap overflow-hidden flex-1 text-sm md:text-base"
-          :title="recent.member?.name"
-        >
-          {{ recent.member?.name }}
-        </h2>
+        <a :href="`/recent/${recent.data_id}`" aria-label="Detailed log data">
+          <h2
+            class="flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-sm font-bold md:text-base"
+            :title="recent.member?.name"
+          >
+            {{ recent.member?.name }}
+          </h2>
+        </a>
         <div
           v-if="recent.member?.is_graduate"
-          class="graduated w-6 h-6 p-[3px] text-white bg-red-500 rounded-full"
+          class="graduated h-6 w-6 rounded-full bg-red-500 p-[3px] text-white"
           title="Graduated"
         >
           <svg
@@ -59,7 +61,7 @@ const date = $fromNow(
           </svg>
         </div>
       </div>
-      <ul class="mt-1 space-y-1 [&>li]:flex [&>li]:gap-1 text-xs md:text-sm">
+      <ul class="mt-1 space-y-1 text-xs md:text-sm [&>li]:flex [&>li]:gap-1">
         <li v-if="recent.live_info?.viewers">
           <Icon name="ph:users-bold" class="self-center text-sm md:text-base" />
           {{ $n(recent.live_info.viewers) }}
@@ -71,7 +73,7 @@ const date = $fromNow(
           </div>
         </li>
       </ul>
-      <div class="mt-2 pt-2 border-t-2 border-t-gray-50 dark:border-t-dark-2 flex justify-end text-sm md:text-base">
+      <div class="mt-2 flex justify-end border-t-2 border-t-gray-50 pt-2 text-sm dark:border-t-dark-2 md:text-base">
         <ul>
           <li>
             <a :href="`/recent/${recent.data_id}`" aria-label="Detailed log data" target="_blank">Details</a>

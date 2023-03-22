@@ -80,18 +80,18 @@ function handleError (error: any) {
 </script>
 
 <template>
-  <div class="w-full min-h-[100vh] flex flex-col">
+  <div class="flex min-h-[100vh] w-full flex-col">
     <transition name="fade">
       <div
         v-if="menuOpen"
         key="background-nav"
-        class="md:hidden md:opacity-0 bg-black/30 dark:bg-black/40 fixed top-0 left-0 right-0 bottom-0 z-[100] !m-0"
+        class="fixed inset-0 z-[100] !m-0 bg-black/30 dark:bg-black/40 md:hidden md:opacity-0"
         @click="toggleMenu"
       />
     </transition>
 
-    <nav class="fixed z-[1000] top-0 left-0 right-0 bg-white dark:bg-dark-1 shadow-sm">
-      <div class="container h-16 flex items-center mx-auto px-4 md:px-3 flex-row-reverse md:flex-row">
+    <nav class="fixed inset-x-0 top-0 z-[1000] bg-white shadow-sm dark:bg-dark-1">
+      <div class="container mx-auto flex h-16 flex-row-reverse items-center px-4 md:flex-row md:px-3">
         <button
           key="burger"
           type="button"
@@ -105,9 +105,9 @@ function handleError (error: any) {
           <span />
         </button>
 
-        <div class="flex-1 md:flex-none w-0 md:w-auto items-center flex">
+        <div class="flex w-0 flex-1 items-center md:w-auto md:flex-none">
           <NuxtLink
-            class="text-2xl py-2 hover:text-blue-400 inline-block font-bold truncate"
+            class="inline-block truncate py-2 text-2xl font-bold hover:text-blue-400"
             to="/"
           >
             <h1 class="font-black hover:font-bold">
@@ -117,35 +117,35 @@ function handleError (error: any) {
         </div>
 
         <ul
-          :class="{ 'translate-y-full invisible': !menuOpen }"
-          class="absolute z-[100] top-full transition-[visibility,transform] pt-4 md:pt-0 duration-500 md:flex md:flex-row md:justify-end md:items-center md:gap-6 md:transition-none md:translate-y-0 md:!visible md:flex-1 md:w-0 md:static md:top-0 h-[calc(100vh_-_4rem)] md:h-auto left-0 right-0 overflow-y-auto md:overflow-y-visible bg-white dark:bg-dark-1 md:!bg-transparent overscroll-contain"
+          :class="{ 'invisible translate-y-full': !menuOpen }"
+          class="absolute inset-x-0 top-full z-[100] h-[calc(100vh_-_4rem)] overflow-y-auto overscroll-contain bg-white pt-4 transition-[visibility,transform] duration-500 dark:bg-dark-1 md:!visible md:static md:top-0 md:flex md:h-auto md:w-0 md:flex-1 md:translate-y-0 md:flex-row md:items-center md:justify-end md:gap-6 md:overflow-y-visible md:!bg-transparent md:pt-0 md:transition-none"
         >
           <li v-for="menu in menus" :key="menu.title" :class="{ 'md:hidden': !menu.mobile }">
             <NuxtLink
               :to="menu.url"
-              class="text-xl hover:text-blue-400 inline-block text-center w-full py-4 md:py-0"
+              class="inline-block w-full py-4 text-center text-xl hover:text-blue-400 md:py-0"
               active-class="text-blue-500"
             >
               {{ menu.title }}
             </NuxtLink>
           </li>
           <li
-            class="flex gap-4 md:pl-6 md:border-l-2 dark:border-slate-100/30 py-4 md:py-0.5 items-center justify-center"
+            class="flex items-center justify-center gap-4 py-4 dark:border-slate-100/30 md:border-l-2 md:py-0.5 md:pl-6"
           >
             <LangSwitch />
             <button
               type="button"
               aria-label="Toggle Dark Mode"
-              class="border-slate-800 dark:border-slate-100 cursor-pointer relative text-2xl w-6 h-6"
+              class="relative h-6 w-6 cursor-pointer border-slate-800 text-2xl dark:border-slate-100"
               @click="toggleDark"
             >
               <Icon
                 name="ph:moon-bold"
-                class="!hidden dark:!inline-block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+                class="absolute left-1/2 top-1/2 !hidden -translate-x-1/2 -translate-y-1/2 dark:!inline-block"
               />
               <Icon
                 name="ph:sun-bold"
-                class="dark:!hidden absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+                class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 dark:!hidden"
               />
             </button>
           </li>
@@ -153,7 +153,7 @@ function handleError (error: any) {
       </div>
     </nav>
 
-    <div class="container mt-16 px-3 mx-auto flex-1">
+    <div class="container mx-auto mt-16 flex-1 px-3">
       <NuxtErrorBoundary @error="handleError">
         <template #error>
           <Error :message="$t('error.unknown')" :alt="$t('error.unknown')" img-src="/svg/error.svg" :url="'/'" />
@@ -162,7 +162,7 @@ function handleError (error: any) {
       </NuxtErrorBoundary>
     </div>
 
-    <footer class="pt-14 pb-10 font-bold flex items-center justify-center">
+    <footer class="flex items-center justify-center pt-14 pb-10 font-bold">
       Created by<a class="ml-1" target="_blank" href="https://twitter.com/crstlnz">@crstlnz</a>
     </footer>
   </div>

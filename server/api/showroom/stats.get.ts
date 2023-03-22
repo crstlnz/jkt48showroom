@@ -211,7 +211,7 @@ function calculateRanks (logs: IShowroomLog[]): CalculatedRanks {
   }
 }
 
-function calculateFansPoints (usersData: IFansCompact[], stageList: IStageList[]) {
+function calculateFansPoints (usersData: IFansCompact[], stageList: Database.IStage[]) {
   const fansRanks: Map<string | number, number> = new Map()
   const users: Map<string | number, IFans> = new Map()
   for (const user of usersData) {

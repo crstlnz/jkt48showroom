@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   ssr: true,
   routeRules: {
-    '/api/**': { cors: true, cache: { maxAge: 30, staleMaxAge: 10 } }
+    '/api/**': { cors: true, cache: { maxAge: 10, staleMaxAge: 5 } }
   },
   app: {
     rootId: 'app',
@@ -29,7 +29,7 @@ export default defineNuxtConfig({
       }
     ]
   ],
-  css: ['~/assets/css/fonts.scss', '~/assets/css/style.scss'],
+  css: ['~/assets/css/style.scss', '~/assets/css/fonts.scss'],
   colorMode: {
     preference: 'dark',
     fallback: 'light',
@@ -64,7 +64,6 @@ export default defineNuxtConfig({
       { code: 'en', iso: 'en-US', file: 'en.yaml', dir: 'ltr', name: 'EN' },
       { code: 'id', iso: 'id-ID', file: 'id.yaml', dir: 'ltr', name: 'ID' }
     ],
-
     langDir: 'locales',
     lazy: true,
     defaultLocale: 'en',
@@ -82,8 +81,8 @@ export default defineNuxtConfig({
             month: 'long',
             day: 'numeric',
             weekday: 'long',
-            hour: 'numeric',
-            minute: 'numeric'
+            hour: '2-digit',
+            minute: '2-digit'
           }
         },
         id: {
@@ -97,8 +96,8 @@ export default defineNuxtConfig({
             month: 'long',
             day: 'numeric',
             weekday: 'long',
-            hour: 'numeric',
-            minute: 'numeric'
+            hour: '2-digit',
+            minute: '2-digit'
           }
         }
       },
@@ -148,7 +147,8 @@ export default defineNuxtConfig({
     }
   },
   typescript: {
-    shim: false
+    shim: false,
+    strict: true
   },
   nitro: {
     compressPublicAssets: true

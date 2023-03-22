@@ -13,7 +13,7 @@ const currentLocale = computed(() => {
     :title="$t('changelang')"
     type="button"
     href="#"
-    class="flex items-center gap-1 rounded-xl p-2 border-2 justify-center hover:bg-slate-500/5 dark:border-dark-3 w-16"
+    class="flex w-16 items-center justify-center gap-1 rounded-xl border-2 p-2 hover:bg-slate-500/5 dark:border-dark-3"
     @click.prevent.stop="setLocale(otherLocale.code)"
   >
     <Icon name="ph:translate-bold" />{{ currentLocale.name }}

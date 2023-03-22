@@ -2,6 +2,8 @@
   // https://v3.nuxtjs.org/concepts/typescript
   "extends": "./.nuxt/tsconfig.json",
   "compilerOptions": {
-    "suppressImplicitAnyIndexErrors": true,
+    "types": [
+      "@nuxtjs/i18n"
+    ]
   }
 }

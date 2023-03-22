@@ -59,11 +59,11 @@ defineExpose({ play, stop, buffer })
 </script>
 
 <template>
-  <div class="bg-black aspect-video relative">
-    <button type="button" aria-label="Mute/Unmute Button" class="aspect-square w-5 md:w-6 rounded-full flex justify-center items-center cursor-pointer select-none z-[25] bg-slate-500/30 hover:bg-slate-500/40 text-white absolute right-0 bottom-0 m-2 md:m-3 xl:m-4" @click="toggleMute">
+  <div class="relative aspect-video bg-black">
+    <button type="button" aria-label="Mute/Unmute Button" class="absolute right-0 bottom-0 z-[25] m-2 flex aspect-square w-5 cursor-pointer select-none items-center justify-center rounded-full bg-slate-500/30 text-white hover:bg-slate-500/40 md:m-3 md:w-6 xl:m-4" @click="toggleMute">
       <Icon v-if="isMuted" name="ph:speaker-simple-slash-fill" />
       <Icon v-else name="ph:speaker-simple-high-fill" />
     </button>
-    <video ref="video" class="w-full h-full transition-opacity duration-300 opacity-0 bg-slate-200 dark:bg-dark-1/70 overflow-hidden object-cover" :class="{ 'opacity-100': videoLoaded }" />
+    <video ref="video" class="h-full w-full overflow-hidden bg-slate-200 object-cover opacity-0 transition-opacity duration-300 dark:bg-dark-1/70" :class="{ 'opacity-100': videoLoaded }" />
   </div>
 </template>

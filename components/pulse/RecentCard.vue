@@ -1,27 +1,27 @@
 <template>
-  <div class="text-center py-2 md:py-3 flex gap-3 animate-pulse">
+  <div class="flex animate-pulse gap-3 py-2 text-center md:py-3">
     <NuxtLink
       aria-label="View profile"
-      class="h-[4.5rem] md:h-20 aspect-square relative cursor-pointer drop-shadow-sm rounded-full overflow-hidden"
+      class="relative aspect-square h-[4.5rem] cursor-pointer overflow-hidden rounded-full drop-shadow-sm md:h-20"
       to="/"
     >
       <div
-        class="w-full h-full pulse-color"
+        class="pulse-color h-full w-full"
       />
     </NuxtLink>
 
-    <div class="info text-left flex flex-col flex-1 w-0">
+    <div class="info flex w-0 flex-1 flex-col text-left">
       <div class="name flex flex-1 gap-2">
         <span
-          class="font-bold text-ellipsis whitespace-nowrap overflow-hidden h-5 md:h-6 pulse-color w-3/4 rounded-xl"
+          class="pulse-color h-5 w-3/4 overflow-hidden text-ellipsis whitespace-nowrap rounded-xl font-bold md:h-6"
         />
       </div>
-      <div class="mt-1 space-y-1 flex flex-col text-xs md:text-sm [&>span]:pulse-color">
-        <span class="h-4 md:h-5 w-1/3 inline-block rounded-xl" />
-        <span class="h-4 md:h-5 w-1/2 inline-block rounded-xl" />
+      <div class="[&>span]:pulse-color mt-1 flex flex-col space-y-1 text-xs md:text-sm">
+        <span class="inline-block h-4 w-1/3 rounded-xl md:h-5" />
+        <span class="inline-block h-4 w-1/2 rounded-xl md:h-5" />
       </div>
-      <div class="mt-2 pt-2 border-t-2 border-t-gray-50 dark:border-t-dark-2 flex justify-end">
-        <div class="h-5 md:h-6 w-14 pulse-color rounded-xl" />
+      <div class="mt-2 flex justify-end border-t-2 border-t-gray-50 pt-2 dark:border-t-dark-2">
+        <div class="pulse-color h-5 w-14 rounded-xl md:h-6" />
       </div>
     </div>
   </div>

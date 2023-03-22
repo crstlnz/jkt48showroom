@@ -13,14 +13,14 @@ const mustLoading = ref(false)
   <div v-else-if="next?.length" class="">
     <MemberNextLive v-for="live in next" :key="live.room_id" :data="live" />
   </div>
-  <div v-else class="bg-white dark:bg-dark-1 overflow-hidden">
+  <div v-else class="overflow-hidden bg-white dark:bg-dark-1">
     <div
-      class="text-center space-y-6 md:space-y-8 xl:space-y-10 aspect-square flex flex-col items-center justify-center"
+      class="flex aspect-square flex-col items-center justify-center space-y-6 text-center md:space-y-8 xl:space-y-10"
     >
       <img
         src="/svg/schedule.svg"
         alt="Empty"
-        class="max-w-[400px] w-[50%] aspect-square mx-auto dark:brightness-110"
+        class="mx-auto aspect-square w-[50%] max-w-[400px] dark:brightness-110"
       >
       <div class="text-xs">
         {{ $t("nonext") }}

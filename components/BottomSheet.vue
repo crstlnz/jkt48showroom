@@ -157,17 +157,17 @@ defineExpose({ open, close, isOpen })
       <div v-if="isOpen">
         <div
           ref="background"
-          class="visible md:invisible transform-[visibility] md:opacity-0 bg-black/30 dark:bg-black/60 fixed top-0 left-0 right-0 bottom-0 z-[500] !m-0 background"
+          class="transform-[visibility] background visible fixed inset-0 z-[500] !m-0 bg-black/30 dark:bg-black/60 md:invisible md:opacity-0"
         />
 
         <div
           ref="sheet"
           :class="{ 'transition-transform duration-[600]': !isDrag }"
-          class="sheet-content !fixed w-full left-0 md:left-auto md:w-[450px] md:right-10 lg:right-20 bottom-0 max-h-[90vh] overflow-hidden rounded-t-3xl md:rounded-t-2xl ease-in-out z-[500] md:shadow-rounded touch-none"
+          class="sheet-content !fixed left-0 bottom-0 z-[500] max-h-[90vh] w-full touch-none overflow-hidden rounded-t-3xl ease-in-out md:left-auto md:right-10 md:w-[450px] md:rounded-t-2xl md:shadow-rounded lg:right-20"
         >
           <DynamicScroller
             ref="scroller"
-            class="overflow-y-auto roundedscrollbar h-[80vh] bg-white dark:bg-dark-1 overscroll-contain"
+            class="roundedscrollbar h-[80vh] overflow-y-auto overscroll-contain bg-white dark:bg-dark-1"
             :class="{ 'no-scrollbar': $device.isMobile }"
             :items="items"
             :min-item-size="120"
@@ -175,20 +175,20 @@ defineExpose({ open, close, isOpen })
           >
             <template #before>
               <div
-                class="h-16 flex justify-between shadow-sm bg-white/80 dark:bg-dark-1/80 w-full backdrop-blur-md relative"
+                class="relative flex h-16 w-full justify-between bg-white/80 shadow-sm backdrop-blur-md dark:bg-dark-1/80"
               >
                 <div
                   v-if="$device.isMobile"
-                  class="absolute top-1.5 left-1/2 -translate-x-1/2 h-[3px] w-14 bg-slate-400/40 dark:bg-dark-3/90 rounded-sm"
+                  class="absolute top-1.5 left-1/2 h-[3px] w-14 -translate-x-1/2 rounded-sm bg-slate-400/40 dark:bg-dark-3/90"
                 />
-                <h2 ref="navbar" class="px-5 text-xl font-bold leading-[4rem] select-none flex-1">
+                <h2 ref="navbar" class="flex-1 select-none px-5 text-xl font-bold leading-[4rem]">
                   {{ title }}
                 </h2>
                 <button
                   v-if="!$device.isMobile"
                   ref="closeBtn"
                   type="button"
-                  class="group px-5 disable-highlight scale-100 active:bg-slate-100 dark:active:bg-dark-2 transition-transform"
+                  class="disable-highlight group scale-100 px-5 transition-transform active:bg-slate-100 dark:active:bg-dark-2"
                   @click="close"
                 >
                   <svg
@@ -197,7 +197,7 @@ defineExpose({ open, close, isOpen })
                     viewBox="0 0 24 24"
                     stroke-width="2"
                     stroke="currentColor"
-                    class="w-6 h-6 group-active:scale-90"
+                    class="h-6 w-6 group-active:scale-90"
                   >
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                   </svg>

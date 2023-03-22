@@ -34,6 +34,7 @@ async function getFromCookies (membersData: IMember[] | null = null) : Promise<I
         result.push({
           name: room.room_name,
           img: room.image_l,
+          img_alt: member.img_alt,
           url: room.room_url_key,
           room_id: Number(room.room_id),
           is_graduate: member.is_graduate,

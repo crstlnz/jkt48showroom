@@ -1,4 +1,5 @@
 import EventEmitter from 'events'
+import appConfig from '~~/app.config'
 interface RecentFetchOpts {
   changeRoute?: boolean;
   mode?: 'infinite' | 'page';
@@ -9,19 +10,12 @@ const defaultOpts = {
   mode: 'page'
 }
 export default async function (opts: RecentFetchOpts | null = null) {
-  enum sortType {
-    LATEST,
-    OLDEST,
-    MOST_GIFT,
-    MOST_VIEWS,
-  }
+  const cooldownDuration = 300
+
   const urlroute = useRoute()
   const router = useRouter()
-  const defaultQuery: RecentsQuery = {
-    sort: sortType[sortType.LATEST].toLowerCase(),
-    page: 1,
-    filter: 'all'
-  }
+  const config = useAppConfig()
+  const defaultQuery: RecentsQuery = config.defaultRecentQuery
   const query = ref<RecentsQuery>(buildQuery())
   const cooldown = ref(false)
   const timeout = ref<NodeJS.Timeout | undefined>(undefined)
@@ -48,8 +42,8 @@ export default async function (opts: RecentFetchOpts | null = null) {
   }
 
   function queryCheck (object1: RecentsQuery, object2: RecentsQuery) {
-    const keys1 = Object.keys(object1)
-    const keys2 = Object.keys(object2)
+    const keys1 = Object.keys(object1) as (keyof RecentsQuery)[]
+    const keys2 = Object.keys(object2) as (keyof RecentsQuery)[]
     if (keys1.length !== keys2.length) {
       return false
     }
@@ -86,7 +80,7 @@ export default async function (opts: RecentFetchOpts | null = null) {
     if (!(opts?.changeRoute ?? defaultOpts.changeRoute)) {
       changeQuery(query)
     } else {
-      setCooldown(500)
+      setCooldown(cooldownDuration)
       buildURL(query)
     }
   }
@@ -100,8 +94,8 @@ export default async function (opts: RecentFetchOpts | null = null) {
   function buildQuery (query: RecentsQuery | null = null): RecentsQuery {
     const reqQuery = query ?? urlroute.query
     const q: RecentsQuery = { ...defaultQuery }
-    for (const key of Object.keys(reqQuery)) { q[key as keyof RecentsQuery] = reqQuery[key] as any }
-    if (!sortType[q.sort?.toUpperCase() as any]) { q.sort = sortType[sortType.LATEST].toLowerCase() }
+    for (const key of (Object.keys(reqQuery) as (keyof typeof q)[])) { q[key as keyof RecentsQuery] = reqQuery[key] as any }
+    if (!config.isSort(q.sort)) { q.sort = 'date' }
     q.page = Number(q.page) ?? 1
     if (q.page < 1) { q.page = 1 }
 
@@ -112,7 +106,7 @@ export default async function (opts: RecentFetchOpts | null = null) {
   function buildURL (_query: RecentsQuery) {
     const q = { ..._query }
     const def = defaultQuery
-    for (const key of Object.keys(q)) {
+    for (const key of (Object.keys(q) as (keyof typeof q)[])) {
       if (q[key] === undefined || q[key] === '' || def[key as keyof RecentsQuery] === q[key]) { delete q[key] }
     }
 

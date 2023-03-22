@@ -4,7 +4,7 @@
       aria-label="JKT48 Flying High MV"
       href="https://www.youtube.com/watch?v=eq0s1atl_K0"
       target="_blank"
-      class="focus:ring ring-blue-500 inline-block h-full w-full focus:brightness-75"
+      class="inline-block h-full w-full ring-blue-500 focus:ring focus:brightness-75"
     >
       <img
         alt="JKT48 Flying High"

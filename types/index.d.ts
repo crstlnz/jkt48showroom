@@ -1,7 +1,11 @@
+type OrderType = 1 | -1;
+type sortType = "date" | "gift" | "views" | "duration"
 interface RecentsQuery {
   sort?: string;
+  order?: number;
   search?: string;
   page?: number;
+  perpage?: number;
   filter?: "graduated" | "active" | "all";
 }
 
@@ -33,6 +37,7 @@ interface IShowroomRecents {
 interface IRoomLive {
   name: string;
   img: string;
+  img_alt?: string;
   url: string;
   room_id: number;
   is_graduate: boolean;
@@ -54,6 +59,7 @@ interface IRoomLive {
 interface INextLive {
   name: string;
   img: string;
+  img_alt?: string;
   url: string;
   room_id: number;
   is_graduate: boolean;
@@ -86,6 +92,7 @@ interface IRecent {
   };
   created_at: string;
   live_info: {
+    duration : number;
     viewers?: number;
     date: {
       start: string;
