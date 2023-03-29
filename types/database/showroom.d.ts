@@ -54,39 +54,32 @@ declare namespace Database {
       background_image?: string;
       stage_list?: IStage[];
       penonton?: {
-        history: [
-          {
-            num: number;
-            waktu: Date;
-          }
-        ];
+        history:
+        {
+          num: number;
+          waktu: Date;
+        }[];
         peak: number;
       };
-      duration : Number;
+      duration: Number;
       start_date: Date;
       end_date: Date;
     };
     room_id: number;
     gift_data: {
-      free_gifts : {
-        gift_id : number,
-        point : number,
-        num : number,
-      },
+      free_gifts: FreeGift[],
       gift_id_list: number[];
       gift_list?: IShowroomGift[];
       gift_log: IUserGift[];
     };
     total_point: number;
     created_at: Date;
-    users: [
-      {
-        user_id: number;
-        avatar_url: string;
-        avatar_id: number;
-        name: string;
-      }
-    ];
+    users: {
+      user_id: number;
+      avatar_url?: string;
+      avatar_id: number;
+      name: string;
+    }[];
     room_info?: IShowroomMember;
   }
   

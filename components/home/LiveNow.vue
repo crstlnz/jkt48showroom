@@ -11,16 +11,16 @@ const { data, pending, error } = storeToRefs(onLives)
         <ClientOnly>
           <div
             v-if="!data?.length"
-            class="absolute top-1/2 left-1/2 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gray-500"
+            class="absolute left-1/2 top-1/2 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gray-500"
           >
             <div class="aspect-square w-full rounded-full" />
           </div>
-          <div v-else class="absolute top-1/2 left-1/2 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-red-500">
+          <div v-else class="absolute left-1/2 top-1/2 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-red-500">
             <div class="aspect-square w-full rounded-full" />
             <div class="absolute top-0 aspect-square w-full animate-ping rounded-full bg-red-500" />
           </div>
           <template #fallback>
-            <div class="absolute top-1/2 left-1/2 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gray-500">
+            <div class="absolute left-1/2 top-1/2 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gray-500">
               <div class="aspect-square w-full rounded-full" />
             </div>
           </template>

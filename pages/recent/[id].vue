@@ -73,7 +73,7 @@ const calculatedGift = computed<IFansGift[]>(() => {
       }
       return {
         name: user?.name ?? 'User not Found!',
-        id: user?.id ?? 0,
+        id: user?.id ?? i.user_id ?? (Math.floor(Math.random() * 500) + Math.floor(Math.random() * 10) + 1),
         avatar: c.avatarURL(user?.avatar_id ?? 1),
         avatar_id: user?.avatar_id ?? 1,
         total: i.total,
@@ -92,9 +92,9 @@ useHead({
 </script>
 
 <template>
-  <div class="pt-4 md:pt-6 xl:pt-8">
+  <div class="px-3 pt-4 md:pt-6 xl:pt-8">
     <Error v-if="error" message="Something Error!" img-src="/svg/error.svg" />
-    <div v-else class="flex flex-col justify-end gap-3 p-1 md:gap-4 md:p-0">
+    <div v-else class="flex flex-col justify-end gap-3 md:gap-4 md:p-0">
       <div
         class="relative flex flex-col gap-3 rounded-xl p-4 max-lg:bg-white max-lg:dark:bg-dark-1 lg:flex-row lg:items-end lg:p-0"
       >
@@ -167,7 +167,7 @@ useHead({
               <Icon name="ph:timer-fill" />{{ $t("duration") }}
             </div>
           </div>
-          <div v-if="data?.live_info?.viewer" class="shadow-sm">
+          <div v-if="data?.live_info?.viewer?.peak" class="shadow-sm">
             <div class="mb-1.5 font-semibold">
               {{ $n(data?.live_info?.viewer?.peak) }}
             </div>

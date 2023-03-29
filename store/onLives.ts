@@ -17,7 +17,7 @@ export const useOnLives = defineStore('onLives', () => {
   })
 
   async function refreshLives (): Promise<IRoomLive[]> {
-    return await $fetch('/api/showroom/now_live')
+    return await $fetch('/api/showroom/now_live?_=' + new Date().getTime())
     // TODO remove this
     // const data = await $fetch('/api/showroom/onlives')
     // const re = (data.onlives[0]?.lives ?? []).splice(0, 3).map((i) => {

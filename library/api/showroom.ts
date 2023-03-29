@@ -42,6 +42,12 @@ export function getRoomStatus (params: object): Promise<ShowroomAPI.RoomStatus> 
 export function getStreamingURL (params: object): Promise<ShowroomAPI.StreamingUrlList> {
   return $fetch('https://www.showroom-live.com/api/live/streaming_url', { params })
 }
+export function getCommentLog (roomId: number): Promise<{comment_log: Watch.APIComment[]}> {
+  return fetchAPI(`https://www.showroom-live.com/api/live/comment_log?room_id=${roomId}&_=${new Date().getTime()}`)
+}
+export function getPolling (roomId: number): Promise<ShowroomAPI.Polling | ShowroomAPI.PollingLiveEnd> {
+  return fetchAPI(`https://www.showroom-live.com/api/live/polling?room_id=${roomId}&_=${new Date().getTime()}`)
+}
 
 export async function getFollows (page = 1): Promise<ShowroomAPI.Follow> {
   const count = 100

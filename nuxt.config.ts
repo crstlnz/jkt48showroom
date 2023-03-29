@@ -2,7 +2,8 @@
 export default defineNuxtConfig({
   ssr: true,
   routeRules: {
-    '/api/**': { cors: true, cache: { maxAge: 10, staleMaxAge: 5 } }
+    '/api/showroom/members': { cors: true, cache: { maxAge: 43200, staleMaxAge: 3600 } },
+    '/api/showroom/recent/**': { cors: true, cache: { maxAge: 3600, staleMaxAge: 360 } }
   },
   app: {
     rootId: 'app',
@@ -29,7 +30,7 @@ export default defineNuxtConfig({
       }
     ]
   ],
-  css: ['~/assets/css/style.scss', '~/assets/css/fonts.scss'],
+  css: ['~/assets/css/fonts.scss', '~/assets/css/style.scss'],
   colorMode: {
     preference: 'dark',
     fallback: 'light',

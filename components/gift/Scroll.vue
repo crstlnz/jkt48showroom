@@ -40,11 +40,13 @@ function getNumColor (num: number) {
             {{ item.name }}
           </div>
           <div class="flex gap-2.5 md:gap-3.5">
-            <img
-              class="h-[70px] w-[70px] rounded-lg bg-slate-100/90 p-2 hover:bg-slate-200 dark:bg-slate-100/5 hover:dark:bg-slate-300/10 lg:h-20 lg:w-20"
-              :src="$avatarURL(item.avatar_id)"
-              :alt="`${item.name} Avatar`"
-            >
+            <a :href="$fansProfileURL(item.id)" target="_blank">
+              <img
+                class="h-[70px] w-[70px] rounded-lg bg-slate-100/90 p-2 hover:bg-slate-200 dark:bg-slate-100/5 hover:dark:bg-slate-300/10 lg:h-20 lg:w-20"
+                :src="$avatarURL(item.avatar_id)"
+                :alt="`${item.name} Avatar`"
+              >
+            </a>
             <div class="w-0 flex-1">
               <div class="flex flex-wrap gap-2 pb-[8px] md:gap-2.5">
                 <div v-for="gift in item.gifts" :key="gift.id" class="relative" :title="$currency(gift.point)">

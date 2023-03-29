@@ -100,7 +100,7 @@ async function refreshDate () {
   <div
     ref="container"
     class="group relative z-0 aspect-[20/30] origin-top overflow-hidden rounded-xl bg-slate-50 transition-[transform,box-shadow,z-index] duration-300 will-change-transform dark:bg-dark-2 lg:aspect-[20/28]"
-    :class="{'lg:scale=[122%] z-50 -translate-y-[10%] scale-[115%] shadow-2xl shadow-black/50 dark:shadow-black/80 md:scale-[118%] xl:scale-125': isPreview, 'shadow-sm ' : !isPreview}"
+    :class="{'lg:scale=[122%] z-50 translate-y-[-10%] scale-[115%] shadow-2xl shadow-black/50 dark:shadow-black/80 md:scale-[118%] xl:scale-125': isPreview, 'shadow-sm ' : !isPreview}"
   >
     <div class="flex h-full flex-col">
       <button
@@ -112,7 +112,7 @@ async function refreshDate () {
         }"
         @click="openMenu = !openMenu"
       >
-        <Icon v-if="!openMenu" name="ph:dots-three-outline-fill" class="aspect-square text-xs md:text-base" />
+        <Icon v-if="!openMenu" name="ph:dots-three-outline-fill" class="aspect-square text-xs text-white md:text-base" />
         <Icon v-else name="ph:x-bold" class="aspect-square text-xs md:text-base" />
       </button>
       <div ref="hover" :class="{'cursor-pointer' : isSupported}" class="disable-highlight relative">
@@ -120,7 +120,9 @@ async function refreshDate () {
           Hover Me
         </div>
         <div section="preview-on" :class="{'visible opacity-100': isPreview, 'invisible opacity-0' : !isPreview}" class="absolute inset-x-0 top-0 z-20 transition-opacity duration-[400ms]">
-          <LazyPreviewVideo ref="preview" :src="streamingURL" :playing="playing" />
+          <NuxtLink :to="`/watch/${live.url}`">
+            <LazyPreviewVideo ref="preview" :src="streamingURL" :playing="playing" />
+          </NuxtLink>
         </div>
         <div section="preview-off" :class="{'bg-slate-200 dark:bg-dark-1/60' : isHovered && !isPreview && isSupported}" class="relative top-0 aspect-video overflow-hidden rounded-t-xl transition-colors">
           <div class="relative inset-0 flex h-full items-end justify-center">
@@ -139,7 +141,7 @@ async function refreshDate () {
         </div>
       </div>
       <div class="flex flex-1 flex-col px-2 pb-3 md:px-3 md:pb-4 lg:px-4 lg:pb-5">
-        <div class="mt-2 mb-1 flex flex-wrap items-center gap-1.5">
+        <div class="mb-1 mt-2 flex flex-wrap items-center gap-1.5">
           <div
             :class="live.is_group ? 'bg-sky-400' : live.is_graduate ? 'bg-red-500' : 'bg-green-500'"
             class="flex aspect-square h-5 select-none items-center justify-center rounded-full text-white"
@@ -181,7 +183,7 @@ async function refreshDate () {
         ><Icon name="ph:video-camera-fill" class="seft-center text-base md:text-lg" /> {{ $t('viewlive') }}</a>
       </div>
       <div
-        class="visible absolute top-0 left-0 z-20 flex h-full w-full flex-col justify-center rounded-t-xl bg-red-500 p-3 text-white transition-[transform,visibility] duration-300 sm:p-4 md:p-5"
+        class="visible absolute left-0 top-0 z-20 flex h-full w-full flex-col justify-center rounded-t-xl bg-red-500 p-3 text-white transition-[transform,visibility] duration-300 sm:p-4 md:p-5"
         :class="{ 'invisible translate-y-full': !openMenu }"
       >
         <ul

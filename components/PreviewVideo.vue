@@ -15,8 +15,8 @@ function buffer () {
       lowLatencyMode: true,
       backBufferLength: 90
     })
-    hls.value.loadSource(props.src)
     hls.value.attachMedia(video.value)
+    hls.value.loadSource(props.src)
     hls.value.on(Events.BUFFER_CREATED, () => {
       videoLoaded.value = true
     })

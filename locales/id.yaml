@@ -12,11 +12,14 @@ fansranking: Ranking fans
 topfans: Fans teratas
 nextlive: Jadwal live
 showonshowroom: Lihat di Showroom
+openshowroom: Buka Showroom
+streamoffline : Streaming sedang offline 
 view: Lihat
 viewlive: Buka Live
 viewer: Penonton
 totalgift: Jumlah hadiah
 totalcomments: Komentar
+comment : Komentar
 duration: Durasi
 moreinfo: Info lebih lanjut
 viewprofile: Lihat Profil
@@ -56,6 +59,7 @@ redirectme: Kembali
 scrolltop: Ke atas
 filter: Saring
 giftempty : Tidak ada hadiah!
+commentempty : Tidak ada yang komen!
 srview:
   tips:
     ss: Tampilkan screenshot live
@@ -78,3 +82,10 @@ page:
   title:
     member: Daftar Member
     recent: Live Terakhir
+notif:
+  title:
+    success: Sukses
+    danger: Error
+    warn: Warning
+    info : Info
+newcomment: komen baru

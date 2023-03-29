@@ -1,7 +1,4 @@
 export const useMembers = defineStore('members', () => {
-  // const error = useState('error', () => false)
-  // const loading = useState('loading', () => false)
-  // const members = useState<IMember[] | null>('members', () => null)
   const error = ref(false)
   const loading = ref(false)
   const members = ref<IMember[]>([])
@@ -17,6 +14,7 @@ export const useMembers = defineStore('members', () => {
       error.value = true
     }
   }
+
   return {
     members,
     pending: computed(() => {

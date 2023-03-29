@@ -7,13 +7,14 @@ class ScreenshotManager {
   list: Map<number, HTMLImageElement>
   ids: number[]
   id: number // picked ss id
-  screenshot: HTMLImageElement | undefined // picked ss
+  screenshot: HTMLImageElement | undefined | null // picked ss
   parent: ShowroomBackground
   processId: number
   showScreenshot: boolean
   folder: string
   format: string
   defaultImage: HTMLImageElement | undefined
+  ssNotFound: HTMLImageElement | undefined
   isLoaded: boolean
 
   constructor (
@@ -28,6 +29,7 @@ class ScreenshotManager {
     this.showScreenshot = showScreenshot
     this.isLoaded = false
     this.loadDefaultImage(defaultImage)
+    this.loadSSNotFound()
     this.id = 0
     this.folder = ''
     this.format = ''
@@ -53,6 +55,14 @@ class ScreenshotManager {
 
   loadDefaultImage (src: string) {
     this.defaultImage = CanvasUtil.createImageCallback(src, () => {
+      if (!this.showScreenshot && !this.screenshot) {
+        this.parent.requestDraw()
+      }
+    })
+  }
+
+  loadSSNotFound () {
+    this.ssNotFound = CanvasUtil.createImageCallback('/img/ssnotfound.png', () => {
       if (!this.showScreenshot) {
         this.parent.requestDraw()
       }
@@ -82,9 +92,14 @@ class ScreenshotManager {
     for (let i = 0; i < num; i++) {
       if (this.processId !== processId) { return }
       if (this.ids[i] <= date) {
-        this.id = this.ids[i]
-        this.screenshot = this.list.get(this.id)
-        if (this.screenshot?.complete) { this.parent.requestDraw() }
+        if (Math.abs(this.ids[i] - date) <= 120000) {
+          this.id = this.ids[i]
+          this.screenshot = this.list.get(this.id)
+          if (this.screenshot?.complete) { this.parent.requestDraw() }
+        } else {
+          this.id = 0
+          this.screenshot = null
+        }
       }
     }
   }
@@ -116,6 +131,15 @@ class ScreenshotManager {
         size.width,
         size.height
       )
+
+      if (this.showScreenshot && this.ssNotFound) {
+        this.parent.ctx.drawImage(
+          this.ssNotFound,
+          pos.x + size.width / 2 - this.ssNotFound.width / 2,
+          pos.y + size.height / 2 - this.ssNotFound.height / 2
+
+        )
+      }
     }
   }
 }

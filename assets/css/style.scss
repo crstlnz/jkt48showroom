@@ -248,6 +248,20 @@ body {
   right: 0;
 }
 
+.height-shrink-enter-active,
+.height-shrink-leave-active {
+  transition: height 0.3s ease;
+  height: 32px;
+}
+
+.height-shrink-enter-from,
+.height-shrink-leave-to {
+  height: 0;
+}
+
+.height-shrink-leave-from,
+.height-shrink-leave-active
+
 // .page-leave-active,
 // .page-enter-active {
 //   transition-property: opacity, transform;
@@ -307,4 +321,50 @@ body {
 .tooltip-bottom-leave-to {
   opacity: 0;
   transform: translateY(30px);
+}
+
+.lds-ring {
+  display: inline-block;
+  position: relative;
+  width: 50px;
+  height: 50px;
+}
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 38px;
+  height: 38px;
+  margin: 6px;
+  border: 6px solid rgb(90, 90, 90);
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: rgb(90, 90, 90) transparent transparent transparent;
+}
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.notif-enter-active,
+.notif-leave-active {
+  transition: all 0.8s ease;
+}
+.notif-enter-from,
+.notif-leave-to {
+  opacity: 0;
+  transform: translateY(100%);
 }

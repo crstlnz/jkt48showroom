@@ -16,7 +16,7 @@ useHead({ title: computed(() => $t('page.title.member')) })
 </script>
 
 <template>
-  <div class="memberList">
+  <div class="memberList px-3">
     <ClientOnly>
       <template #fallback>
         <div

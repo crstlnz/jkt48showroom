@@ -6,7 +6,7 @@ export default defineEventHandler(async (): Promise<IRoomLive[]> => {
   return await getNowLive()
 })
 export { getNowLive, getNowLiveDirect, getNowLiveIndirect, getNowLiveCookies }
-const time = 10000
+const time = 5000
 async function getNowLive (): Promise<IRoomLive[]> {
   return await cache
     .fetch<IRoomLive[]>('now_live', () => getNowLiveCookies(), time)

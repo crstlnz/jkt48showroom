@@ -8,7 +8,7 @@ defineProps<{
 </script>
 
 <template>
-  <div class="mt-12 text-center md:mt-14 lg:mt-16 xl:mt-20">
+  <div class="mx-auto mt-12 text-center md:mt-14 lg:mt-16 xl:mt-20">
     <div class="space-y-6 md:space-y-9 xl:space-y-10">
       <div class="mx-auto w-[80%] lg:w-[500px]">
         <img :src="imgSrc" :alt="alt ?? 'Error!'" class="mx-auto aspect-[100/67] w-full dark:brightness-125">

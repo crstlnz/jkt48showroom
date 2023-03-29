@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <div class="flex flex-col gap-5 pt-4 md:pt-6 xl:pt-8">
+    <div class="flex flex-col gap-5 px-3 pt-4 md:pt-6 xl:pt-8">
       <HomeBanner class="aspect-[38/9] overflow-hidden rounded-xl shadow-sm lg:aspect-[95/9]" />
       <HomeLiveNow />
       <HomeStats />

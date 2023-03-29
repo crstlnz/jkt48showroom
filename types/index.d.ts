@@ -170,6 +170,15 @@ interface CommandWorker {
 
 type WorkerMessage = CanvasWorker | CommandWorker;
 
+interface NotifData {
+  id : number;
+  title? : string;
+  message : string;
+  type : 'danger' | 'warn' | 'success' | 'info'
+  duration? : number,
+  action ? : ()=> any
+}
+
 declare module "vue-virtual-scroller";
 declare module "cors";
 declare module "vue-twitter-timeline";

@@ -55,7 +55,7 @@ const duration = $duration(props.recent.live_info.duration, true)
           <li v-if="!(!showDuration && recent.live_info?.viewers == null)" class="flex items-center">
             <Icon :name="showDuration ? 'ph:clock-countdown-bold':'mingcute:user-2-fill'" class="h-5 w-auto rounded-full  p-1 text-white lg:h-6" :class="showDuration? 'bg-red-400':'bg-sky-500'" />
             <div v-if="!showDuration">
-              {{ recent.live_info?.viewers != null ? $n(recent.live_info?.viewers ?? 0) + " " + $t("viewer", recent.live_info?.viewers ?? 0) : $t('data.nodata') }}
+              {{ recent.live_info?.viewers ? $n(recent.live_info?.viewers ?? 0) + " " + $t("viewer", recent.live_info?.viewers ?? 0) : $t('data.nodata') }}
             </div>
             <div v-else>
               {{ duration }}
@@ -72,10 +72,12 @@ const duration = $duration(props.recent.live_info.duration, true)
           {{ date }}
         </div>
         <div class="hidden group-hover:block">
-          {{ $d(new Date(props.recent.live_info?.date?.end),'long') }}
+          {{ $d(new Date(props.recent.live_info?.date?.start),'long') }}
         </div>
       </div>
-      <a :href="`/recent/${recent.data_id}`" aria-label="Detailed log data" target="_blank" class="font-bold">Details</a>
+      <NuxtLink :to="`/recent/${recent.data_id}`" aria-label="Detailed log data" class="font-bold">
+        Details
+      </NuxtLink>
     </div>
   </div>
 </template>

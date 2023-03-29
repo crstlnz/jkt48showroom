@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+
 const i18nHead = useLocaleHead({
   addDirAttribute: true,
   identifierAttribute: 'id',
@@ -49,7 +50,7 @@ const menus = [
   }
   // {
   //   title: 'Watch',
-  //   url: '/watch/rina0129',
+  //   url: '/watch/Kareai_hinata',
   //   mobile: true
   // }
 ]
@@ -80,7 +81,8 @@ function handleError (error: any) {
 </script>
 
 <template>
-  <div class="flex min-h-[100vh] w-full flex-col">
+  <div class="relative flex min-h-[100vh] w-full flex-col">
+    <NotificationView class="fixed z-[1001] bg-blue-500 max-sm:bottom-[8vw] max-sm:left-1/2 max-sm:w-[90vw] max-sm:-translate-x-1/2 sm:right-10 sm:top-6 sm:min-w-[350px]" />
     <transition name="fade">
       <div
         v-if="menuOpen"
@@ -153,7 +155,7 @@ function handleError (error: any) {
       </div>
     </nav>
 
-    <div class="container mx-auto mt-16 flex-1 px-3">
+    <div class="container mx-auto mt-16 flex-1">
       <NuxtErrorBoundary @error="handleError">
         <template #error>
           <Error :message="$t('error.unknown')" :alt="$t('error.unknown')" img-src="/svg/error.svg" :url="'/'" />
@@ -162,8 +164,8 @@ function handleError (error: any) {
       </NuxtErrorBoundary>
     </div>
 
-    <footer class="flex items-center justify-center pt-14 pb-10 font-bold">
-      Created by<a class="ml-1" target="_blank" href="https://twitter.com/crstlnz">@crstlnz</a>
+    <footer class="flex items-center justify-center pb-10 pt-14 font-bold">
+      <a class="ml-1 font-bold" target="_blank" href="https://twitter.com/crstlnz">@crstlnz</a>
     </footer>
   </div>
 </template>

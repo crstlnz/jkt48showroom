@@ -9,9 +9,7 @@ export default defineNitroPlugin(async () => {
   database.run()
 
   schedule('0 0 * * *', () => { // run every 12:00 AM
-    setTimeout(() => {
-      getStats() // delay to make sure the date has changed to the next day
-    }, 1000)
+    getStats()
   })
 
   await import('../../library/redis').then((redis) => {

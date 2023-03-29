@@ -12,11 +12,14 @@ fansranking: Fans ranking
 topfans: Top fans
 nextlive: Next live
 showonshowroom: Show on Showroom
+openshowroom: Open Showroom
+streamoffline : Stream is offline
 view: View
 viewlive: View Live
 viewer: Viewer | Viewers
 totalgift: Total gift
 totalcomments: Comments
+comment : Comment
 duration: Duration
 moreinfo: More info
 viewprofile: View Profile
@@ -56,6 +59,7 @@ redirectme: Redirect me
 scrolltop: Scroll top
 filter: Filter
 giftempty : No gift!
+commentempty : No one comments!
 srview:
   tips:
     ss: Show live screenshot
@@ -78,3 +82,10 @@ page:
   title:
     member: Member List
     recent: Recent Live
+notif:
+  title:
+    success: Success
+    danger: Error
+    warn: Warning
+    info : Info
+newcomment: new comment | new comments
