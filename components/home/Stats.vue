@@ -1,22 +1,24 @@
 <script lang="ts" setup>
-import { Serializer, useEventListener } from '@vueuse/core'
+import type { Serializer } from '@vueuse/core'
+import { useEventListener } from '@vueuse/core'
 import JSONSerializer from '~~/library/serializer/json'
 import { getDateRange } from '~~/library/utils/index'
 import sleep from '~~/library/utils/sleep'
-const statsTypes : IDateRangeType[] = ['weekly', 'monthly', 'quarterly']
-const defaultStat : IDateRangeType = 'weekly'
 
-function isValid (data: string) {
+const statsTypes: IDateRangeType[] = ['weekly', 'monthly', 'quarterly']
+const defaultStat: IDateRangeType = 'weekly'
+
+function isValid(data: string) {
   return (statsTypes as string[]).includes(data)
 }
 
 class SerializeStat implements Serializer<string> {
-  read (raw: string): string {
+  read(raw: string): string {
     if (isValid(raw)) return raw
     return defaultStat
   }
 
-  write (value: string): string {
+  write(value: string): string {
     if (isValid(value)) return String(value)
     return defaultStat
   }
@@ -29,18 +31,19 @@ const error = ref(false)
 const localData = computed(() => useLocalStorage<IShowroomStats | null>(`stats-${type.value}`, null, { serializer: new JSONSerializer(null) }))
 const data = computed(() => localData.value.value)
 
-async function fetch () {
-  if (error.value === true)error.value = false
-  if (pending.value === false)pending.value = true
+async function fetch() {
+  if (error.value === true) error.value = false
+  if (pending.value === false) pending.value = true
   try {
     localData.value.value = await $fetch(`/api/showroom/stats?type=${type.value || defaultStat}`)
-  } catch (e) {
-    if (error.value === false)error.value = true
+  }
+  catch (e) {
+    if (error.value === false) error.value = true
   }
   if (pending.value === true) pending.value = false
 }
 
-async function refresh () {
+async function refresh() {
   const statsData = localData.value.value
   if (!statsData) {
     return await fetch()
@@ -48,7 +51,8 @@ async function refresh () {
   const dateRange = getDateRange(type.value as IDateRangeType)
   if (statsData.date.to === dateRange.to) {
     if (pending.value === true) pending.value = false
-  } else {
+  }
+  else {
     return await fetch()
   }
 }
@@ -59,7 +63,7 @@ const toDateSource = computed(() => data.value?.date?.to ?? 0)
 const fromDate = $toDateString(fromDateSource)
 const toDate = $toDateString(toDateSource)
 
-const typeButtons = ref<HTMLElement[]>([])
+const typeButtons = ref<HTMLButtonElement[]>([])
 const defaultStyle = { top: 0, left: 0, width: 0, height: 0 }
 const activeStyle = ref(defaultStyle)
 
@@ -67,7 +71,7 @@ watch(localData, () => {
   refresh()
 })
 
-function getStyle () {
+function getStyle() {
   return new Promise((resolve) => {
     nextTick(() => {
       if (process.server || !typeButtons.value?.length) return resolve(defaultStyle)
@@ -77,7 +81,7 @@ function getStyle () {
   })
 }
 
-async function calculateActiveButton () : Promise<void> {
+async function calculateActiveButton(): Promise<void> {
   const style = await getStyle() as any
   if (style?.width === 0 || style?.height === 0) {
     await sleep(50)
@@ -95,16 +99,22 @@ watch(type, () => {
   calculateActiveButton()
 })
 
+const isAnimated = ref(false)
+const activeBtnMark = ref<HTMLElement>()
 onMounted(() => {
   win.value = window
   refresh()
   calculateActiveButton()
 })
 
+function setButton(key: string) {
+  if (!isAnimated.value) isAnimated.value = true
+  type.value = key
+}
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-between gap-4 sm:flex-row sm:gap-8 xl:mt-2">
+  <div class="flex flex-col items-center justify-between gap-4 px-4 sm:flex-row sm:gap-8">
     <div class="flex flex-wrap items-center gap-0.5 max-sm:w-full max-sm:justify-between sm:gap-1 md:gap-4">
       <div class="flex gap-1">
         <Icon name="ph:presentation-chart-bold" class="self-center text-xl sm:text-2xl" />
@@ -116,34 +126,27 @@ onMounted(() => {
         {{ fromDate }} - {{ toDate }}
       </div>
     </div>
-    <div class="relative flex justify-end gap-1 overflow-hidden rounded-[35px] bg-white p-2 dark:bg-dark-1 max-sm:w-full sm:p-1.5">
-      <ClientOnly>
-        <template #fallback>
-          <div v-for="key in statsTypes" :key="`loading-${key}`" class="z-10 inline-block whitespace-nowrap px-4 py-1.5 text-center text-sm opacity-60 duration-300 max-sm:flex-1 sm:rounded-md md:text-sm">
-            {{ $t(`stats.${key}`) }}
-          </div>
-        </template>
-        <button
-          v-for="key in statsTypes"
-          ref="typeButtons"
-          :key="key"
-          :data-type="key"
-          class="disable-highlight z-10 whitespace-nowrap px-4 py-1.5 text-center text-sm transition-all duration-300 max-sm:flex-1 sm:rounded-md md:text-sm"
-          :class="{'font-bold text-white' : type === key, 'opacity-60 hover:font-bold hover:opacity-80' : type !== key}"
-          type="button"
-          @click="(type = key)"
-        >
-          {{ $t(`stats.${key}`) }}
-        </button>
-        <div class="custom-ease absolute h-full w-20 rounded-[35px] bg-blue-500" :style="{top: `${activeStyle?.top}px`,left: `${activeStyle?.left}px`, width: `${activeStyle?.width}px`,height: `${activeStyle?.height}px`}" />
-      </ClientOnly>
+    <div class="bg-container relative flex justify-end gap-1 overflow-hidden rounded-[35px] p-2 max-sm:w-full sm:p-1.5">
+      <button
+        v-for="key in statsTypes"
+        :key="key"
+        ref="typeButtons"
+        :data-type="key"
+        class="typeButtons disable-highlight z-10 whitespace-nowrap px-4 py-1.5 text-center text-sm transition-all duration-300 max-sm:flex-1 sm:rounded-md md:text-sm"
+        :class="{ 'text-white': type === key, 'opacity-50 hover:opacity-100': type !== key }"
+        type="button"
+        @click="() => setButton(key)"
+      >
+        {{ $t(`stats.${key}`) }}
+      </button>
+      <div ref="activeBtnMark" :class="isAnimated ? 'custom-ease' : ''" class="absolute h-full w-20 rounded-[35px] bg-blue-500" :style="{ top: `${activeStyle?.top}px`, left: `${activeStyle?.left}px`, width: `${activeStyle?.width}px`, height: `${activeStyle?.height}px` }" />
     </div>
   </div>
 
-  <div class="relative">
-    <div v-if="(pending)" key="loading" class="space-y-2.5 sm:space-y-3 xl:space-y-4 ">
-      <div class="overflow-hidden rounded-lg p-4 max-sm:space-y-3 max-sm:bg-white max-sm:dark:bg-dark-1 sm:grid sm:grid-cols-2 sm:gap-3 sm:p-0 md:rounded-none lg:grid-cols-4 xl:gap-4">
-        <div v-for="key in 4" :key="key" class="animation-pulse flex items-center gap-2 sm:rounded-lg sm:bg-white sm:p-5 sm:shadow-sm sm:dark:bg-dark-1 lg:gap-3">
+  <div class="relative px-4">
+    <div v-if="pending" key="loading" class="space-y-4">
+      <div class="overflow-hidden rounded-lg p-4 max-sm:bg-container max-sm:space-y-3 sm:grid sm:grid-cols-2 sm:gap-3 sm:p-0 md:rounded-none xl:gap-4">
+        <div v-for="key in 4" :key="key" class="animation-pulse flex items-center gap-2 sm:bg-container sm:rounded-lg sm:p-5 sm:shadow-sm lg:gap-3">
           <div class="min-w-0 flex-1 space-y-1 lg:space-y-2">
             <div class="pulse-color h-4 w-16 animate-pulse rounded-xl lg:h-5" />
             <div class="pulse-color h-7 w-24 animate-pulse rounded-xl" />
@@ -152,26 +155,26 @@ onMounted(() => {
             class="group h-14 w-14 overflow-hidden rounded-full lg:h-16 lg:w-16"
           >
             <div
-              class="pulse-color max-w-16 aspect-square max-h-16 animate-pulse"
+              class="max-w-16 pulse-color aspect-square max-h-16 animate-pulse"
             />
           </div>
         </div>
       </div>
-      <PulseHomeFans v-if="pending" key="loading" />
+      <PulseHomeFans key="loading" class="rounded-xl" />
     </div>
 
-    <div v-else :key="'data'" class="space-y-2.5 sm:space-y-3 xl:space-y-4">
+    <div v-else key="data" class="space-y-4">
       <div v-if="(data?.stats?.length ?? 0) <= 1" class="rounded-xl bg-white p-3 shadow-sm dark:bg-dark-1 md:p-4 xl:p-5 ">
         <div class="pb-6 text-center">
           <img src="/svg/empty-box.svg" :alt="$t('data.notenough')" class="mx-auto aspect-[4/3] w-72 max-w-[80%]">
           {{ $t('data.notenough') }}
         </div>
       </div>
-      <div v-else class="overflow-hidden rounded-lg p-4 max-sm:space-y-3 max-sm:bg-white max-sm:dark:bg-dark-1 sm:grid sm:grid-cols-2 sm:gap-3 sm:p-0 md:rounded-none lg:grid-cols-4 xl:gap-4">
+      <div v-else class="overflow-hidden rounded-lg p-4 max-sm:bg-container max-sm:space-y-3 sm:grid sm:grid-cols-2 sm:gap-3 sm:p-0 md:rounded-none xl:gap-4">
         <div
           v-for="stat in (data?.stats ?? []).slice(0, 4)"
-          :key="(stat?.key ?? stat.title)"
-          class="flex items-center gap-2 sm:rounded-lg sm:bg-white sm:p-5 sm:shadow-sm sm:dark:bg-dark-1 lg:gap-3"
+          :key="stat?.key ?? stat.title"
+          class="flex items-center gap-2 sm:bg-container sm:rounded-lg sm:p-5 sm:shadow-sm lg:gap-3"
         >
           <div class="min-w-0 flex-1 space-y-1 lg:space-y-2">
             <div :key="data?.type ?? 'data'" class="text-xs opacity-60 lg:text-sm">
@@ -195,7 +198,7 @@ onMounted(() => {
           <div v-else class="h-14 w-14 lg:h-16 lg:w-16" />
         </div>
       </div>
-      <HomeFans v-if="(data?.ranks?.fans?.length)" :key="data?.type ?? 'data'" :data="data?.ranks.fans" />
+      <HomeFans v-if="(data?.ranks?.fans?.length)" :key="data?.type ?? 'data'" class="rounded-xl" :data="data?.ranks.fans" />
     </div>
   </div>
 </template>

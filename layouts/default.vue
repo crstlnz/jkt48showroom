@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-
 const i18nHead = useLocaleHead({
   addDirAttribute: true,
   identifierAttribute: 'id',
-  addSeoAttributes: true
+  addSeoAttributes: true,
 })
 
 const title = 'JKT48 Showroom'
@@ -13,7 +12,7 @@ useHead({
   htmlAttrs: {
     lang: i18nHead.value.htmlAttrs?.lang,
     dir: i18nHead.value.htmlAttrs?.dir,
-    class: () => menuOpen.value ? 'max-md:overflow-hidden' : ''
+    class: () => menuOpen.value ? 'max-md:overflow-hidden' : '',
   },
   titleTemplate: t => t ? `${t} - ${title}` : title,
   meta: [
@@ -23,31 +22,54 @@ useHead({
     {
       hid: 'description',
       name: 'description',
-      content: 'JKT48 Showroom Logs'
-    }
+      content: 'JKT48 Showroom Logs',
+    },
   ],
   link: [
     ...(i18nHead.value.link || []),
     { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-    { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-  ]
+  ],
 })
-const menus = [
+
+const menus: MenuItem[] = [
   {
     title: 'Home',
     url: '/',
-    mobile: false
+    mobile: true,
+    icon: 'mingcute:home-5-line',
+    activeIcon: 'mingcute:home-5-fill',
   },
   {
     title: 'Recent',
     url: '/recent',
-    mobile: true
+    mobile: true,
+    icon: 'majesticons:list-box-line',
+    activeIcon: 'majesticons:list-box',
   },
   {
     title: 'Member',
     url: '/member',
-    mobile: true
-  }
+    mobile: true,
+    icon: 'heroicons:user-group',
+    activeIcon: 'heroicons:user-group-solid',
+  },
+  {
+    title: 'Favorites',
+    url: '/user/favorites',
+    login: true,
+    mobile: true,
+    icon: 'ic:round-favorite-border',
+    activeIcon: 'ic:round-favorite',
+  },
+  {
+    title: 'Admin',
+    url: '/admin',
+    login: true,
+    mobile: false,
+    admin: true,
+    icon: 'material-symbols:shield-person-outline-rounded',
+    activeIcon: 'material-symbols:shield-person-rounded',
+  },
   // {
   //   title: 'Watch',
   //   url: '/watch/Kareai_hinata',
@@ -55,16 +77,15 @@ const menus = [
   // }
 ]
 const colorMode = useColorMode()
-function toggleDark () {
+function toggleDark() {
   if (colorMode.value === 'dark') {
     colorMode.preference = 'light'
-  } else {
+  }
+  else {
     colorMode.preference = 'dark'
   }
 }
-function toggleMenu () {
-  menuOpen.value = !menuOpen.value
-}
+
 const route = useRoute()
 watch(route, () => {
   nextTick(() => {
@@ -72,100 +93,25 @@ watch(route, () => {
   })
 })
 
-const { IS_DEV } = useRuntimeConfig()
-
-function handleError (error: any) {
-  // eslint-disable-next-line no-console
-  if (IS_DEV) { console.log(error) }
-}
+const { isMobile } = useResponsive()
+const MobileLayout = resolveComponent('LayoutMobile')
+const DesktopLayout = resolveComponent('LayoutDesktop')
 </script>
 
 <template>
-  <div class="relative flex min-h-[100vh] w-full flex-col">
-    <NotificationView class="fixed z-[1001] bg-blue-500 max-sm:bottom-[8vw] max-sm:left-1/2 max-sm:w-[90vw] max-sm:-translate-x-1/2 sm:right-10 sm:top-6 sm:min-w-[350px]" />
-    <transition name="fade">
-      <div
-        v-if="menuOpen"
-        key="background-nav"
-        class="fixed inset-0 z-[100] !m-0 bg-black/30 dark:bg-black/40 md:hidden md:opacity-0"
-        @click="toggleMenu"
-      />
-    </transition>
-
-    <nav class="fixed inset-x-0 top-0 z-[1000] bg-white shadow-sm dark:bg-dark-1">
-      <div class="container mx-auto flex h-16 flex-row-reverse items-center px-4 md:flex-row md:px-3">
-        <button
-          key="burger"
-          type="button"
-          aria-label="Open Menu"
-          :class="{ open: menuOpen }"
-          class="burger nav-btn"
-          @click="toggleMenu"
-        >
-          <span />
-          <span />
-          <span />
-        </button>
-
-        <div class="flex w-0 flex-1 items-center md:w-auto md:flex-none">
-          <NuxtLink
-            class="inline-block truncate py-2 text-2xl font-bold hover:text-blue-400"
-            to="/"
-          >
-            <h1 class="font-black hover:font-bold">
-              {{ title }}
-            </h1>
-          </NuxtLink>
+  <main class="relative mx-auto flex max-w-[1630px]">
+    <ClientOnly>
+      <template #fallback>
+        <div class="flex h-[100vh] w-[100vw] items-center justify-center">
+          <img class="h-20 w-20" src="https://res.cloudinary.com/haymzm4wp/image/upload/v1681138674/assets/img/showroomjkt48circle_ddxdk7.ico" alt="JKT48 Showroom Logo">
         </div>
-
-        <ul
-          :class="{ 'invisible translate-y-full': !menuOpen }"
-          class="absolute inset-x-0 top-full z-[100] h-[calc(100vh_-_4rem)] overflow-y-auto overscroll-contain bg-white pt-4 transition-[visibility,transform] duration-500 dark:bg-dark-1 md:!visible md:static md:top-0 md:flex md:h-auto md:w-0 md:flex-1 md:translate-y-0 md:flex-row md:items-center md:justify-end md:gap-6 md:overflow-y-visible md:!bg-transparent md:pt-0 md:transition-none"
-        >
-          <li v-for="menu in menus" :key="menu.title" :class="{ 'md:hidden': !menu.mobile }">
-            <NuxtLink
-              :to="menu.url"
-              class="inline-block w-full py-4 text-center text-xl hover:text-blue-400 md:py-0"
-              active-class="text-blue-500"
-            >
-              {{ menu.title }}
-            </NuxtLink>
-          </li>
-          <li
-            class="flex items-center justify-center gap-4 py-4 dark:border-slate-100/30 md:border-l-2 md:py-0.5 md:pl-6"
-          >
-            <LangSwitch />
-            <button
-              type="button"
-              aria-label="Toggle Dark Mode"
-              class="relative h-6 w-6 cursor-pointer border-slate-800 text-2xl dark:border-slate-100"
-              @click="toggleDark"
-            >
-              <Icon
-                name="ph:moon-bold"
-                class="absolute left-1/2 top-1/2 !hidden -translate-x-1/2 -translate-y-1/2 dark:!inline-block"
-              />
-              <Icon
-                name="ph:sun-bold"
-                class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 dark:!hidden"
-              />
-            </button>
-          </li>
-        </ul>
-      </div>
-    </nav>
-
-    <div class="container mx-auto mt-16 flex-1">
-      <NuxtErrorBoundary @error="handleError">
-        <template #error>
-          <Error :message="$t('error.unknown')" :alt="$t('error.unknown')" img-src="/svg/error.svg" :url="'/'" />
-        </template>
+      </template>
+      <!-- <DesktopLayout :menus="menus" @toggle-dark="toggleDark()">
         <slot />
-      </NuxtErrorBoundary>
-    </div>
-
-    <footer class="flex items-center justify-center pb-10 pt-14 font-bold">
-      <a class="ml-1 font-bold" target="_blank" href="https://twitter.com/crstlnz">@crstlnz</a>
-    </footer>
-  </div>
+      </DesktopLayout> -->
+      <component :is="!isMobile ? DesktopLayout : MobileLayout" :menus="menus" @toggle-dark="toggleDark()">
+        <slot />
+      </component>
+    </ClientOnly>
+  </main>
 </template>

@@ -7,52 +7,54 @@ import config from '@/app.config'
 
 interface IShowroomLogModel extends Model<Database.IShowroomLog> {
   getDetails(id: string | number): Promise<Database.IShowroomLogDetail>
+  getPreview(id: string | number): Promise<Database.IShowroomLogPreview>
 }
 
 const showroomLogSchema = new Schema<Database.IShowroomLog, IShowroomLogModel>({
   is_dev: {
     type: Boolean,
-    default: false
+    default: false,
   },
   live_id: {
     type: Number,
-    unique: true
+    unique: true,
   },
   jpn_rate: Number,
   data_id: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   live_info: {
+    live_type: Number,
     comments: {
       num: Number,
-      users: Number
+      users: Number,
     },
     screenshot: {
       folder: String,
       format: String,
       list: {
         type: [Number],
-        default: []
-      }
+        default: [],
+      },
     },
     background_image: {
-      type: String
+      type: String,
     },
     stage_list: {
       type: [
         {
           _id: false,
           date: {
-            type: Date
+            type: Date,
           },
           list: {
-            type: [Number]
-          }
-        }
+            type: [Number],
+          },
+        },
       ],
-      default: []
+      default: [],
     },
     penonton: {
       history: {
@@ -60,38 +62,38 @@ const showroomLogSchema = new Schema<Database.IShowroomLog, IShowroomLogModel>({
           {
             _id: false,
             num: {
-              type: Number
+              type: Number,
             },
             waktu: {
-              type: Date
-            }
-          }
+              type: Date,
+            },
+          },
         ],
-        default: []
+        default: [],
       },
       peak: {
         type: Number,
         index: true,
-        default: 0
-      }
+        default: 0,
+      },
     },
     duration: {
       index: true,
       type: Number,
-      default: 0
+      default: 0,
     },
     start_date: {
       type: Date,
-      required: true
+      required: true,
     },
     end_date: {
       type: Date,
       required: true,
-      index: true
-    }
+      index: true,
+    },
   },
   room_id: {
-    type: Number
+    type: Number,
   },
   gift_data: {
     free_gifts: {
@@ -100,11 +102,11 @@ const showroomLogSchema = new Schema<Database.IShowroomLog, IShowroomLogModel>({
           _id: false,
           gift_id: Number,
           point: Number,
-          num: Number
-
-        }
+          num: Number,
+          users: Number,
+        },
       ],
-      default: []
+      default: [],
     },
     gift_id_list: { type: [Number], default: [] },
     gift_log: {
@@ -118,35 +120,35 @@ const showroomLogSchema = new Schema<Database.IShowroomLog, IShowroomLogModel>({
               _id: false,
               gift_id: Number,
               num: Number,
-              date: Date
-            }
-          ]
-        }
+              date: Date,
+            },
+          ],
+        },
       ],
-      default: []
-    }
+      default: [],
+    },
   },
   total_point: {
     type: Number,
     default: 0,
-    index: true
+    index: true,
   },
   record_dates: [
     {
       _id: false,
       from: {
         type: Date,
-        default: () => Date.now()
+        default: () => Date.now(),
       },
       to: {
         type: Date,
-        default: () => Date.now()
-      }
-    }
+        default: () => Date.now(),
+      },
+    },
   ],
   created_at: {
     type: Date,
-    required: true
+    required: true,
   },
   users: {
     type: [
@@ -156,48 +158,52 @@ const showroomLogSchema = new Schema<Database.IShowroomLog, IShowroomLogModel>({
         avatar_url: String,
         avatar_id: {
           type: Number,
-          default: 1
+          default: 1,
         },
-        name: String
-      }
-    ]
-  }
+        name: String,
+      },
+    ],
+  },
 })
 
 showroomLogSchema.virtual('room_info', {
   ref: Showroom,
   localField: 'room_id',
   foreignField: 'room_id',
-  justOne: true
+  justOne: true,
 })
 
 showroomLogSchema.virtual('gift_data.gift_list', {
   ref: ShowroomGift,
   localField: 'gift_data.gift_id_list',
-  foreignField: 'gift_id'
+  foreignField: 'gift_id',
 })
 
 showroomLogSchema.virtual('user_list', {
   ref: ShowroomUser,
   localField: 'users.user_id',
-  foreignField: 'user_id'
+  foreignField: 'user_id',
 })
 
 showroomLogSchema.statics.getDetails = async function (dataId: string | number): Promise<Database.IShowroomLogDetail | null> {
   const doc = await this.findOne({ data_id: dataId })
     .populate({
       path: 'user_list',
-      options: { select: '-_id name avatar_url user_id image' }
+      options: { select: '-_id name avatar_url user_id image' },
     })
     .populate({
       path: 'room_info',
       options: {
-        select: '-_id name img url -room_id member_data is_graduate is_group'
-      }
+        select: '-_id name img url -room_id member_data is_group',
+        populate: {
+          path: 'member_data',
+          select: 'img isGraduate',
+        },
+      },
     })
     .populate({
       path: 'gift_data.gift_list',
-      options: { select: '-_id gift_id free image point' }
+      options: { select: '-_id gift_id free image point' },
     })
     .lean()
 
@@ -207,19 +213,22 @@ showroomLogSchema.statics.getDetails = async function (dataId: string | number):
     ? {
         history: doc.live_info?.penonton?.history?.map(i => ({
           num: i.num,
-          date: i.waktu.toISOString()
+          date: i.waktu.toISOString(),
         })),
-        peak: doc.live_info?.penonton?.peak
+        peak: doc.live_info?.penonton?.peak,
       }
     : undefined
+
   return {
     data_id: doc.data_id,
+    live_id: doc.live_id,
     room_info: {
       name: doc.room_info?.name ?? 'Member not found!',
       img: doc.room_info?.img ?? config.errorPicture,
+      img_alt: doc.room_info?.member_data?.img ?? doc.room_info?.img_square,
       url: doc.room_info?.url ?? '',
       is_graduate: doc.room_info?.member_data?.isGraduate ?? doc.room_info?.is_group ?? false,
-      is_group: doc.room_info?.is_group ?? false
+      is_group: doc.room_info?.is_group ?? false,
     },
     live_info: {
       comments: doc.live_info?.comments,
@@ -228,15 +237,15 @@ showroomLogSchema.statics.getDetails = async function (dataId: string | number):
       stage_list:
         doc.live_info?.stage_list?.map<Database.IStage>(i => ({
           date: i.date,
-          list: i.list
+          list: i.list,
         })) ?? [],
       viewer: {
         history: viewer?.history ?? [],
-        peak: viewer?.peak ?? 0
+        peak: viewer?.peak ?? 0,
       },
       date: {
         start: doc.live_info?.start_date.toISOString(),
-        end: doc.live_info?.end_date.toISOString()
+        end: doc.live_info?.end_date.toISOString(),
       },
       gift: {
         log: doc.gift_data?.gift_log?.map(i => ({
@@ -245,16 +254,17 @@ showroomLogSchema.statics.getDetails = async function (dataId: string | number):
           gifts: i.gifts?.map(g => ({
             id: g.gift_id,
             num: g.num,
-            date: g.date.toISOString()
-          }))
+            date: g.date.toISOString(),
+          })),
         })).sort((a, b) => b.total - a.total),
         list:
           doc.gift_data?.gift_list?.map(g => ({
             id: g.gift_id,
             free: g.free,
-            point: g.point
-          })) ?? []
-      }
+            point: g.point,
+          })) ?? [],
+        free: doc.gift_data?.free_gifts ?? [],
+      },
     },
     jpn_rate: doc.jpn_rate,
     room_id: doc.room_id,
@@ -262,9 +272,43 @@ showroomLogSchema.statics.getDetails = async function (dataId: string | number):
     users: doc.users?.map(u => ({
       id: u.user_id,
       avatar_id: u.avatar_id,
-      name: u.name
+      name: u.name,
     })),
-    created_at: doc.created_at.toISOString()
+    created_at: doc.created_at.toISOString(),
+  }
+}
+
+showroomLogSchema.statics.getPreview = async function (dataId: string | number): Promise<Database.IShowroomLogPreview | null> {
+  const doc = await this.findOne({ data_id: dataId })
+    .populate({
+      path: 'room_info',
+      options: {
+        select: '-_id name img url -room_id member_data is_group',
+        populate: {
+          path: 'member_data',
+          select: 'img isGraduate',
+        },
+      },
+    })
+    .lean()
+
+  if (!doc) return null
+
+  return {
+    data_id: doc.data_id,
+    live_id: doc.live_id,
+    room_info: {
+      name: doc.room_info?.name ?? 'Member not found!',
+      img: doc.room_info?.img ?? config.errorPicture,
+      img_alt: doc.room_info?.member_data?.img ?? doc.room_info?.img_square,
+      url: doc.room_info?.url ?? '',
+      is_graduate: doc.room_info?.member_data?.isGraduate ?? doc.room_info?.is_group ?? false,
+      is_group: doc.room_info?.is_group ?? false,
+    },
+    jpn_rate: doc.jpn_rate,
+    room_id: doc.room_id,
+    total_point: doc.total_point,
+    created_at: doc.created_at.toISOString(),
   }
 }
 

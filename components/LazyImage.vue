@@ -1,62 +1,43 @@
 <script lang="ts" setup>
 import { useImage } from '@vueuse/core'
-const props = defineProps({
-  src: {
-    type: String,
-    default: ''
-  },
-  alt: {
-    type: String,
-    default: ''
-  },
-  transparent: {
-    type: Boolean,
-    required: false,
-    default: false
+
+const props = withDefaults(defineProps<{
+  src: string
+  alt: string
+  transparent?: boolean
+}>(), {
+  transparent: false,
+})
+const emit = defineEmits<{ (e: 'loaded', img: HTMLImageElement | null): void }>()
+const lazyImage = ref<HTMLImageElement | null>(null)
+const src = computed(() => props.src)
+const { isLoading, error } = useImage({ src: props.src })
+watch(isLoading, (loading) => {
+  if (!loading) {
+    nextTick(() => {
+      emit('loaded', lazyImage.value)
+    })
   }
 })
-const lazyImage = ref(null)
-const { isLoading, error } = useImage({ src: props.src })
-
-// onMounted(() => {
-//   const el = lazyImage?.value;
-//   if (el!.complete) {
-//     isLoaded.value = true;
-//   } else {
-//     el.onload = function () {
-//       isLoaded.value = true;
-//     };
-//     el.onerror = function () {
-//       isLoaded.value = false;
-//       el.src = "/img/img-error.jpg";
-//     };
-//   }
-// });
 </script>
 
 <template>
-  <div v-if="isLoading" class="pulse-color inline-block animate-pulse" />
-  <img
-    v-else
-    ref="lazyImage"
-    class="lazyImage object-cover object-center"
-    :alt="!error ? alt : 'Image Error'"
-    :src="!error ? src : '/img/img-error.jpg'"
-    loading="lazy"
-  >
+  <div class="relative">
+    <Transition
+      name="fade-abs"
+      mode="in-out"
+    >
+      <div v-if="isLoading" key="loading" class="dark:bg-dark-2/80 absolute inset-0 animate-pulse bg-gray-300" />
+      <div v-else class="absolute inset-0">
+        <img
+          key="loaded"
+          ref="lazyImage"
+          class="h-full w-full object-cover object-center"
+          :alt="!error ? alt : 'Image Error'"
+          :src="!error ? src : '/img/img-error.jpg'"
+          loading="lazy"
+        >
+      </div>
+    </Transition>
+  </div>
 </template>
-
-<style lang="scss">
-// .lazyContainer {
-// &.loading {
-//   @apply animate-pulse;
-//   img {
-//     opacity: 0;
-//   }
-// }
-
-// img {
-//   transition: 400ms;
-// }
-// }
-</style>

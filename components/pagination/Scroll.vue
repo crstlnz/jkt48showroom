@@ -1,41 +1,60 @@
 <script lang="ts" setup>
 // import "vue-virtual-scroller/dist/vue-virtual-scroller.css";
-import { useScroll, onClickOutside } from '@vueuse/core'
-const fetch = await useRecentFetch({ changeRoute: false, mode: 'infinite' })
+import { onClickOutside, useScroll } from '@vueuse/core'
+
+defineEmits<{ (e: 'title', title: string): void }>()
+const fetch = useRecentFetch({ changeRoute: false, mode: 'infinite' })
 const title = ref('')
 const { data: res, query, pending, error } = fetch.data
 const { changePage, refresh, setFilter, onQueryChange } = fetch
 const filterOpen = ref(false)
-function toggleFilter () {
+const isEnded = ref(false)
+const showDuration = ref(false)
+const listener = ref<any>(undefined)
+const filterContainer = ref(null)
+const isLoadDelayed = ref(false) // if next page must be loaded but the filter div is open;
+const el = ref<Window | null>(null)
+const { y, arrivedState } = useScroll(el, { behavior: 'smooth' })
+const isTop = computed(() => arrivedState.top)
+const dataset = ref(res.value?.recents ?? [])
+
+const { checkTrigger } = useInfiniteScroll(
+  () => {
+    if (isEnded.value) return
+    if (filterOpen.value) return (isLoadDelayed.value = true)
+    if (!pending.value) changePage((res.value?.page ?? 1) + 1)
+  },
+  { distance: 120 },
+)
+
+function toggleFilter() {
   if (filterOpen.value) {
     closeFilter()
-  } else {
+  }
+  else {
     openFilter()
   }
 }
 
-function openFilter () {
+function openFilter() {
   filterOpen.value = true
 }
 
-function closeFilter () {
+function closeFilter() {
   filterOpen.value = false
 }
 
-function applyFilter (filter: any) {
+function applyFilter(filter: any) {
   setFilter(filter)
   isEnded.value = false
   filterOpen.value = false
 }
 
-const listener = ref<any>(undefined)
-const filterContainer = ref(null)
-const isLoadDelayed = ref(false) // if next page must be loaded but the filter div is open;
-
 watch(filterOpen, (isOpen) => {
   if (isOpen) {
     listener.value = onClickOutside(filterContainer, () => (filterOpen.value = false))
-  } else {
+  }
+  else {
     if (isLoadDelayed.value) {
       isLoadDelayed.value = false
       checkTrigger()
@@ -44,7 +63,7 @@ watch(filterOpen, (isOpen) => {
   }
 })
 
-function scrollToTop () {
+function scrollToTop() {
   y.value = 0
 }
 
@@ -52,55 +71,42 @@ onQueryChange(() => {
   dataset.value = []
   scrollToTop()
 })
-const el = ref<Window | null>(null)
+
 onMounted(() => {
   el.value = window
+  // console.log(pending.value)
+  dataset.value?.push(...(res.value?.recents ?? []))
 })
 
-const { y, arrivedState } = useScroll(el, { behavior: 'smooth' })
-const isTop = computed(() => arrivedState.top)
-const dataset = ref(res.value?.recents)
 watch(res, (val) => {
   if ((val?.recents.length ?? 0) === 0) return (isEnded.value = true)
   dataset.value?.push(...(val?.recents ?? []))
 })
-
-const isEnded = ref(false)
-const { checkTrigger } = useInfiniteScroll(
-  () => {
-    if (isEnded.value) return
-    if (filterOpen.value) return (isLoadDelayed.value = true)
-    if (!pending.value) changePage((res.value?.page ?? 1) + 1)
-  },
-  { distance: 120 }
-)
-const showDuration = ref(false)
-defineEmits<{(e:'title', title: string):void}>()
 </script>
 
 <template>
-  <div>
+  <LayoutSingleRow :title="$t(title)">
     <Transition name="fade">
       <div v-if="filterOpen" class="fixed inset-0 z-40 bg-black/30 dark:bg-black/50" />
     </Transition>
     <div
       ref="filterContainer"
-      class="shadow-full fixed inset-x-0 bottom-0 z-[100] transition-transform duration-300 ease-in-out"
+      class="shadow-full fixed inset-x-0 bottom-0 z-belowNav transition-transform duration-300 ease-in-out"
       :class="{ 'translate-y-full': !filterOpen }"
     >
       <PaginationFilter
         key="filterDiv"
         class="relative z-[90] rounded-t-xl bg-white p-4 dark:bg-dark-1"
         :query="query"
-        @show-duration="(show : boolean)=>showDuration=show"
+        @show-duration="(show : boolean) => showDuration = show"
         @title="(t:string) => {
           title = t
-          $emit('title',t)
+          $emit('title', t)
         }"
         @apply="(filter) => applyFilter(filter)"
       />
       <Transition
-        enter-class="transition-all duration-500"
+        enter-to-class="transition-all duration-500"
         leave-to-class="transition"
         enter-active-class="opacity-0 translate-y-full"
         leave-active-class="opacity-0 translate-y-full"
@@ -111,14 +117,14 @@ defineEmits<{(e:'title', title: string):void}>()
         >
           <button
             type="button"
-            class="flex-1 border-r border-second-2 py-2.5 px-2 text-center active:bg-blue-500"
+            class="flex-1 border-r border-second-2 px-2 py-2.5 text-center active:bg-blue-500"
             @click="scrollToTop"
           >
             {{ $t("scrolltop") }} <Icon name="ph:arrow-up-bold" class="self-center text-base" />
           </button>
           <button
             type="button"
-            class="flex-1 border-l border-second-2 py-2.5 px-2 text-center active:bg-blue-500"
+            class="flex-1 border-l border-second-2 px-2 py-2.5 text-center active:bg-blue-500"
             @click="toggleFilter"
           >
             {{ $t("filter") }} <Icon name="mdi:filter" class="self-center text-base" />
@@ -127,15 +133,12 @@ defineEmits<{(e:'title', title: string):void}>()
       </Transition>
     </div>
     <div class="mb-2 flex items-end justify-between">
-      <div class="text-xl font-bold">
-        {{ $t(title || "page.title.recent") }}
-      </div>
       <button type="button" class="font-bold" @click="toggleFilter">
         Filter
       </button>
     </div>
 
-    <div ref="content" class="relative z-10">
+    <div class="relative z-10">
       <transition name="fade-abs">
         <div v-if="pending && (dataset?.length ?? 0) === 0" key="loading" class="space-y-2 md:space-y-4">
           <PulseRecentDetailCard v-for="index in Array(10).keys()" :key="index" />
@@ -159,6 +162,7 @@ defineEmits<{(e:'title', title: string):void}>()
             </div>
             <div v-else>
               <h2 class="mb-1 text-lg lg:text-2xl">
+                {{ }}
                 {{ $t("data.notfound") }}
               </h2>
             </div>
@@ -169,7 +173,7 @@ defineEmits<{(e:'title', title: string):void}>()
           v-else
           key="loaded"
           :prerender="10"
-          :min-item-size="136"
+          :min-item-size="152"
           :items="dataset"
           key-field="data_id"
           page-mode
@@ -201,5 +205,5 @@ defineEmits<{(e:'title', title: string):void}>()
         </div>
       </transition>
     </div>
-  </div>
+  </LayoutSingleRow>
 </template>

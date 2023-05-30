@@ -2,23 +2,22 @@ module.exports = {
   root: true,
   env: {
     browser: true,
-    es2021: true
+    es2021: true,
   },
   extends: [
-    'plugin:@typescript-eslint/recommended',
     'plugin:tailwindcss/recommended',
     'plugin:vue/vue3-recommended',
-    'plugin:nuxt/recommended',
-    '@nuxtjs/eslint-config-typescript'
+    '@nuxtjs/eslint-config-typescript',
+    '@antfu',
   ],
   overrides: [
   ],
   parserOptions: {
     ecmaVersion: 'latest',
-    sourceType: 'module'
+    sourceType: 'module',
   },
   plugins: [
-    'vue'
+    'vue',
   ],
   rules: {
     'no-console': 'warn',
@@ -26,10 +25,12 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': 'warn',
     '@typescript-eslint/no-explicit-any': 'off',
     'vue/multi-word-component-names': 'off',
-    curly: ['error', 'multi-line'],
+    'curly': ['error', 'multi-line'],
     'vue/component-tags-order': ['error', {
-      order: ['script', 'template', 'style']
+      order: ['script', 'template', 'style'],
     }],
-    'tailwindcss/no-custom-classname': 'off'
-  }
+    'tailwindcss/no-custom-classname': 'off',
+    'antfu/if-newline': 'off',
+    'unicorn/prefer-node-protocol': 'off',
+  },
 }

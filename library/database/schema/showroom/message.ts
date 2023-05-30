@@ -5,19 +5,19 @@ export default {
   schema: new Schema({
     data_id: {
       type: String,
-      required: true
+      required: true,
     },
     message_id: {
       type: String,
-      required: true
+      required: true,
     },
     channel_id: {
       type: String,
-      required: true
+      required: true,
     },
     bot_id: {
       type: String,
-      required: true
-    }
-  })
+      required: true,
+    },
+  }),
 }

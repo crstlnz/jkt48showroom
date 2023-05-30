@@ -5,13 +5,13 @@ export default function (id: string) {
 
   if (route.query[id] !== undefined) {
     const query = {
-      ...route.query
+      ...route.query,
     }
     delete query[id]
     router.push({
       ...route,
       path: route.path,
-      query
+      query,
     })
   }
 
@@ -22,10 +22,11 @@ export default function (id: string) {
       const fQ = from[id]
       if (tQ === undefined && fQ === null) {
         state.value = false
-      } else if (tQ === null && fQ === undefined) {
+      }
+      else if (tQ === null && fQ === undefined) {
         state.value = true
       }
-    }
+    },
   )
 
   // watch(state, async (_state) => {
@@ -43,18 +44,19 @@ export default function (id: string) {
   //   }
   // });
 
-  function setState (_state: boolean) {
+  function setState(_state: boolean) {
     if (_state) {
       const query = {
-        ...route.query
+        ...route.query,
       }
       query[id] = null
       router.push({
         ...route,
         path: route.path,
-        query
+        query,
       })
-    } else {
+    }
+    else {
       router.back()
     }
   }

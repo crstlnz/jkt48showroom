@@ -1,51 +1,29 @@
-<script>
-export default {
-  props: {
-    title: {
-      type: String,
-      required: false,
-      default: 'Title'
-    },
-    iconClass: {
-      type: String,
-      required: false,
-      default: ''
-    },
-    more: {
-      type: String,
-      required: false,
-      default: null
-    },
-    moreText: {
-      type: String,
-      required: false,
-      default: null
-    },
-    moreLabel: {
-      type: String,
-      required: false,
-      default: null
-    },
-    moreExtLink: {
-      type: Boolean,
-      required: false,
-      default: null
-    },
-    moreClass: { type: String, required: false, default: '' }
-  }
-}
+<script lang="ts" setup>
+withDefaults(defineProps<{
+  title?: string
+  iconClass?: string
+  more?: string
+  moreText?: string
+  moreLabel?: string
+  moreExtLink?: boolean
+  moreClass?: string
+}>(), {
+  title: 'Title',
+  iconClass: '',
+  moreClass: '',
+})
 </script>
 
 <template>
-  <div class="space-y-2 rounded-xl bg-white p-4 shadow-sm dark:bg-dark-1 md:p-5">
-    <div class="flex items-center gap-1.5">
+  <div class="bg-container space-y-2 rounded-xl p-4 shadow-sm md:p-5">
+    <div class="flex items-center gap-2">
       <div class="inline-block h-5 w-1 rounded-l-sm" :class="iconClass" />
-      <h2 class="flex-1 text-lg font-bold lg:text-xl">
+      <h2 class="flex-1 text-xl font-bold lg:text-2xl">
         {{ title }}
       </h2>
       <NuxtLink
         v-if="more && !moreExtLink"
-        class="text-xs hover:text-second-2 lg:text-sm"
+        class="hover:text-second-2 text-xs lg:text-sm"
         :to="more"
         :class="moreClass"
         :aria-label="moreLabel"
@@ -54,7 +32,7 @@ export default {
       </NuxtLink>
       <a
         v-else-if="more"
-        class="text-xs hover:text-second-2 lg:text-sm"
+        class="hover:text-second-2 text-xs lg:text-sm"
         :href="more"
         target="_blank"
         :class="moreClass"

@@ -1,20 +1,20 @@
 import { getMembers } from './members.get'
-import { getRoomStatus, getAllFollows, getIsLive, getOnlives, getStreamingURL } from '~~/library/api/showroom'
+import { getAllFollows, getIsLive, getOnlives, getRoomStatus, getStreamingURL } from '~~/library/api/showroom'
 
 import cache from '~~/library/utils/cache'
+
 export default defineEventHandler(async (): Promise<IRoomLive[]> => {
   return await getNowLive()
 })
-export { getNowLive, getNowLiveDirect, getNowLiveIndirect, getNowLiveCookies }
 const time = 5000
-async function getNowLive (): Promise<IRoomLive[]> {
+async function getNowLive(): Promise<IRoomLive[]> {
   return await cache
     .fetch<IRoomLive[]>('now_live', () => getNowLiveCookies(), time)
     .catch(() => [])
 }
 
-async function getNowLiveDirect (
-  membersData: IMember[] | null = null
+async function getNowLiveDirect(
+  membersData: IMember[] | null = null,
 ): Promise<IRoomLive[]> {
   const members: IMember[] = membersData ?? await getMembers()
   const promises: Promise<IRoomLive | null>[] = []
@@ -23,7 +23,7 @@ async function getNowLiveDirect (
       (async (): Promise<IRoomLive | null> => {
         try {
           const data = await getIsLive(member.room_id)
-          if (!data.ok) { return null } // if 'ok',this room is on live
+          if (!data.ok) return null // if 'ok',this room is on live
           const status = await getRoomStatus({ room_url_key: member.url.startsWith('/') ? member.url.slice(1) : member.url })
           const streamURLS = await getStreamingURL({ room_id: member.room_id })
           return {
@@ -36,23 +36,24 @@ async function getNowLiveDirect (
             is_group: member.is_group,
             room_exists: member.room_exists,
             started_at: (status.started_at ?? 0) * 1000,
-            streaming_url_list: streamURLS.streaming_url_list ?? []
+            streaming_url_list: streamURLS.streaming_url_list ?? [],
           }
-        } catch (e) {
+        }
+        catch (e) {
           return null
         }
-      })()
+      })(),
     )
   }
   const data = await Promise.all(promises)
   return data.filter(i => i) as IRoomLive[]
 }
 
-async function getNowLiveCookies (membersData: IMember[] | null = null): Promise<IRoomLive[]> {
+async function getNowLiveCookies(membersData: IMember[] | null = null): Promise<IRoomLive[]> {
   const members: IMember[] = membersData ?? await getMembers()
   const rooms = await getAllFollows().catch(_ => [])
   const roomMap = new Map<string, ShowroomAPI.RoomFollow>()
-  const result : Promise<IRoomLive>[] = []
+  const result: Promise<IRoomLive>[] = []
   const missing = []
 
   for (const room of rooms) {
@@ -76,11 +77,12 @@ async function getNowLiveCookies (membersData: IMember[] | null = null): Promise
             is_graduate: member.is_graduate,
             is_group: member.is_group,
             room_exists: member.room_exists,
-            streaming_url_list: streamURLS.streaming_url_list ?? []
+            streaming_url_list: streamURLS.streaming_url_list ?? [],
           }
         })())
       }
-    } else if (member.room_exists) {
+    }
+    else if (member.room_exists) {
       missing.push(member)
     }
   }
@@ -93,20 +95,20 @@ async function getNowLiveCookies (membersData: IMember[] | null = null): Promise
   return lives
 }
 
-async function getNowLiveIndirect (membersData: IMember[] | null = null): Promise<IRoomLive[]> {
+async function getNowLiveIndirect(membersData: IMember[] | null = null): Promise<IRoomLive[]> {
   const members: IMember[] = membersData ?? await getMembers()
-  const memberMap = new Map<string| number, IMember>()
+  const memberMap = new Map<string | number, IMember>()
   for (const member of members) {
     memberMap.set(member.room_id, member)
   }
 
   const res = await getOnlives()
-  const all : ShowroomAPI.OnlivesRoom[] = res.onlives.reduce((a: any, b: any) => {
+  const all: ShowroomAPI.OnlivesRoom[] = res.onlives.reduce((a: any, b: any) => {
     a.push(...b.lives)
     return a
   }, [])
 
-  const result : IRoomLive[] = []
+  const result: IRoomLive[] = []
   for (const room of all) {
     const member = memberMap.get(room.room_id)
     if (member) {
@@ -120,10 +122,12 @@ async function getNowLiveIndirect (membersData: IMember[] | null = null): Promis
         is_graduate: member.is_graduate,
         is_group: member.is_group,
         room_exists: member.room_exists,
-        streaming_url_list: room.streaming_url_list ?? []
+        streaming_url_list: room.streaming_url_list ?? [],
       })
     }
   }
 
   return result
 }
+
+export { getNowLive, getNowLiveDirect, getNowLiveIndirect, getNowLiveCookies }

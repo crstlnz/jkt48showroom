@@ -1,4 +1,15 @@
 declare namespace Database {
+  interface ILiked {
+    user_id: string
+    type: 1 | 2
+    liked_id: string
+  }
+
+  interface LikeDetail {
+    room: Database.IShowroomMember[]
+    live: Database.IRecent[]
+  }
+  
   interface I48Member {
     name: string;
     isGraduate: boolean;
@@ -41,8 +52,16 @@ declare namespace Database {
     is_group: boolean
     member_data?: I48Member
   }
+
+  interface FreeGift {
+    gift_id: number,
+    point: number,
+    num: number,
+    users: number
+  }
   
   interface IShowroomLog {
+    live_type?: number,
     is_dev: boolean;
     live_id: number;
     jpn_rate: number;
@@ -109,6 +128,13 @@ declare namespace Database {
     num: number;
     date: string;
   }
+
+  interface GiftData extends IGiftImg{
+    name: string;
+    is_delete_from_stage: boolean;
+    num : number;
+    user_count: number;
+  }
   
   interface IPodiumGift extends IGiftImg {
     date: number;
@@ -125,6 +151,7 @@ declare namespace Database {
       }[];
     }[];
     list: IGift[];
+    free : FreeGift[]
   }
   
   interface IFansGift {
@@ -181,8 +208,10 @@ declare namespace Database {
   
   interface IShowroomLogDetail {
     data_id: string;
+    live_id? : number;
     room_info: {
       name: string;
+      img_alt? : string;
       img: string;
       url: string;
       is_group: boolean;
@@ -193,6 +222,23 @@ declare namespace Database {
     room_id: number;
     total_point: number;
     users: IFansCompact[];
+    created_at: string;
+  }
+
+  interface IShowroomLogPreview {
+    data_id: string;
+    live_id? : number;
+    room_info: {
+      name: string;
+      img_alt? : string;
+      img: string;
+      url: string;
+      is_group: boolean;
+      is_graduate: boolean;
+    };
+    room_id: number;
+    jpn_rate?: number;
+    total_point: number;
     created_at: string;
   }
 

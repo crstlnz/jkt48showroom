@@ -1,5 +1,6 @@
 import EventEmitter from 'events'
 import Listener from './eventListener'
+
 enum state {
   IDLE,
   LOADING,
@@ -13,7 +14,7 @@ class InfiniteScroll extends EventEmitter {
   lastScroll: number
   checkAfterFinish: boolean
   // emit load
-  constructor (window: any) {
+  constructor(window: any) {
     super()
     this.window = window
     this.state = state.IDLE
@@ -24,20 +25,20 @@ class InfiniteScroll extends EventEmitter {
     this.start()
   }
 
-  setTrigger (num: number) {
+  setTrigger(num: number) {
     this.trigger = num
   }
 
-  start () {
+  start() {
     this.listener.add('scroll', this.onScroll.bind(this))
     return this
   }
 
-  destroy () {
+  destroy() {
     this.listener.removeAll()
   }
 
-  onScroll (e: any) {
+  onScroll(e: any) {
     this.emit('scroll', { x: window.scrollX, y: window.scrollY, e })
     const last = this.lastScroll
     this.lastScroll = window.scrollY
@@ -46,22 +47,22 @@ class InfiniteScroll extends EventEmitter {
     }
   }
 
-  setCheckAfterFinish (bool: boolean) {
+  setCheckAfterFinish(bool: boolean) {
     this.checkAfterFinish = bool
   }
 
-  checkTrigger () {
-    const percent =
-      (window.scrollY /
-        (document.documentElement.scrollHeight - window.innerHeight)) *
-      100
+  checkTrigger() {
+    const percent
+      = (window.scrollY
+        / (document.documentElement.scrollHeight - window.innerHeight))
+      * 100
     if (percent > this.trigger) {
       this.state = state.LOADING
       this.emit('load')
     }
   }
 
-  finishLoading () {
+  finishLoading() {
     this.state = state.IDLE
     if (this.checkAfterFinish) {
       this.setCheckAfterFinish(false)

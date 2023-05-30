@@ -1,4 +1,6 @@
 nolive: No one is live right now 😭
+livenow: Live now
+nodescription: No Description
 nonext: No schedule right now 😔
 member: Member | Members
 giftlist: Gift List
@@ -13,23 +15,23 @@ topfans: Top fans
 nextlive: Next live
 showonshowroom: Show on Showroom
 openshowroom: Open Showroom
-streamoffline : Stream is offline
+streamoffline: Stream is offline
 view: View
 viewlive: View Live
 viewer: Viewer | Viewers
 totalgift: Total gift
 totalcomments: Comments
-comment : Comment
+comment: Comment
 duration: Duration
 moreinfo: More info
 viewprofile: View Profile
 fansgift: Fans Gift
-sort: 
-  title: "Sort"
-  gift : Gift
+sort:
+  title: 'Sort'
+  gift: Gift
   duration: Duration
   date: Date
-  views : Viewer
+  views: Viewer
   latest: Latest Live
   oldest: Oldest Live
   mostgift: Most Gift
@@ -40,8 +42,8 @@ sort:
   shortestduration: Shortest Duration
   apply: Apply
   order:
-    asc : "Ascending"
-    desc : "Descending"
+    asc: 'Ascending'
+    desc: 'Descending'
 data:
   notenough: Not enough data available 🥲
   nomore: No more data :(
@@ -58,26 +60,26 @@ error:
 redirectme: Redirect me
 scrolltop: Scroll top
 filter: Filter
-giftempty : No gift!
-commentempty : No one comments!
+giftempty: No gift!
+commentempty: No one comments!
 srview:
   tips:
     ss: Show live screenshot
-    animation: Enable Animation 
+    animation: Enable Animation
   btn:
     showscreenshot: Show screenshot
     animation: Animation
 search: Search
 date:
-  start: Start date
-  end: End date
+  start: Start
+  end: End
   started: Started from {date}
 stats:
   title: Statistics
   weekly: 7 Days
   monthly: 4 Weeks
   quarterly: 3 Months
-  error : An error occured!
+  error: An error occured!
 page:
   title:
     member: Member List
@@ -87,5 +89,15 @@ notif:
     success: Success
     danger: Error
     warn: Warning
-    info : Info
+    info: Info
+  live:
+    started: Live started
+    ended: Live ended
 newcomment: new comment | new comments
+quality: Quality
+logoutwarn: You will be logged out of your account. Some features will be unusable
+logout: Log out
+logoutfrom: Keluar dari
+cancel: Cancel
+favorites: Favorites
+backtohome: Back to home

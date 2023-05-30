@@ -16,7 +16,7 @@
         </li>
       </ul>
       <div
-        class="mt-2 flex justify-end border-t-2 border-t-gray-50 pt-2 dark:border-t-dark-2"
+        class="mt-2 flex justify-end border-t-2 border-t-gray-50 pt-2 dark:border-t-zinc-700/50"
       >
         <ul>
           <li>

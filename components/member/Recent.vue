@@ -1,13 +1,14 @@
 <script lang="ts" setup>
 import { LazyImage } from '#components'
+
 const props = defineProps<{
-  recent: IRecent;
+  recent: IRecent
 }>()
 const { $fromNow } = useNuxtApp()
 const date = $fromNow(
-  props.recent.live_info && props.recent.live_info?.date?.end
+  props.recent.live_info?.date?.end
     ? props.recent.live_info.date.end
-    : props.recent.created_at
+    : props.recent.created_at,
 )
 </script>
 
@@ -15,27 +16,27 @@ const date = $fromNow(
   <div class="flex gap-3 py-2 text-center md:py-3">
     <NuxtLink
       aria-label="View profile"
-      class="relative aspect-square h-[4.5rem] cursor-pointer overflow-hidden rounded-full drop-shadow-sm md:h-20"
-      to="/"
+      class="relative aspect-square h-[4.5rem] cursor-pointer overflow-hidden rounded-full drop-shadow-sm md:h-[70px]"
+      :to="`/recent/${recent.data_id}`"
     >
       <LazyImage
         lazy="false"
         class="h-full w-full"
-        :alt="recent.member?.name + 'Display Picture'"
+        :alt="`${recent.member?.name}Display Picture`"
         :src="$fixCloudinary(recent.member?.img_alt ?? '')"
       />
     </NuxtLink>
 
     <div class="info flex w-0 flex-1 flex-col text-left">
       <div class="name flex flex-1 gap-2">
-        <a :href="`/recent/${recent.data_id}`" aria-label="Detailed log data">
-          <h2
-            class="flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-sm font-bold md:text-base"
+        <NuxtLink :to="`/recent/${recent.data_id}`" class="min-w-0 flex-1" aria-label="Detailed log data">
+          <div
+            class="truncate text-sm font-bold md:text-base"
             :title="recent.member?.name"
           >
             {{ recent.member?.name }}
-          </h2>
-        </a>
+          </div>
+        </NuxtLink>
         <div
           v-if="recent.member?.is_graduate"
           class="graduated h-6 w-6 rounded-full bg-red-500 p-[3px] text-white"
@@ -73,10 +74,12 @@ const date = $fromNow(
           </div>
         </li>
       </ul>
-      <div class="mt-2 flex justify-end border-t-2 border-t-gray-50 pt-2 text-sm dark:border-t-dark-2 md:text-base">
+      <div class="mt-2 flex justify-end border-t-2 border-t-neutral-200 pt-2 text-sm dark:border-t-zinc-700/50 md:text-base">
         <ul>
           <li>
-            <a :href="`/recent/${recent.data_id}`" aria-label="Detailed log data" target="_blank">Details</a>
+            <NuxtLink :to="`/recent/${recent.data_id}`" aria-label="Detailed log data">
+              Details
+            </NuxtLink>
           </li>
         </ul>
       </div>

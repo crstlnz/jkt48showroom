@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { LazyImage } from '#components'
+
 const props = defineProps<{
-  data: INextLive;
+  data: INextLive
 }>()
 const { $fromNow } = useNuxtApp()
 const date = $fromNow(props.data.date)
@@ -12,7 +13,8 @@ const date = $fromNow(props.data.date)
     <NuxtLink
       aria-label="View profile"
       class="relative aspect-square h-[4.5rem] cursor-pointer overflow-hidden rounded-full drop-shadow-sm md:h-20"
-      to="/"
+      target="_blank"
+      :to="$liveURL(data.url)"
     >
       <LazyImage lazy="false" class="h-full w-full" :alt="data.name" :src="$fixCloudinary(data.img)" />
     </NuxtLink>
@@ -55,7 +57,7 @@ const date = $fromNow(props.data.date)
           <div>{{ date }}</div>
         </li>
       </ul>
-      <div class="mt-2 flex justify-end border-t-2 border-t-gray-50 pt-2 text-sm dark:border-t-dark-2 md:text-base">
+      <div class="mt-2 flex justify-end border-t-2 border-t-gray-50 pt-2 text-sm dark:border-t-zinc-700/50 md:text-base">
         <ul>
           <li>
             <a target="_blank" :href="$liveURL(data.url)">{{ $t("view") }}</a>

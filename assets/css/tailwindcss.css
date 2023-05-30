@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* .background {
+    @apply bg-white dark:bg-dark-2;
+  }
+  .bg-background {
+    @apply bg-white dark:bg-dark-2;
+  }
+  .bg-container {
+    @apply bg-slate-100 dark:bg-dark-1;
+  }
+
+  .bg-container-2 {
+    @apply bg-slate-200 dark:bg-dark-3;
+  } */
+
+  .background {
+    @apply bg-slate-100 dark:bg-dark-2;
+  }
+  .bg-background {
+    @apply bg-slate-100 dark:bg-dark-2;
+  }
+
+  .bg-navbar {
+    @apply bg-slate-100/80 dark:bg-dark-2/80;
+  }
+  .bg-container {
+    @apply bg-white dark:bg-dark-1;
+  }
+
+  .bg-container-2 {
+    @apply bg-slate-200 dark:bg-dark-3;
+  }
+
+  .bg-on-container {
+    @apply bg-white dark:bg-dark-2;
+  }
+  .bg-hover {
+    @apply bg-slate-300 dark:bg-slate-200/25;
+  }
+
+  .disable-highlight {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .pulse-color {
+    @apply bg-gray-300 dark:bg-dark-3;
+  }
+
+  .pulse-color-2 {
+    @apply bg-gray-200 dark:bg-dark-1;
+  }
+
+  .fade-right {
+    mask-image: linear-gradient(
+      to right,
+      black calc(100% - 48px),
+      transparent 100%
+    );
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+}
+
+@layer components {
+  .nav-btn {
+    @apply w-9 h-9 flex hover:bg-dark-1 hover:bg-opacity-10 hover:dark:bg-gray-400 hover:dark:bg-opacity-10 rounded-lg;
+  }
+
+  .burger {
+    @apply md:hidden p-2 flex flex-col justify-around [&>span]:bg-slate-800 [&>span]:dark:bg-slate-100;
+  }
+
+  .fans-item {
+    @apply hidden [&:not(:nth-of-type(1n+5))]:inline-block min-[460px]:[&:not(:nth-of-type(1n+6))]:inline-block md:[&:not(:nth-of-type(1n+8))]:inline-block lg:[&:not(:nth-of-type(1n+11))]:inline-block xl:[&:not(:nth-of-type(1n+13))]:inline-block;
+  }
+
+  .grid-stats {
+    @apply grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))];
+  }
+
+  .grid-gift-list {
+    @apply grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))];
+  }
+
+  .grid-member-list {
+    @apply grid grid-cols-[repeat(auto-fill,minmax(210px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(240px,1fr))] lg:grid-cols-[repeat(auto-fill,minmax(270px,1fr))] xl:grid-cols-[repeat(auto-fill,minmax(300px,1fr))];
+  }
+
+  .grid-live-now {
+    @apply grid grid-cols-[repeat(auto-fill,minmax(130px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(150px,1fr))] lg:grid-cols-[repeat(auto-fill,minmax(180px,1fr))] xl:grid-cols-[repeat(auto-fill,minmax(210px,1fr))];
+  }
+}

@@ -24,9 +24,9 @@ export default defineEventHandler(
           name: i.name,
           comment: i.comment,
           created_at: i.created_at,
-          avatar_id: i.avatar_id
+          avatar_id: i.avatar_id,
         }
-      })
+      }),
     }
-  }
+  },
 )

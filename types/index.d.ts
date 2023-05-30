@@ -176,10 +176,60 @@ interface NotifData {
   message : string;
   type : 'danger' | 'warn' | 'success' | 'info'
   duration? : number,
+  remainingTime: number
   action ? : ()=> any
+}
+
+interface Dialog {
+  id: number;
+  title?: string;
+  message?: string;
+  positiveText? : string;
+  image?: string;
+}
+
+type DialogVariants = AlertDialog | ConfirmDialog | LoadingDialog
+
+interface AlertDialog extends Dialog {
+  type : 'alert'
+  autoClose? : boolean;
+  duration?: number;
+}
+
+interface ConfirmDialog extends Dialog{
+  type : 'confirm'
+  negativeText?: string;
+  onCancel? : () => void;
+  onConfirm? : () => void;
+}
+
+interface LoadingDialog extends Dialog{
+  type : 'loading'
+  onFinish? : () => void;
+}
+
+interface MenuItem {
+  title: string
+  url: string
+  mobile: boolean
+  login? : boolean
+  icon: string
+  admin? : true
+  activeIcon: string
+}
+
+interface SortData {
+  title: {
+    asc: string
+    desc: string
+    btn: string
+  }
+  id: sortType
 }
 
 declare module "vue-virtual-scroller";
 declare module "cors";
 declare module "vue-twitter-timeline";
 declare module 'hls.js/dist/hls.min.js';
+
+declare function useNuxtApp(): NuxtApp & {$device : any};

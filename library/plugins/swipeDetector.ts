@@ -11,7 +11,7 @@ class SwipeDetector {
   otherMaxDist: number
   minSpeed: number
   mode: Modes
-  constructor (x: number, y: number, mode = 'down') {
+  constructor(x: number, y: number, mode = 'down') {
     this.startX = x
     this.startY = y
     this.startTime = new Date()
@@ -20,11 +20,11 @@ class SwipeDetector {
     this.mode = this.getMode(mode)
   }
 
-  setSpeed (num: number) {
+  setSpeed(num: number) {
     this.minSpeed = num
   }
 
-  getMode (mod: string) {
+  getMode(mod: string) {
     let m = 1
     switch (mod) {
       case 'right':
@@ -43,15 +43,15 @@ class SwipeDetector {
     return m
   }
 
-  getDistanceY (y: number) {
+  getDistanceY(y: number) {
     return y - this.startY
   }
 
-  getDistanceX (x: number) {
+  getDistanceX(x: number) {
     return x - this.startX
   }
 
-  getSpeed (x: number, y: number) {
+  getSpeed(x: number, y: number) {
     let distance = 0
     switch (this.mode) {
       case Modes.LEFT:
@@ -70,7 +70,7 @@ class SwipeDetector {
     return (distance / (new Date().getTime() - this.startTime.getTime())) * 100
   }
 
-  getOtherDiff (x: number, y: number) {
+  getOtherDiff(x: number, y: number) {
     let diff = 0
     switch (this.mode) {
       case Modes.LEFT:
@@ -90,7 +90,7 @@ class SwipeDetector {
     return diff
   }
 
-  finish (x: number, y: number) {
+  finish(x: number, y: number) {
     const speed = this.getSpeed(x, y) // speed in pixer per 100
     return this.getOtherDiff(x, y) <= this.otherMaxDist && speed >= this.minSpeed
   }

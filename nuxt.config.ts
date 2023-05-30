@@ -1,157 +1,98 @@
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
+const isDev = process.env.NODE_ENV === 'development'
 export default defineNuxtConfig({
-  ssr: true,
   routeRules: {
-    '/api/showroom/members': { cors: true, cache: { maxAge: 43200, staleMaxAge: 3600 } },
-    '/api/showroom/recent/**': { cors: true, cache: { maxAge: 3600, staleMaxAge: 360 } }
+    '/api/showroom/members': { cors: true, cache: !isDev ? { maxAge: 21600, staleMaxAge: 1800 } : false },
+    '/api/showroom/recent/**': { cors: true, cache: !isDev ? { maxAge: 3600, staleMaxAge: 360 } : false },
   },
+  // auth: {
+  //   globalAppMiddleware: true,
+  // },
   app: {
     rootId: 'app',
-    pageTransition: { name: 'page', mode: 'out-in' }
+    layoutTransition: { name: 'layout', mode: 'out-in' },
   },
   runtimeConfig: {
+    admin_ids: process.env.DISCORD_ADMINS,
     public: {
-      IS_DEV: process.env.NODE_ENV === 'development',
-      baseURL: process.env.BASE_URL
-    }
+      baseURL: process.env.BASE_URL,
+    },
   },
+  watch: ['~/assets/css/tailwindcss.css'],
   modules: [
+    '@nuxt/devtools',
+    '@sidebase/nuxt-auth',
     '@nuxtjs/device',
     'nuxt-icon',
     '@nuxtjs/tailwindcss',
     '@nuxtjs/color-mode',
     '@vueuse/nuxt',
     '@nuxtjs/i18n',
-    '@nuxtjs/html-validator',
+    // '@nuxtjs/html-validator',
     [
       '@pinia/nuxt',
       {
-        autoImports: ['storeToRefs', 'defineStore', 'acceptHMRUpdate', 'skipHydrate']
-      }
-    ]
+        autoImports: ['storeToRefs', 'defineStore', 'acceptHMRUpdate', 'skipHydrate'],
+      },
+    ],
   ],
-  css: ['~/assets/css/fonts.scss', '~/assets/css/style.scss'],
+  css: ['~/assets/css/fonts.scss', '~/assets/css/style.scss', '~/assets/css/transition.scss'],
   colorMode: {
     preference: 'dark',
     fallback: 'light',
-    classSuffix: ''
+    classSuffix: '',
   },
   postcss: {
     plugins: {
       tailwindcss: {},
-      autoprefixer: {}
-    }
-  },
-  vite: {
-    server: {
-      proxy: {
-        '/api/user/profile': {
-          target: 'https://www.showroom-live.com/api/user/profile',
-          changeOrigin: true,
-          rewrite: (path: string) => path.replace(/^\/api\/user\/profile/, '')
-        },
-        '/api/room/status': {
-          target: 'https://www.showroom-live.com/api/room/status',
-          changeOrigin: true,
-          rewrite: (path: string) => path.replace(/^\/api\/room\/status/, '')
-        }
-      }
-    }
+      autoprefixer: {},
+    },
   },
   i18n: {
-    baseUrl: process.env.BASE_URL,
+    // baseUrl: process.env.BASE_URL,
     strategy: 'no_prefix',
     locales: [
       { code: 'en', iso: 'en-US', file: 'en.yaml', dir: 'ltr', name: 'EN' },
-      { code: 'id', iso: 'id-ID', file: 'id.yaml', dir: 'ltr', name: 'ID' }
+      { code: 'id', iso: 'id-ID', file: 'id.yaml', dir: 'ltr', name: 'ID' },
     ],
     langDir: 'locales',
     lazy: true,
     defaultLocale: 'en',
-    vueI18n: {
-      legacy: false,
-      datetimeFormats: {
-        en: {
-          short: {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric'
-          },
-          long: {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            weekday: 'long',
-            hour: '2-digit',
-            minute: '2-digit'
-          }
-        },
-        id: {
-          short: {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric'
-          },
-          long: {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            weekday: 'long',
-            hour: '2-digit',
-            minute: '2-digit'
-          }
-        }
-      },
-      numberFormats: {
-        'en-US': {
-          currency: {
-            style: 'currency',
-            currency: 'USD'
-          }
-        },
-        'ja-JP': {
-          currency: {
-            style: 'currency',
-            currency: 'JPY',
-            currencyDisplay: 'symbol'
-          }
-        },
-        'id-ID': {
-          currency: {
-            style: 'currency',
-            currency: 'IDR',
-            currencyDisplay: 'symbol'
-          }
-        }
-      }
-    }
   },
-  htmlValidator: {
-    usePrettier: true,
-    logLevel: 'verbose',
-    failOnError: false,
-    options: {
-      extends: ['html-validate:document', 'html-validate:recommended', 'html-validate:standard'],
-      rules: {
-        'svg-focusable': 'off',
-        'no-unknown-elements': 'error',
-        // Conflicts or not needed as we use prettier formatting
-        'void-style': 'off',
-        'no-trailing-whitespace': 'off',
-        // Conflict with Nuxt defaults
-        'require-sri': 'off',
-        'attribute-boolean-style': 'off',
-        'doctype-style': 'off',
-        // Unreasonable rule
-        'no-inline-style': 'off'
-      }
-    }
-  },
+  // htmlValidator: {
+  //   usePrettier: true,
+  //   logLevel: 'verbose',
+  //   failOnError: false,
+  //   options: {
+  //     extends: ['html-validate:document', 'html-validate:recommended', 'html-validate:standard'],
+  //     rules: {
+  //       'svg-focusable': 'off',
+  //       'no-unknown-elements': 'error',
+  //       // Conflicts or not needed as we use prettier formatting
+  //       'void-style': 'off',
+  //       'no-trailing-whitespace': 'off',
+  //       // Conflict with Nuxt defaults
+  //       'require-sri': 'off',
+  //       'attribute-boolean-style': 'off',
+  //       'doctype-style': 'off',
+  //       // Unreasonable rule
+  //       'no-inline-style': 'off',
+  //     },
+  //   },
+  // },
   typescript: {
     shim: false,
-    strict: true
+    strict: true,
+    tsConfig: {
+      compilerOptions: {
+        moduleResolution: 'bundler',
+      },
+    },
   },
   nitro: {
-    compressPublicAssets: true
-  }
+    compressPublicAssets: true,
+  },
+  devtools: {
+    enabled: true,
+  },
 })

@@ -4,5 +4,5 @@ export default defineEventHandler(
   async (event): Promise<ShowroomAPI.RoomStatus> => {
     const params = getQuery(event)
     return await getRoomStatus(params)
-  }
+  },
 )

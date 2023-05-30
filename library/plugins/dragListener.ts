@@ -1,10 +1,11 @@
-import { EventEmitter } from 'events'
+import EventEmitter from 'events'
 import Listener from './eventListener'
+
 class DragListener extends EventEmitter {
   touchMode: boolean
   el: unknown
   listener: Listener
-  constructor (el: any, touchMode = true) {
+  constructor(el: any, touchMode = true) {
     super()
     this.el = el
     this.touchMode = touchMode
@@ -12,7 +13,7 @@ class DragListener extends EventEmitter {
     this.init()
   }
 
-  onStart (e: any) {
+  onStart(e: any) {
     let x, y
     if (this.touchMode) {
       this.listener.add('touchmove', this.onMove.bind(this), false)
@@ -20,7 +21,8 @@ class DragListener extends EventEmitter {
       const touch = e.touches[0] || e.changedTouches[0]
       x = touch.clientX
       y = touch.clientY
-    } else {
+    }
+    else {
       this.listener.add('mousemove', this.onMove.bind(this), false)
       this.listener.add('mouseup', this.onEnd.bind(this), false)
       x = e.clientX
@@ -29,20 +31,21 @@ class DragListener extends EventEmitter {
     this.emit('start', { x, y, e })
   }
 
-  onMove (e: any) {
+  onMove(e: any) {
     let x, y
     if (this.touchMode) {
       const touch = e.touches[0] || e.changedTouches[0]
       x = touch.clientX
       y = touch.clientY
-    } else {
+    }
+    else {
       x = e.clientX
       y = e.clientY
     }
     this.emit('move', { x, y, e })
   }
 
-  onEnd (e: any) {
+  onEnd(e: any) {
     let x, y
     if (this.touchMode) {
       this.listener.remove('touchmove')
@@ -50,7 +53,8 @@ class DragListener extends EventEmitter {
       const touch = e.touches[0] || e.changedTouches[0]
       x = touch.clientX
       y = touch.clientY
-    } else {
+    }
+    else {
       this.listener.remove('mousemove')
       this.listener.remove('mouseup')
       x = e.clientX
@@ -59,20 +63,22 @@ class DragListener extends EventEmitter {
     this.emit('end', { x, y, e })
   }
 
-  init () {
+  init() {
     if (this.touchMode) {
       this.listener.add('touchstart', this.onStart.bind(this), false)
-    } else {
+    }
+    else {
       this.listener.add('mousedown', this.onStart.bind(this), false)
     }
   }
 
-  destroy () {
+  destroy() {
     try {
       this.listener.remove('touchstart')
       this.listener.remove('touchmove')
       this.listener.remove('touchend')
-    } catch (e) {}
+    }
+    catch (e) {}
   }
 }
 export default DragListener

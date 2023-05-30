@@ -1,6 +1,7 @@
 import CanvasUtil from '../canvasUtil'
-import ShowroomBackground from '.'
+import type ShowroomBackground from '.'
 import config from '~~/app.config'
+
 const { cloudinaryURL } = config
 
 class ScreenshotManager {
@@ -17,10 +18,10 @@ class ScreenshotManager {
   ssNotFound: HTMLImageElement | undefined
   isLoaded: boolean
 
-  constructor (
+  constructor(
     parent: ShowroomBackground,
     defaultImage: string,
-    showScreenshot: boolean
+    showScreenshot: boolean,
   ) {
     this.list = new Map()
     this.ids = []
@@ -35,25 +36,33 @@ class ScreenshotManager {
     this.format = ''
   }
 
-  setShowScreenshot (val: boolean) {
+  destroy() {
+    this.screenshot = undefined
+    this.defaultImage = undefined
+    this.ssNotFound = undefined
+    this.list.clear()
+  }
+
+  setShowScreenshot(val: boolean) {
     if (val) {
-      if (!this.isLoaded) { this.loadScreenshots(true) }
+      if (!this.isLoaded) this.loadScreenshots(true)
       this.showScreenshot = true
-    } else {
+    }
+    else {
       this.showScreenshot = false
     }
     this.parent.requestDraw()
   }
 
-  set (screenshots: Database.IScreenshot) {
+  set(screenshots: Database.IScreenshot) {
     this.folder = screenshots.folder
     this.format = screenshots.format
     this.list.clear()
     this.ids = [...screenshots.list]
-    if (this.showScreenshot) { this.loadScreenshots() }
+    if (this.showScreenshot) this.loadScreenshots()
   }
 
-  loadDefaultImage (src: string) {
+  loadDefaultImage(src: string) {
     this.defaultImage = CanvasUtil.createImageCallback(src, () => {
       if (!this.showScreenshot && !this.screenshot) {
         this.parent.requestDraw()
@@ -61,7 +70,7 @@ class ScreenshotManager {
     })
   }
 
-  loadSSNotFound () {
+  loadSSNotFound() {
     this.ssNotFound = CanvasUtil.createImageCallback('/img/ssnotfound.png', () => {
       if (!this.showScreenshot) {
         this.parent.requestDraw()
@@ -69,7 +78,7 @@ class ScreenshotManager {
     })
   }
 
-  loadScreenshots (setSS = false) {
+  loadScreenshots(setSS = false) {
     this.isLoaded = true
     for (const id of this.ids) {
       const url = `${cloudinaryURL}${this.folder}/${id}.${this.format}`
@@ -77,26 +86,27 @@ class ScreenshotManager {
         id,
         CanvasUtil.createImageCallback(url, () => {
           if (id === this.id) {
-            if (setSS) { this.screenshot = this.list.get(this.id) }
+            if (setSS) this.screenshot = this.list.get(this.id)
             this.parent.requestDraw()
           }
-        })
+        }),
       )
     }
   }
 
-  setDate (date: number) {
+  setDate(date: number) {
     this.processId++
     const processId = this.processId
     const num = this.ids.length
     for (let i = 0; i < num; i++) {
-      if (this.processId !== processId) { return }
+      if (this.processId !== processId) return
       if (this.ids[i] <= date) {
-        if (Math.abs(this.ids[i] - date) <= 120000) {
+        if (Math.abs(this.ids[i] - date) <= 180000) {
           this.id = this.ids[i]
           this.screenshot = this.list.get(this.id)
-          if (this.screenshot?.complete) { this.parent.requestDraw() }
-        } else {
+          if (this.screenshot?.complete) this.parent.requestDraw()
+        }
+        else {
           this.id = 0
           this.screenshot = null
         }
@@ -104,14 +114,14 @@ class ScreenshotManager {
     }
   }
 
-  draw () {
+  draw() {
     const size = {
       width: this.parent.width * 0.34,
-      height: this.parent.height * 0.34
+      height: this.parent.height * 0.34,
     }
     const pos = {
       x: this.parent.width * 0.5 - size.width / 2,
-      y: this.parent.height * 0.25695 - size.height / 2
+      y: this.parent.height * 0.25695 - size.height / 2,
     }
     if (this.showScreenshot && this.screenshot) {
       if (this.parent.ctx) {
@@ -120,23 +130,24 @@ class ScreenshotManager {
           pos.x,
           pos.y,
           size.width,
-          size.height
+          size.height,
         )
       }
-    } else if (this.parent.ctx && this.defaultImage) {
+    }
+    else if (this.parent.ctx && this.defaultImage) {
       this.parent.ctx.drawImage(
         this.defaultImage,
         pos.x,
         pos.y,
         size.width,
-        size.height
+        size.height,
       )
 
       if (this.showScreenshot && this.ssNotFound) {
         this.parent.ctx.drawImage(
           this.ssNotFound,
           pos.x + size.width / 2 - this.ssNotFound.width / 2,
-          pos.y + size.height / 2 - this.ssNotFound.height / 2
+          pos.y + size.height / 2 - this.ssNotFound.height / 2,
 
         )
       }

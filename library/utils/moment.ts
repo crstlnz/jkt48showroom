@@ -1,5 +1,5 @@
 import moment from 'moment'
-// eslint-disable-next-line import/no-named-as-default-member
+
 moment.defineLocale('id', {
   months: 'Januari_Februari_Maret_April_Mei_Juni_Juli_Agustus_September_Oktober_November_Desember'.split('_'),
   monthsShort: 'Jan_Feb_Mar_Apr_Mei_Jun_Jul_Agt_Sep_Okt_Nov_Des'.split('_'),
@@ -12,29 +12,34 @@ moment.defineLocale('id', {
     L: 'DD/MM/YYYY',
     LL: 'D MMMM YYYY',
     LLL: 'D MMMM YYYY [pukul] HH.mm',
-    LLLL: 'dddd, D MMMM YYYY [pukul] HH.mm'
+    LLLL: 'dddd, D MMMM YYYY [pukul] HH.mm',
   },
   meridiemParse: /pagi|siang|sore|malam/,
-  meridiemHour: function (hour: any, meridiem: any) {
+  meridiemHour(hour: any, meridiem: any) {
     if (hour === 12) {
       hour = 0
     }
     if (meridiem === 'pagi') {
       return hour
-    } else if (meridiem === 'siang') {
+    }
+    else if (meridiem === 'siang') {
       return hour >= 11 ? hour : hour + 12
-    } else if (meridiem === 'sore' || meridiem === 'malam') {
+    }
+    else if (meridiem === 'sore' || meridiem === 'malam') {
       return hour + 12
     }
   },
-  meridiem: function (hours: any, _minutes: any, _isLower: any) {
+  meridiem(hours: any, _minutes: any, _isLower: any) {
     if (hours < 11) {
       return 'pagi'
-    } else if (hours < 15) {
+    }
+    else if (hours < 15) {
       return 'siang'
-    } else if (hours < 19) {
+    }
+    else if (hours < 19) {
       return 'sore'
-    } else {
+    }
+    else {
       return 'malam'
     }
   },
@@ -44,7 +49,7 @@ moment.defineLocale('id', {
     nextWeek: 'dddd [pukul] LT',
     lastDay: '[Kemarin pukul] LT',
     lastWeek: 'dddd [lalu pukul] LT',
-    sameElse: 'L'
+    sameElse: 'L',
   },
   relativeTime: {
     future: 'dalam %s',
@@ -60,13 +65,13 @@ moment.defineLocale('id', {
     M: 'sebulan',
     MM: '%d bulan',
     y: 'setahun',
-    yy: '%d tahun'
+    yy: '%d tahun',
   },
   week: {
     dow: 0, // Sunday is the first day of the week.
-    doy: 6 // The week that contains Jan 6th is the first week of the year.
-  }
+    doy: 6, // The week that contains Jan 6th is the first week of the year.
+  },
 })
-// eslint-disable-next-line import/no-named-as-default-member
+
 moment.relativeTimeThreshold('ss', 60)
 export default moment

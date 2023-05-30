@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 const { data: next, pending: isLoading } = useFetch('/api/showroom/next_live', {
-  server: false
+  server: false,
 })
 
 const mustLoading = ref(false)

@@ -1,6 +1,6 @@
 export default async <T>(
   fn: () => Promise<T>,
-  name: string | null = null
+  name: string | null = null,
 ): Promise<T> => {
   const now = performance.now()
   const res = await fn()

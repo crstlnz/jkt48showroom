@@ -1,14 +1,14 @@
 type GiftSize = 'small' | 'medium'
 
-const defaultRecentQuery : RecentsQuery = {
+const defaultRecentQuery: RecentsQuery = {
   sort: 'date',
   page: 1,
   filter: 'all',
-  order: -1
+  order: -1,
 }
 
-function isSort (s : any) : s is sortType {
-  const sort : sortType[] = ['date', 'gift', 'views', 'duration']
+function isSort(s: any): s is sortType {
+  const sort: sortType[] = ['date', 'gift', 'views', 'duration']
   return sort.includes(s)
 }
 
@@ -24,12 +24,51 @@ const urls = {
   fansProfileURL: (userId: string | number) => `https://www.showroom-live.com/user/profile?user_id=${userId}`,
   cloudinaryURL: 'https://res.cloudinary.com/haymzm4wp/image/upload/',
   screenshotURL: (folder: string, id: string, format: string) =>
-    `https://res.cloudinary.com/haymzm4wp/image/upload/${folder?.startsWith('/') ? '' : '/'}${folder}/${id}.${format}`
+    `https://res.cloudinary.com/haymzm4wp/image/upload/${folder?.startsWith('/') ? '' : '/'}${folder}/${id}.${format}`,
 }
 
+const SortList: SortData[] = [
+  {
+    title: {
+      btn: 'sort.date',
+      asc: 'sort.latest',
+      desc: 'sort.oldest',
+    },
+    id: 'date',
+  },
+  {
+    title: {
+      btn: 'sort.gift',
+      asc: 'sort.mostgift',
+      desc: 'sort.leastgift',
+    },
+    id: 'gift',
+  },
+  {
+    title: {
+      btn: 'sort.views',
+      asc: 'sort.mostviewers',
+      desc: 'sort.leastviewers',
+    },
+    id: 'views',
+  },
+  {
+    title: {
+      btn: 'sort.duration',
+      asc: 'sort.longestduration',
+      desc: 'sort.shortestduration',
+    },
+    id: 'duration',
+  },
+]
 export default {
   group: 'jkt48', // jkt48, hinatazaka or all
   ...urls,
+  sortList: SortList,
   defaultRecentQuery,
-  isSort
+  isSort,
+  isAdmin(id: string) {
+    const ids = (process.env.DISCORD_ADMINS ?? '').split(',').map(i => i.trim())
+    return ids.includes(id)
+  },
 }

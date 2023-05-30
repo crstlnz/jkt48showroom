@@ -1,23 +1,22 @@
 import { getMembers } from './members.get'
 import cache from '~~/library/utils/cache'
-import { getAllFollows, getNextLive as fetchNextLive } from '~/library/api/showroom'
+import { getNextLive as fetchNextLive, getAllFollows } from '~/library/api/showroom'
+
 export default defineEventHandler(async () => {
   return await getNextLive()
 })
 
-export { getNextLive }
-
 const time = 3600000 // 1 hours
-async function getNextLive (): Promise<INextLive[]> {
+async function getNextLive(): Promise<INextLive[]> {
   await cache.delete('next_live')
   return await cache.fetch<INextLive[]>('next_live', () => getFromCookies(), time).catch(() => [])
 }
 
-async function getFromCookies (membersData: IMember[] | null = null) : Promise<INextLive[]> {
+async function getFromCookies(membersData: IMember[] | null = null): Promise<INextLive[]> {
   const members: IMember[] = membersData ?? await getMembers()
   const rooms = await getAllFollows().catch(_ => [])
   const roomMap = new Map<string, ShowroomAPI.RoomFollow>()
-  const result : INextLive[] = []
+  const result: INextLive[] = []
   const missing = []
 
   for (const room of rooms) {
@@ -30,7 +29,7 @@ async function getFromCookies (membersData: IMember[] | null = null) : Promise<I
     if (room) {
       if (room.has_next_live) {
         const raw = new Date(room.next_live)
-        const date = new Date(`${room.next_live} ${now.getFullYear() + (now.getMonth() < raw.getMonth() || now.getDate() <= raw.getDate() ? 0 : 1)}`)
+        const date = new Date(`${room.next_live} ${now.getFullYear() + ((now.getMonth() < raw.getMonth() || now.getDate() <= raw.getDate()) ? 0 : 1)}`)
         result.push({
           name: room.room_name,
           img: room.image_l,
@@ -40,10 +39,11 @@ async function getFromCookies (membersData: IMember[] | null = null) : Promise<I
           is_graduate: member.is_graduate,
           is_group: member.is_group,
           room_exists: member.room_exists,
-          date: date.toISOString()
+          date: date.toISOString(),
         })
       }
-    } else if (member.room_exists) {
+    }
+    else if (member.room_exists) {
       missing.push(member)
     }
   }
@@ -56,7 +56,7 @@ async function getFromCookies (membersData: IMember[] | null = null) : Promise<I
   return lives
 }
 
-async function getDirectNextLive (membersData: IMember[] | null = null): Promise<INextLive[]> {
+async function getDirectNextLive(membersData: IMember[] | null = null): Promise<INextLive[]> {
   try {
     const members: IMember[] = (membersData ?? (await getMembers())).filter(i => i.room_exists)
     const promises: Promise<INextLive | null>[] = []
@@ -65,7 +65,7 @@ async function getDirectNextLive (membersData: IMember[] | null = null): Promise
         (async (): Promise<INextLive | null> => {
           try {
             const data = await fetchNextLive(member.room_id)
-            if (!data.epoch) { return null }
+            if (!data.epoch) return null
             return {
               img: member.img,
               url: member.url,
@@ -74,18 +74,22 @@ async function getDirectNextLive (membersData: IMember[] | null = null): Promise
               is_graduate: member.is_graduate,
               is_group: member.is_group,
               room_exists: member.room_exists,
-              date: new Date(data.epoch * 1000).toISOString()
+              date: new Date(data.epoch * 1000).toISOString(),
             }
-          } catch (e) {
+          }
+          catch (e) {
             return null
           }
-        })()
+        })(),
       )
     }
     let data: INextLive[] = (await Promise.all(promises)).filter(i => i) as INextLive[]
     data = data.filter(i => new Date(i.date).getTime() - new Date().getTime() > 0)
     return data
-  } catch (e) {
+  }
+  catch (e) {
     return []
   }
 }
+
+export { getNextLive }

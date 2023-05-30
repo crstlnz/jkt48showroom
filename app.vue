@@ -1,20 +1,21 @@
 <script lang="ts" setup>
 useHead({
   noscript: [
-    { children: 'JavaScript is required' }
+    { children: 'JavaScript is required' },
   ],
   link: [
     { rel: 'preload', href: '/fonts/signika/regular.woff2', as: 'font', type: 'font/woff2', crossorigin: 'anonymous' },
-    { rel: 'preload', href: '/fonts/signika/700.woff2', as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }
-  ]
+    { rel: 'preload', href: '/fonts/signika/700.woff2', as: 'font', type: 'font/woff2', crossorigin: 'anonymous' },
+  ],
 })
 
 // TODO: Remove when https://github.com/vuejs/core/issues/5513 fixed
 const key = ref(0)
 const messages = [
   'Uncaught NotFoundError: Failed to execute \'insertBefore\' on \'Node\': The node before which the new node is to be inserted is not a child of this node.', // chromium based
-  'NotFoundError: The object can not be found here.' // safari
+  'NotFoundError: The object can not be found here.', // safari
 ]
+
 if (typeof window !== 'undefined') {
   // @ts-expect-error using arbitrary window key
   if (!window.__vue5513) {
@@ -22,7 +23,7 @@ if (typeof window !== 'undefined') {
       if (messages.includes(event.message)) {
         event.preventDefault()
         console.warn(
-          'Rerendering layout because of https://github.com/vuejs/core/issues/5513'
+          'Rerendering layout because of https://github.com/vuejs/core/issues/5513',
         )
         key.value++
       }
@@ -34,10 +35,26 @@ if (typeof window !== 'undefined') {
 </script>
 
 <template>
-  <NuxtLayout>
+  <div>
     <NuxtLoadingIndicator
       :height="4"
     />
-    <NuxtPage :key="key" />
-  </NuxtLayout>
+    <Dialog />
+    <ShowroomUserDraggable />
+    <NotificationView />
+    <NuxtLayout
+      :transition="{
+        name: 'layout',
+        mode: 'out-in',
+      }"
+    >
+      <NuxtPage
+        :key="key"
+        :transition="{
+          name: 'page',
+          mode: 'out-in',
+        }"
+      />
+    </NuxtLayout>
+  </div>
 </template>

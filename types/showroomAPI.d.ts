@@ -258,4 +258,28 @@ declare namespace ShowroomAPI {
     is_onlive: boolean;
     room_id: number;
   }
+
+  interface UserSNS {
+    icon: string;
+    url: string;
+  }
+
+  interface UserProfile {
+    sns_list: UserSNS[];
+    avatar_id: number;
+    room_profile: RoomProfile;
+    active_fan_title_id: number;
+    is_blocked_post: boolean;
+    fan_level: number;
+    active_fan_level: number;
+    is_ng_nick_name: boolean;
+    name: string;
+    avatar_url: string;
+    description: string;
+    image: string;
+    account_id: string;
+    is_sms_authenticated: boolean;
+    can_report: boolean;
+    has_reported: boolean;
+  }
 }

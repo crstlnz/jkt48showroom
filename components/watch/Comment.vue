@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import useShowroomWatcher from '~~/composables/useShowroomWatcher'
 
-const props = defineProps<{ data?: Watch.WatchData | null | undefined;}>()
+const props = defineProps<{ data?: Watch.WatchData | null | undefined }>()
+const emit = defineEmits(['finish', 'start'])
 const pageMode = false
 const comments = ref(props.data?.comments ?? [])
 const dynamicScroller = ref<ComponentPublicInstance<HTMLElement> | null>(null)
 
-const emit = defineEmits(['finish', 'start'])
-const { onComment, onLiveState } = useShowroomWatcher('wss://' + props.data?.socket_host ?? '', props.data?.socket_key ?? '')
+const { onComment, onLiveState } = useShowroomWatcher(`wss://${props.data?.socket_host}` ?? '', props.data?.socket_key ?? '')
 const autoAppend = ref(true)
 const lastScroll = ref(0)
 const delayedComments = ref<Watch.Comment[]>([])
@@ -17,7 +17,8 @@ const showNewCommentButton = ref(true)
 onComment((comment) => {
   if (autoAppend.value) {
     comments.value.unshift(comment)
-  } else {
+  }
+  else {
     delayedComments.value.push(comment)
   }
 })
@@ -26,7 +27,8 @@ onLiveState((isLive) => {
   if (isLive) {
     comments.value = []
     emit('start')
-  } else {
+  }
+  else {
     emit('finish')
   }
 })
@@ -37,13 +39,14 @@ useEventListener(dynamicScroller, 'scroll', (evt) => {
   if (lastScroll.value === scrollPos) return
   if (lastScroll.value > scrollPos) {
     showNewCommentButton.value = true
-  } else {
+  }
+  else {
     autoAppend.value = false
   }
   lastScroll.value = scrollPos
 })
 
-function appendDelayedComments () {
+function appendDelayedComments() {
   dynamicScroller.value?.$el?.scrollTo({ top: 0 })
   comments.value.unshift(...delayedComments.value)
   delayedComments.value = []
@@ -55,7 +58,7 @@ function appendDelayedComments () {
   <DynamicScroller
     id="scroller"
     ref="dynamicScroller"
-    :class="{ 'roundedscrollbar': pageMode !== null || pageMode !== false }"
+    :class="{ roundedscrollbar: pageMode !== null || pageMode !== false }"
     :min-item-size="82"
     :prerender="15"
     :items="comments"
@@ -66,8 +69,7 @@ function appendDelayedComments () {
     <template #before>
       <div>
         <div
-          class="-z-10 border-b-2 border-slate-100/60 bg-white/90 p-4 text-xl font-bold backdrop-blur-sm dark:border-dark-2/60 dark:bg-dark-1/90 md:p-5"
-          @click="showNewCommentButton = !showNewCommentButton"
+          class="dark:border-dark-2/60 dark:bg-dark-1/90 -z-10 border-b-2 border-slate-100/60 bg-white/90 p-4 text-xl font-bold backdrop-blur-sm md:p-5"
         >
           {{ $t("comment") }}
         </div>
@@ -81,7 +83,7 @@ function appendDelayedComments () {
 
     <template #default="{ item, index, active }">
       <DynamicScrollerItem :item="item" :active="active" :size-dependencies="[item.comment]" :data-index="index">
-        <div :key="item.created_at + item.user_id" class="space-y-2 border-b-2 border-slate-100/60 p-3 dark:border-dark-2/60 md:p-4">
+        <div :key="item.created_at + item.user_id" class="dark:border-dark-2/60 space-y-2 border-b-2 border-slate-100/60 p-3 md:p-4">
           <div class="flex gap-2.5 md:gap-3.5">
             <a :href="$fansProfileURL(item.user_id)" target="_blank" class="inline-block h-12 w-12 md:h-14 md:w-14">
               <img

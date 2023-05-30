@@ -4,24 +4,24 @@ const giftSchema = new Schema<IShowroomGift>({
   gift_id: {
     type: Number,
     unique: true,
-    required: true
+    required: true,
   },
   gift_name: {
-    type: String
+    type: String,
   },
   is_delete_from_stage: {
-    type: Boolean
+    type: Boolean,
   },
   free: {
-    type: Boolean
+    type: Boolean,
   },
   image: {
-    type: String
+    type: String,
   },
   point: {
     type: Number,
-    default: 0
-  }
+    default: 0,
+  },
 })
 
 giftSchema.index({ gift_id: 1 }, { unique: true })

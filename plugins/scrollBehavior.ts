@@ -1,22 +1,22 @@
 import { nextTick } from 'vue'
-import type { RouterScrollBehavior, RouteLocationNormalized } from 'vue-router'
+import type { RouteLocationNormalized, RouterScrollBehavior } from 'vue-router'
 import { defineNuxtPlugin } from '#imports'
 
-type ScrollPosition = Awaited<ReturnType<RouterScrollBehavior>>;
+type ScrollPosition = Awaited<ReturnType<RouterScrollBehavior>>
 
 export default defineNuxtPlugin((nuxtApp) => {
-  nuxtApp.$router.options.scrollBehavior = (
+  useRouter().options.scrollBehavior = (
     to: any,
     from: any,
-    savedPosition: any
+    savedPosition: any,
   ) => {
     let position: ScrollPosition = savedPosition || undefined
     if (
-      !position &&
-        from &&
-        to &&
-        to.meta.scrollToTop !== false &&
-        _isDifferentRoute(from, to)
+      !position
+        && from
+        && to
+        && to.meta.scrollToTop !== false
+        && _isDifferentRoute(from, to)
     ) {
       position = { left: 0, top: 0 }
     }
@@ -30,7 +30,8 @@ export default defineNuxtPlugin((nuxtApp) => {
         return { el: to.hash, top: _getHashElementScrollMarginTop(to.hash) }
       }
 
-      if (from.fullPath === to.fullPath || to.path === to.fullPath) return { left: 0, top: 0, behavior: 'smooth' }
+      // if (from.fullPath === to.fullPath || to.path === to.fullPath) return { left: 0, top: 0, behavior: 'smooth' }
+      if (from.fullPath === to.fullPath) return { left: 0, top: 0, behavior: 'smooth' }
     }
 
     return new Promise((resolve) => {
@@ -45,7 +46,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   }
 })
 
-function _getHashElementScrollMarginTop (selector: string): number {
+function _getHashElementScrollMarginTop(selector: string): number {
   const element = document.querySelector(selector)
   if (element) {
     return Number.parseFloat(getComputedStyle(element).scrollMarginTop)
@@ -53,9 +54,9 @@ function _getHashElementScrollMarginTop (selector: string): number {
   return 0
 }
 
-function _isDifferentRoute (
+function _isDifferentRoute(
   a: RouteLocationNormalized,
-  b: RouteLocationNormalized
+  b: RouteLocationNormalized,
 ): boolean {
   const samePageComponent = a.matched[0] === b.matched[0]
   if (!samePageComponent) {

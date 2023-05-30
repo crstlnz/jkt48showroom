@@ -9,24 +9,24 @@ class ShowroomBackground extends CanvasUtil {
   podiumGifts: PodiumGift[]
   selectedPodiumGifts: PodiumGift[]
   giftAreaPos: {
-    x: number;
-    y: number;
+    x: number
+    y: number
   }
 
   giftAreaSize: {
-    width: number;
-    height: number;
+    width: number
+    height: number
   }
 
   processId: number
 
-  constructor (defaultImage: string, showScreenshot: boolean) {
+  constructor(defaultImage: string, showScreenshot: boolean) {
     super()
     this.processId = 0
     this.screenshots = new ScreenshotManager(
       this,
       defaultImage,
-      showScreenshot
+      showScreenshot,
     )
     this.ssId = 0
     this.processId = 0
@@ -35,23 +35,29 @@ class ShowroomBackground extends CanvasUtil {
     this.giftAreaPos = { x: 0, y: 0 }
     this.giftAreaSize = {
       width: 0,
-      height: 0
+      height: 0,
     }
   }
 
-  inject (canvas: HTMLCanvasElement) {
+  destroy() {
+    this.background = null
+    this.screenshots.destroy()
+    this.podiumGifts = []
+  }
+
+  inject(canvas: HTMLCanvasElement) {
     super.inject(canvas)
     this.giftAreaSize = {
       width: (this.canvas?.width ?? 0) * 0.34,
-      height: (this.canvas?.height ?? 0) * 0.048
+      height: (this.canvas?.height ?? 0) * 0.048,
     }
     this.giftAreaPos = {
       x: (this.canvas?.width ?? 0) * 0.5,
-      y: (this.canvas?.height ?? 0) * 0.49
+      y: (this.canvas?.height ?? 0) * 0.49,
     }
   }
 
-  setPodiumGifts (giftData: IPodiumGift[]) {
+  setPodiumGifts(giftData: IPodiumGift[]) {
     this.podiumGifts = []
     const map = new Map()
     for (const gift of giftData) {
@@ -61,55 +67,56 @@ class ShowroomBackground extends CanvasUtil {
             map.get(gift.id),
             gift.date,
             this.giftAreaSize,
-            this.giftAreaPos
-          )
+            this.giftAreaPos,
+          ),
         )
-      } else {
+      }
+      else {
         const img = new Image()
         img.onload = () => this.draw()
         img.src = gift.img
         map.set(gift.id, img)
         this.podiumGifts.push(
-          new PodiumGift(img, gift.date, this.giftAreaSize, this.giftAreaPos)
+          new PodiumGift(img, gift.date, this.giftAreaSize, this.giftAreaPos),
         )
       }
     }
   }
 
-  setDate (date: number) {
+  setDate(date: number) {
     const ssId = this.screenshots.id
     this.screenshots.setDate(date)
     const oldPodNum = this.selectedPodiumGifts?.length ?? 0
     const podNum = this.filterPodiumGifts(date)
-    if (oldPodNum === podNum && ssId === this.screenshots.id) { return }
+    if (oldPodNum === podNum && ssId === this.screenshots.id) return
     this.requestDraw()
   }
 
-  filterPodiumGifts (date: number) {
+  filterPodiumGifts(date: number) {
     const gift = this.podiumGifts.filter(i => i.date <= date)
     this.selectedPodiumGifts = gift
     return gift?.length ?? 0
   }
 
-  drawPodiumGifts () {
+  drawPodiumGifts() {
     for (const gift of (this.selectedPodiumGifts ?? [])) {
-      if (this.ctx) { gift.draw(this.ctx) }
+      if (this.ctx)gift.draw(this.ctx)
     }
   }
 
-  async loadBackground (src: string) {
-    if (this.background) { this.background.remove() }
+  async loadBackground(src: string) {
+    if (this.background) this.background.remove()
     this.background = await CanvasUtil.createImage(src).catch(_e => null)
     this.requestDraw()
   }
 
   // setNotFound(val: boolean) {}
 
-  drawBackground () {
-    if (this.background && this.ctx) { this.ctx.drawImage(this.background, 0, 0, this.width, this.height) }
+  drawBackground() {
+    if (this.background && this.ctx) this.ctx.drawImage(this.background, 0, 0, this.width, this.height)
   }
 
-  draw (_time?: number): void {
+  draw(_time?: number): void {
     this.clear()
     this.screenshots.draw()
     this.drawBackground()

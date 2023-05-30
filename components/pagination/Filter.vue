@@ -1,67 +1,24 @@
 <script lang="ts" setup>
-import { useFocus } from '@vueuse/core'
-const $device = useDevice()
 const props = defineProps({
   members: {
     type: Array,
-    default () {
+    default() {
       return []
-    }
+    },
   },
   query: {
     type: Object,
-    default () {
+    default() {
       return {}
-    }
-  }
+    },
+  },
 })
-
-type SortData = {
-  title : {
-    asc : string,
-    desc : string,
-    btn : string
-  },
-  id : sortType,
-}
-
-const SortList : SortData[] = [
-  {
-    title: {
-      btn: 'sort.date',
-      asc: 'sort.latest',
-      desc: 'sort.oldest'
-    },
-    id: 'date'
-  },
-  {
-    title: {
-      btn: 'sort.gift',
-      asc: 'sort.mostgift',
-      desc: 'sort.leastgift'
-    },
-    id: 'gift'
-  },
-  {
-    title: {
-      btn: 'sort.views',
-      asc: 'sort.mostviewers',
-      desc: 'sort.leastviewers'
-    },
-    id: 'views'
-  },
-  {
-    title: {
-      btn: 'sort.duration',
-      asc: 'sort.longestduration',
-      desc: 'sort.shortestduration'
-    },
-    id: 'duration'
-  }
-]
+const emit = defineEmits<{ (e: 'apply', filter: any): void; (e: 'title', title: string): void; (e: 'showDuration', show: boolean): void }>()
+const $device = useDevice()
+const config = useAppConfig()
+const SortList: SortData[] = config.sortList
 
 const search = ref(props.query.search)
-const emit = defineEmits<{(e: 'apply', filter: any) : void, (e:'title', title: string):void, (e:'showDuration', show: boolean):void}>()
 const temp = ref<RecentsQuery>({})
 const isEnabled = computed(() => {
   if (Object.keys(temp.value).length || search.value !== props.query.search) return true
@@ -73,28 +30,13 @@ watch(
   (newVal) => {
     search.value = newVal.search
     temp.value = {}
-    changeTitle(newVal)
-  }
+    // changeTitle(newVal)
+  },
 )
 
-changeTitle(props.query)
+// changeTitle(props.query)
 
-function changeTitle (query : any) {
-  const sort = SortList.find(i => (query?.sort ?? 'date') === i.id) ?? SortList[0]
-  emit('title', ((query?.order ?? 0) < 0 ? sort.title.asc : sort.title.desc) ?? '')
-  emit('showDuration', sort.id === 'duration')
-}
-
-// enum sortType {
-//   LATEST,
-//   OLDEST,
-//   MOST_GIFT,
-//   MOST_VIEWS,
-// }
-
-// const filters
-
-const isActive = (bool: boolean) => {
+function isActive(bool: boolean) {
   const val = temp.value.filter ?? props.query.filter
   if ((val !== undefined && val === 'graduated') || val === 'active') {
     return (val === 'graduated') === bool
@@ -102,7 +44,7 @@ const isActive = (bool: boolean) => {
   return false
 }
 
-const setGraduated = (bool: boolean) => {
+function setGraduated(bool: boolean) {
   const getFilter = (b: boolean) => (b ? 'graduated' : 'active')
   const newVal = getFilter(bool)
   if (temp.value.filter !== undefined) {
@@ -115,32 +57,32 @@ const setGraduated = (bool: boolean) => {
 
   if (props.query.filter === newVal) {
     temp.value.filter = 'all'
-  } else {
+  }
+  else {
     temp.value.filter = newVal
   }
 }
 
-const config = useAppConfig()
 const defaultQuery = config.defaultRecentQuery
 
-const setOrder = (order : 1 | -1) => {
+function setOrder(order: 1 | -1) {
   if (order === parseInt((props.query.order ?? defaultQuery.order))) {
     return delete temp.value.order
   }
   temp.value.order = order
 }
 
-const setSort = (key: string) => {
+function setSort(key: string) {
   if (key === props.query.sort) {
     return delete temp.value.sort
   }
   temp.value.sort = key
 }
 
-const searchinput = ref(null)
-const { focused } = useFocus(searchinput)
-const apply = () => {
-  if ($device.isMobile) focused.value = false
+// const searchinput = ref(null)
+// const { focused } = useFocus(searchinput)
+function apply() {
+  // if ($device.isMobile) focused.value = false
   const q = { ...temp.value, search: search.value }
   for (const key of Object.keys(props.query)) {
     if (!Object.hasOwn(q, key)) {
@@ -150,20 +92,20 @@ const apply = () => {
   emit('apply', q)
 }
 
-const clearSearch = () => {
+function clearSearch() {
   if (!isEnabled.value) {
     search.value = ''
     apply()
-  } else {
+  }
+  else {
     search.value = ''
   }
 }
-
 </script>
 
 <template>
   <div class="space-y-4">
-    <div class="rounded-xl bg-slate-100/60 py-2 px-3 dark:bg-dark-2/60">
+    <!-- <div class="dark:bg-dark-2/50 rounded-xl bg-white/70 px-3 py-2">
       <input
         ref="searchinput"
         v-model="search"
@@ -173,27 +115,30 @@ const clearSearch = () => {
         class="w-full bg-transparent outline-none"
         @keyup.enter="apply"
       >
-    </div>
+    </div> -->
+
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-1 font-semibold">
-        <Icon name="ph:caret-circle-right" /> {{ $t("sort.title") }}
+        <Icon name="ph:caret-circle-right" />
+        <span class="text-base">{{ $t("sort.title") }}</span>
       </div>
-      <button type="button" aria-label="Sorting Type" class="group h-8 w-8 overflow-hidden rounded-md bg-slate-100/60 dark:bg-dark-2/60" @click="setOrder((temp.order ?? query.order ?? defaultQuery.order) > 0 ? -1 : 1)">
-        <span class="flex h-full w-full items-center justify-center group-hover:bg-second-2/90 group-hover:text-white">
+      <button type="button" aria-label="Sorting Type" class="dark:bg-dark-2/50 group h-8 w-8 overflow-hidden rounded-md bg-white/70" @click="setOrder((temp.order ?? query.order ?? defaultQuery.order) > 0 ? -1 : 1)">
+        <span class="group-hover:bg-second-2/90 flex h-full w-full items-center justify-center group-hover:text-white">
           <Icon v-if="(temp.order ?? query.order ?? -1) > 0" name="ph:sort-ascending-bold" />
           <Icon v-else name="ph:sort-descending-bold" />
         </span>
       </button>
     </div>
+
     <ul
-      class="max-h-[250px] overflow-hidden overflow-y-auto rounded-xl bg-slate-100/60 dark:bg-dark-2/60"
+      class="dark:bg-dark-2/50 max-h-[250px] overflow-hidden overflow-y-auto rounded-xl bg-white/70"
     >
       <li v-for="item in SortList" :key="item.id">
         <button
           type="button"
-          class="w-full cursor-pointer px-4 py-2 font-bold hover:bg-second-2/20 lg:py-3"
+          class="hover:bg-second-2/20 w-full cursor-pointer px-4 py-2 font-bold lg:py-3"
           :class="{
-            '!bg-second-2/90 text-white': item.id == (temp.sort ?? query.sort),
+            '!bg-second-2/90 text-white': item.id === (temp.sort ?? query.sort),
           }"
           @click="setSort(item.id)"
         >
@@ -203,7 +148,7 @@ const clearSearch = () => {
     </ul>
 
     <div
-      class="flex space-x-1 overflow-hidden rounded-xl bg-slate-100/60 dark:bg-dark-2/60 [&>*]:cursor-pointer [&>button]:flex-1 [&>button]:p-2 hover:[&>button]:bg-second-2/20 lg:[&>button]:p-2 [&>div]:flex-1"
+      class="dark:bg-dark-2/50 hover:[&>button]:bg-second-2/20 flex space-x-1 overflow-hidden rounded-xl bg-white/70 [&>*]:cursor-pointer [&>button]:flex-1 [&>button]:p-2 lg:[&>button]:p-2 [&>div]:flex-1"
     >
       <button
         type="button"
@@ -225,10 +170,9 @@ const clearSearch = () => {
       </button>
     </div>
     <button
-      ref="applyBtn"
       type="button"
       :disabled="!isEnabled"
-      class="hover w-full select-none rounded-xl bg-second-2/80 p-2 text-center font-bold text-white transition-transform hover:bg-second-2 active:scale-95 disabled:bg-second-2/40 disabled:text-gray-400 disabled:active:scale-100 disabled:dark:text-gray-500 lg:p-3"
+      class="hover bg-second-2/80 hover:bg-second-2 disabled:bg-second-2/40 w-full select-none rounded-xl p-2 text-center font-bold text-white transition-transform active:scale-95 disabled:text-gray-400 disabled:active:scale-100 disabled:dark:text-gray-500 lg:p-3"
       @click="apply"
     >
       {{ $t("sort.apply") }}

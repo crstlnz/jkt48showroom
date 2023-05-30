@@ -4,7 +4,7 @@ export const useOnLives = defineStore('onLives', () => {
   const { data: lives, pending, error, refresh, tryRefresh } = useLocalStoreController<IRoomLive[] | null>('onlives', {
     fetch: refreshLives,
     expiredIn: 10000,
-    serializer: new JSONSerializer<IRoomLive[] | null>(null)
+    serializer: new JSONSerializer<IRoomLive[] | null>(null),
   })
 
   const livesMap = computed(() => {
@@ -16,8 +16,8 @@ export const useOnLives = defineStore('onLives', () => {
     return map
   })
 
-  async function refreshLives (): Promise<IRoomLive[]> {
-    return await $fetch('/api/showroom/now_live?_=' + new Date().getTime())
+  async function refreshLives(): Promise<IRoomLive[]> {
+    return await $fetch(`/api/showroom/now_live?_=${new Date().getTime()}`)
     // TODO remove this
     // const data = await $fetch('/api/showroom/onlives')
     // const re = (data.onlives[0]?.lives ?? []).splice(0, 3).map((i) => {
@@ -30,13 +30,13 @@ export const useOnLives = defineStore('onLives', () => {
     //     is_group: false,
     //     room_exists: true,
     //     streaming_url_list: i.streaming_url_list ?? [],
-    //     started_at: i.started_at * 1000
+    //     started_at: i.started_at * 1000,
     //   }
     // })
     // return [...await $fetch('/api/showroom/now_live'), ...re]
   }
 
-  function isLive (roomId: number) {
+  function isLive(roomId: number) {
     return livesMap.value?.has(roomId)
   }
 
@@ -46,10 +46,10 @@ export const useOnLives = defineStore('onLives', () => {
     error,
     tryRefresh,
     refresh,
-    isLive
+    isLive,
   }
 })
 
 if (import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(useOnLives, import.meta.hot))
+  import.meta.hot.accept(acceptHMRUpdate(useOnLives as any, import.meta.hot))
 }

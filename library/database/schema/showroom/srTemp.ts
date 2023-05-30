@@ -1,69 +1,70 @@
 import { Schema } from 'mongoose'
+
 export default {
   name: 'ShowroomTemp',
   schema: new Schema({
     name: {
       type: String,
-      required: true
+      required: true,
     },
     room_id: {
       type: Number,
-      required: true
+      required: true,
     },
     img: {
       type: String,
-      required: true
+      required: true,
     },
     url: {
       type: String,
-      required: true
+      required: true,
     },
     group: {
-      type: String
+      type: String,
     },
     start_date: {
-      type: Date
+      type: Date,
     },
     data_id: {
       type: String,
-      required: true
+      required: true,
     },
     live_id: {
-      type: Number
+      type: Number,
     },
     penonton: {
       history: {
         type: Array,
-        default: []
+        default: [],
       },
       peak: {
         type: Number,
-        default: 0
-      }
+        default: 0,
+      },
     },
     users: {
       type: Array,
-      default: []
+      default: [],
     },
     stage_list: {
       type: Array,
-      default: []
+      default: [],
     },
     gift_list: {
       type: Array,
-      default: []
+      default: [],
     },
     gift_log: {
       type: Array,
-      default: []
+      default: [],
     },
     message: {
       channel_id: { type: String },
-      message_id: { type: String }
+      message_id: { type: String },
     },
     is_active: {
       type: Boolean,
-      required: true
+      required: true,
     },
     host: { type: String },
     key: { type: String },
@@ -75,8 +76,8 @@ export default {
       format: String,
       list: {
         type: [Number],
-        default: []
-      }
-    }
-  })
+        default: [],
+      },
+    },
+  }),
 }

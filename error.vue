@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { Error } from '#components'
+
 const props = defineProps({
   error: {
     type: Object,
-    default () {
+    default() {
       return {}
-    }
-  }
+    },
+  },
 })
 
 const url = computed(() => {
@@ -15,17 +16,17 @@ const url = computed(() => {
 })
 
 interface ErrorMessage {
-  message: string;
-  key: string;
-  img: string;
-  alt: string;
+  message: string
+  key: string
+  img: string
+  alt: string
 }
-function getError (code: number): ErrorMessage {
+function getError(code: number): ErrorMessage {
   const msg: ErrorMessage = {
     message: 'An error occurred!',
     alt: 'An error occurred!',
     img: '/svg/error.svg',
-    key: 'error.unknown'
+    key: 'error.unknown',
   }
 
   switch (code) {

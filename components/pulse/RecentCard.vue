@@ -2,7 +2,7 @@
   <div class="flex animate-pulse gap-3 py-2 text-center md:py-3">
     <NuxtLink
       aria-label="View profile"
-      class="relative aspect-square h-[4.5rem] cursor-pointer overflow-hidden rounded-full drop-shadow-sm md:h-20"
+      class="relative aspect-square h-[4.5rem] cursor-pointer overflow-hidden rounded-full drop-shadow-sm md:h-[70px]"
       to="/"
     >
       <div
@@ -20,7 +20,7 @@
         <span class="inline-block h-4 w-1/3 rounded-xl md:h-5" />
         <span class="inline-block h-4 w-1/2 rounded-xl md:h-5" />
       </div>
-      <div class="mt-2 flex justify-end border-t-2 border-t-gray-50 pt-2 dark:border-t-dark-2">
+      <div class="mt-2 flex justify-end border-t-2 border-t-gray-50 pt-2 dark:border-t-zinc-700/50">
         <div class="pulse-color h-5 w-14 rounded-xl md:h-6" />
       </div>
     </div>

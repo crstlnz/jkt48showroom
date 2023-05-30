@@ -1,8 +1,8 @@
 import { useWindowScroll } from '@vueuse/core'
 
-type InfiniteScrollOpts = {
-  distance?: number;
-};
+interface InfiniteScrollOpts {
+  distance?: number
+}
 
 export default function (onload: () => any | Promise<any>, opts: InfiniteScrollOpts = {}) {
   const { y } = useWindowScroll()
@@ -11,7 +11,7 @@ export default function (onload: () => any | Promise<any>, opts: InfiniteScrollO
     checkTrigger(val)
   })
 
-  async function checkTrigger (val: number | null = null) {
+  async function checkTrigger(val: number | null = null) {
     if (process.client) {
       if ((val ?? y.value) >= document.documentElement.scrollHeight - window.innerHeight - distance) {
         await onload()

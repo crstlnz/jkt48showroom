@@ -1,21 +1,30 @@
-<script setup>
+<script lang="ts" setup>
+defineProps<{
+  compact?: boolean
+  fullTitle?: boolean
+}>()
+
 const { locale, locales, setLocale } = useI18n()
 const otherLocale = computed(() => {
-  return locales.value.find(i => i.code !== locale.value)
+  return (locales.value as any[]).find((i: any) => i.code !== locale.value)
 })
+
 const currentLocale = computed(() => {
-  return locales.value.find(i => i.code === locale.value)
+  return (locales.value as any[]).find(i => i.code === locale.value)
 })
 </script>
+
 <template>
   <button
-    :key="locale.code"
+    v-ripple
     :title="$t('changelang')"
     type="button"
     href="#"
-    class="flex w-16 items-center justify-center gap-1 rounded-xl border-2 p-2 hover:bg-slate-500/5 dark:border-dark-3"
     @click.prevent.stop="setLocale(otherLocale.code)"
   >
-    <Icon name="ph:translate-bold" />{{ currentLocale.name }}
+    <Icon name="ph:translate-bold" class="h-5 w-5" />
+    <span v-if="!compact" class="text-lg font-semibold leading-5">
+      {{ fullTitle ? (currentLocale.name === "ID" ? 'Indonesia' : 'English') : currentLocale.name }}
+    </span>
   </button>
 </template>

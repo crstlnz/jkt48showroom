@@ -1,37 +1,32 @@
 export const useNotifications = defineStore('notifications', () => {
   const notifData = ref<NotifData[]>([])
-  const currentNotif = ref<NotifData>()
+  const currentNotif = ref<NotifData[]>([])
+  const defaultDuration = 10000
+  const maxShowingNotif = 3
   const id = ref(0)
-  function addNotif (notif : Omit<NotifData, 'id'>) {
-    notifData.value.push({ ...notif, id: id.value })
+  function addNotif(notif: Omit<NotifData, 'id' | 'remainingTime'>) {
+    const dur = notif.duration ?? defaultDuration
+    notifData.value.push({ ...notif, id: id.value, duration: dur, remainingTime: dur })
     id.value++
-    if (isShowingNotif.value) return
     showNotif()
   }
 
-  const isShowingNotif = ref(false)
-
-  function showNotif () {
-    isShowingNotif.value = true
-    currentNotif.value = notifData.value.shift()
-    setTimeout(() => {
-      if (notifData.value.length) {
-        showNotif()
-      } else {
-        isShowingNotif.value = false
-        currentNotif.value = undefined
+  function showNotif() {
+    if (currentNotif.value.length < maxShowingNotif) {
+      const notif = notifData.value.shift()
+      if (notif) {
+        currentNotif.value.push(notif)
       }
-    }, currentNotif.value?.duration ?? 5000)
+    }
   }
 
-  // watch(notifData, () => {
-  //   if (isShowingNotif.value) return
-  //   showNotif()
-  // })
+  function deleteNotif(id: number) {
+    currentNotif.value = currentNotif.value.filter(i => i.id !== id)
+  }
 
-  return { addNotif, currentNotif }
+  return { addNotif, currentNotif, deleteNotif, showNotif }
 })
 
 if (import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(useNotifications, import.meta.hot))
+  import.meta.hot.accept(acceptHMRUpdate(useNotifications as any, import.meta.hot))
 }

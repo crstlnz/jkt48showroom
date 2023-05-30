@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import mongoose from 'mongoose'
+
 mongoose.set('strictQuery', process.env.NODE_ENV === 'development' ? 'throw' : false)
 const connection = mongoose.connection
 connection.on('close', () => {
@@ -12,11 +13,12 @@ connection.on('error', (err) => {
   console.log(err)
 })
 
-async function run () {
+async function run() {
   try {
     console.log('Connecting Database...')
     await mongoose.connect(process.env.MONGODB_URI ?? '')
-  } catch (e) {
+  }
+  catch (e) {
     console.log('Failed connect to database!')
     setTimeout(() => {
       run()
@@ -25,7 +27,7 @@ async function run () {
 }
 
 export default {
-  run
+  run,
 }
 
 export { connection }
