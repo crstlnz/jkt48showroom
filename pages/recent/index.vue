@@ -112,7 +112,7 @@ function clearSearch() {
   applySearch()
 }
 
-const { smallerOrEqual } = useResponsive()
+const { smallerOrEqual,isMobile } = useResponsive()
 const isSmall = smallerOrEqual('xl')
 </script>
 
@@ -154,7 +154,7 @@ const isSmall = smallerOrEqual('xl')
       <LayoutPopupButton v-if="isSmall" class="bg-container flex aspect-square h-10 w-10 items-center justify-center rounded-2xl transition-colors sm:hover:bg-blue-500 sm:hover:text-slate-100">
         <Icon name="mi:filter" />
         <template #panel="{ close }">
-          <div class="flex flex-col items-stretch py-3 text-lg max-sm:py-5">
+          <div class="flex flex-col items-stretch py-3 text-lg max-sm:py-5" :class="{'min-w-[350px]': !isMobile}">
             <PaginationFilter
               key="filterDiv"
               class="relative z-aboveNav rounded-t-xl p-4"

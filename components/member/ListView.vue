@@ -67,7 +67,7 @@ const config = useAppConfig()
                   <div class="text-base" :class="item.is_group ? 'text-blue-500' : (item.is_graduate ? 'text-red-500' : 'text-green-500')">
                     {{ item.is_group ? "Official" : (item.is_graduate ? "Graduated" : "Active") }}
                   </div>
-                  <div class="space-x-2 self-end text-base text-slate-700">
+                  <div class="space-x-2 self-end text-base text-slate-700 dark:text-slate-400">
                     <NuxtLink :to="$liveURL(item.url)" target="_blank">
                       <Icon name="ic:round-videocam" size="1.6rem" />
                     </NuxtLink>

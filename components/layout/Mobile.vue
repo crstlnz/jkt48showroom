@@ -41,6 +41,7 @@ function closeMenu() {
 </script>
 
 <template>
+ <div class="w-full">
   <nav class="fixed inset-x-0 bottom-0 z-nav border-t-2 bg-white drop-shadow-md dark:border-dark-3 dark:bg-dark-2">
     <div class="relative h-[60px] overflow-hidden">
       <div class="absolute inset-x-0 top-1/2 flex -translate-y-1/2 justify-around gap-4 px-4">
@@ -141,5 +142,8 @@ function closeMenu() {
       </div>
     </div>
   </div>
-  <slot />
+  <div class="pb-[60px] w-full">
+    <slot />
+  </div>
+ </div>
 </template>

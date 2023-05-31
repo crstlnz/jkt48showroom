@@ -32,7 +32,7 @@ defineProps<{
       leave-from-class="opacity-100"
       leave-to-class="opacity-0 max-sm:translate-y-[100%]"
     >
-      <PopoverPanel class="bg-container-2 z-aboveNav fixed overflow-hidden shadow-xl drop-shadow-xl max-sm:inset-x-0 max-sm:bottom-0 max-sm:rounded-t-2xl sm:absolute sm:right-0 sm:top-[calc(100%_+_0.45rem)] sm:rounded-2xl">
+      <PopoverPanel class="bg-container z-aboveNav fixed overflow-hidden shadow-xl drop-shadow-xl max-sm:inset-x-0 max-sm:bottom-0 max-sm:rounded-t-2xl sm:absolute sm:right-0 sm:top-[calc(100%_+_0.45rem)] sm:rounded-2xl">
         <slot name="panel" :close="close"/>
       </PopoverPanel>
     </Transition>
