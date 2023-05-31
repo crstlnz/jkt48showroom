@@ -188,19 +188,19 @@ defineExpose({ setPosition })
           left: `${posX}px`,
           bottom: `${windowHeight - posY}px`,
         }"
-        class="z-aboveNav fixed transition-all duration-[350ms] ease-out max-md:inset-0 max-md:!bottom-0 max-md:!left-0"
+        class="fixed z-aboveNav transition-all duration-[350ms] ease-out max-md:inset-0 max-md:!bottom-0 max-md:!left-0"
         @pointerdown="startDrag"
       >
         <div class="absolute -inset-40 bg-black/40 md:hidden" @click="isHidden = true" />
-        <div class="md:max-w-[3 00px] dark:bg-dark-3 min-w-[280px] max-w-[95vw] rounded-3xl bg-white p-5 shadow-2xl drop-shadow-2xl max-md:fixed max-md:!bottom-1/2 max-md:!left-1/2 max-md:-translate-x-1/2 max-md:translate-y-1/2 lg:max-w-[400px]">
+        <div class="md:max-w-[3 00px] min-w-[280px] max-w-[95vw] rounded-3xl bg-white p-5 shadow-2xl drop-shadow-2xl dark:bg-dark-3 max-md:fixed max-md:!bottom-1/2 max-md:!left-1/2 max-md:-translate-x-1/2 max-md:translate-y-1/2 lg:max-w-[400px]">
           <div class="mb-2 flex justify-end">
             <button type="button" aria-label="Close" class="disable-drag" @click="isHidden = true">
               <Icon name="ph:x-bold" class="pointer-events-none" />
             </button>
           </div>
           <div v-if="pending" class="mb-6 flex animate-pulse flex-col items-center gap-4">
-            <div class="dark:bg-dark-2/80 aspect-square w-32 rounded-full bg-gray-300 lg:w-36" />
-            <div class="dark:bg-dark-2/80 h-8 w-32 rounded-md bg-gray-300" />
+            <div class="aspect-square w-32 rounded-full bg-gray-300 dark:bg-dark-2/80 lg:w-36" />
+            <div class="h-8 w-32 rounded-md bg-gray-300 dark:bg-dark-2/80" />
             <div class="flex flex-wrap gap-2 text-lg font-semibold">
               <div :href="$fansProfileURL(userId)" class="inline-block h-8 w-[104px] rounded-sm bg-blue-500 text-sm leading-8 text-white" />
             </div>

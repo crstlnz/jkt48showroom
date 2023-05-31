@@ -4,7 +4,7 @@ defineProps<{ icon: string; activeIcon: string; title: string; url: string; acti
 
 <template>
   <NuxtLink :to="url" class="group w-full select-none" :active-class="activeClass ?? ''">
-    <div class="group-hover:bg-hover inline-flex items-center overflow-hidden rounded-full p-3 font-thin transition-[background-color]">
+    <div class="inline-flex items-center overflow-hidden rounded-full p-3 font-thin transition-[background-color] group-hover:bg-hover">
       <div class="h-7 w-7">
         <Icon :name="!active ? icon : activeIcon" size="28px" class="h-full w-full" />
       </div>

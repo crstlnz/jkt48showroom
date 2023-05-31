@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
-
+const { isMobile } = useResponsive()
 defineProps<{
   class?: string
 }>()
@@ -8,27 +8,27 @@ defineProps<{
 </script>
 
 <template>
-  <Popover class="relative h-10 w-10" v-slot="{close}">
+  <Popover class="relative h-10 w-10" v-slot="{close, open}">
     <PopoverButton aria-label="Filter" :class="class">
       <slot :close="close"/>
     </PopoverButton>
     <Transition
-      enter-active-class="transition ease duration-300"
+    v-if="isMobile"
+      enter-active-class="transition ease duration-200"
       enter-from-class="opacity-0"
       enter-to-class="opacity-100"
-      leave-active-class="transition ease duration-300"
+      leave-active-class="transition ease duration-200" 
       leave-from-class="opacity-100"
       leave-to-class="opacity-0"
     >
-    <PopoverPanel @click="close" class="bg-black/50 fixed inset-0"/>
-      
+    <div v-if="open" @click="close" class="bg-black/50 fixed inset-0"/>
     </Transition>
 
     <Transition
-      enter-active-class="transition ease duration-300"
+      enter-active-class="transition ease duration-200"
       enter-from-class="opacity-0 max-sm:translate-y-[100%]"
       enter-to-class="opacity-100 max-sm:translate-y-0"
-      leave-active-class="transition ease duration-300"
+      leave-active-class="transition ease duration-200"
       leave-from-class="opacity-100"
       leave-to-class="opacity-0 max-sm:translate-y-[100%]"
     >

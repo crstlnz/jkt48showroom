@@ -7,7 +7,6 @@ module.exports = {
   extends: [
     'plugin:tailwindcss/recommended',
     'plugin:vue/vue3-recommended',
-    '@nuxtjs/eslint-config-typescript',
     '@antfu',
   ],
   overrides: [

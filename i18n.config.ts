@@ -1,4 +1,4 @@
-export default defineI18nConfig(_nuxt => ({
+export default defineI18nConfig(() => ({
   legacy: false,
   datetimeFormats: {
     en: {
