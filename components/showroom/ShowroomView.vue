@@ -155,9 +155,14 @@ const isLandscape = computed(() => {
 async function toggleFullscreen() {
   if (!isFullscreen.value) {
     const o = orientation.value
+    console.log(o)
     await toggle()
     if (['portrait-primary', 'portrait-secondary', 'portrait'].includes(o ?? '')) {
-      if (isSupported.value) await lockOrientation('landscape')
+      if (isSupported.value) {
+        await lockOrientation('landscape-primary').catch((e) => {
+          console.log(e)
+        })
+      }
     }
   }
   else {

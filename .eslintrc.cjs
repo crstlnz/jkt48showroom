@@ -7,17 +7,15 @@ module.exports = {
   extends: [
     'plugin:tailwindcss/recommended',
     'plugin:vue/vue3-recommended',
+    '@nuxtjs/eslint-config-typescript',
     '@antfu',
   ],
-  overrides: [
-  ],
+  overrides: [],
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
-  plugins: [
-    'vue',
-  ],
+  plugins: ['vue'],
   rules: {
     'no-console': 'warn',
     'no-unused-vars': 'warn',
@@ -25,9 +23,12 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     'vue/multi-word-component-names': 'off',
     'curly': ['error', 'multi-line'],
-    'vue/component-tags-order': ['error', {
-      order: ['script', 'template', 'style'],
-    }],
+    'vue/component-tags-order': [
+      'error',
+      {
+        order: ['script', 'template', 'style'],
+      },
+    ],
     'tailwindcss/no-custom-classname': 'off',
     'antfu/if-newline': 'off',
     'unicorn/prefer-node-protocol': 'off',

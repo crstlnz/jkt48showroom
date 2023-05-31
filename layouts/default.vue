@@ -93,7 +93,7 @@ watch(route, () => {
   })
 })
 
-const { isMobile } = useResponsive()
+const { isMobile, isSmall } = useResponsive()
 const MobileLayout = resolveComponent('LayoutMobile')
 const DesktopLayout = resolveComponent('LayoutDesktop')
 </script>
@@ -109,7 +109,7 @@ const DesktopLayout = resolveComponent('LayoutDesktop')
       <!-- <DesktopLayout :menus="menus" @toggle-dark="toggleDark()">
         <slot />
       </DesktopLayout> -->
-      <component :is="!isMobile ? DesktopLayout : MobileLayout" :menus="menus" @toggle-dark="toggleDark()">
+      <component :is="!isMobile ? (isSmall ? MobileLayout : DesktopLayout) : MobileLayout" :menus="menus" @toggle-dark="toggleDark()">
         <slot />
       </component>
     </ClientOnly>
