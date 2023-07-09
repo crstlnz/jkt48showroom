@@ -10,7 +10,6 @@ const time = 5000
 async function getNowLive(): Promise<IRoomLive[]> {
   return await cache
     .fetch<IRoomLive[]>('now_live', () => getNowLiveCookies(), time)
-    .catch(() => [])
 }
 
 async function getNowLiveDirect(
@@ -64,20 +63,30 @@ async function getNowLiveCookies(membersData: IMember[] | null = null): Promise<
     const room = roomMap.get(String(member.room_id))
     if (room) {
       if (room.is_online) {
+        let isPremium = false
         result.push((async () => {
-          const streamURLS = await getStreamingURL({ room_id: room.room_id })
-          const RoomStatus = await getRoomStatus({ room_url_key: room.room_url_key })
+          const streamURLS = await getStreamingURL({ room_id: room.room_id }).catch((e) => {
+            return {
+              streaming_url_list: [],
+            }
+          })
+          const RoomStatus = await getRoomStatus({ room_url_key: room.room_url_key }).catch((e: any) => {
+            if (e.data.errors && e.data.errors[0]?.redirect_url) {
+              isPremium = true
+            }
+          })
           return {
             name: room.room_name,
             img: room.image_l,
             img_alt: member.img_alt,
             url: room.room_url_key,
             room_id: Number(room.room_id),
-            started_at: (RoomStatus.started_at ?? 0) * 1000,
+            started_at: (RoomStatus?.started_at ?? 0) * 1000,
             is_graduate: member.is_graduate,
             is_group: member.is_group,
             room_exists: member.room_exists,
             streaming_url_list: streamURLS.streaming_url_list ?? [],
+            is_premium: isPremium,
           }
         })())
       }

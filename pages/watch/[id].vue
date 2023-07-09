@@ -5,7 +5,19 @@ import { useNotifications } from '~~/store/notifications'
 const route = useRoute()
 const { data, pending, error, refresh: refreshWatchData } = await useFetch('/api/showroom/watch', { params: { room_url_key: route.params.id } })
 const { data: polling, refresh } = useFetch('/api/showroom/polling', { params: { room_id: data.value?.room_id }, server: false, immediate: false })
-if (error.value?.statusCode === 404) throw createError({ statusCode: 404, message: 'Page not found!' })
+if (error.value?.statusCode === 404) {
+  const e = error.value?.data?.data?.errors
+  const premium = e && e[0]?.redirect_url
+  if (!premium) {
+    throw createError({ statusCode: 404, message: 'Page not found!' })
+  }
+}
+
+const isPremium = computed(() => {
+  const e = error.value?.data?.data?.errors
+  return !(!e || !e[0]?.redirect_url)
+})
+
 const title = computed(() => {
   return `${data?.value?.name ?? 'Showroom'} Room`
 })
@@ -27,6 +39,8 @@ const { pause, resume } = useIntervalFn(() => {
   immediate: true,
   immediateCallback: true,
 })
+
+if (isPremium) pause()
 
 onMounted(() => {
 })
@@ -69,12 +83,16 @@ function onFinish() {
 
 <template>
   <div class="h-full w-full lg:mt-10 lg:px-3">
-    <div v-if="pending" class="h-full w-full">
+    <div v-if="isPremium">
+      <Error :message="$t('premium_live')" :alt="$t('error.unknown')" img-src="/svg/video_files.svg" url="/" />
+    </div>
+
+    <div v-else-if="pending" class="h-full w-full">
       <div class="relative flex w-full flex-col gap-3 md:gap-4 lg:flex-row">
         <div class="flex-1 space-y-3 md:space-y-4 lg:w-auto">
           <div class="pulse-color aspect-video animate-pulse overflow-hidden max-lg:shadow-sm" />
         </div>
-        <div class="dark:bg-dark-1 relative min-h-[640px] w-full bg-white max-lg:max-h-[70vh] max-lg:shadow-sm lg:w-[300px] lg:rounded-xl xl:w-[350px]">
+        <div class="relative min-h-[640px] w-full bg-white dark:bg-dark-1 max-lg:max-h-[70vh] max-lg:shadow-sm lg:w-[300px] lg:rounded-xl xl:w-[350px]">
           <div class="absolute inset-0 z-0 overflow-hidden rounded-xl">
             <div class="pulse-color h-full w-full animate-pulse" />
           </div>
@@ -89,7 +107,7 @@ function onFinish() {
     <div v-else class="h-full w-full">
       <div class="relative flex w-full flex-col gap-3 md:gap-4 lg:flex-row">
         <div class="flex-1 space-y-3 md:space-y-4 lg:w-auto">
-          <div class="dark:bg-dark-1 aspect-video overflow-hidden bg-white max-lg:shadow-sm">
+          <div class="aspect-video overflow-hidden bg-white dark:bg-dark-1 max-lg:shadow-sm">
             <div v-if="!isLive" class="flex h-full w-full items-center justify-center">
               <div class="space-y-4 md:space-y-6 lg:space-y-10">
                 <img src="/svg/video_files.svg" class="mx-auto w-[250px] max-w-[70%] dark:brightness-90" alt="">
@@ -114,10 +132,10 @@ function onFinish() {
                 {{ $formatSR(data?.started_at ?? 0) }}
               </span>
             </div>
-            <a target="_blank" class="bg-second-2/80 hover:bg-second-2 disabled:bg-second-2/40 select-none rounded-lg p-1 px-3 text-center text-sm font-bold text-white transition-transform active:scale-95 disabled:text-gray-400 disabled:active:scale-100 disabled:dark:text-gray-500 max-sm:flex-1 lg:p-1.5 lg:px-2.5" :href="$liveURL(data?.room_url_key ?? '')">{{ $t("openshowroom") }}</a>
+            <a target="_blank" class="select-none rounded-lg bg-second-2/80 p-1 px-3 text-center text-sm font-bold text-white transition-transform hover:bg-second-2 active:scale-95 disabled:bg-second-2/40 disabled:text-gray-400 disabled:active:scale-100 disabled:dark:text-gray-500 max-sm:flex-1 lg:p-1.5 lg:px-2.5" :href="$liveURL(data?.room_url_key ?? '')">{{ $t("openshowroom") }}</a>
           </div>
         </div>
-        <div class="dark:bg-dark-1 relative min-h-[640px] w-full bg-white max-lg:max-h-[70vh] max-lg:shadow-sm lg:w-[300px] lg:rounded-xl xl:w-[350px]">
+        <div class="relative min-h-[640px] w-full bg-white dark:bg-dark-1 max-lg:max-h-[70vh] max-lg:shadow-sm lg:w-[300px] lg:rounded-xl xl:w-[350px]">
           <div class="absolute inset-0 z-0 overflow-hidden rounded-xl">
             <WatchComment :data="data" class="h-full w-full" @finish="onFinish" @start="onStart" />
           </div>

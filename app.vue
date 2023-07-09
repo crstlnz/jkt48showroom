@@ -42,19 +42,17 @@ if (typeof window !== 'undefined') {
     <Dialog />
     <ShowroomUserDraggable />
     <NotificationView />
-    <NuxtLayout
-      :transition="{
-        name: 'layout',
-        mode: 'out-in',
-      }"
-    >
+    <NuxtLayout>
       <NuxtPage
+        :key="key"
+      />
+      <!-- <NuxtPage
         :key="key"
         :transition="{
           name: 'page',
           mode: 'out-in',
         }"
-      />
+      /> -->
     </NuxtLayout>
   </div>
 </template>

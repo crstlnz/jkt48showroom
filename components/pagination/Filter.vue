@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 const props = defineProps({
+  search: String,
   members: {
     type: Array,
     default() {
@@ -14,7 +15,7 @@ const props = defineProps({
   },
 })
 const emit = defineEmits<{ (e: 'apply', filter: any): void; (e: 'title', title: string): void; (e: 'showDuration', show: boolean): void }>()
-const $device = useDevice()
+// const $device = useDevice()
 const config = useAppConfig()
 const SortList: SortData[] = config.sortList
 
@@ -110,8 +111,8 @@ function clearSearch() {
         <Icon name="ph:caret-circle-right" />
         <span class="text-base">{{ $t("sort.title") }}</span>
       </div>
-      <button type="button" aria-label="Sorting Type" class="dark:bg-dark-2/50 group h-8 w-8 overflow-hidden rounded-md bg-slate-200/70" @click="setOrder((temp.order ?? query.order ?? defaultQuery.order) > 0 ? -1 : 1)">
-        <span class="group-hover:bg-second-2/90 flex h-full w-full items-center justify-center group-hover:text-white">
+      <button type="button" aria-label="Sorting Type" class="group h-8 w-8 overflow-hidden rounded-md bg-slate-200/70 dark:bg-dark-2/50" @click="setOrder((temp.order ?? query.order ?? defaultQuery.order) > 0 ? -1 : 1)">
+        <span class="flex h-full w-full items-center justify-center group-hover:bg-second-2/90 group-hover:text-white">
           <Icon v-if="(temp.order ?? query.order ?? -1) > 0" name="ph:sort-ascending-bold" />
           <Icon v-else name="ph:sort-descending-bold" />
         </span>
@@ -119,12 +120,12 @@ function clearSearch() {
     </div>
 
     <ul
-      class="dark:bg-dark-2/50 max-h-[250px] overflow-hidden overflow-y-auto rounded-xl bg-slate-200/70"
+      class="max-h-[250px] overflow-hidden overflow-y-auto rounded-xl bg-slate-200/70 dark:bg-dark-2/50"
     >
       <li v-for="item in SortList" :key="item.id">
         <button
           type="button"
-          class="hover:bg-second-2/20 w-full cursor-pointer px-4 py-2 font-bold lg:py-3"
+          class="w-full cursor-pointer px-4 py-2 font-bold hover:bg-second-2/20 lg:py-3"
           :class="{
             '!bg-second-2/90 text-white': item.id === (temp.sort ?? query.sort),
           }"
@@ -136,7 +137,7 @@ function clearSearch() {
     </ul>
 
     <div
-      class="dark:bg-dark-2/50 hover:[&>button]:bg-second-2/20 flex space-x-1 overflow-hidden rounded-xl bg-slate-200/70 [&>*]:cursor-pointer [&>button]:flex-1 [&>button]:p-2 lg:[&>button]:p-2 [&>div]:flex-1"
+      class="flex space-x-1 overflow-hidden rounded-xl bg-slate-200/70 dark:bg-dark-2/50 [&>*]:cursor-pointer [&>button]:flex-1 [&>button]:p-2 hover:[&>button]:bg-second-2/20 lg:[&>button]:p-2 [&>div]:flex-1"
     >
       <button
         type="button"
@@ -160,7 +161,7 @@ function clearSearch() {
     <button
       type="button"
       :disabled="!isEnabled"
-      class="hover bg-second-2/80 hover:bg-second-2 disabled:bg-second-2/40 w-full select-none rounded-xl p-2 text-center font-bold text-white transition-transform active:scale-95 disabled:text-gray-400 disabled:active:scale-100 disabled:dark:text-gray-500 lg:p-3"
+      class="hover w-full select-none rounded-xl bg-second-2/80 p-2 text-center font-bold text-white transition-transform hover:bg-second-2 active:scale-95 disabled:bg-second-2/40 disabled:text-gray-400 disabled:active:scale-100 disabled:dark:text-gray-500 lg:p-3"
       @click="apply"
     >
       {{ $t("sort.apply") }}

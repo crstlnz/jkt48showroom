@@ -11,6 +11,7 @@ export default defineNuxtConfig({
   app: {
     rootId: 'app',
     layoutTransition: { name: 'layout', mode: 'out-in' },
+    pageTransition: { name: 'page', mode: 'out-in' },
   },
   runtimeConfig: {
     admin_ids: process.env.DISCORD_ADMINS,

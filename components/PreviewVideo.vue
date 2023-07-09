@@ -65,6 +65,6 @@ defineExpose({ play, stop, buffer })
       <Icon v-if="isMuted" name="ph:speaker-simple-slash-fill" />
       <Icon v-else name="ph:speaker-simple-high-fill" />
     </button>
-    <video ref="video" class="dark:bg-dark-1/70 h-full w-full overflow-hidden bg-slate-200 object-cover opacity-0 transition-opacity duration-300" :class="{ 'opacity-100': videoLoaded }" />
+    <video ref="video" class="h-full w-full overflow-hidden bg-slate-200 object-cover opacity-0 transition-opacity duration-300 dark:bg-dark-1/70" :class="{ 'opacity-100': videoLoaded }" />
   </div>
 </template>

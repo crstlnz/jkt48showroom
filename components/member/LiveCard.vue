@@ -128,9 +128,12 @@ async function refreshDate() {
           Keep Hover
         </div>
         <div section="preview-on" :class="{ 'visible opacity-100': isPreview, 'invisible opacity-0': !isPreview }" class="absolute inset-x-0 top-0 z-20 transition-opacity duration-[400ms]">
-          <LazyPreviewVideo ref="preview" :src="streamingURL" :playing="playing" />
+          <LazyPreviewVideo v-if="!live.is_premium" ref="preview" :src="streamingURL" :playing="playing" />
+          <div v-else class="flex aspect-video h-full w-full items-center justify-center bg-black/90 font-bold text-white">
+            {{ $t("premium_live") }}
+          </div>
         </div>
-        <div section="preview-off" :class="{ 'dark:bg-dark-1/60 bg-slate-200': isHovered && !isPreview && isSupported }" class="relative top-0 aspect-video overflow-hidden rounded-t-xl transition-colors">
+        <div section="preview-off" :class="{ 'bg-slate-200 dark:bg-dark-1/60': isHovered && !isPreview && isSupported }" class="relative top-0 aspect-video overflow-hidden rounded-t-xl transition-colors">
           <div class="relative inset-0 flex h-full items-end justify-center">
             <div
               :class="{ 'pointer-events-none': openMenu }"
@@ -163,6 +166,7 @@ async function refreshDate() {
             <div class="text-xs leading-5 md:font-semibold" />
           </div>
           <div
+            v-if="!live.is_premium"
             class="inline-block h-4 rounded-md bg-gray-500 px-1.5 align-middle text-[10px] leading-4 text-white md:h-5 md:text-xs md:font-semibold md:leading-5"
             :title="dateString ? $t('date.started', { date: dateString }) : 'Start date not provided'"
           >
@@ -176,6 +180,9 @@ async function refreshDate() {
                 <Icon name="ion:md-refresh" class="self-center text-base" />
               </button>
             </div>
+          </div>
+          <div v-else class="inline-block h-4 rounded-md bg-gray-500 px-1.5 align-middle text-[10px] leading-4 text-white md:h-5 md:text-xs md:font-semibold md:leading-5">
+            Premium Live
           </div>
         </div>
         <h2 class="flex-1 truncate text-sm font-bold md:text-base" :title="live.name">

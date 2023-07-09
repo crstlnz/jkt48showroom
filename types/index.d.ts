@@ -45,6 +45,7 @@ interface IRoomLive {
   room_exists: boolean;
   started_at: string | number;
   streaming_url_list: ShowroomAPI.StreamingURL[];
+  is_premium? : boolean;
 }
 
 // _id: '6245e2fe1a8860fba4cdaccd',
@@ -231,5 +232,6 @@ declare module "vue-virtual-scroller";
 declare module "cors";
 declare module "vue-twitter-timeline";
 declare module 'hls.js/dist/hls.min.js';
+declare module 'vue-gtag-next';
 
 declare function useNuxtApp(): NuxtApp & {$device : any};
