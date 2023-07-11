@@ -28,7 +28,7 @@ useHead({
     {
       hid: 'description',
       name: 'description',
-      content: 'JKT48 Showroom Logs',
+      content: `${title} Logs`,
     },
   ],
   link: [

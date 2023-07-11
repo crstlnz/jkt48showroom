@@ -157,7 +157,7 @@ onMounted(() => {
     <!-- <div id="login-bg" class="fixed inset-0 -z-10 brightness-75 max-sm:blur-sm" /> -->
     <div class="flex h-[20vh] items-center justify-center text-center">
       <NuxtLink to="/" class="text-3xl font-bold text-white lg:text-4xl">
-        JKT48 Showroom
+        {{ getTitle(settings.group) }}
       </NuxtLink>
     </div>
     <div class="bg-container mx-auto w-[350px] max-w-[80vw] overflow-hidden rounded-3xl shadow-xl">
