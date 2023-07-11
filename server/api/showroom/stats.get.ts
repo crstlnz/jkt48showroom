@@ -2,6 +2,7 @@ import { getMembers } from './members.get'
 import { getDateRange } from '~~/library/utils'
 import ShowroomLog from '~~/library/database/schema/showroom/ShowroomLog'
 import cache from '~~/library/utils/cache'
+import config from '~~/app.config'
 
 function isIDateRangeType(value: string): value is IDateRangeType {
   return ['weekly', 'monthly', 'quarterly'].includes(value)
@@ -9,25 +10,27 @@ function isIDateRangeType(value: string): value is IDateRangeType {
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
+  const group = config.getGroup(query.group as string)
   const type = isIDateRangeType(query.type as string) ? query.type : undefined
-  return await getStats(type as IDateRangeType)
+  return await getStats(type as IDateRangeType, group)
 })
 
 export { getDateRange }
 
-export async function getStats(type: IDateRangeType = 'quarterly'): Promise<IShowroomStats> {
+export async function getStats(type: IDateRangeType = 'quarterly', group: string | null = null): Promise<IShowroomStats> {
   const dateRange = getDateRange(type)
-  const data = await cache.fetch<IShowroomStats>(type, () => fetchData(type), 2629800000)
+  const cacheString = (group == null) ? type : `${group}-${type}`
+  const data = await cache.fetch<IShowroomStats>(cacheString, () => fetchData(type, group), 2629800000)
   if (data?.date?.to === dateRange.to) return data
   return await fetchData(type)
 }
 
-export async function fetchData(type: IDateRangeType): Promise<IShowroomStats> {
+export async function fetchData(type: IDateRangeType, group: string | null = null): Promise<IShowroomStats> {
   const dateRange = {
     from: getDateRange('quarterly').from,
     to: getDateRange('weekly').to,
   } // get all data and then convert it to monthly and weekly
-  const members = await getMembers()
+  const members = await getMembers(group)
   if (!members) {
     throw createError({
       statusCode: 500,

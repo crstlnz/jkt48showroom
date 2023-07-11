@@ -1,12 +1,19 @@
 type OrderType = 1 | -1;
 type sortType = "date" | "gift" | "views" | "duration"
+
+interface Banner {
+  img : string;
+  url : string;
+}
+
 interface RecentsQuery {
   sort?: string;
   order?: number;
   search?: string;
   page?: number;
   perpage?: number;
-  filter?: "graduated" | "active" | "all";
+  filter?: "graduated" | "active" | "all",
+  group? : Group
 }
 
 interface ILiveInfo {
@@ -227,6 +234,10 @@ interface SortData {
   }
   id: sortType
 }
+
+type Group  = "jkt48" | "hinatazaka46" | "all"
+type IShowroomMemberCustom = Omit<IShowroomMember, 'member_data'> & { member_data: I48Member | null }
+
 
 declare module "vue-virtual-scroller";
 declare module "cors";

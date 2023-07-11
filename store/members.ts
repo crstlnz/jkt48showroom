@@ -1,11 +1,15 @@
+import { useSettings } from './settings'
+
 export const useMembers = defineStore('members', () => {
+  const config = useAppConfig()
   const error = ref(false)
   const loading = ref(false)
   const members = ref<IMember[]>([])
+  const settings = useSettings()
   async function load() {
     try {
       loading.value = true
-      const data = await $fetch('/api/showroom/members')
+      const data = await $fetch('/api/showroom/members', { query: { group: settings.group } })
       error.value = false
       loading.value = false
       members.value = data

@@ -16,12 +16,12 @@ const date = $fromNow(props.data.date)
       target="_blank"
       :to="$liveURL(data.url)"
     >
-      <LazyImage lazy="false" class="h-full w-full" :alt="data.name" :src="$fixCloudinary(data.img)" />
+      <LazyImage lazy="false" class="h-full w-full" :alt="data.name" :src="$fixCloudinary(data.img_alt || data.img || $errorPicture)" />
     </NuxtLink>
     <div class="info flex w-0 flex-1 flex-col text-left">
       <div class="name flex flex-1 gap-2">
         <h2
-          class="flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-sm font-bold md:text-base"
+          class="flex-1 truncate text-sm font-bold md:text-base"
           :title="data.name"
         >
           {{ data.name }}

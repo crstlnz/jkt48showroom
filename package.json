@@ -1,6 +1,6 @@
 {
   "name": "jkt48showroom",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "engines": {
     "node": ">=18.15.x"
   },
@@ -42,7 +42,7 @@
     "@nuxtjs/i18n": "8.0.0-beta.13",
     "@nuxtjs/tailwindcss": "^6.8.0",
     "@pinia/nuxt": "^0.4.11",
-    "@sidebase/nuxt-auth": "0.6.0-beta.2",
+    "@sidebase/nuxt-auth": "0.6.0-beta.3",
     "@types/formidable": "^2.0.6",
     "@types/node": "20.2.5",
     "@types/node-cron": "^3.0.8",

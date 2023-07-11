@@ -7,6 +7,9 @@ export default model<I48Member>(
       type: String,
       required: true,
     },
+    kanji: {
+      type: String,
+    },
     isGraduate: {
       type: Boolean,
       required: true,

@@ -2,18 +2,19 @@ import cache from '~~/library/utils/cache'
 import Showroom from '~~/library/database/schema/showroom/Showroom'
 import config from '~~/app.config'
 
-export default defineEventHandler(async (): Promise<IMember[]> => {
-  return await getMembers()
+export default defineEventHandler(async (event): Promise<IMember[]> => {
+  const query = getQuery(event)
+  const group = config.getGroup(query.group as string)
+  return await getMembers(group)
 })
-const group = ['jkt48', 'hinatazaka46'].includes(config.group) ? config.group : undefined
+// const group =
 const jkt48officialId = 332503
 const time = 3600000 // 1 hour
-const cacheKey = group ? `${group}-members` : 'members'
-async function getMembers(): Promise<IMember[]> {
-  return await cache.fetch<IMember[]>(cacheKey, fetchData, time).catch(() => [])
+async function getMembers(group: string | null = null): Promise<IMember[]> {
+  return await cache.fetch<IMember[]>(group ? `${group}-members` : 'members', () => fetchData(group), time).catch(() => [])
 }
 
-async function fetchData(): Promise<IMember[]> {
+async function fetchData(group: string | null = null): Promise<IMember[]> {
   try {
     const members: IShowroomMember[] = await Showroom.find(group ? { group } : {})
       .select('name description img url room_id member_data room_exists')

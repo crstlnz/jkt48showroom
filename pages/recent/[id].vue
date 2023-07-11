@@ -4,8 +4,11 @@ import timeFormat from '~/library/plugins/timeFormat'
 import { LazyImage } from '#components'
 import { useUser } from '~/store/user'
 import { useNotifications } from '~/store/notifications'
+import { useSettings } from '~~/store/settings'
 
 const route = useRoute()
+const settings = useSettings()
+const { getTitle } = useAppConfig()
 const { data, error, pending } = useFetch(`/api/showroom/recent/${route.params.id}`)
 const liked = ref(false)
 
@@ -14,7 +17,7 @@ watch(data, (val) => {
 })
 const { locale } = useI18n()
 const duration = computed(() => {
-  return timeFormat.detailDuration(new Date(data.value?.live_info.date.end ?? 0), new Date(data.value?.live_info.date.start ?? 0), locale.value as any, Infinity)
+  return timeFormat.detailDuration(new Date(data.value?.live_info.date.end ?? 0), new Date(data.value?.live_info.date.start ?? 0), locale.value as any, Number.POSITIVE_INFINITY)
 })
 
 const users = computed<Map<number, IFansCompact>>(() => {
@@ -108,7 +111,7 @@ function setLike() {
 }
 
 const title = computed(() => {
-  return (!pending.value && (data.value || !error.value)) ? `${data.value?.room_info?.name} Log` : 'JKT48 Showroom'
+  return (!pending.value && (data.value || !error.value)) ? `${data.value?.room_info?.name} Log` : getTitle(settings.group)
 })
 
 useHead({
@@ -162,7 +165,7 @@ useHead({
               </div>
             </div>
           </div>
-          <div class="bg-container flex flex-1 flex-col gap-5 rounded-2xl p-5">
+          <div class="bg-container flex flex-1 flex-col gap-5 p-5 sm:rounded-2xl">
             <ShowroomTimeline :date-start="data.live_info?.date?.start" :date-end="data.live_info?.date?.end" />
             <div class="flex flex-col">
               <div

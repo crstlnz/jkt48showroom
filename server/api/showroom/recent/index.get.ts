@@ -4,17 +4,17 @@ import ShowroomLog from '~~/library/database/schema/showroom/ShowroomLog'
 import config from '~~/app.config'
 
 export default defineEventHandler(async (event): Promise<IApiRecents> => await getRecents(getQuery(event)))
-// const group = ['jkt48', 'hinatazaka46'].includes(config.group ?? 'all') ? config.group : 'all'
 
 export async function getRecents(qq: any = null): Promise<IApiRecents> {
   let page = 1
+  const group = config.getGroup(qq.group)
   const maxPerpage = 30
   const perpage = Math.min(qq.perpage || 10, maxPerpage)
   const query: RecentsQuery = qq ?? {}
   if (query.page) page = Number(query.page) ?? 1
   if (page < 1) page = 1
   const sort: sortType = config.isSort(query.sort) ? query.sort : 'date'
-  const order = parseInt((query.order ?? '-1') as string) || -1
+  const order = Number.parseInt((query.order ?? '-1') as string) || -1
   // ORDER : if -1 is descending. if 1 is ascending
 
   function getSort(sort: sortType): string {
@@ -34,7 +34,7 @@ export async function getRecents(qq: any = null): Promise<IApiRecents> {
     })()}`
   }
 
-  let members = await getMembers()
+  let members = await getMembers(group)
   let logs = [] as any[]
   let total = 0
 

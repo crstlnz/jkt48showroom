@@ -80,8 +80,8 @@ devDependencies:
     specifier: ^0.4.11
     version: 0.4.11(typescript@5.1.6)(vue@3.3.4)
   '@sidebase/nuxt-auth':
-    specifier: 0.6.0-beta.2
-    version: 0.6.0-beta.2(next-auth@4.21.1)(vue@3.3.4)
+    specifier: 0.6.0-beta.3
+    version: 0.6.0-beta.3(next-auth@4.21.1)(vue@3.3.4)
   '@types/formidable':
     specifier: ^2.0.6
     version: 2.0.6
@@ -2130,8 +2130,8 @@ packages:
       rollup: 3.26.2
     dev: true
 
-  /@sidebase/nuxt-auth@0.6.0-beta.2(next-auth@4.21.1)(vue@3.3.4):
-    resolution: {integrity: sha512-T8cm9gx2V/Wn530r0fdI6EfYzsGfOXBIANtK5Dz7VT4PVFnNRy4ifE9zNRnmtYyTMahORyokBOckQyQ2x/JFpQ==}
+  /@sidebase/nuxt-auth@0.6.0-beta.3(next-auth@4.21.1)(vue@3.3.4):
+    resolution: {integrity: sha512-r0XU2HOUTdzrbxO9nHmP4qvkhCPLL2HdJSfrDn6tsfvxQTo0Aq/5JuPwjP5xu1DhkV9YcolLfFRWjH8tbzUIrQ==}
     peerDependencies:
       next-auth: ^4.21.1
     dependencies:

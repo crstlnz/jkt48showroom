@@ -23,7 +23,7 @@ const isLoading = ref(true)
 const volume = ref(0)
 
 function setVolume(v: any, forced = false) {
-  const n = parseInt(v)
+  const n = Number.parseInt(v)
   if (video.value) {
     if (n === 0) {
       video.value.muted = true

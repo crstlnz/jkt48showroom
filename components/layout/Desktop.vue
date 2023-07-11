@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { useSettings } from '~~/store/settings'
 import { useUser } from '~/store/user'
 
 const props = defineProps<{
@@ -14,6 +15,9 @@ const menus = computed(() => {
   return props.menus.filter(i =>
     (!i.login || authenticated) && (!i.admin || user.isAdmin))
 })
+
+const settings = useSettings()
+const { getIcon } = useAppConfig()
 </script>
 
 <template>
@@ -21,7 +25,7 @@ const menus = computed(() => {
     <div class="flex h-full flex-col justify-between gap-3 [&>div]:mx-3" :class="{ 'items-center': !isLarge }">
       <div class="flex-1 space-y-2">
         <NuxtLink to="/" class="mb-1 mt-4 inline-block aspect-square w-14 rounded-full text-3xl font-bold hover:bg-hover">
-          <img class="w-full p-2" src="https://res.cloudinary.com/haymzm4wp/image/upload/v1681138674/assets/img/showroomjkt48circle_ddxdk7.ico" alt="JKT48 Showroom Logo">
+          <img class="aspect-square w-full object-contain p-2" :src="getIcon(settings.group)" alt="Logo">
         </NuxtLink>
         <LayoutMenu
           v-for="m in menus"

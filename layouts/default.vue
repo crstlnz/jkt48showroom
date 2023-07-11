@@ -1,11 +1,17 @@
 <script lang="ts" setup>
+import { useSettings } from '~~/store/settings'
+
 const i18nHead = useLocaleHead({
   addDirAttribute: true,
   identifierAttribute: 'id',
   addSeoAttributes: true,
 })
 
-const title = 'JKT48 Showroom'
+const settings = useSettings()
+const { getIcon } = useAppConfig()
+
+const { getTitle, getFavicon } = useAppConfig()
+const title = getTitle(settings.group)
 const menuOpen = ref(false)
 
 useHead({
@@ -27,7 +33,7 @@ useHead({
   ],
   link: [
     ...(i18nHead.value.link || []),
-    { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+    { rel: 'icon', type: 'image/x-icon', href: getFavicon(settings.group) },
   ],
 })
 
@@ -103,7 +109,7 @@ const DesktopLayout = resolveComponent('LayoutDesktop')
     <ClientOnly>
       <template #fallback>
         <div class="flex h-[100vh] w-[100vw] items-center justify-center">
-          <img class="h-20 w-20" src="https://res.cloudinary.com/haymzm4wp/image/upload/v1681138674/assets/img/showroomjkt48circle_ddxdk7.ico" alt="JKT48 Showroom Logo">
+          <img class="h-20 w-20" :src="getIcon(settings.group)" alt="Logo">
         </div>
       </template>
       <!-- <DesktopLayout :menus="menus" @toggle-dark="toggleDark()">

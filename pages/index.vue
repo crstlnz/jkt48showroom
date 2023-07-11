@@ -1,7 +1,7 @@
 <template>
   <LayoutRow title="Home">
     <template #default>
-      <HomeBanner class="aspect-[38/9] overflow-hidden shadow-sm lg:aspect-[60/9]" />
+      <HomeBanner class="aspect-[3/1] overflow-hidden shadow-sm lg:aspect-[4.5/1]" />
       <div class="flex flex-col gap-5 pt-3">
         <HomeLiveNow />
         <HomeStats />

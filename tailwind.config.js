@@ -12,6 +12,7 @@ module.exports = {
         belowNav: '100',
         nav: '150',
         aboveNav: '200',
+        notification: '300',
       },
       boxShadow: {
         all: '0 0 0 1600px rgba(0,0,0,0.65)',

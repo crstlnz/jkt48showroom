@@ -1,9 +1,12 @@
 <script lang="ts" setup>
 import type { Serializer } from '@vueuse/core'
 import { useEventListener } from '@vueuse/core'
+import { useSettings } from '~~/store/settings'
 import JSONSerializer from '~~/library/serializer/json'
 import { getDateRange } from '~~/library/utils/index'
 import sleep from '~~/library/utils/sleep'
+
+const settings = useSettings()
 
 const statsTypes: IDateRangeType[] = ['weekly', 'monthly', 'quarterly']
 const defaultStat: IDateRangeType = 'weekly'
@@ -27,15 +30,17 @@ const type = useLocalStorage('stat-type', defaultStat, { serializer: new Seriali
 // const type = useCookie('statType', { default: () => defaultStat })
 const pending = ref(true)
 const error = ref(false)
-
-const localData = computed(() => useLocalStorage<IShowroomStats | null>(`stats-${type.value}`, null, { serializer: new JSONSerializer(null) }))
+const cacheKey = computed(() => {
+  return settings.group == null ? type.value : `${settings.group}-${type.value}`
+})
+const localData = computed(() => useLocalStorage<IShowroomStats | null>(`stats-${cacheKey.value}`, null, { serializer: new JSONSerializer(null) }))
 const data = computed(() => localData.value.value)
 
 async function fetch() {
   if (error.value === true) error.value = false
   if (pending.value === false) pending.value = true
   try {
-    localData.value.value = await $fetch(`/api/showroom/stats?type=${type.value || defaultStat}`)
+    localData.value.value = await $fetch(`/api/showroom/stats?type=${type.value || defaultStat}&group=${settings.group}`)
   }
   catch (e) {
     if (error.value === false) error.value = true

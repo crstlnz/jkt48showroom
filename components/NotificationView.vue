@@ -24,7 +24,7 @@ function beforeLeave(el: Element) {
 
 <template>
   <teleport to="body">
-    <div class="pointer-events-none fixed inset-0 z-aboveNav md:m-8">
+    <div class="pointer-events-none fixed inset-0 z-notification md:m-8">
       <TransitionGroup
         ref="containerNotif"
         tag="div"

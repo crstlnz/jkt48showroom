@@ -62,13 +62,62 @@ const SortList: SortData[] = [
   },
 ]
 export default {
-  group: 'jkt48', // jkt48, hinatazaka or all
+  // group: 'hinatazaka46', // jkt48, hinatazaka or all
   ...urls,
   sortList: SortList,
   defaultRecentQuery,
   isSort,
+  getBanner(group: string): Banner {
+    switch (group) {
+      case 'hinatazaka46' : {
+        return {
+          img: 'https://res.cloudinary.com/haymzm4wp/image/upload/h_400,f_auto/v1689063914/assets/img/hinabannerwide_hurqhb.png',
+          url: 'https://www.youtube.com/watch?v=vYKRIwJGRKk&ab_channel=%E6%97%A5%E5%90%91%E5%9D%8246OFFICIALYouTubeCHANNEL',
+        }
+      }
+      default : {
+        return {
+          img: 'https://res.cloudinary.com/haymzm4wp/image/upload/h_400,f_auto/v1689086407/assets/img/jkt48banner_nvyix5.png',
+          url: 'https://www.youtube.com/watch?v=2wvqBMjPmqk&ab_channel=JKT48',
+        }
+      }
+    }
+  },
+  getIcon(group: string) {
+    switch (group) {
+      case 'hinatazaka46' : {
+        return 'https://res.cloudinary.com/haymzm4wp/image/upload/h_200,w_200/v1689065442/assets/img/hinalogo_x90izm.png'
+      }
+      default : {
+        return 'https://res.cloudinary.com/haymzm4wp/image/upload/v1681138674/assets/img/showroomjkt48circle_ddxdk7.ico'
+      }
+    }
+  },
+  getTitle(group: string) {
+    switch (group) {
+      case 'hinatazaka46' : {
+        return 'Hinatazaka46 Showroom'
+      }
+      default : {
+        return 'JKT48 Showroom'
+      }
+    }
+  },
+  getFavicon(group: string) {
+    switch (group) {
+      case 'hinatazaka46' : {
+        return '/hinalogo.ico'
+      }
+      default : {
+        return '/favicon.ico'
+      }
+    }
+  },
   isAdmin(id: string) {
     const ids = (process.env.DISCORD_ADMINS ?? '').split(',').map(i => i.trim())
     return ids.includes(id)
+  },
+  getGroup(group: string | null) {
+    return (group == null) ? 'jkt48' : ['jkt48', 'hinatazaka46'].includes(String(group)) ? String(group) : null
   },
 }

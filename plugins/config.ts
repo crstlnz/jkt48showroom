@@ -9,7 +9,7 @@ export default defineNuxtPlugin(() => {
       fixCloudinary: (url: string, w = 300, h = 300) => {
         if (url?.includes('res.cloudinary.com')) {
           const d = url.split('upload/')
-          return d.join(`upload/c_fit,c_fill,g_face,h_${h},w_${w}/`)
+          return d.join(`upload/c_fit,c_fill,g_face,h_${h},w_${w},f_auto/`)
         }
         return url
       },

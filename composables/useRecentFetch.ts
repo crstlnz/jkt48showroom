@@ -1,3 +1,5 @@
+import { useSettings } from '~~/store/settings'
+
 interface RecentFetchOpts {
   changeRoute?: boolean
   mode?: 'infinite' | 'page'
@@ -15,6 +17,7 @@ export default function (opts: RecentFetchOpts | null = null) {
   const config = useAppConfig()
   const defaultQuery: RecentsQuery = config.defaultRecentQuery
 
+  const settings = useSettings()
   const query = ref<RecentsQuery>(buildQuery())
   // const query = useSessionStorage<RecentsQuery>('recent-query', buildQuery())
   // if (urlroute.query !== query.value) {
@@ -93,7 +96,7 @@ export default function (opts: RecentFetchOpts | null = null) {
 
   function changePage(page: number) {
     if (pending.value || cooldown.value) return
-    if (isNaN(page)) page = 1
+    if (Number.isNaN(page)) page = 1
     settingQuery({ ...query.value, page })
   }
 
@@ -106,6 +109,7 @@ export default function (opts: RecentFetchOpts | null = null) {
     if (q.page < 1) q.page = 1
 
     if (q.filter !== 'graduated' && q.filter !== 'active') q.filter = 'all'
+    q.group = settings.group as Group
     return q
   }
 

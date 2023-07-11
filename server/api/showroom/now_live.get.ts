@@ -1,21 +1,24 @@
 import { getMembers } from './members.get'
 import { getAllFollows, getIsLive, getOnlives, getRoomStatus, getStreamingURL } from '~~/library/api/showroom'
-
+import config from '~~/app.config'
 import cache from '~~/library/utils/cache'
 
-export default defineEventHandler(async (): Promise<IRoomLive[]> => {
-  return await getNowLive()
+export default defineEventHandler(async (event): Promise<IRoomLive[]> => {
+  const query = getQuery(event)
+  const group = config.getGroup(query.group as string)
+  return await getNowLive(group)
 })
 const time = 5000
-async function getNowLive(): Promise<IRoomLive[]> {
+async function getNowLive(group: string | null = null): Promise<IRoomLive[]> {
   return await cache
-    .fetch<IRoomLive[]>('now_live', () => getNowLiveCookies(), time)
+    .fetch<IRoomLive[]>(group ? `${group}-now_live` : 'now_live', () => getNowLiveCookies(null, group), time)
 }
 
 async function getNowLiveDirect(
   membersData: IMember[] | null = null,
+  group: string | null = null,
 ): Promise<IRoomLive[]> {
-  const members: IMember[] = membersData ?? await getMembers()
+  const members: IMember[] = membersData ?? await getMembers(group)
   const promises: Promise<IRoomLive | null>[] = []
   for (const member of members) {
     promises.push(
@@ -48,8 +51,8 @@ async function getNowLiveDirect(
   return data.filter(i => i) as IRoomLive[]
 }
 
-async function getNowLiveCookies(membersData: IMember[] | null = null): Promise<IRoomLive[]> {
-  const members: IMember[] = membersData ?? await getMembers()
+async function getNowLiveCookies(membersData: IMember[] | null = null, group: string | null = null): Promise<IRoomLive[]> {
+  const members: IMember[] = membersData ?? await getMembers(group)
   const rooms = await getAllFollows().catch(_ => [])
   const roomMap = new Map<string, ShowroomAPI.RoomFollow>()
   const result: Promise<IRoomLive>[] = []

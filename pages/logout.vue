@@ -1,9 +1,12 @@
 <script lang="ts" setup>
+import { useSettings } from '~~/store/settings'
 import { useUser } from '~/store/user'
 
 definePageMeta({ layout: false })
+const settings = useSettings()
+const { getTitle } = useAppConfig()
 useHead({
-  title: 'JKT48 Showroom',
+  title: getTitle(settings.group),
 })
 const { user, signOut, authenticated } = useUser()
 

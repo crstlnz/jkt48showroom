@@ -1,6 +1,5 @@
 import LocalCacheManager from './LocalCacheManager'
 import RedisManager from './RedisManager'
-import appConfig from '~~/app.config'
 
 type cacheType = 'redis' | 'local' | 'auto'
 
@@ -114,4 +113,4 @@ class CacheManager {
   }
 }
 
-export default new CacheManager({ key: appConfig.group, cacheType: 'redis' })
+export default new CacheManager({ key: 'GROUP', cacheType: 'redis' })

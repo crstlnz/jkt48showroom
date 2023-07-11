@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { useSettings } from '~~/store/settings'
 import { useUser } from '~/store/user'
 
 definePageMeta({ layout: 'empty' })
@@ -12,13 +13,15 @@ const i18nHead = useLocaleHead({
   addSeoAttributes: true,
 })
 
+const settings = useSettings()
+const { getFavicon, getTitle } = useAppConfig()
 // const dataA = await getSession()
 useHead({
   htmlAttrs: {
     lang: i18nHead.value.htmlAttrs?.lang,
     dir: i18nHead.value.htmlAttrs?.dir,
   },
-  title: 'Login - JKT48 Showroom',
+  title: `Login - ${getTitle(settings.group)}`,
   meta: [
     ...(i18nHead.value.meta || []),
     { charset: 'utf-8' },
@@ -26,12 +29,12 @@ useHead({
     {
       hid: 'description',
       name: 'description',
-      content: 'JKT48 Showroom Login Page',
+      content: `${getTitle(settings.group)} Login Page`,
     },
   ],
   link: [
     ...(i18nHead.value.link || []),
-    { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+    { rel: 'icon', type: 'image/x-icon', href: getFavicon(settings.group) },
   ],
 })
 

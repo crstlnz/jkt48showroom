@@ -1,19 +1,22 @@
 import { getMembers } from './members.get'
 import cache from '~~/library/utils/cache'
 import { getNextLive as fetchNextLive, getAllFollows } from '~/library/api/showroom'
+import config from '~~/app.config'
 
-export default defineEventHandler(async () => {
-  return await getNextLive()
+export default defineEventHandler(async (event) => {
+  await cache.clear()
+  const query = getQuery(event)
+  const group = config.getGroup(query.group as string)
+  return await getNextLive(group)
 })
 
 const time = 3600000 // 1 hours
-async function getNextLive(): Promise<INextLive[]> {
-  await cache.delete('next_live')
-  return await cache.fetch<INextLive[]>('next_live', () => getFromCookies(), time).catch(() => [])
+async function getNextLive(group: string | null = null): Promise<INextLive[]> {
+  return await cache.fetch<INextLive[]>(group ? `${group}-next_live` : 'next_live', () => getFromCookies(null, group), time).catch(() => [])
 }
 
-async function getFromCookies(membersData: IMember[] | null = null): Promise<INextLive[]> {
-  const members: IMember[] = membersData ?? await getMembers()
+async function getFromCookies(membersData: IMember[] | null = null, group: string | null = null): Promise<INextLive[]> {
+  const members: IMember[] = membersData ?? await getMembers(group)
   const rooms = await getAllFollows().catch(_ => [])
   const roomMap = new Map<string, ShowroomAPI.RoomFollow>()
   const result: INextLive[] = []
@@ -74,7 +77,7 @@ async function getDirectNextLive(membersData: IMember[] | null = null): Promise<
               is_graduate: member.is_graduate,
               is_group: member.is_group,
               room_exists: member.room_exists,
-              date: new Date(data.epoch * 1000).toISOString(),
+              date: new Date(new Date(data.epoch * 1000).toLocaleString('en-US', { timeZone: 'Asia/Tokyo' })).toISOString(),
             }
           }
           catch (e) {

@@ -67,7 +67,7 @@ function setGraduated(bool: boolean) {
 const defaultQuery = config.defaultRecentQuery
 
 function setOrder(order: 1 | -1) {
-  if (order === parseInt((props.query.order ?? defaultQuery.order))) {
+  if (order === Number.parseInt((props.query.order ?? defaultQuery.order))) {
     return delete temp.value.order
   }
   temp.value.order = order

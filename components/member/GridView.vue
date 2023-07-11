@@ -47,13 +47,14 @@ const onLives = useOnLives()
       :page-provider="getPage"
       :page-size="perpage"
       class="grid-member-list gap-4"
+      :respect-scroll-to-on-resize="true"
+      :get-key="(item : any) => item.room_id"
     >
       <template #probe>
         <div class="item pulse-color" />
       </template>
       <template #default="{ item, style }">
         <MemberCard
-          :key="item.room_id"
           :style="style"
           :data-id="item.name"
           class="shadow-sm"

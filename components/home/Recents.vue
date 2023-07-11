@@ -1,5 +1,11 @@
 <script lang="ts" setup>
+import { useSettings } from '~~/store/settings'
+
+const settings = useSettings()
 const { data, pending, refresh } = useFetch('/api/showroom/recent', {
+  query: {
+    group: settings.group,
+  },
   server: false,
 })
 
@@ -28,7 +34,7 @@ onFocus(() => {
         :recent="recent"
       />
     </div>
-    <div v-else class="dark:bg-dark-1 overflow-hidden">
+    <div v-else class="overflow-hidden dark:bg-dark-1">
       <div
         class="flex aspect-square flex-col items-center justify-center space-y-6 text-center md:space-y-8 xl:space-y-10"
       >

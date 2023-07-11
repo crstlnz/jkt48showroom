@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose'
-import Member from '../48group/members'
+import Member from '../48group/Member'
 
 const ShowroomSchema = new Schema<IShowroomMember>({
   name: {

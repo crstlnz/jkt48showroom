@@ -12,9 +12,9 @@ export default function (host: string, key: string) {
     socket.onmessage = (message) => {
       try {
         const msg = JSON.parse(message.data.split('\t')[2])
-        const code = parseInt(msg.t, 10)
+        const code = Number.parseInt(msg.t, 10)
         if (code === 1) {
-          if (!Number.isNaN(msg.cm) && parseInt(msg.cm) <= 50) return
+          if (!Number.isNaN(msg.cm) && Number.parseInt(msg.cm) <= 50) return
           const cm: Watch.Comment = {
             id: String(msg.u) + String(msg.created_at),
             user_id: msg.u,
