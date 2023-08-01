@@ -8,9 +8,14 @@ const props = defineProps<{
 }>()
 
 defineEmits(['toggleDark'])
+const isOpen = ref(false)
+const route = useRoute()
+
+watch(() => route.path, () => {
+  isOpen.value = false
+})
 
 const { authenticated, user, status } = useUser()
-const route = useRoute()
 const menus = computed(() => {
   return props.menus.filter(i =>
     i.mobile && (!i.login || authenticated) && (!i.admin || user.isAdmin))
@@ -21,7 +26,6 @@ const hiddenMenus = computed(() => {
     !i.mobile && (!i.login || authenticated) && (!i.admin || user.isAdmin))
 })
 
-const isOpen = ref(false)
 const el = ref<HTMLElement | null>()
 const isLocked = useScrollLock(el)
 
@@ -43,25 +47,27 @@ function closeMenu() {
 <template>
   <div class="w-full">
     <nav class="fixed inset-x-0 bottom-0 z-nav border-t-2 bg-white drop-shadow-md dark:border-dark-3 dark:bg-dark-2">
-      <div class="relative h-[60px] overflow-hidden">
-        <div class="absolute inset-x-0 top-1/2 flex -translate-y-1/2 justify-around gap-4 px-4">
-          <div v-for="menu in menus" :key="menu.title" class="flex flex-1 flex-col items-center">
-            <NuxtLink v-ripple :to="menu.url" class="flex aspect-square w-full cursor-pointer flex-col items-center justify-center rounded-full p-1">
-              <Icon :name="route.path !== menu.url ? menu.icon : menu.activeIcon" class="h-9 w-9 rounded-full p-1.5" :class="{ 'bg-hover': route.path === menu.url }" />
-              <div class="text-xs">
+      <div class="relative flex h-[60px] gap-4 overflow-hidden px-4">
+        <!-- <div class="absolute inset-x-0 top-1/2 flex h-[60px] -translate-y-1/2 items-stretch justify-around "> -->
+        <div v-for="menu in menus" :key="menu.title" class="relative flex w-0 flex-1 flex-col items-center">
+          <NuxtLink v-ripple :to="menu.url" class="relative top-1/2 h-20 w-20 shrink-0 -translate-y-1/2 cursor-pointer rounded-full">
+            <div class="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center">
+              <Icon :name="route.path !== menu.url ? menu.icon : menu.activeIcon" class="h-9 w-9 shrink-0 rounded-full p-1.5" :class="{ 'bg-hover': route.path === menu.url }" />
+              <div class="shrink-0 text-xs">
                 {{ menu.title }}
               </div>
-            </NuxtLink>
-          </div>
-          <button class="flex flex-1 flex-col items-center" @click="openMenu">
-            <div class="flex aspect-square w-full cursor-pointer flex-col items-center justify-center rounded-full p-1">
-              <Icon name="ic:round-settings" class="h-9 w-9 rounded-full p-1.5" />
-              <div class="text-xs">
-                Settings
-              </div>
             </div>
-          </button>
+          </NuxtLink>
         </div>
+        <button class="relative flex w-0 flex-1 flex-col items-center" @click="openMenu">
+          <div class="absolute left-1/2 top-1/2 flex aspect-square -translate-x-1/2 -translate-y-1/2 cursor-pointer flex-col items-center justify-center rounded-full p-5">
+            <Icon name="ic:round-settings" class="h-9 w-9 shrink-0 rounded-full p-1.5" />
+            <div class="shrink-0 text-xs">
+              Settings
+            </div>
+          </div>
+        </button>
+        <!-- </div> -->
       </div>
     </nav>
     <div
@@ -90,7 +96,7 @@ function closeMenu() {
                 Login
               </div>
               <div class="font-light">
-                Login with Discord
+                Login with Showroom
               </div>
             </div>
           </NuxtLink>
@@ -101,17 +107,19 @@ function closeMenu() {
               <div class="text-base font-semibold">
                 {{ user.name }}
               </div>
-              <div class="text-left font-light">
-                #{{ user.discriminator }}
+              <div v-if="user.account_id" class="text-left font-light">
+                {{ user.account_id }}
               </div>
             </div>
           </div>
         </div>
         <div v-if="hiddenMenus.length" class="mt-5 flex flex-col items-start border-b pb-5">
-          <NuxtLink v-for="menu in hiddenMenus" :key="menu.title" :to="menu.url" class="flex items-center justify-start gap-3 rounded-full p-3" :class="{ 'bg-hover': route.path === menu.url }">
-            <Icon :name="menu.icon" class="h-7 w-7 rounded-full" />
-            <div class="text-xl">
-              {{ menu.title }}
+          <NuxtLink v-for="menu in hiddenMenus" :key="menu.title" :to="menu.url" class="flex w-full items-start justify-start">
+            <div class="flex items-center justify-start gap-3 rounded-full p-3" :class="{ 'bg-hover': route.path === menu.url }">
+              <Icon :name="menu.icon" class="h-7 w-7" />
+              <div class="text-xl">
+                {{ menu.title }}
+              </div>
             </div>
           </NuxtLink>
         </div>

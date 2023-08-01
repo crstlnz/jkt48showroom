@@ -6,6 +6,9 @@ import postcssJs from 'postcss-js'
 module.exports = {
   content: ['components/**/*.{vue,js}', 'layouts/**/*.vue', 'pages/**/*.vue', 'assets/css/*.{scss,css}'],
   darkMode: 'class',
+  future: {
+    hoverOnlyWhenSupported: true,
+  },
   theme: {
     extend: {
       zIndex: {

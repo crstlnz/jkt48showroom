@@ -1,10 +1,12 @@
 <script lang="ts" setup>
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   title: string
   subTitle?: string
+  search?: string
   enableSearch?: boolean
 }>(), {
   enableSearch: false,
+  search: '',
 })
 
 const emit = defineEmits<{ (e: 'search', query: string): void }>()
@@ -28,30 +30,30 @@ function back() {
   }
 }
 
-const search = ref('')
+const search = ref(props.search)
 const searchInput = ref<HTMLElement>()
 watch(search, (val) => {
   emit('search', val)
 })
 
 const navBar = ref()
-const { height: navHeight } = useElementSize(navBar)
 
 const { isMobile } = useResponsive()
 const lastScroll = ref(0)
-const navView = ref(0)
+const navShow = ref(true)
 useEventListener(document, 'scroll', () => {
-  if (isMobile.value) {
-    const val = navView.value + window.scrollY - lastScroll.value
-    navView.value = Math.max(Math.min(navHeight.value, val), 0)
+  if (isMobile) {
+    const val = window.scrollY - lastScroll.value
     lastScroll.value = window.scrollY
+    if (val === 0) return
+    navShow.value = val < 0
   }
 })
 </script>
 
 <template>
   <div class="relative min-h-[100vh] min-w-0 flex-1 border-r pb-20 dark:border-zinc-700">
-    <div ref="navBar" :style="{ top: isMobile ? `-${navView}px` : 0 }" class="disable-highlight sticky top-0 z-nav flex h-16 w-full cursor-pointer items-center gap-3 px-4 text-2xl ">
+    <div ref="navBar" :class="{ '-translate-y-full': !navShow }" :style="{ top: 0 }" class="disable-highlight sticky  top-0 z-nav flex h-16 w-full cursor-pointer items-center gap-3 px-4 text-2xl transition-[transform] duration-500 ">
       <div class="bg-navbar absolute inset-0 backdrop-blur-md" />
       <button v-if="showBack" type="button" aria-label="Back" class="relative h-10 w-10 rounded-full transition-[background-color] hover:bg-hover" @click="back">
         <Icon name="material-symbols:arrow-back-rounded" class="absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2" />

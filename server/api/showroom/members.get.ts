@@ -10,14 +10,18 @@ export default defineEventHandler(async (event): Promise<IMember[]> => {
 // const group =
 const jkt48officialId = 332503
 const time = 3600000 // 1 hour
-async function getMembers(group: string | null = null): Promise<IMember[]> {
-  return await cache.fetch<IMember[]>(group ? `${group}-members` : 'members', () => fetchData(group), time).catch(() => [])
+async function getMembers(group: string | null = null, roomId: number | null = null): Promise<IMember[]> {
+  const cacheKey = roomId ? `${roomId}-members` : group ? `${group}-members` : 'members'
+  return await cache.fetch<IMember[]>(cacheKey, () => fetchData(group, roomId), time).catch(() => [])
 }
 
-async function fetchData(group: string | null = null): Promise<IMember[]> {
+async function fetchData(group: string | null = null, roomId: number | null = null): Promise<IMember[]> {
   try {
-    const members: IShowroomMember[] = await Showroom.find(group ? { group } : {})
-      .select('name description img url room_id member_data room_exists')
+    const options = {} as any
+    if (group) options.group = group
+    if (roomId) options.room_id = roomId
+    const members: Database.IShowroomMember[] = await Showroom.find(options)
+      .select('name description img url room_id member_data room_exists generation')
       .populate({
         path: 'member_data',
         select: '-_id isGraduate img',
@@ -36,6 +40,7 @@ async function fetchData(group: string | null = null): Promise<IMember[]> {
           room_exists: member.room_exists ?? false,
           is_graduate: member.member_data?.isGraduate ?? jkt48officialId !== member.room_id,
           is_group: jkt48officialId === member.room_id,
+          generation: member.generation,
         }
       })
       .sort((a, b) => a.name.localeCompare(b.name))

@@ -25,7 +25,9 @@ watch(openMenu, (isOpen) => {
     class="bg-container flex flex-col items-stretch gap-3 overflow-hidden rounded-2xl p-8"
   >
     <div class="h-24 w-24 self-center overflow-hidden rounded-full">
-      <LazyImage class="h-full w-full" :src="$fixCloudinary(member.img_alt ?? member.img ?? config.errorPicture)" :alt="`${member.name} Profile Picture`" />
+      <NuxtLink :to="`/member/${member.url}`">
+        <LazyImage class="h-full w-full" :src="$fixCloudinary(member.img_alt ?? member.img ?? config.errorPicture)" :alt="`${member.name} Profile Picture`" />
+      </NuxtLink>
     </div>
     <div class="text-center">
       <div class="truncate text-xl font-bold">

@@ -72,7 +72,6 @@ const showCount = computed(() => {
     <BottomSheet ref="bottomSheet" :title="$t('fansranking')" :items="data" size-dependencies="name" :ignore="['#user-draggable']">
       <template #default="{ item, index }">
         <div
-          :key="item.id"
           class="flex min-h-[120px] items-center justify-start gap-4 border-r border-slate-100/60 px-6 py-1 hover:bg-slate-300/30 dark:border-dark-1/80 dark:hover:bg-dark-3/30"
         >
           <div class="font-semibold">
@@ -80,6 +79,7 @@ const showCount = computed(() => {
           </div>
           <button type="button" class="user-btn" aria-label="Open user detail" @click="(e) => userClick(e, item.id)">
             <img
+              :key="item.id"
               lazy="false"
               class="h-20 w-20 cursor-pointer rounded-xl bg-transparent p-2 transition-colors md:h-24 md:w-24"
               :alt="item.name"

@@ -1,5 +1,5 @@
 type GiftSize = 'small' | 'medium'
-
+const admin_ids = (process.env.DISCORD_ADMINS ?? '').split(',').map(i => i.trim())
 const defaultRecentQuery: RecentsQuery = {
   sort: 'date',
   page: 1,
@@ -13,6 +13,7 @@ function isSort(s: any): s is sortType {
 }
 
 const urls = {
+  defaultCardBackground: 'https://res.cloudinary.com/haymzm4wp/image/upload/v1689879547/assets/img/jkt48pt_vbvdpw.png',
   giftUrl: (id: string | number, type: GiftSize = 'small') =>
     `https://static.showroom-live.com/image/gift/${id}_${type === 'small' ? 's' : 'm'}.png`,
   avatarURL: (id: number | string) => `https://static.showroom-live.com/image/avatar/${id}.png`,
@@ -67,16 +68,29 @@ export default {
   sortList: SortList,
   defaultRecentQuery,
   isSort,
+  uploadFolder: 'uploads',
+  getCardBackground(group: string | null = null): string {
+    switch (group) {
+      case 'hinatazaka46' : {
+        return 'https://res.cloudinary.com/haymzm4wp/image/upload/v1689880213/assets/img/hinazaka47pt_gmqluz.jpg'
+      }
+      default : {
+        return urls.defaultCardBackground
+      }
+    }
+  },
   getBanner(group: string): Banner {
     switch (group) {
       case 'hinatazaka46' : {
         return {
+          title: 'Hinatazaka46 new single',
           img: 'https://res.cloudinary.com/haymzm4wp/image/upload/h_400,f_auto/v1689063914/assets/img/hinabannerwide_hurqhb.png',
           url: 'https://www.youtube.com/watch?v=vYKRIwJGRKk&ab_channel=%E6%97%A5%E5%90%91%E5%9D%8246OFFICIALYouTubeCHANNEL',
         }
       }
       default : {
         return {
+          title: 'New JKT48 MV',
           img: 'https://res.cloudinary.com/haymzm4wp/image/upload/h_400,f_auto/v1689086407/assets/img/jkt48banner_nvyix5.png',
           url: 'https://www.youtube.com/watch?v=2wvqBMjPmqk&ab_channel=JKT48',
         }
@@ -90,6 +104,16 @@ export default {
       }
       default : {
         return 'https://res.cloudinary.com/haymzm4wp/image/upload/v1681138674/assets/img/showroomjkt48circle_ddxdk7.ico'
+      }
+    }
+  },
+  getGroupTitle(group: string) {
+    switch (group) {
+      case 'hinatazaka46' : {
+        return 'Hinatazaka46'
+      }
+      default : {
+        return 'JKT48'
       }
     }
   },
@@ -114,10 +138,26 @@ export default {
     }
   },
   isAdmin(id: string) {
-    const ids = (process.env.DISCORD_ADMINS ?? '').split(',').map(i => i.trim())
-    return ids.includes(id)
+    return admin_ids.includes(id)
   },
   getGroup(group: string | null) {
     return (group == null) ? 'jkt48' : ['jkt48', 'hinatazaka46'].includes(String(group)) ? String(group) : null
+  },
+  getDefaultBanner(group: string | null): string {
+    switch (group) {
+      case 'hinatazaka46' : {
+        return 'https://res.cloudinary.com/haymzm4wp/image/upload/h_400,f_auto/v1689063914/assets/img/hinabannerwide_hurqhb.png'
+      }
+      default : {
+        return 'https://res.cloudinary.com/haymzm4wp/image/upload/h_400,f_auto/v1689086407/assets/img/jkt48banner_nvyix5.png'
+      }
+    }
+  },
+  getLinkIconName(link: string): string | null {
+    if (link.includes('twitter.com')) return 'logos:twitter'
+    if (link.includes('instagram.com')) return 'skill-icons:instagram'
+    if (link.includes('tiktok.com')) return 'logos:tiktok-icon'
+    if (link.includes('youtube.com')) return 'logos:youtube-icon'
+    return null
   },
 }

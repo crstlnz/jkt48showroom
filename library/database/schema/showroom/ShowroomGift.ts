@@ -1,6 +1,6 @@
 import { Schema, model } from 'mongoose'
 
-const giftSchema = new Schema<IShowroomGift>({
+const giftSchema = new Schema<Database.IShowroomGift>({
   gift_id: {
     type: Number,
     unique: true,

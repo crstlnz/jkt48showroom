@@ -5,8 +5,10 @@ const props = withDefaults(defineProps<{
   src: string
   alt: string
   transparent?: boolean
+  draggable?: boolean
 }>(), {
   transparent: false,
+  draggable: true,
 })
 const emit = defineEmits<{ (e: 'loaded', img: HTMLImageElement | null): void }>()
 const lazyImage = ref<HTMLImageElement | null>(null)
@@ -27,7 +29,7 @@ watch(isLoading, (loading) => {
       name="fade-abs"
       mode="in-out"
     >
-      <div v-if="isLoading" key="loading" class="dark:bg-dark-2/80 absolute inset-0 animate-pulse bg-gray-300" />
+      <div v-if="isLoading" key="loading" class="absolute inset-0 animate-pulse bg-gray-300 dark:bg-dark-2/80" />
       <div v-else class="absolute inset-0">
         <img
           key="loaded"
@@ -36,6 +38,7 @@ watch(isLoading, (loading) => {
           :alt="!error ? alt : 'Image Error'"
           :src="!error ? src : '/img/img-error.jpg'"
           loading="lazy"
+          :draggable="draggable"
         >
       </div>
     </Transition>

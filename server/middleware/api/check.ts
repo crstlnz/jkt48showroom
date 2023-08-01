@@ -3,6 +3,11 @@ import { connection } from '~~/library/database'
 
 export default defineEventHandler(async (event) => {
   if (event.node.req.url?.startsWith('/api')) {
+    const token = await getToken({ event })
+    if (token?.cookie_id) {
+      event.context.sr_id = token.cookie_id
+      event.context.showroom_cookie = `sr_id=${token?.cookie_id};`
+    }
     if (event.node.req.url?.startsWith('/api/admin')) {
       const token = await getToken({ event })
       if (token?.role !== 'admin' || !useAppConfig().isAdmin(String(token?.id))) {

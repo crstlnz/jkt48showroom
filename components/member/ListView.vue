@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useOnLives } from '~/store/onLives'
+import { LazyImage } from '#components'
 
 defineProps<{
   error: boolean
@@ -16,10 +16,7 @@ defineProps<{
     is_graduate: boolean
     is_group: boolean
   }[]
-  getPage: (pageNumber: number, pageSize: number) => any
-  perpage: number
 }>()
-const onLives = useOnLives()
 const config = useAppConfig()
 </script>
 
@@ -56,23 +53,26 @@ const config = useAppConfig()
         <DynamicScrollerItem :item="item" :active="active" :data-index="index">
           <div class="pb-3">
             <div class="bg-container flex gap-3 rounded-xl p-3">
-              <NuxtLink :to="`/member${item.url}`" class="h-20 w-20 overflow-hidden rounded-full">
-                <img class="h-full w-full object-cover" :src="$fixCloudinary(item.img_alt ?? item.img ?? config.errorPicture)" alt="Profile picture">
+              <NuxtLink :to="`/member/${item.url}`" class="h-20 w-20 overflow-hidden rounded-full">
+                <LazyImage :key="item.room_id" class="h-full w-full object-cover" :src="$fixCloudinary(item.img_alt ?? item.img ?? config.errorPicture)" alt="Profile picture" />
               </NuxtLink>
               <div class="flex flex-1 flex-col">
-                <NuxtLink :to="`/member${item.url}`">
+                <NuxtLink :to="`/member/${item.url}`">
                   {{ item.name }}
                 </NuxtLink>
                 <div class="flex flex-1 justify-between">
                   <div class="text-base" :class="item.is_group ? 'text-blue-500' : (item.is_graduate ? 'text-red-500' : 'text-green-500')">
                     {{ item.is_group ? "Official" : (item.is_graduate ? "Graduated" : "Active") }}
                   </div>
-                  <div class="space-x-2 self-end text-base text-slate-700 dark:text-slate-400">
+                  <div class="flex items-center gap-4 self-end text-base text-slate-700 dark:text-slate-400">
                     <NuxtLink :to="$liveURL(item.url)" target="_blank">
                       <Icon name="ic:round-videocam" size="1.6rem" />
                     </NuxtLink>
                     <NuxtLink :to="$profileURL(item.room_id)" target="_blank">
                       <Icon name="ic:round-person" size="1.6rem" />
+                    </NuxtLink>
+                    <NuxtLink :to="`/member/${item.url}`">
+                      <Icon name="mdi:card-account-details-outline" size="1.6rem" />
                     </NuxtLink>
                   </div>
                 </div>
@@ -82,30 +82,6 @@ const config = useAppConfig()
         </DynamicScrollerItem>
       </template>
     </DynamicScroller>
-    <!-- <Grid
-      v-else
-      :length="members.length"
-      :page-provider="getPage"
-      :page-size="perpage"
-      class="grid-member-list gap-4"
-    >
-      <template #probe>
-        <div class="item pulse-color" />
-      </template>
-      <template #default="{ item, style }">
-        <MemberCard
-          :key="item.room_id"
-          :style="style"
-          :data-id="item.name"
-          class="shadow-sm"
-          :member="item"
-          :is-live="onLives.isLive(item.room_id)"
-        />
-      </template>
-      <template #placeholder="{ index, style }">
-        <div :key="index" class="item pulse-color" :style="style" />
-      </template>
-    </Grid> -->
   </div>
 </template>
 

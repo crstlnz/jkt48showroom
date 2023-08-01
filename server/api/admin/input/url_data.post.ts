@@ -2,15 +2,9 @@ import fs from 'fs'
 import formidable from 'formidable'
 import { getJapanRate } from '../../jpn_rates.get'
 import ShowroomLog from '../../../../library/database/schema/showroom/ShowroomLog'
-import { getServerSession, getToken } from '#auth'
 
 export default defineEventHandler(async (event): Promise<{ data_id: string; status: number }> => {
   const form = formidable()
-  const config = useAppConfig()
-  const session = await getServerSession(event)
-  const token = await getToken({ event })
-
-  if (!session || (!token || config.isAdmin(token.id as string))) throw createError({ statusCode: 401, statusMessage: 'Unauthenticated!' })
 
   return await new Promise((resolve, reject) => {
     form.parse(event.node.req, async (err, fields, files) => {
@@ -87,14 +81,10 @@ export default defineEventHandler(async (event): Promise<{ data_id: string; stat
               },
               start_date: startDate.toISOString(),
               end_date: endDate.toISOString(),
-              penonton: {
+              viewers: {
                 peak: fields.penonton,
-                history: [
-                  {
-                    num: fields.penonton,
-                    waktu: endDate.toISOString(),
-                  },
-                ],
+                last: fields.penonton,
+                active: 0,
               },
             },
             record_dates: [

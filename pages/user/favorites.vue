@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
-const { data, pending, error } = useFetch('/api/user/liked')
+const { data, pending, error } = useFetch('/api/user/like_list')
 </script>
 
 <template>
@@ -38,7 +38,7 @@ const { data, pending, error } = useFetch('/api/user/liked')
       </div>
     </template>
     <template #sidebar>
-      <HomeContainer :title="$t('page.title.recent')" class="mt-4" icon-class="bg-blue-500" more="/recent" more-label="More recents data" :more-text="$t('more')">
+      <HomeContainer :title="$t('page.title.recent')" class="xl:mt-4" icon-class="bg-blue-500" more="/recent" more-label="More recents data" :more-text="$t('more')">
         <HomeRecents />
       </HomeContainer>
     </template>

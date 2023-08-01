@@ -1,5 +1,8 @@
+mostrecords: Showroom Records
 nolive: No one is live right now 😭
 livenow: Live now
+description: Description
+socialmedia: Social Media
 nodescription: No Description
 nonext: No schedule right now 😔
 member: Member | Members
@@ -8,6 +11,9 @@ user: User | Users
 livecount: Live count
 mostlive: Most live
 topmember: Top member
+averagegifts: Average gifts
+mostgifts: Most gift
+longestlive: Longest live
 mostviewer: Most viewer
 more: More
 fansranking: Fans ranking
@@ -20,6 +26,7 @@ view: View
 viewlive: View Live
 viewer: Viewer | Viewers
 totalgift: Total gift
+totalpaidgift: Total paid gift
 totalcomments: Comments
 comment: Comment
 duration: Duration
@@ -75,6 +82,7 @@ date:
   end: End
   started: Started from {date}
 stats:
+  all: 'All'
   title: Statistics
   weekly: 7 Days
   monthly: 4 Weeks
@@ -102,3 +110,45 @@ cancel: Cancel
 favorites: Favorites
 backtohome: Back to home
 premium_live: This live is Premium
+hide_gifts: Hide Gifts
+show_gifts: Show Gifts
+birthdate: Birthdate
+horoscope:
+  title: Horoscope
+  aries: Aries
+  taurus: Taurus
+  gemini: Gemini
+  cancer: Cancer
+  leo: Leo
+  virgo: Virgo
+  libra: Libra
+  scorpio: Scorpio
+  sagittarius: Sagittarius
+  capricorn: Capricorn
+  aquarius: Aquarius
+  pisces: Pisces
+second: Second | Seconds
+hour: Hour | Hours
+minute: Minute | Minutes
+day: Day | Days
+month: Month | Months
+year: Year | Years
+sorter:
+  viewresult: View Result
+  selectmember: Select members first!
+  clickstart: Click start to continue...
+  selected: Selected {count} members!
+  pickmemberfirst: Minimum 2 members are selected!
+selectdate: Select date
+birthday:
+  thismonth: Birthdays this month
+  empty: No one has a birthday this month
+form:
+  captcha: Please fill out the captcha
+  error:
+    comment: Comment failed! Make sure you have verified your phone number on Showroom!
+    commentretry: Comment failed! Please try again later
+    empty:
+      username: Username cannot be empty!
+      password: Password cannot be empty!
+      captcha: Fill the captcha!

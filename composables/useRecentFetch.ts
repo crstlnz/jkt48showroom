@@ -1,6 +1,7 @@
 import { useSettings } from '~~/store/settings'
 
 interface RecentFetchOpts {
+  initPage?: number
   changeRoute?: boolean
   mode?: 'infinite' | 'page'
 }
@@ -9,24 +10,34 @@ const defaultOpts = {
   changeRoute: true,
   mode: 'page',
 }
-export default function (opts: RecentFetchOpts | null = null) {
+export default function (opts: RecentFetchOpts | null = null, q: RecentsQuery | null = null) {
   const cooldownDuration = 300
-
   const urlroute = useRoute()
   const router = useRouter()
   const config = useAppConfig()
   const defaultQuery: RecentsQuery = config.defaultRecentQuery
-
   const settings = useSettings()
-  const query = ref<RecentsQuery>(buildQuery())
-  // const query = useSessionStorage<RecentsQuery>('recent-query', buildQuery())
+
+  // const query = ref<RecentsQuery>(buildQuery())
+  let query: Ref<RecentsQuery>
+  if (q) {
+    query = ref(q)
+  }
+  else {
+    query = useSessionStorage<RecentsQuery>('recent-fetch-query', buildQuery())
+    // query = useSessionStorage<RecentsQuery>('recent-fetch-query', { page: opts?.initPage ?? 1 }, { mergeDefaults: opts?.initPage != null })
+    if (opts?.initPage != null) {
+      query.value.page = opts.initPage
+    }
+  }
+
   // if (urlroute.query !== query.value) {
   //   buildURL(query.value, true)
   // }
   const cooldown = ref(false)
   const timeout = ref<NodeJS.Timeout | undefined>(undefined)
 
-  const { data: res, error, pending, refresh } = useFetch<IApiRecents>('/api/showroom/recent', { query })
+  const { data: res, error, pending, refresh } = useFetch<IApiRecents>('/api/showroom/recent', { query, watch: false })
   const pageData = computed(() => {
     return {
       totalCount: res.value?.total_count ?? 1,
@@ -74,6 +85,7 @@ export default function (opts: RecentFetchOpts | null = null) {
         if (Object.keys(newQuery).length === Object.keys(oldQuery).length) {
           if (queryCheck(newQuery, oldQuery)) {
             query.value = buildQuery(q)
+            refresh()
             return
           }
         }
@@ -81,6 +93,7 @@ export default function (opts: RecentFetchOpts | null = null) {
     }
     query.value = buildQuery(q)
     queryChange.trigger(q)
+    refresh()
   }
 
   function settingQuery(query: { [key: string]: unknown }) {
@@ -113,26 +126,26 @@ export default function (opts: RecentFetchOpts | null = null) {
     return q
   }
 
-  function buildURL(_query: RecentsQuery, replace = false) {
-    const q = { ..._query }
-    const def = defaultQuery
-    for (const key of (Object.keys(q) as (keyof typeof q)[])) {
-      if (q[key] === undefined || q[key] === '' || def[key as keyof RecentsQuery] === q[key]) delete q[key]
-    }
+  // function buildURL(_query: RecentsQuery, replace = false) {
+  //   const q = { ..._query }
+  //   const def = defaultQuery
+  //   for (const key of (Object.keys(q) as (keyof typeof q)[])) {
+  //     if (q[key] === undefined || q[key] === '' || def[key as keyof RecentsQuery] === q[key]) delete q[key]
+  //   }
 
-    if (replace) {
-      router.replace({
-        path: urlroute.path,
-        query: { ...q },
-      })
-    }
-    else {
-      router.push({
-        path: urlroute.path,
-        query: { ...q },
-      })
-    }
-  }
+  //   if (replace) {
+  //     router.replace({
+  //       path: urlroute.path,
+  //       query: { ...q },
+  //     })
+  //   }
+  //   else {
+  //     router.push({
+  //       path: urlroute.path,
+  //       query: { ...q },
+  //     })
+  //   }
+  // }
 
   function setFilter(q: { [key: string]: unknown }) {
     if (pending.value || cooldown.value) return

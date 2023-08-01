@@ -7,6 +7,11 @@ export default defineI18nConfig(() => ({
         month: 'short',
         day: 'numeric',
       },
+      birthdate: {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+      },
       long: {
         year: 'numeric',
         month: 'long',
@@ -17,6 +22,11 @@ export default defineI18nConfig(() => ({
       },
     },
     id: {
+      birthdate: {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      },
       short: {
         year: 'numeric',
         month: 'short',

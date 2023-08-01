@@ -4,7 +4,6 @@ import { getNextLive as fetchNextLive, getAllFollows } from '~/library/api/showr
 import config from '~~/app.config'
 
 export default defineEventHandler(async (event) => {
-  await cache.clear()
   const query = getQuery(event)
   const group = config.getGroup(query.group as string)
   return await getNextLive(group)

@@ -13,19 +13,19 @@ const date = $fromNow(props.data.date)
     <NuxtLink
       aria-label="View profile"
       class="relative aspect-square h-[4.5rem] cursor-pointer overflow-hidden rounded-full drop-shadow-sm md:h-20"
-      target="_blank"
-      :to="$liveURL(data.url)"
+      :to="`/member/${data.url}`"
     >
       <LazyImage lazy="false" class="h-full w-full" :alt="data.name" :src="$fixCloudinary(data.img_alt || data.img || $errorPicture)" />
     </NuxtLink>
     <div class="info flex w-0 flex-1 flex-col text-left">
       <div class="name flex flex-1 gap-2">
-        <h2
-          class="flex-1 truncate text-sm font-bold md:text-base"
-          :title="data.name"
-        >
-          {{ data.name }}
-        </h2>
+        <NuxtLink :to="`/member/${data.url}`" class="flex-1 truncate text-sm font-bold md:text-base">
+          <h2
+            :title="data.name"
+          >
+            {{ data.name }}
+          </h2>
+        </NuxtLink>
         <div
           v-if="data.is_graduate"
           class="graduated h-6 w-6 rounded-full bg-red-500 p-[3px] text-white"

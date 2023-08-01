@@ -7,7 +7,6 @@ import config from '@/app.config'
 
 interface IShowroomLogModel extends Model<Database.IShowroomLog> {
   getDetails(id: string | number): Promise<Database.IShowroomLogDetail>
-  getPreview(id: string | number): Promise<Database.IShowroomLogPreview>
 }
 
 const showroomLogSchema = new Schema<Database.IShowroomLog, IShowroomLogModel>({
@@ -56,6 +55,21 @@ const showroomLogSchema = new Schema<Database.IShowroomLog, IShowroomLogModel>({
       ],
       default: [],
     },
+    viewers: {
+      active: {
+        type: Number,
+        default: 0,
+      },
+      last: {
+        type: Number,
+        default: 0,
+      },
+      peak: {
+        type: Number,
+        index: true,
+        default: 0,
+      },
+    },
     penonton: {
       history: {
         type: [
@@ -94,6 +108,7 @@ const showroomLogSchema = new Schema<Database.IShowroomLog, IShowroomLogModel>({
   },
   room_id: {
     type: Number,
+    index: true,
   },
   gift_data: {
     free_gifts: {
@@ -194,10 +209,10 @@ showroomLogSchema.statics.getDetails = async function (dataId: string | number):
     .populate({
       path: 'room_info',
       options: {
-        select: '-_id name img url -room_id member_data is_group',
+        select: '-_id name img url -room_id member_data is_group generation group',
         populate: {
           path: 'member_data',
-          select: 'img isGraduate',
+          select: 'img isGraduate banner jikosokai',
         },
       },
     })
@@ -209,16 +224,6 @@ showroomLogSchema.statics.getDetails = async function (dataId: string | number):
 
   if (!doc) return null
 
-  const viewer = doc.live_info?.penonton
-    ? {
-        history: doc.live_info?.penonton?.history?.map(i => ({
-          num: i.num,
-          date: i.waktu.toISOString(),
-        })),
-        peak: doc.live_info?.penonton?.peak,
-      }
-    : undefined
-
   return {
     data_id: doc.data_id,
     live_id: doc.live_id,
@@ -229,8 +234,13 @@ showroomLogSchema.statics.getDetails = async function (dataId: string | number):
       url: doc.room_info?.url ?? '',
       is_graduate: doc.room_info?.member_data?.isGraduate ?? doc.room_info?.is_group ?? false,
       is_group: doc.room_info?.is_group ?? false,
+      banner: doc.room_info?.member_data?.banner ?? '',
+      jikosokai: doc.room_info?.member_data?.jikosokai ?? '',
+      generation: doc.room_info?.generation ?? '',
+      group: doc.room_info?.group ?? '',
     },
     live_info: {
+      duration: doc.live_info?.duration ?? 0,
       comments: doc.live_info?.comments,
       screenshot: doc.live_info?.screenshot,
       background_image: doc.live_info?.background_image,
@@ -239,10 +249,7 @@ showroomLogSchema.statics.getDetails = async function (dataId: string | number):
           date: i.date,
           list: i.list,
         })) ?? [],
-      viewer: {
-        history: viewer?.history ?? [],
-        peak: viewer?.peak ?? 0,
-      },
+      viewer: doc.live_info.viewers?.peak ?? 0,
       date: {
         start: doc.live_info?.start_date.toISOString(),
         end: doc.live_info?.end_date.toISOString(),
@@ -274,40 +281,6 @@ showroomLogSchema.statics.getDetails = async function (dataId: string | number):
       avatar_id: u.avatar_id,
       name: u.name,
     })),
-    created_at: doc.created_at.toISOString(),
-  }
-}
-
-showroomLogSchema.statics.getPreview = async function (dataId: string | number): Promise<Database.IShowroomLogPreview | null> {
-  const doc = await this.findOne({ data_id: dataId })
-    .populate({
-      path: 'room_info',
-      options: {
-        select: '-_id name img url -room_id member_data is_group',
-        populate: {
-          path: 'member_data',
-          select: 'img isGraduate',
-        },
-      },
-    })
-    .lean()
-
-  if (!doc) return null
-
-  return {
-    data_id: doc.data_id,
-    live_id: doc.live_id,
-    room_info: {
-      name: doc.room_info?.name ?? 'Member not found!',
-      img: doc.room_info?.img ?? config.errorPicture,
-      img_alt: doc.room_info?.member_data?.img ?? doc.room_info?.img_square,
-      url: doc.room_info?.url ?? '',
-      is_graduate: doc.room_info?.member_data?.isGraduate ?? doc.room_info?.is_group ?? false,
-      is_group: doc.room_info?.is_group ?? false,
-    },
-    jpn_rate: doc.jpn_rate,
-    room_id: doc.room_id,
-    total_point: doc.total_point,
     created_at: doc.created_at.toISOString(),
   }
 }

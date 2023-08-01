@@ -57,6 +57,41 @@
     height: 0;
 }
 
+.height-enter-active,
+.height-leave-active {
+    transition:
+        height 0.3s ease,
+        opacity 0.3s ease;
+}
+
+.height-enter-from,
+.height-leave-to {
+    height: 0;
+    opacity: 0;
+}
+
+.scale-enter-active,
+.scale-leave-active {
+    transform: scaleY(1);
+    transition: transform 0.3s ease;
+}
+
+.scale-enter-from,
+.scale-leave-to {
+    transform: scaleY(0);
+}
+
+.expand-enter-active,
+.expand-leave-active {
+    transition: height 1s ease-in-out;
+    overflow: hidden;
+}
+
+.expand-enter,
+.expand-leave-to {
+    height: 0;
+}
+
 .notif-enter-active,
 .notif-leave-active {
     transition: all 0.5s ease;
@@ -141,5 +176,14 @@
 }
 .layout-enter-from,
 .layout-leave-to {
+    opacity: 0;
+}
+
+.gamecontrol-enter-active,
+.gamecontrol-leave-active {
+    transition: opacity 0.25s ease-out !important;
+}
+.gamecontrol-enter-from,
+.gamecontrol-leave-active {
     opacity: 0;
 }

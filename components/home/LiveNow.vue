@@ -6,7 +6,7 @@ const { data, pending, error } = storeToRefs(onLives)
 </script>
 
 <template>
-  <div class="mt-2 flex items-center justify-between px-4 xl:mt-3">
+  <div class="mt-3 flex items-center justify-between px-3 md:px-4">
     <div class="flex gap-1">
       <div class="relative aspect-square w-6">
         <div
@@ -20,7 +20,7 @@ const { data, pending, error } = storeToRefs(onLives)
           <div class="absolute top-0 aspect-square w-full animate-ping rounded-full bg-red-500" />
         </div>
       </div>
-      <h2 class="relative text-xl font-bold sm:text-2xl">
+      <h2 class="relative text-xl font-bold leading-10 sm:text-2xl">
         Live
       </h2>
     </div>
@@ -32,7 +32,7 @@ const { data, pending, error } = storeToRefs(onLives)
       {{ $t("member", data?.length ?? 0) }}
     </div>
   </div>
-  <div class="px-4">
+  <div class="px-3 md:px-4">
     <div
       v-if="error"
       class="bg-container flex w-full flex-col items-center justify-center gap-2 rounded-xl pb-5 text-xs shadow-sm md:gap-3 md:text-sm xl:gap-5 xl:pb-8 xl:pt-2"
@@ -61,9 +61,9 @@ const { data, pending, error } = storeToRefs(onLives)
       v-else
       class="bg-container flex w-full flex-col items-center justify-center rounded-xl px-4 shadow-sm"
     >
-      <div class="flex flex-col justify-center gap-2 pb-6 text-center text-xs max-sm:aspect-square sm:h-[307.98px] md:h-[371.98px] md:gap-3 md:text-sm lg:h-[285.11px] xl:h-[353.59px] 2xl:h-[355.45px]">
-        <img class="mx-auto aspect-square w-72 max-w-[80%]" alt="No member onlive" src="/svg/space.svg">
-        {{ $t("nolive") }}
+      <div class="flex h-[245.5px] flex-col items-center justify-center gap-2 text-center text-xs max-sm:aspect-square sm:h-[230.88px] md:h-[250px] md:gap-3 md:text-sm lg:h-[270.55px] xl:h-[349.2px] 2xl:h-[318px]">
+        <img class="mx-auto w-72 max-w-[80%]" alt="No member onlive" src="/svg/space.svg">
+        <span class="mt-5">{{ $t("nolive") }}</span>
       </div>
     </div>
   </div>

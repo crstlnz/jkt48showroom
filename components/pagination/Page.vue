@@ -76,7 +76,7 @@ const showDuration = ref(false)
                       v-if="error"
                       aria-label="Retry"
                       type="button"
-                      class="hover:text-second-2 text-sm lg:text-base"
+                      class="text-sm hover:text-second-2 lg:text-base"
                       href="/"
                       @click="refresh()"
                     >

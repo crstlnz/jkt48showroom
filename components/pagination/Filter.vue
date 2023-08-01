@@ -1,6 +1,17 @@
 <script lang="ts" setup>
 const props = defineProps({
-  search: String,
+  showSearch: {
+    type: Boolean,
+    default() {
+      return false
+    },
+  },
+  mustCalculateHeight: {
+    type: Boolean,
+    default() {
+      return false
+    },
+  },
   members: {
     type: Array,
     default() {
@@ -15,14 +26,16 @@ const props = defineProps({
   },
 })
 const emit = defineEmits<{ (e: 'apply', filter: any): void; (e: 'title', title: string): void; (e: 'showDuration', show: boolean): void }>()
-// const $device = useDevice()
 const config = useAppConfig()
 const SortList: SortData[] = config.sortList
 
-const search = ref(props.query.search)
+const search = useState('filter-search', () => props.query.search)
+const date = useState<QueryDateRange>('filter-date', () => props.query.date)
+
 const temp = ref<RecentsQuery>({})
+
 const isEnabled = computed(() => {
-  if (Object.keys(temp.value).length || search.value !== props.query.search) return true
+  if (Object.keys(temp.value).length || search.value !== props.query.search || props.query.date !== date.value) return true
   return false
 })
 
@@ -80,11 +93,8 @@ function setSort(key: string) {
   temp.value.sort = key
 }
 
-// const searchinput = ref(null)
-// const { focused } = useFocus(searchinput)
 function apply() {
-  // if ($device.isMobile) focused.value = false
-  const q = { ...temp.value, search: search.value }
+  const q = { ...temp.value, search: search.value, date: date.value }
   for (const key of Object.keys(props.query)) {
     if (!Object.hasOwn(q, key)) {
       q[key as keyof typeof q] = props.query[key]
@@ -102,16 +112,63 @@ function clearSearch() {
     search.value = ''
   }
 }
+
+const { isMobile } = useResponsive()
+
+const element = ref<HTMLElement>()
+const { height } = useWindowSize()
+
+const padding = 40
+const fixedHeight = ref<string | null>(null)
+const el = ref()
+const originalHeight = ref(0)
+watch(height, (val) => {
+  if (props.mustCalculateHeight && !isMobile) calculateHeight(val)
+})
+
+function calculateHeight(windowHeight: number) {
+  const rect = element.value?.getBoundingClientRect()
+  if (rect) {
+    const screenHeight = windowHeight - rect.top - padding
+    if (originalHeight.value > screenHeight) {
+      fixedHeight.value = `${screenHeight}px`
+    }
+  }
+}
+
+useEventListener(el, 'resize', () => {
+  if (props.mustCalculateHeight && !isMobile) calculateHeight(height.value)
+})
+
+onMounted(() => {
+  el.value = window
+  originalHeight.value = element.value?.clientHeight ?? 0
+  if (props.mustCalculateHeight && !isMobile) calculateHeight(height.value)
+})
 </script>
 
 <template>
-  <div class="space-y-4">
+  <div ref="element" class="roundedscrollbar space-y-4 overflow-y-auto" :style="{ height: fixedHeight ?? '' }">
+    <div v-if="showSearch" class="group flex items-center gap-4 rounded-xl bg-slate-200/70 px-4 dark:bg-dark-2">
+      <Icon name="uil:search" class="ml-1 h-5 w-5 shrink-0" />
+      <input
+        v-model="search"
+        :aria-label="$t('search')"
+        :placeholder="`${$t('search')}...`"
+        type="text"
+        class="w-full bg-transparent py-3 outline-none"
+        @keyup.enter="() => { if (isEnabled) apply() }"
+      >
+      <button v-if="search != null && search !== ''" type="button" aria-label="Clear" class="hidden h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-500 text-white group-focus-within:flex" @click="clearSearch">
+        <Icon name="ic:round-close" class="h-full w-full p-1" />
+      </button>
+    </div>
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-1 font-semibold">
         <Icon name="ph:caret-circle-right" />
         <span class="text-base">{{ $t("sort.title") }}</span>
       </div>
-      <button type="button" aria-label="Sorting Type" class="group h-8 w-8 overflow-hidden rounded-md bg-slate-200/70 dark:bg-dark-2/50" @click="setOrder((temp.order ?? query.order ?? defaultQuery.order) > 0 ? -1 : 1)">
+      <button type="button" aria-label="Sorting Type" class="group h-8 w-8 overflow-hidden rounded-md bg-slate-200/70 dark:bg-dark-2" @click="setOrder((temp.order ?? query.order ?? defaultQuery.order) > 0 ? -1 : 1)">
         <span class="flex h-full w-full items-center justify-center group-hover:bg-second-2/90 group-hover:text-white">
           <Icon v-if="(temp.order ?? query.order ?? -1) > 0" name="ph:sort-ascending-bold" />
           <Icon v-else name="ph:sort-descending-bold" />
@@ -120,7 +177,7 @@ function clearSearch() {
     </div>
 
     <ul
-      class="max-h-[250px] overflow-hidden overflow-y-auto rounded-xl bg-slate-200/70 dark:bg-dark-2/50"
+      class="max-h-[250px] overflow-y-auto rounded-xl bg-slate-200/70 dark:bg-dark-2"
     >
       <li v-for="item in SortList" :key="item.id">
         <button
@@ -135,9 +192,13 @@ function clearSearch() {
         </button>
       </li>
     </ul>
-
+    <div class="flex items-center gap-1 font-semibold">
+      <Icon name="ic:baseline-filter-alt" />
+      <span class="text-base">{{ $t("filter") }}</span>
+    </div>
+    <FormDateRange v-model="date" />
     <div
-      class="flex space-x-1 overflow-hidden rounded-xl bg-slate-200/70 dark:bg-dark-2/50 [&>*]:cursor-pointer [&>button]:flex-1 [&>button]:p-2 hover:[&>button]:bg-second-2/20 lg:[&>button]:p-2 [&>div]:flex-1"
+      class="flex space-x-1 overflow-hidden rounded-xl bg-slate-200/70 dark:bg-dark-2 [&>*]:cursor-pointer [&>button]:flex-1 [&>button]:p-2 hover:[&>button]:bg-second-2/20 lg:[&>button]:p-2 [&>div]:flex-1"
     >
       <button
         type="button"

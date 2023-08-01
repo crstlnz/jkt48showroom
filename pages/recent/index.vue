@@ -1,9 +1,11 @@
 <script lang="ts" setup>
+import { deepEqual } from '~~/library/utils/index'
+
 const { t } = useI18n()
 const title = ref('')
 
 useHead({ title: computed(() => t(title.value || 'page.title.recent')) })
-const fetch = useRecentFetch({ changeRoute: false, mode: 'infinite' })
+const fetch = useRecentFetch({ changeRoute: false, mode: 'infinite', initPage: 1 })
 const { data: res, query, pending, error } = fetch.data
 const { changePage, refresh, setFilter, onQueryChange } = fetch
 const filterOpen = ref(false)
@@ -15,33 +17,33 @@ const isLoadDelayed = ref(false) // if next page must be loaded but the filter d
 const el = ref<Window | null>(null)
 const { y, arrivedState } = useScroll(el, { behavior: 'smooth' })
 const isTop = computed(() => arrivedState.top)
-const dataset = ref(res.value?.recents ?? [])
+const dataset = useSessionStorage<{ page: number; data: IRecent[] }>('recent-datasetssss', { page: 0, data: [] }, { deep: true })
 
 const { checkTrigger } = useInfiniteScroll(
   () => {
     if (isEnded.value) return
     if (filterOpen.value) return (isLoadDelayed.value = true)
-    if (!pending.value) changePage((res.value?.page ?? 1) + 1)
+    if (!pending.value) changePage((dataset.value.page ?? 1) + 1)
   },
   { distance: 120 },
 )
 
-function toggleFilter() {
-  if (filterOpen.value) {
-    closeFilter()
-  }
-  else {
-    openFilter()
-  }
-}
+// function toggleFilter() {
+//   if (filterOpen.value) {
+//     closeFilter()
+//   }
+//   else {
+//     openFilter()
+//   }
+// }
 
-function openFilter() {
-  filterOpen.value = true
-}
+// function openFilter() {
+//   filterOpen.value = true
+// }
 
-function closeFilter() {
-  filterOpen.value = false
-}
+// function closeFilter() {
+//   filterOpen.value = false
+// }
 
 function applyFilter(filter: any) {
   setFilter(filter)
@@ -63,7 +65,6 @@ watch(filterOpen, (isOpen) => {
 })
 
 function titleChange(t: string) {
-  console.log(t)
   title.value = t
 }
 
@@ -72,18 +73,35 @@ function scrollToTop() {
 }
 
 onQueryChange(() => {
-  dataset.value = []
+  dataset.value = {
+    page: 0,
+    data: [],
+  }
   scrollToTop()
 })
 
 onMounted(() => {
   el.value = window
-  dataset.value?.push(...(res.value?.recents ?? []))
 })
 
 watch(res, (val) => {
   if ((val?.recents.length ?? 0) === 0) return (isEnded.value = true)
-  dataset.value?.push(...(val?.recents ?? []))
+  if ((val?.page || 0) > dataset.value.page) {
+    dataset.value = {
+      page: val?.page ?? 0,
+      data: [...dataset.value.data, ...(val?.recents || [])],
+    }
+  }
+  else if (val?.recents && (val?.page || 0) <= dataset.value.page) {
+    const newData = val.recents
+    const oldData = dataset.value.data.slice(0, newData.length)
+    if (!deepEqual(newData, oldData)) {
+      dataset.value = {
+        page: val?.page ?? 0,
+        data: [...newData],
+      }
+    }
+  }
 })
 
 const SortList = useAppConfig().sortList
@@ -93,7 +111,7 @@ function getTitle(query: any) {
 }
 
 title.value = getTitle(query.value)
-const search = ref(query.value.search)
+const search = useState('filter-search', () => query.value.search)
 watch(query, (val) => {
   title.value = getTitle(val)
 })
@@ -112,16 +130,27 @@ function clearSearch() {
   applySearch()
 }
 
-const { smallerOrEqual, isMobile } = useResponsive()
-const isSmall = smallerOrEqual('xl')
+const { greaterOrEqual, isMobile } = useResponsive()
+const isXL = greaterOrEqual('xl')
+const isLarge = greaterOrEqual('lg')
+const isMedium = greaterOrEqual('md')
+const isSmall = greaterOrEqual('sm')
+
+const recentHeight = computed(() => {
+  if (isXL.value) return 230
+  if (isLarge.value) return 214
+  if (isMedium.value) return 198
+  if (isSmall.value) return 168
+  return 164
+})
 </script>
 
 <template>
   <LayoutRow :title="$t(title)" :mobile-side="false">
     <template #sidebar>
-      <div v-if="!isSmall" class="flex flex-col gap-4">
-        <div class="bg-background sticky top-0 z-nav -mb-3 pb-3 pt-5">
-          <div class="group bg-container flex items-center gap-4 rounded-full px-4 py-3">
+      <div class="flex flex-col gap-4">
+        <div v-if="isXL" class="bg-background sticky top-0 z-nav -mb-3 pb-3 pt-5">
+          <div class="group bg-container flex items-center gap-4 rounded-full px-4">
             <Icon name="uil:search" class="ml-1 h-5 w-5 shrink-0" />
             <input
               ref="searchinput"
@@ -129,7 +158,7 @@ const isSmall = smallerOrEqual('xl')
               :aria-label="$t('search')"
               :placeholder="`${$t('search')}...`"
               type="text"
-              class="w-full bg-transparent outline-none"
+              class="w-full bg-transparent py-3 outline-none"
               @keyup.enter="applySearch"
             >
             <button v-if="search != null && search !== ''" type="button" aria-label="Clear" class="hidden h-6 w-6 shrink-0 rounded-full bg-blue-500 text-white group-focus-within:block group-hover:block" @click="clearSearch">
@@ -138,8 +167,10 @@ const isSmall = smallerOrEqual('xl')
           </div>
         </div>
         <PaginationFilter
+          v-if="isXL"
           key="filterDiv"
-          class="bg-container relative z-nav rounded-2xl p-4"
+          class="bg-container relative z-belowNav rounded-2xl p-4"
+          :search="search"
           :query="query"
           @show-duration="(show : boolean) => showDuration = show"
           @title="(t:string) => titleChange(t)"
@@ -147,16 +178,20 @@ const isSmall = smallerOrEqual('xl')
             applyFilter(filter)
           }"
         />
-        <HomeLiveNowSide />
+        <div v-if="isXL" :class="{ 'pt-5': !isXL }">
+          <HomeLiveNowSide />
+        </div>
       </div>
     </template>
     <template #actionSection>
-      <LayoutPopupButton v-if="isSmall" class="bg-container flex aspect-square h-10 w-10 items-center justify-center rounded-2xl transition-colors sm:hover:bg-blue-500 sm:hover:text-slate-100">
-        <Icon name="mi:filter" />
+      <LayoutPopupButton v-if="!isXL" class="bg-container flex aspect-square h-10 w-10 items-center justify-center rounded-2xl transition-colors sm:hover:bg-blue-500 sm:hover:text-slate-100">
+        <Icon name="ph:magnifying-glass-bold" />
         <template #panel="{ close }">
           <div class="flex flex-col items-stretch py-3 text-lg max-sm:py-5" :class="{ 'min-w-[350px]': !isMobile }">
             <PaginationFilter
               key="filterDiv"
+              :must-calculate-height="true"
+              :show-search="true"
               class="relative z-aboveNav rounded-t-xl p-4"
               :query="query"
               @show-duration="(show : boolean) => showDuration = show"
@@ -192,11 +227,11 @@ const isSmall = smallerOrEqual('xl')
 
     <div class="relative z-10">
       <Transition name="fade-abs">
-        <div v-if="pending && (dataset?.length ?? 0) === 0" key="loading" class="space-y-2 px-4 md:space-y-4">
+        <div v-if="pending && (dataset?.data?.length ?? 0) === 0" key="loading" class="space-y-2 px-4 md:space-y-4">
           <PulseRecentDetailCard v-for="index in Array(10).keys()" :key="index" />
         </div>
         <div
-          v-else-if="error || !dataset || !dataset.length"
+          v-else-if="error || !dataset || !dataset?.data?.length"
           class="flex flex-col justify-center px-10 pt-10 text-center"
         >
           <div class="space-y-5">
@@ -214,35 +249,41 @@ const isSmall = smallerOrEqual('xl')
             </div>
             <div v-else>
               <h2 class="mb-1 text-lg lg:text-2xl">
-                {{ }}
                 {{ $t("data.notfound") }}
               </h2>
             </div>
           </div>
         </div>
 
-        <DynamicScroller
-          v-else
-          key="loaded"
-          :prerender="10"
-          :min-item-size="152"
-          :items="dataset"
-          key-field="data_id"
-          class="px-3 md:px-4"
-          page-mode
-        >
-          <template #default="{ item, index, active }">
-            <DynamicScrollerItem :key="item.data_id" :item="item" :active="active" :data-index="index">
+        <div v-else>
+          <RecycleScroller
+            key="loaded"
+            :prerender="10"
+            :item-size="recentHeight"
+            :items="dataset.data"
+            key-field="data_id"
+            class="px-3 md:px-4"
+            page-mode
+          >
+            <template #default="{ item }">
               <div class="pb-3 md:pb-4">
                 <MemberRecentCard :recent="item" />
               </div>
-            </DynamicScrollerItem>
-          </template>
-        </DynamicScroller>
+            </template>
+            <template #after>
+              <div class="mb-4 flex w-full items-center justify-center py-16">
+                <Icon v-if="!isEnded" name="svg-spinners:ring-resize" size="3rem" />
+                <div v-else class="flex h-[3rem] items-center justify-center text-lg">
+                  {{ $t("data.nomore") }}
+                </div>
+              </div>
+            </template>
+          </RecycleScroller>
+        </div>
       </transition>
     </div>
 
-    <div
+    <!-- <div
       class="-z-10 flex h-0 items-center justify-center text-center leading-[5rem] transition-[height] duration-300"
       :class="{ '!h-24': pending, '!h-16': isEnded }"
     >
@@ -257,6 +298,6 @@ const isSmall = smallerOrEqual('xl')
           {{ $t("data.nomore") }}
         </div>
       </transition>
-    </div>
+    </div> -->
   </LayoutRow>
 </template>

@@ -1,7 +1,12 @@
 import { Schema, model } from 'mongoose'
+import type { Model } from 'mongoose'
 import Member from '../48group/Member'
 
-const ShowroomSchema = new Schema<IShowroomMember>({
+interface IShowroomModel extends Model<Database.IShowroomMember> {
+  getProfile(key: string): Promise<Database.IMemberProfile>
+}
+
+const ShowroomSchema = new Schema<Database.IShowroomMember, IShowroomModel>({
   name: {
     type: String,
     required: true,
@@ -36,6 +41,9 @@ const ShowroomSchema = new Schema<IShowroomMember>({
     type: Boolean,
     default: true,
   },
+  generation: {
+    type: String,
+  },
   is_group: {
     type: Boolean,
     default: false,
@@ -46,4 +54,32 @@ const ShowroomSchema = new Schema<IShowroomMember>({
   },
 })
 
-export default model<IShowroomMember>('Showroom', ShowroomSchema)
+ShowroomSchema.statics.getProfile = async function (key: string): Promise<Database.IMemberProfile | null> {
+  const doc = await this.findOne({ url: key })
+    .populate({
+      path: 'member_data',
+      select: 'img isGraduate banner jikosokai socials birthdate',
+    })
+    .lean()
+
+  if (!doc) return null
+
+  return {
+    name: doc.name,
+    img: doc.img,
+    img_alt: doc.member_data?.img ?? doc.img,
+    banner: doc.member_data?.banner ?? '',
+    description: doc.description ?? '',
+    group: doc.group ?? '',
+    jikosokai: doc.member_data?.jikosokai ?? '',
+    generation: doc.generation,
+    room_id: doc.room_id,
+    socials: doc.member_data?.socials ?? [],
+    is_graduate: doc.member_data?.isGraduate ?? false,
+    is_group: doc.is_group ?? false,
+    url: doc.url ?? key,
+    birthdate: doc.member_data?.birthdate,
+  }
+}
+
+export default model<Database.IShowroomMember, IShowroomModel>('Showroom', ShowroomSchema)

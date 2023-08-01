@@ -25,7 +25,7 @@ export async function getRecents(qq: any = null): Promise<IApiRecents> {
         case 'gift':
           return 'total_point'
         case 'views':
-          return 'live_info.penonton.peak'
+          return 'live_info.viewers.peak'
         case 'duration':
           return 'live_info.duration'
         default:
@@ -34,68 +34,92 @@ export async function getRecents(qq: any = null): Promise<IApiRecents> {
     })()}`
   }
 
-  let members = await getMembers(group)
   let logs = [] as any[]
   let total = 0
 
-  const search = query.search ? String(query.search) ?? '' : ''
-  if (search !== '') {
-    const fuse = new Fuse(members, {
-      threshold: 0.2,
-      keys: [
-        { name: 'name', weight: 0.4 },
-        { name: 'member_data.name', weight: 0.4 },
-        { name: 'description', weight: 0.2 },
-      ],
-    })
-    members = fuse.search(search).map(i => i.item)
-  }
-
-  const q = query.filter
-  if (q === 'graduated' || q === 'active') {
-    members = members.filter((i) => {
-      return i.is_graduate === (q === 'graduated')
-    })
-  }
-
   interface Options {
-    room_id?: number[]
+    room_id?: number[] | number
     is_dev?: boolean
+    'live_info.viewers.peak'?: object
+    'live_info.end_date'?: object
   }
 
   const options: Options = {}
   if (process.env.NODE_ENV !== 'development') options.is_dev = false
-  if (members.length) {
-    options.room_id = members.map(i => i.room_id)
-    logs = await ShowroomLog.find(options)
-      .select({
-        live_info: {
-          duration: 1,
-          penonton: {
-            peak: 1,
-          },
-          start_date: 1,
-          end_date: 1,
-        },
-        data_id: 1,
-        total_point: 1,
-        created_at: 1,
-        room_id: 1,
-        room_info: 1,
-      })
-      .sort(getSort(sort))
-      .skip((page - 1) * perpage)
-      .limit(perpage)
-      .populate({
-        path: 'room_info',
-        select: '-_id name img url -room_id member_data',
-        populate: {
-          path: 'member_data',
-          select: '-_id isGraduate img',
-        },
-      })
-      .lean()
+  if (query.room_id) {
+    options.room_id = query.room_id
   }
+  else {
+    const search = query.search ? String(query.search) ?? '' : ''
+    let members = await getMembers(group)
+    if (search !== '') {
+      const fuse = new Fuse(members, {
+        threshold: 0.2,
+        keys: [
+          { name: 'name', weight: 0.4 },
+          { name: 'member_data.name', weight: 0.4 },
+          { name: 'description', weight: 0.2 },
+        ],
+      })
+      members = fuse.search(search).map(i => i.item)
+    }
+
+    const q = query.filter
+    if (q === 'graduated' || q === 'active') {
+      members = members.filter((i) => {
+        return i.is_graduate === (q === 'graduated')
+      })
+    }
+
+    if (members?.length) options.room_id = members.map(i => i.room_id)
+
+    if (query.date) {
+      try {
+        const date = JSON.parse(String(query.date))
+        options['live_info.end_date'] = {
+          $gte: new Date(Number(date.start)).toISOString(),
+          $lte: new Date(Number(date.end)).toISOString(),
+        }
+      }
+      catch (e) {
+        console.log(e)
+      }
+    }
+  }
+
+  if (sort === 'views') {
+    options['live_info.viewers.peak'] = {
+      $ne: 0,
+    }
+  }
+  logs = await ShowroomLog.find(options)
+    .select({
+      live_info: {
+        duration: 1,
+        viewers: {
+          peak: 1,
+        },
+        start_date: 1,
+        end_date: 1,
+      },
+      data_id: 1,
+      total_point: 1,
+      created_at: 1,
+      room_id: 1,
+      room_info: 1,
+    })
+    .sort(getSort(sort))
+    .skip((page - 1) * perpage)
+    .limit(perpage)
+    .populate({
+      path: 'room_info',
+      select: '-_id name img url -room_id member_data',
+      populate: {
+        path: 'member_data',
+        select: '-_id isGraduate img',
+      },
+    })
+    .lean()
 
   total = await ShowroomLog.count(options)
   return {
@@ -113,7 +137,7 @@ export async function getRecents(qq: any = null): Promise<IApiRecents> {
       live_info: {
         comments: i.live_info?.comments ?? undefined,
         duration: i.live_info?.duration ?? 0,
-        viewers: i.live_info?.penonton?.peak ?? undefined,
+        viewers: i.live_info?.viewers?.peak ?? undefined,
         date: {
           start: i.live_info.start_date.toISOString(),
           end: i.live_info.end_date.toISOString(),

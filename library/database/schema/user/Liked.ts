@@ -6,6 +6,7 @@ import config from '~~/app.config'
 
 interface ILikedModel extends Model<Database.ILiked> {
   getDetails(id: string | number): Promise<Database.LikeDetail>
+  isLiveLiked(user_id: string | number, id: string): Promise<boolean>
 }
 
 const LikedSchema = new Schema<Database.ILiked, ILikedModel>({
@@ -15,6 +16,11 @@ const LikedSchema = new Schema<Database.ILiked, ILikedModel>({
 },
 { timestamps: true },
 )
+
+LikedSchema.statics.isLiveLiked = async function (user_id: string | number, id: string): Promise<boolean> {
+  const doc = await this.findOne({ user_id, liked_id: id, type: 2 }).lean()
+  return doc != null
+}
 
 LikedSchema.statics.getDetails = async function (user_id: string | number): Promise<Database.LikeDetail> {
   const doc = await this.find({ user_id }).sort({
@@ -41,7 +47,6 @@ LikedSchema.statics.getDetails = async function (user_id: string | number): Prom
 
   const rooms = await Showroom.find({ room_id: ids.room })
   result.room.push(...rooms)
-  // const data = await ShowroomLog.getPreview(item.liked_id)
   const lives = await ShowroomLog.find({ data_id: ids.live })
     .select({
       live_info: {
@@ -82,7 +87,7 @@ LikedSchema.statics.getDetails = async function (user_id: string | number): Prom
     live_info: {
       comments: i.live_info?.comments ?? undefined,
       duration: Number(i.live_info?.duration ?? 0),
-      viewers: i.live_info?.penonton?.peak ?? undefined,
+      viewers: i.live_info?.viewers?.peak ?? undefined,
       date: {
         start: i.live_info.start_date.toISOString(),
         end: i.live_info.end_date.toISOString(),

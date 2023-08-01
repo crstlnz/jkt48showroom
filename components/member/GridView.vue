@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { useOnLives } from '~/store/onLives'
 
-defineProps<{
+const props = defineProps<{
   error: boolean
   pending: boolean
+  keyId: number
   members: {
     name: string
     img: string
@@ -16,9 +17,27 @@ defineProps<{
     is_graduate: boolean
     is_group: boolean
   }[]
-  getPage: (pageNumber: number, pageSize: number) => any
   perpage: number
 }>()
+
+const keyId = computed(() => props.keyId)
+
+const members = computed(() => {
+  return props.members
+})
+
+const getPage = ref()
+
+watch(keyId, () => {
+  getPage.value = async (pageNumber: number, pageSize: number) => {
+    const num = pageNumber * pageSize
+    return [...(members.value ?? []).slice(num, num + pageSize)]
+  }
+}, { immediate: true })
+// async function getPage(pageNumber: number, pageSize: number) {
+//   const num = pageNumber * pageSize
+//   return [...(members.value ?? []).slice(num, num + pageSize)]
+// }
 const onLives = useOnLives()
 </script>
 

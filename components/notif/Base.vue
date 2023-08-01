@@ -54,7 +54,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div ref="container" class="dark:bg-dark-3 pointer-events-auto rounded-sm bg-slate-50 shadow-md ">
+  <div ref="container" class="pointer-events-auto rounded-sm bg-slate-50 shadow-md dark:bg-dark-3 ">
     <div class="flex items-stretch justify-between gap-3 overflow-hidden pr-4 lg:gap-4">
       <span class="w-1.5" :class="color" />
       <Icon :name="icon" class="h-6 w-6 self-center rounded-full p-1.5 text-white md:h-7 md:w-7 lg:h-8 lg:w-8" :class="color" />

@@ -1,4 +1,11 @@
 // import { createCanvas, loadImage } from 'canvas'
+export function decimalFormat(angka: number): string {
+  return Number.isInteger(angka) ? angka.toString() : angka.toFixed(2)
+}
+
+export function shuffleArray<T>(array: T[]): T[] {
+  return array.sort(() => Math.random() - 0.5)
+}
 
 export function convertToMilliseconds(timestamp: number): number {
   return timestamp * (timestamp < 1e10 ? 1e3 : 1)
@@ -153,29 +160,65 @@ export function clamp(min: number, max: number, num: number, pad = 0) {
 }
 
 export function convertRGBtoHex(red: number, green: number, blue: number): string {
-  // Convert the red, green, and blue values to hexadecimal
   const redHex = red.toString(16).padStart(2, '0')
   const greenHex = green.toString(16).padStart(2, '0')
   const blueHex = blue.toString(16).padStart(2, '0')
-  // Concatenate the three hexadecimal values to form a six-digit code
   const hexCode = `#${redHex}${greenHex}${blueHex}`
   return hexCode
 }
 
 export function convertDurationToMs(durationString: string) {
   let durationMs = 0
-
-  // Check if the duration string ends with "s" (seconds)
   if (durationString.endsWith('s')) {
-    // Convert the duration from seconds to milliseconds
-    const durationSeconds = parseFloat(durationString)
+    const durationSeconds = Number.parseFloat(durationString)
     durationMs = durationSeconds * 1000
   }
-  // Check if the duration string ends with "ms" (milliseconds)
   else if (durationString.endsWith('ms')) {
-    // Parse the duration string as a number and extract the value in milliseconds
-    durationMs = parseFloat(durationString)
+    durationMs = Number.parseFloat(durationString)
   }
 
   return durationMs
+}
+
+export function deepEqual(obj1: any, obj2: any): boolean {
+  if (obj1 === obj2) return true
+  if (typeof obj1 !== 'object' || obj1 === null || typeof obj2 !== 'object' || obj2 === null) return false
+  const keys1 = Object.keys(obj1)
+  const keys2 = Object.keys(obj2)
+  if (keys1.length !== keys2.length) return false
+  for (const key of keys1) {
+    if (!deepEqual(obj1[key], obj2[key])) return false
+  }
+  return true
+}
+
+interface ParsedCookie {
+  value: string
+  attributes: { [key: string]: string }
+}
+
+export function parseCookieString(cookieString: string): { [key: string]: ParsedCookie } {
+  const cookieObj: { [key: string]: ParsedCookie } = {}
+
+  if (cookieString) {
+    const cookies = cookieString.split(',')
+
+    cookies.forEach((cookie) => {
+      const parts = cookie.trim().split(';')
+      const [name, value] = parts[0].trim().split('=')
+      const attributes: { [key: string]: string } = {}
+
+      parts.slice(1).forEach((attr) => {
+        const [attrName, attrValue] = attr.trim().split('=')
+        attributes[attrName.toLowerCase()] = attrValue
+      })
+
+      cookieObj[name] = {
+        value: decodeURIComponent(value),
+        attributes,
+      }
+    })
+  }
+
+  return cookieObj
 }

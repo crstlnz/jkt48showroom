@@ -6,7 +6,7 @@ const { data, pending, error } = storeToRefs(onLives)
 </script>
 
 <template>
-  <HomeContainer title="Live" icon-class="bg-red-500">
+  <HomeContainer title="Now Live" icon-class="bg-red-500">
     <div v-if="pending && data == null">
       <div class="flex aspect-square w-full items-center justify-center">
         <Icon name="svg-spinners:90-ring-with-bg" size="2.5rem" />

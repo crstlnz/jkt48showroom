@@ -4,6 +4,7 @@ import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
 import Hls, { Events } from 'hls.js/dist/hls.min.js'
 
 const props = defineProps<{ sources: ShowroomAPI.StreamingURL[]; poster: string }>()
+const emit = defineEmits<{ (e: 'fullsceen', isFullscreen: boolean): void }>()
 useHead({
   link: [{ href: 'https://vjs.zencdn.net/8.0.4/video-js.css', rel: 'stylesheet' }],
   script: [{ src: 'https://vjs.zencdn.net/8.0.4/video.min.js' }],
@@ -21,6 +22,7 @@ const mutedData = useLocalStorage('data-muted', false)
 const isPlaying = ref(false)
 const isLoading = ref(true)
 const volume = ref(0)
+const { isMobile } = useResponsive()
 
 function setVolume(v: any, forced = false) {
   const n = Number.parseInt(v)
@@ -40,29 +42,33 @@ function setVolume(v: any, forced = false) {
   }
 }
 const showControl = ref(false)
-const isFocus = ref(false)
+const isFocusControl = ref(false)
+const isHoverControl = ref(false)
 
 const { start: autoRemoveHover, stop: stopAutoRemoveHover } = useTimeoutFn(() => {
-  isFocus.value = false
+  isFocusControl.value = false
   setShowControl(false)
-}, 2000)
+}, 3000)
+
 const { isOutside, x, y } = useMouseInElement(videoPlayer)
 watch(x, () => {
-  if (!isOutside.value) {
-    setShowControl(true)
+  if (!isMobile && !isOutside.value !== showControl.value) {
+    setShowControl(!isOutside.value)
   }
 })
 
 watch(y, () => {
-  setShowControl(!isOutside.value)
+  if (!isMobile && !isOutside.value !== showControl.value) {
+    setShowControl(!isOutside.value)
+  }
 })
 
-watch(y, () => {
-  setShowControl(!isOutside.value)
-})
+// watch(isOutside, (val) => {
+//   if (!isMobile) setShowControl(!val)
+// })
 
-watch(isFocus, (v) => {
-  setShowControl(v)
+watch(isFocusControl, (v) => {
+  if (!isMobile) setShowControl(v)
 })
 
 const volumeSlider = ref<HTMLInputElement | null>(null)
@@ -194,16 +200,31 @@ function reload() {
 }
 
 const videoControl = ref<HTMLElement>()
+useEventListener(videoControl, 'pointerenter', () => {
+  isHoverControl.value = true
+})
+useEventListener(videoControl, 'pointerleave', () => {
+  isHoverControl.value = false
+})
+
+// useEventListener(video, 'enterpictureinpicture', (event) => {
+//   isHoverControl.value = false
+// })
+// useEventListener(video, 'leavepictureinpicture', (event) => {
+//   console.log('LEAVE')
+//   isHoverControl.value = false
+// })
+
 useEventListener(videoControl, 'focusin', () => {
-  isFocus.value = true
+  isFocusControl.value = true
 })
 
 useEventListener(video, 'click', () => {
-  isFocus.value = true
+  isFocusControl.value = true
 })
 
 useEventListener(videoControl, 'focusout', () => {
-  isFocus.value = false
+  isFocusControl.value = false
 })
 const { isSupported, orientation, lockOrientation, unlockOrientation } = useScreenOrientation()
 const { isFullscreen, toggle } = useFullscreen(videoPlayer)
@@ -257,7 +278,14 @@ async function play() {
   }
 }
 
+watch(isFullscreen, (fullscreen) => {
+  emit('fullsceen', fullscreen)
+})
+
 onMounted(() => {
+  navigator.mediaSession.setActionHandler('nexttrack', () => {
+    reload()
+  })
   // currentSource.value = (sources.value ?? []).find(i => qualityId.value === i.id) ?? sources.value[0]
 
   if (video.value) {
@@ -285,17 +313,44 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   destroyVideo()
+  if (document?.pictureInPictureElement) {
+    document.exitPictureInPicture()
+  }
 })
-// defineExpose({ stop })
+
+function videoClick() {
+  if (!isMobile) {
+    togglePlay()
+  }
+  else if (showControl.value) {
+    togglePlay()
+  }
+  else {
+    if (!isPlaying.value) togglePlay()
+    setShowControl(true)
+  }
+}
+
+function stop() {
+  destroyVideo()
+  if (document?.pictureInPictureElement) {
+    document.exitPictureInPicture()
+  }
+}
+
+defineExpose({ stop })
 </script>
 
 <template>
   <div ref="videoPlayer" class="group relative">
+    <div v-if="!isPlaying" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/50 p-1">
+      <Icon name="material-symbols:pause" class="text-white/60" size="3rem" />
+    </div>
     <video
       ref="video"
       class="h-full w-full"
       :poster="poster"
-      @click="togglePlay"
+      @click="videoClick"
     >
       <!-- <source v-for="src in sources" :key="src.id" :src="src.url"> -->
       <p class="vjs-no-js">
@@ -312,19 +367,19 @@ onBeforeUnmount(() => {
       <Icon name="svg-spinners:270-ring-with-bg" class="h-[10%] w-[10%] text-white" />
     </div>
 
-    <div id="control" ref="videoControl" :class="{ 'opacity-100': showControl }" class="absolute inset-x-0 bottom-0 z-50 bg-black/70 px-2 text-slate-200 opacity-0 duration-200 ease-in-out dark:bg-black/75">
+    <div id="control" ref="videoControl" :class="{ 'opacity-100': showControl || isFocusControl || isHoverControl }" class="absolute inset-x-0 bottom-0 z-50 bg-black/70 px-2 text-slate-200 opacity-0 duration-200 ease-in-out dark:bg-black/75" @click="setShowControl(true)">
       <ClientOnly>
-        <div class="flex w-full">
-          <button class="h-8 w-8 p-1" aria-label="Reload" type="button" @click="togglePlay">
+        <div class="flex w-full duration-200">
+          <button class="h-8 w-8 p-1" aria-label="Play" type="button" @click="togglePlay">
             <Icon v-if="isPlaying" name="ic:baseline-pause" class="h-full w-full" />
             <Icon v-else name="ph:play-fill" class="h-full w-full p-[2.5px]" />
           </button>
           <div class="group/volume flex items-center gap-1">
-            <button class="h-8 w-8 p-1" aria-label="Reload" type="button" @click="toggleMute">
+            <button class="h-8 w-8 p-1" aria-label="Mute" type="button" @click="toggleMute">
               <Icon v-if="!isMuted" :name=" volume >= 50 ? 'ic:round-volume-up' : 'ic:round-volume-down' " class="h-full w-full p-[1px]" />
               <Icon v-else name="ic:round-volume-off" class="h-full w-full p-[1px]" />
             </button>
-            <div class="relative flex h-full w-20 items-center overflow-hidden transition-[width] duration-200 group-hover/volume:w-20">
+            <div class="relative flex h-full w-20 items-center duration-200 group-hover/volume:w-20">
               <div class="absolute inset-0 top-1/2 z-0 h-1 w-20 -translate-y-1/2 overflow-hidden rounded-sm bg-gray-300/25">
                 <div class="h-full bg-slate-200" :style="{ width: `${volume}%` }" />
               </div>
@@ -344,8 +399,8 @@ onBeforeUnmount(() => {
           <button class="h-8 w-8 p-1" aria-label="Reload" type="button" @click="reload">
             <Icon name="ic:round-refresh" class="h-full w-full p-[1px]" />
           </button>
-          <Popover class="h-8 w-8 p-1">
-            <PopoverButton aria-label="Setting" class="h-full w-full">
+          <Popover class="h-8 w-8">
+            <PopoverButton aria-label="Setting" class="h-full w-full p-1">
               <Icon name="ic:baseline-settings" class="h-full w-full p-[2px] duration-300" />
             </PopoverButton>
             <Transition
@@ -438,14 +493,16 @@ onBeforeUnmount(() => {
     appearance: none;
   }
 
-  &:focus-within {
-    &::-webkit-slider-thumb,
+  &:focus-visible {
+    &::-webkit-slider-thumb {
+      @apply ring-2 ring-blue-500;
+      -webkit-appearance: none;
+      appearance: none;
+      cursor: pointer;
+    }
     &::-moz-range-thumb {
-      border: 2px solid rgb(45, 129, 255);
-      background: red;
-      width: 26px; /* Set a specific slider handle width */
-      height: 26px;
-      opacity: 1;
+      @apply ring-2 ring-blue-500;
+      cursor: pointer;
     }
   }
 }

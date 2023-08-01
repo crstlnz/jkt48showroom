@@ -17,7 +17,7 @@ const date = $fromNow(
     <NuxtLink
       aria-label="View profile"
       class="relative aspect-square h-[4.5rem] cursor-pointer overflow-hidden rounded-full drop-shadow-sm md:h-[70px]"
-      :to="`/recent/${recent.data_id}`"
+      :to="`/member/${recent.member.url}`"
     >
       <LazyImage
         lazy="false"
@@ -29,7 +29,7 @@ const date = $fromNow(
 
     <div class="info flex w-0 flex-1 flex-col text-left">
       <div class="name flex flex-1 gap-2">
-        <NuxtLink :to="`/recent/${recent.data_id}`" class="min-w-0 flex-1" aria-label="Detailed log data">
+        <NuxtLink :to="`/member/${recent.member.url}`" class="min-w-0 flex-1" :aria-label="`Open ${recent.member.name} profile`">
           <div
             class="truncate text-sm font-bold md:text-base"
             :title="recent.member?.name"

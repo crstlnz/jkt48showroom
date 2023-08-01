@@ -4,10 +4,15 @@ const props = withDefaults(defineProps<{
   showDuration?: boolean
 }>(), {
   showDuration: false,
+  detailedDate: false,
 })
-const { $fromNow, $duration } = useNuxtApp()
-const date = $fromNow(props.recent.live_info?.date?.end)
-const duration = $duration(props.recent.live_info.duration, true)
+
+const dayjs = useDayjs()
+const showDetailedDate = computed(() => {
+  const oneMonthAgo = new Date()
+  oneMonthAgo.setDate(0)
+  return new Date(props.recent.live_info?.date?.start) > oneMonthAgo
+})
 </script>
 
 <template>
@@ -19,8 +24,9 @@ const duration = $duration(props.recent.live_info.duration, true)
         :to="`/recent/${recent.data_id}`"
       >
         <img
+          :key="recent.room_id"
           lazy="false"
-          class="dark:bg-dark-3 relative h-full w-full cursor-pointer bg-slate-200 object-cover text-xs transition-all duration-200 group-hover:brightness-50 md:text-sm lg:text-base"
+          class="relative h-full w-full cursor-pointer bg-slate-200 object-cover text-xs transition-all duration-200 group-hover:brightness-50 dark:bg-dark-3 md:text-sm lg:text-base"
           :alt="`${recent.member?.name}Display Picture`"
           :src="recent.member?.img ?? ''"
         >
@@ -41,7 +47,7 @@ const duration = $duration(props.recent.live_info.duration, true)
       </NuxtLink>
       <div class="flex w-0 flex-1 flex-col justify-between space-y-2">
         <div class="truncate">
-          <NuxtLink :to="`/recent/${recent.data_id}`" aria-label="Detailed log data" class="text-base font-bold md:text-lg lg:text-xl">
+          <NuxtLink :to="`/member/${recent.member.url}`" :aria-label="`Open ${recent.member.name} profile`" class="text-base font-bold md:text-lg lg:text-xl">
             {{ recent.member?.name }}
           </NuxtLink>
         </div>
@@ -60,9 +66,7 @@ const duration = $duration(props.recent.live_info.duration, true)
           </li>
           <li class="flex items-center">
             <Icon name="ph:clock-countdown-bold" class="h-5 w-auto rounded-full bg-red-500 p-1 text-white lg:h-6" />
-            <div class="inline-block align-baseline">
-              {{ duration }}
-            </div>
+            <Parser parse-type="duration" :value="recent.live_info.duration" class="inline-block align-baseline" />
           </li>
         </ul>
       </div>
@@ -71,10 +75,15 @@ const duration = $duration(props.recent.live_info.duration, true)
     <div class="mt-2 flex justify-between text-sm sm:text-base md:mt-2.5 md:text-lg">
       <div class="group flex cursor-pointer items-center gap-1.5">
         <Icon name="ph:clock-bold" />
-        <div class="group-hover:hidden">
-          {{ date }}
+        <div v-if="showDetailedDate">
+          <div :key="recent.data_id" class="group-hover:hidden">
+            {{ dayjs(recent.live_info?.date?.end).fromNow() }}
+          </div>
+          <div class="hidden group-hover:block">
+            {{ $d(new Date(props.recent.live_info?.date?.start), 'long') }}
+          </div>
         </div>
-        <div class="hidden group-hover:block">
+        <div v-else>
           {{ $d(new Date(props.recent.live_info?.date?.start), 'long') }}
         </div>
       </div>

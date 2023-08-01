@@ -1,7 +1,6 @@
 import { useSettings } from './settings'
 
 export const useMembers = defineStore('members', () => {
-  const config = useAppConfig()
   const error = ref(false)
   const loading = ref(false)
   const members = ref<IMember[]>([])

@@ -10,10 +10,9 @@ const route = useRoute()
 const { isLarge } = useResponsive()
 const navbar = ref()
 const { authenticated, user } = useUser()
-
 const menus = computed(() => {
   return props.menus.filter(i =>
-    (!i.login || authenticated) && (!i.admin || user.isAdmin))
+    (!i.login || authenticated) && (!i.admin || user?.isAdmin))
 })
 
 const settings = useSettings()
@@ -40,6 +39,7 @@ const { getIcon } = useAppConfig()
         />
       </div>
       <div class="flex justify-center gap-4" :class="{ 'flex-col': !isLarge }">
+        <LangSwitch class="bg-container flex flex-1 items-center justify-center gap-2 rounded-full p-3" :compact="!isLarge" />
         <button
           v-ripple
           type="button"
@@ -50,7 +50,7 @@ const { getIcon } = useAppConfig()
           <Icon name="ph:moon-bold" class="!hidden h-5 w-5 dark:!inline-block" />
           <Icon name="ph:sun-bold" class="h-5 w-5 dark:!hidden" />
         </button>
-        <LangSwitch class="bg-container flex flex-1 items-center justify-center gap-2 rounded-full p-3" :compact="!isLarge" />
+        <!-- <SettingGift /> -->
       </div>
       <div class="border-t-2 dark:border-zinc-700" :class="{ 'self-center': !isLarge }">
         <LayoutUser :compact="!isLarge" />

@@ -1,37 +1,25 @@
 import { calculateFansPoints } from '../stats.get'
 import ShowroomGift from '~/library/database/schema/showroom/ShowroomGift'
 import ShowroomLog from '~/library/database/schema/showroom/ShowroomLog'
-import Liked from '~/library/database/schema/user/Liked'
 import cache from '~~/library/utils/cache'
-import { getToken } from '#auth'
 
-const time = 86400000 * 15 // 15 day
+const time = 600000 // 10 minutes
 
 interface ExtendedDetails {
   fans: IStatFans[]
-  colorBg: string
-  liked: boolean
   live_info: Omit<Database.IDetailLiveInfo, 'gift'> & { gift: Omit<Database.IGiftsLogData, 'list' | 'free'> & { list: Database.GiftData[] } }
 }
 
 export default defineEventHandler(async (event: any) => {
-  cache.clear()
   const dataId = event.context.params?.id
-  const token = await getToken({ event })
   return await cache
-    .fetch<Database.IShowroomLogDetail & ExtendedDetails>(`recent-${dataId}`, () => getRecent(dataId, token), time)
+    .fetch<Database.IShowroomLogDetail & ExtendedDetails>(`recent-${dataId}`, () => getRecent(dataId), time)
 })
 
-export async function getRecent(id: string, token: any): Promise<Omit<Database.IShowroomLogDetail, 'live_info'> & ExtendedDetails> {
+export async function getRecent(id: string): Promise<Omit<Database.IShowroomLogDetail, 'live_info'> & ExtendedDetails> {
   const data = await ShowroomLog.getDetails(id)
   if (!data) throw createError({ statusMessage: 'Data not found!', statusCode: 404 })
   const fansRank = calculateFansPoints(data.users, data.live_info?.stage_list ?? [])
-  // const color = await getDominantColorServer(data.room_info.img_alt ?? data.room_info.img).catch((e) => {
-  //   console.log(e)
-  //   return null
-  // })
-  // const colorHex = color ? convertRGBtoHex(...flattenAndSoftenColor(...color)) : '#cfd9de'
-  const liked = (token?.id ? await Liked.findOne({ user_id: token.id, liked_id: data.data_id, type: 2 }) : null) != null
   const giftData = await ShowroomGift.find({ gift_id: data.live_info.gift.list.map(i => i.id) }).lean()
   const giftMap = new Map<number, Database.GiftData >()
   for (const gift of giftData) {
@@ -90,9 +78,6 @@ export async function getRecent(id: string, token: any): Promise<Omit<Database.I
   return {
     ...data,
     fans: fansRank,
-    // colorBg: colorHex,
-    colorBg: '',
-    liked,
     live_info: {
       ...data.live_info,
       gift: {

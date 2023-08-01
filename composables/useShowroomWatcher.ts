@@ -2,6 +2,7 @@ export default function (host: string, key: string) {
   let socket: WebSocket | null = null
   const comment = createEventHook<Watch.Comment>()
   const isLive = createEventHook<boolean>()
+  const gift = createEventHook<ShowroomAPI.GiftLogItem>()
   function createSocket() {
     destroySocket()
     socket = new WebSocket(host)
@@ -28,8 +29,22 @@ export default function (host: string, key: string) {
         else if (code === 101) {
           isLive.trigger(false)
         }
-        else if (code === 104) {
-          isLive.trigger(true)
+        else if (code === 2) {
+          gift.trigger(
+            {
+              num: msg.n,
+              avatar_url: `https://static.showroom-live.com/image/avatar/${msg.av}.png`,
+              name: msg.ac ?? '',
+              image: `https://static.showroom-live.com/image/gift/${msg.g}_m.png`,
+              gift_id: msg.g,
+              created_at: msg.created_at,
+              user_id: msg.u,
+              ua: msg.ua,
+              avatar_id: msg.av,
+              aft: msg.aft,
+              image2: '',
+            },
+          )
         }
       }
       catch (e) {
@@ -58,5 +73,6 @@ export default function (host: string, key: string) {
   return {
     onComment: comment.on,
     onLiveState: isLive.on,
+    onGift: gift.on,
   }
 }

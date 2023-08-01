@@ -1,5 +1,8 @@
+mostrecords: Rekor Showroom
 nolive: Tidak ada live saat ini 😭
 livenow: Sedang live
+description: Deskripsi
+socialmedia: Sosial Media
 nodescription: Tidak ada deskripsi
 nonext: Tidak ada jadwal live untuk saat ini 😔
 member: Member
@@ -8,6 +11,9 @@ user: Orang
 livecount: Jumlah live
 mostlive: Live terbanyak
 topmember: Member teratas
+averagegifts: Gift rata-rata
+mostgifts: Gift terbanyak
+longestlive: Live terlama
 mostviewer: Penonton terbanyak
 more: Selengkapnya
 fansranking: Ranking fans
@@ -20,6 +26,7 @@ view: Lihat
 viewlive: Buka Live
 viewer: Penonton
 totalgift: Jumlah hadiah
+totalpaidgift: Jumlah hadiah berbayar
 totalcomments: Komentar
 comment: Komentar
 duration: Durasi
@@ -75,6 +82,7 @@ date:
   end: Selesai
   started: Mulai dari {date}
 stats:
+  all: 'Semua'
   title: Statistik
   weekly: 7 Hari
   monthly: 4 Minggu
@@ -102,3 +110,45 @@ cancel: Batal
 favorites: Favorit
 backtohome: Kembali ke beranda
 premium_live: Live ini Premium
+hide_gifts: Sembunyikan Gifts
+show_gifts: Buka Gifts
+birthdate: Tanggal lahir
+horoscope:
+  title: Horoskop
+  aries: Aries
+  taurus: Taurus
+  gemini: Gemini
+  cancer: Cancer
+  leo: Leo
+  virgo: Virgo
+  libra: Libra
+  scorpio: Scorpio
+  sagittarius: Sagittarius
+  capricorn: Capricorn
+  aquarius: Aquarius
+  pisces: Pisces
+second: Detik
+minute: Menit
+hour: Jam
+day: Hari
+month: Bulan
+year: Tahun
+sorter:
+  viewresult: Lihat hasil
+  selectmember: Pilih membernya dulu!
+  clickstart: Tekan start untuk memulai...
+  selected: Terpilih {count} member!
+  pickmemberfirst: Minimal pilih 2 member!
+selectdate: Pilih tanggal
+birthday:
+  thismonth: Ultah bulan ini
+  empty: Tidak ada yang ultah bulan ini
+form:
+  captcha: Tolong isi captcha dibawah ini
+  error:
+    comment: Gagal mengirim komen! Pastikan sudah verifikasi nomor hp di Showroom!
+    commentretry: Gagal mengirim komen! Tolong coba lagi setelah beberapa saat
+    empty:
+      username: Username tidak boleh kosong!
+      password: Password tidak boleh kosong!
+      captcha: Isi captcha!

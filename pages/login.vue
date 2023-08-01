@@ -2,20 +2,30 @@
 import { useSettings } from '~~/store/settings'
 import { useUser } from '~/store/user'
 
-definePageMeta({ layout: 'empty' })
-const { signIn, authenticated } = useUser()
+// import sessionSerializer from '~~/library/serializer/showroomSession'
 
-if (authenticated) navigateTo('/')
+definePageMeta({
+  middleware: ['auth', 'showroom-session'],
+  layout: 'empty',
+  auth: {
+    unauthenticatedOnly: true,
+    navigateAuthenticatedTo: '/',
+  },
+})
 
+const settings = useSettings()
+const { session } = storeToRefs(settings)
+// const session = useSessionStorage<{ csrf_token: string; cookie: string } | null>('showroom_session', null, {
+//   serializer: sessionSerializer,
+// })
+const { signIn } = useUser()
 const i18nHead = useLocaleHead({
   addDirAttribute: true,
   identifierAttribute: 'id',
   addSeoAttributes: true,
 })
 
-const settings = useSettings()
 const { getFavicon, getTitle } = useAppConfig()
-// const dataA = await getSession()
 useHead({
   htmlAttrs: {
     lang: i18nHead.value.htmlAttrs?.lang,
@@ -37,10 +47,6 @@ useHead({
     { rel: 'icon', type: 'image/x-icon', href: getFavicon(settings.group) },
   ],
 })
-
-function login() {
-  signIn('discord', { redirect: true, callbackUrl: '/' })
-}
 
 const canvas = ref<HTMLCanvasElement | null>()
 
@@ -73,25 +79,33 @@ class Bubble {
   deep: number
   speed: number
   size: number
+  color: string
   constructor() {
     this.x = random(0, 100)
     this.y = random(0, 100)
     this.deep = random(0, 100)
     this.speed = random(0.005, 0.01)
-    this.size = random(8, 10) - this.deep / 100 * 2
+    this.size = random(180, 600) - this.deep / 100 * 2
+    this.color = this.generateRandomColor()
+  }
+
+  generateRandomColor(): string {
+    const colors: string[] = ['#3b82f6', '#22c55e', '#ef4444', '#14b8a6', '#a855f7', '#ec4899', '#f97316', '#eab308']
+    const randomIndex: number = Math.floor(Math.random() * colors.length)
+    return colors[randomIndex]
   }
 
   draw(ctx: CanvasRenderingContext2D) {
     this.y -= this.speed * 2 * this.deep / 100
-    ctx.fillStyle = '#6e6d6d'
-    ctx.globalAlpha = this.deep / 100
+    ctx.fillStyle = this.color
+    ctx.globalAlpha = (this.deep / 300)
     ctx.beginPath()
     const y = height.value * this.y / 100 - mouseYSmooth.value / height.value * 100 * 2 * this.deep / 100
     ctx.arc((width.value * this.x / 100) + ((mouseXSmooth.value / window.innerWidth * 100) - 50) * this.deep / 100, y, this.size, 0, 2 * Math.PI)
     ctx.fill()
 
-    if (y < -10) {
-      this.y += 105
+    if (y < -this.size) {
+      this.y += 100 + (this.size / height.value * 100) * 2
     }
   }
 }
@@ -126,7 +140,7 @@ onMounted(() => {
       canvas.value.height = height.value
 
       const bubbles: Bubble[] = []
-      for (let i = 0; i < 80; i++) {
+      for (let i = 0; i < 10; i++) {
         bubbles.push(new Bubble())
       }
 
@@ -144,47 +158,141 @@ onMounted(() => {
     }
   }
 })
+
+const loading = ref(false)
+const submitDisabled = computed(() => {
+  return loading.value || session.value?.csrf_token == null
+})
+const username = ref('')
+const password = ref('')
+const captcha = ref('')
+const usernameError = ref('')
+const passwordError = ref('')
+const captchaError = ref('')
+
+watch(username, () => {
+  if (usernameError.value) usernameError.value = ''
+})
+
+watch(password, () => {
+  if (passwordError.value) passwordError.value = ''
+})
+
+watch(captcha, () => {
+  if (captchaError.value) captchaError.value = ''
+})
+
+const { t } = useI18n()
+const errorData = ref()
+
+function submit() {
+  if (submitDisabled.value) return
+  if (username.value === '') {
+    usernameError.value = t('form.error.empty.username')
+  }
+
+  if (password.value === '') {
+    passwordError.value = t('form.error.empty.password')
+  }
+
+  if (errorData.value?.captcha_url && captcha.value === '') {
+    captchaError.value = t('form.error.empty.captcha')
+    return
+  }
+
+  if (!password.value || !username.value) return
+  signInHandler()
+}
+
+async function signInHandler() {
+  loading.value = true
+  const opts = { password: password.value, username: username.value, sr_csrf: session.value?.csrf_token, cookie: session.value?.cookie } as any
+  if (captcha.value !== '') opts.captcha_word = captcha.value
+  const { error, url } = (await signIn('credentials', { ...opts, redirect: false })) as any
+  if (error) {
+    loading.value = false
+    console.log(error)
+    try {
+      errorData.value = JSON.parse(error)
+    }
+    catch (e) {
+      console.log(e)
+    }
+  }
+  else {
+    session.value = null
+    return await navigateTo(url, { external: true })
+  }
+}
 </script>
 
 <template>
-  <div class="min-h-[100vh] bg-dark-2 backdrop-blur-sm">
-    <canvas
+  <div>
+    <SplashScreen>
+      <div class="min-h-[100vh] bg-dark-2 backdrop-blur-sm">
+        <!-- <canvas
       ref="canvas" :class="{
         'opacity-100': mounted,
         'opacity-0': !mounted,
-      }" class="fixed inset-0 -z-10 h-full w-full transition-[opacity] duration-1000"
-    />
-    <!-- <div id="login-bg" class="fixed inset-0 -z-10 brightness-75 max-sm:blur-sm" /> -->
-    <div class="flex h-[20vh] items-center justify-center text-center">
-      <NuxtLink to="/" class="text-3xl font-bold text-white lg:text-4xl">
-        {{ getTitle(settings.group) }}
-      </NuxtLink>
-    </div>
-    <div class="bg-container mx-auto w-[350px] max-w-[80vw] overflow-hidden rounded-3xl shadow-xl">
-      <div class=" bg-[#5865F2] p-10">
-        <img class="mx-auto w-[90%] md:w-[70%]" src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0b5493894cf60b300587_full_logo_white_RGB.svg" alt="Discord Full Logo">
-      </div>
-      <div class="px-5 pb-8 pt-5 text-center">
-        <NuxtLink to="/" class="flex items-center gap-0.5 text-base">
-          <Icon name="material-symbols:chevron-left-rounded" size="1.2em" />
-          Home
-        </NuxtLink>
-        <div class="space-y-8">
-          <div class="space-y-4">
-            <div class="mx-auto text-4xl font-bold">
-              Login
-            </div>
-            <div class="mx-auto">
-              Login to your account
-            </div>
+      }" class="fixed inset-0 -z-10 h-full w-full opacity-60 blur-3xl transition-[opacity] duration-1000"
+    /> -->
+        <div class="flex items-center justify-center text-center">
+          <NuxtLink to="/" class="my-8 text-3xl font-bold text-white md:my-14 lg:text-4xl">
+            {{ getTitle(settings.group) }}
+          </NuxtLink>
+        </div>
+        <div class="mx-auto w-[650px] max-w-[100%] rounded-3xl bg-dark-1 px-5 py-8 text-white/75 drop-shadow-md md:px-8">
+          <div class="flex items-center justify-center gap-1.5 text-center text-2xl font-bold">
+            <Icon name="solar:login-3-bold-duotone" class="text-red-500" size="2.5rem" />
+            <span>Login to Showroom</span>
           </div>
-          <button class="mx-auto flex items-center justify-center gap-3 rounded-[50px] bg-[#5865F2] px-8 py-4 text-white" @click="login">
-            <img class="h-5 w-5" src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0a6ca814282eca7172c6_icon_clyde_white_RGB.svg" alt="Discord Logo">
-            Login with Discord
-          </button>
+          <div />
+          <div class="mt-8 flex flex-col gap-8 md:mt-10">
+            <div class="relative rounded-xl bg-dark-3 px-3.5 py-2.5" :class="{ 'ring-1 ring-red-500': usernameError, 'cursor-not-allowed opacity-50': loading }">
+              <input v-model="username" class="w-full bg-transparent outline-none disabled:pointer-events-none" placeholder="Username" :disabled="loading" @keyup.enter="submit">
+              <div v-if="usernameError" class="absolute top-[calc(100%_+_5px)] text-sm text-red-500">
+                {{ usernameError }}
+              </div>
+            </div>
+            <div class="relative rounded-xl bg-dark-3 px-3.5 py-2.5" :class="{ 'ring-1 ring-red-500': passwordError, 'cursor-not-allowed opacity-50': loading }">
+              <input v-model="password" class="w-full bg-transparent outline-none disabled:pointer-events-none" placeholder="Password" type="password" :disabled="loading" @keyup.enter="submit">
+              <div v-if="passwordError" class="absolute top-[calc(100%_+_5px)] text-sm text-red-500">
+                {{ passwordError }}
+              </div>
+            </div>
+            <div v-if="errorData?.captcha_url" class="flex flex-col gap-3">
+              {{ $t('form.captcha') }}
+              <div class="w-full">
+                <img :src="errorData.captcha_url" alt="Captcha Image" class="w-full rounded-xl">
+              </div>
+              <div class="relative rounded-xl bg-dark-3 px-3.5 py-2.5 sm:mt-3" :class="{ 'ring-1 ring-red-500': captchaError, 'cursor-not-allowed opacity-50': loading }">
+                <input v-model="captcha" class="w-full bg-transparent outline-none disabled:pointer-events-none" placeholder="Captcha" :disabled="loading" @keyup.enter="submit">
+                <div v-if="captchaError" class="absolute top-[calc(100%_+_5px)] text-sm text-red-500">
+                  {{ captchaError }}
+                </div>
+              </div>
+            </div>
+            <div v-if="errorData?.error" class="mt-3 text-red-500">
+              {{ errorData?.error }}
+            </div>
+            <ClientOnly>
+              <template #fallback>
+                <ButtonText class="relative mt-5 rounded-xl bg-blue-500 p-2.5 text-xl font-bold" :disabled="true">
+                  <span :class="{ 'opacity-0': loading }">Login</span>
+                </ButtonText>
+              </template>
+              <ButtonText class="relative mt-5 rounded-xl bg-blue-500 p-2.5 text-xl font-bold" :disabled="submitDisabled" @click="submit">
+                <Icon v-if="loading" name="svg-spinners:ring-resize" size="1.8rem" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
+                <span :class="{ 'opacity-0': loading }">Login</span>
+              </ButtonText>
+            </ClientOnly>
+            <NuxtLink to="https://twitter.com/crstlnz" target="_blank" class="mt-4 opacity-50">
+              @crstlnz
+            </NuxtLink>
+          </div>
         </div>
       </div>
-    </div>
+    </SplashScreen>
   </div>
 </template>
 

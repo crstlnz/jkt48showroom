@@ -213,7 +213,7 @@ async function refreshDate() {
           class="flex max-h-[75%] flex-col overflow-hidden overflow-y-auto text-lg [&>li]:my-3 [&>li]:cursor-pointer [&>li]:px-4 [&>li]:text-center [&>li]:font-semibold"
         >
           <li>
-            <NuxtLink to="/" no-prefetch>
+            <NuxtLink :to="`/member/${live.url}`" no-prefetch>
               Profile
             </NuxtLink>
           </li>

@@ -32,5 +32,6 @@ module.exports = {
     'tailwindcss/no-custom-classname': 'off',
     'antfu/if-newline': 'off',
     'unicorn/prefer-node-protocol': 'off',
+    'n/prefer-global/process': 0,
   },
 }

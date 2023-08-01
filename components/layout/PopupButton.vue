@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
-const { isMobile } = useResponsive()
+const { isMobile, smallerOrEqual } = useResponsive()
+const isSmall = smallerOrEqual('sm')
 defineProps<{
   class?: string
 }>()
-
 </script>
 
 <template>
@@ -12,8 +12,9 @@ defineProps<{
     <PopoverButton aria-label="Filter" :class="class">
       <slot :close="close"/>
     </PopoverButton>
+    <Teleport to="body" :disabled="!isMobile">
     <Transition
-    v-if="isMobile"
+    v-if="isSmall || isMobile"
       enter-active-class="transition ease duration-200"
       enter-from-class="opacity-0"
       enter-to-class="opacity-100"
@@ -21,20 +22,22 @@ defineProps<{
       leave-from-class="opacity-100"
       leave-to-class="opacity-0"
     >
-    <div v-if="open" @click="close" class="bg-black/50 fixed inset-0"/>
+      <div v-if="open" @click="close" class="bg-black/50 fixed inset-0 z-aboveNav"/>
     </Transition>
 
     <Transition
-      enter-active-class="transition ease duration-200"
-      enter-from-class="opacity-0 max-sm:translate-y-[100%]"
+      enter-active-class="transition duration-300 sm:duration-200"
+      enter-from-class="sm:opacity-0 max-sm:translate-y-[100%]"
       enter-to-class="opacity-100 max-sm:translate-y-0"
-      leave-active-class="transition ease duration-200"
+      leave-active-class="transition duration-300 sm:duration-200"
       leave-from-class="opacity-100"
-      leave-to-class="opacity-0 max-sm:translate-y-[100%]"
+      leave-to-class="sm:opacity-0 max-sm:translate-y-[100%]"
     >
-      <PopoverPanel class="bg-container z-aboveNav fixed overflow-hidden shadow-xl drop-shadow-xl max-sm:inset-x-0 max-sm:bottom-0 max-sm:rounded-t-2xl sm:absolute sm:right-0 sm:top-[calc(100%_+_0.45rem)] sm:rounded-2xl">
+        <PopoverPanel class="bg-container z-aboveNav max-h-[100vh] cursor-default overflow-y-auto roundedscrollbar fixed shadow-xl drop-shadow-xl max-sm:inset-x-0 max-sm:bottom-0 max-sm:rounded-t-2xl sm:absolute sm:right-0 sm:top-[calc(100%_+_0.45rem)] sm:rounded-2xl">
         <slot name="panel" :close="close"/>
       </PopoverPanel>
     </Transition>
+  </Teleport>
+
   </Popover>
 </template>

@@ -43,7 +43,7 @@ const english: IDateString = {
 }
 
 type LocaleType = 'en' | 'id'
-function getStringDuration(time: number, locale: LocaleType | null = null): IStringDuration {
+export function getStringDuration(time: number, locale: LocaleType | null = null): IStringDuration {
   const dateString: IDateString = (locale === 'en' || locale === null) ? english : indonesian
   if (time >= secondsTime.year) {
     // 1 year
@@ -102,7 +102,7 @@ function getStringDuration(time: number, locale: LocaleType | null = null): IStr
 }
 
 export default {
-  detailDuration(time1: Date | string | number, time2: Date | string | number, lang: LocaleType | null = null, max = Infinity) {
+  detailDuration(time1: Date | string | number, time2: Date | string | number, lang: LocaleType | null = null, max = Number.POSITIVE_INFINITY) {
     if (!lang) lang = 'en'
     const time = Math.floor(Math.abs(new Date(time1).getTime() - new Date(time2).getTime()) / 1000) // in seconds
     function get(time: number, res: unknown[] = []): unknown[] {

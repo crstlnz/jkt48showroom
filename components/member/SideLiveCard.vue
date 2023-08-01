@@ -1,18 +1,17 @@
 <script lang="ts" setup>
-const props = defineProps<{
+defineProps<{
   live: IRoomLive
 }>()
 const config = useAppConfig()
 const { $formatSR } = useNuxtApp()
-const dateString = $formatSR(props.live.started_at)
 </script>
 
 <template>
   <div>
-    <NuxtLink target="_blank" :to="$liveURL(live.url)" class="my-1 flex items-start gap-3">
+    <NuxtLink :to="`/watch/${live.url}`" class="my-1 flex items-start gap-3">
       <img class="aspect-square w-[70px] rounded-full object-cover" :src="$fixCloudinary(live.img_alt ?? live.img ?? config.errorPicture)" :alt="`${live.name} Profile picture`">
       <div class="flex w-0 flex-1 flex-col items-start gap-2 self-stretch">
-        <div class="text-base font-semibold">
+        <div class="text-sm font-semibold">
           {{ live.name }}
         </div>
         <div class="flex gap-2">
@@ -30,7 +29,7 @@ const dateString = $formatSR(props.live.started_at)
             <div class="text-xs leading-5 md:font-semibold" />
           </div>
           <div class="rounded-md bg-red-500 px-1 text-sm font-semibold text-white">
-            {{ dateString }}
+            {{ $formatSR(live.started_at) }}
           </div>
         </div>
       </div>

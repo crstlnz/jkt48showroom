@@ -31,19 +31,27 @@ export function getIsLive(roomId: number | string): Promise<ShowroomAPI.IsLive> 
   return fetchAPI(`https://www.showroom-live.com/room/is_live?room_id=${roomId}&_=${new Date().getTime()}`)
 }
 
-export function getOnlives(params?: object): Promise<ShowroomAPI.Onlives> {
-  return $fetch('https://www.showroom-live.com/api/live/onlives', { params })
+export function getGiftLog(roomId: number, cookies: string | null = null): Promise<{ gift_log: ShowroomAPI.GiftLogItem[] }> {
+  return fetchAPI(`https://www.showroom-live.com/api/live/gift_log?room_id=${roomId}&_=${new Date().getTime()}`, { headers: { cookie: cookies || '' } })
 }
 
-export function getRoomStatus(params: object): Promise<ShowroomAPI.RoomStatus> {
-  return $fetch('https://www.showroom-live.com/api/room/status', { params })
+export function getOnlives(params?: object, cookies: string | null = null): Promise<ShowroomAPI.Onlives> {
+  return $fetch('https://www.showroom-live.com/api/live/onlives', { params, headers: { cookie: cookies || '' } })
 }
 
-export function getStreamingURL(params: object): Promise<ShowroomAPI.StreamingUrlList> {
-  return $fetch('https://www.showroom-live.com/api/live/streaming_url', { params })
+export function getRoomStatus(params: object, cookies: string | null = null): Promise<ShowroomAPI.RoomStatus> {
+  return $fetch('https://www.showroom-live.com/api/room/status', { params, headers: { cookie: cookies || '' } })
 }
-export function getCommentLog(roomId: number): Promise<{ comment_log: Watch.APIComment[] }> {
-  return fetchAPI(`https://www.showroom-live.com/api/live/comment_log?room_id=${roomId}&_=${new Date().getTime()}`)
+
+export function getGiftList(roomId: number, cookies: string | null = null): Promise<{ normal: ShowroomAPI.Gift[] }> {
+  return fetchAPI(`https://www.showroom-live.com/api/live/gift_list?room_id=${roomId}&_=${new Date().getTime()}`, { headers: { cookie: cookies || '' } })
+}
+
+export function getStreamingURL(params: object, cookies: string | null = null): Promise<ShowroomAPI.StreamingUrlList> {
+  return $fetch('https://www.showroom-live.com/api/live/streaming_url', { params: { ...params, _: new Date().getTime() }, headers: { cookie: cookies || '' } })
+}
+export function getCommentLog(roomId: number, cookies: string | null = null): Promise<{ comment_log: Watch.APIComment[] }> {
+  return fetchAPI(`https://www.showroom-live.com/api/live/comment_log?room_id=${roomId}&_=${new Date().getTime()}`, { headers: { cookie: cookies || '' } })
 }
 export function getPolling(roomId: number): Promise<ShowroomAPI.Polling | ShowroomAPI.PollingLiveEnd> {
   return fetchAPI(`https://www.showroom-live.com/api/live/polling?room_id=${roomId}&_=${new Date().getTime()}`)
@@ -51,6 +59,30 @@ export function getPolling(roomId: number): Promise<ShowroomAPI.Polling | Showro
 
 export function getUserProfile(userId: number): Promise<ShowroomAPI.UserProfile> {
   return fetchAPI(`https://www.showroom-live.com/api/user/profile?user_id=${userId}`)
+}
+
+export function getSummaryRanking(roomId: number): Promise<ShowroomAPI.SummaryRanking> {
+  return fetchAPI(`https://www.showroom-live.com/api/live/summary_ranking?room_id=${roomId}`)
+}
+
+export function sendComment(opts?: any | undefined): Promise<Watch.CommentResponse> {
+  return $fetch('https://www.showroom-live.com/api/live/post_live_comment', { ...opts, method: 'POST' })
+}
+
+export function greeting(opts?: any | undefined): Promise<{ ok: 0 | 1 }> {
+  return $fetch('https://www.showroom-live.com/api/room/greeting', { ...opts })
+}
+
+export function getShowroomCsrf(opts?: any | undefined): Promise<{ csrf_token: string }> {
+  return $fetch('https://www.showroom-live.com/api/csrf_token', { ...opts })
+}
+
+export function getCurrentUser(opts?: any | undefined): Promise<ShowroomAPI.CurrentUser> {
+  return $fetch('https://www.showroom-live.com/api/live/current_user', { ...opts })
+}
+
+export function logout(opts?: any | undefined): Promise<void> {
+  return $fetch('https://www.showroom-live.com/user/logout_api', { ...opts, method: 'POST' })
 }
 
 export async function getFollows(page = 1): Promise<ShowroomAPI.Follow> {

@@ -19,6 +19,7 @@ watch(userId, () => {
 })
 
 const padding = 20
+const cursorPadding = 40
 const userContainer = ref<HTMLElement>()
 const posX = ref(0)
 const posY = ref(0)
@@ -27,8 +28,8 @@ const { width: windowWidth, height: windowHeight } = useWindowSize()
 const { width: containerWidth, height: containerHeight } = useElementSize(userContainer)
 
 function setPosition(x: number, y: number) {
-  posX.value = clamp(0, windowWidth.value - containerWidth.value, x + 40, padding)
-  posY.value = clamp(containerHeight.value, windowHeight.value, y + 40, padding)
+  posX.value = clamp(0, windowWidth.value - containerWidth.value, x + cursorPadding, padding)
+  posY.value = clamp(containerHeight.value, windowHeight.value, y + cursorPadding, padding)
   isHidden.value = false
 }
 const isDrag = ref(false)

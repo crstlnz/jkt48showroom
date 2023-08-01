@@ -189,7 +189,7 @@ defineExpose({ open, close, isOpen })
 
 <template>
   <div class="absolute">
-    <transition name="sheet">
+    <Transition name="sheet">
       <div v-if="isOpen">
         <div
           ref="background"
@@ -198,8 +198,8 @@ defineExpose({ open, close, isOpen })
 
         <div
           ref="sheet"
-          :class="{ 'transition-transform duration-[600]': !isDrag }"
-          class="sheet-content !fixed bottom-0 left-0 z-aboveNav max-h-[90vh] w-full touch-none overflow-hidden rounded-t-3xl ease-in-out md:left-auto md:right-10 md:w-[450px] md:rounded-t-2xl md:shadow-rounded lg:right-20"
+          :class="{ 'transition-transform duration-[300]': !isDrag }"
+          class="sheet-content !fixed bottom-0 left-0 z-nav max-h-[90vh] w-full touch-none overflow-hidden rounded-t-3xl ease-in-out md:left-auto md:right-10 md:w-[450px] md:rounded-t-2xl md:shadow-rounded lg:right-20"
         >
           <DynamicScroller
             ref="scroller"
@@ -217,7 +217,7 @@ defineExpose({ open, close, isOpen })
                   v-if="$device.isMobile"
                   class="absolute left-1/2 top-1.5 h-[3px] w-14 -translate-x-1/2 rounded-sm bg-slate-400/40 dark:bg-dark-3/90"
                 />
-                <h2 ref="navbar" class="flex-1 select-none px-5 text-xl font-bold leading-[4rem]">
+                <h2 ref="navbar" class="flex-1 select-none px-5 text-xl font-bold leading-[4.5rem]">
                   {{ title }}
                 </h2>
                 <button
@@ -253,6 +253,6 @@ defineExpose({ open, close, isOpen })
           </DynamicScroller>
         </div>
       </div>
-    </transition>
+    </Transition>
   </div>
 </template>

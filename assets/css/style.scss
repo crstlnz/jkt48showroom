@@ -87,7 +87,14 @@ body {
 // }
 
 .text-stroke {
-  text-shadow: 2px 0 #fff, -2px 0 #fff, 0 2px #fff, 0 -2px #fff, 1px 1px #fff, -1px -1px #fff, 1px -1px #fff,
+  text-shadow:
+    2px 0 #fff,
+    -2px 0 #fff,
+    0 2px #fff,
+    0 -2px #fff,
+    1px 1px #fff,
+    -1px -1px #fff,
+    1px -1px #fff,
     -1px 1px #fff;
 }
 
@@ -97,8 +104,15 @@ body {
   }
 
   .text-stroke {
-    text-shadow: 2px 0 #252525, -2px 0 #252525, 0 2px #252525, 0 -2px #252525, 1px 1px #252525, -1px -1px #252525,
-      1px -1px #252525, -1px 1px #252525;
+    text-shadow:
+      2px 0 #252525,
+      -2px 0 #252525,
+      0 2px #252525,
+      0 -2px #252525,
+      1px 1px #252525,
+      -1px -1px #252525,
+      1px -1px #252525,
+      -1px 1px #252525;
   }
 }
 
@@ -216,19 +230,24 @@ span.ripple {
   position: absolute; /* The absolute position we mentioned earlier */
   border-radius: 50%;
   transform: scale(0);
-  animation: ripple 800ms linear;
+  animation: ripple 1800ms forwards;
   @apply bg-slate-400/30 dark:bg-zinc-400/20;
+  transition: 0.3s;
+  &.hide {
+    opacity: 0;
+  }
 }
 
 @keyframes ripple {
   to {
     transform: scale(4);
-    opacity: 0;
+    // opacity: 0;
   }
 }
 
 button,
 a {
+  @apply outline-0 focus-visible:ring-2 ring-blue-500;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -241,6 +260,57 @@ a {
   border-bottom: 0;
   margin-left: -10px;
   margin-bottom: -10px;
-  filter: drop-shadow(rgb(207, 217, 222) -2px 1px 1px);
+  filter: drop-shadow(rgb(207, 217, 222, 1) -1px 0px 0px);
   @apply border-t-white dark:border-t-dark-1;
+}
+
+.dark {
+  .speech-pointer-bottom {
+    filter: drop-shadow(rgb(207, 217, 222, 0.2) -1px 0px 0px);
+  }
+}
+
+.preformat {
+  white-space: pre-wrap; /* Since CSS 2.1 */
+  white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+  white-space: -pre-wrap; /* Opera 4-6 */
+  white-space: -o-pre-wrap; /* Opera 7 */
+  word-wrap: break-word; /* Internet Explorer 5.5+ */
+}
+
+.card {
+  perspective: 1200px;
+  &.flipped {
+    .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    &.reverse {
+      .card-inner {
+        transform: rotateY(-180deg);
+      }
+    }
+  }
+
+  .card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+    .card-front {
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+    }
+    .card-back {
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      transform: rotateY(180deg);
+    }
+  }
+}
+
+.bg-card {
+  background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
 }

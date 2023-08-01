@@ -4,38 +4,72 @@ import ShowroomLog from '~~/library/database/schema/showroom/ShowroomLog'
 import cache from '~~/library/utils/cache'
 import config from '~~/app.config'
 
+const fansMaxSize = 50
+const time = 43200000 // 12 hours
 function isIDateRangeType(value: string): value is IDateRangeType {
   return ['weekly', 'monthly', 'quarterly'].includes(value)
+}
+
+function isIDateRangeMemberType(value: string): value is IDateRangeMemberType {
+  return ['weekly', 'monthly', 'all'].includes(value)
 }
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
   const group = config.getGroup(query.group as string)
-  const type = isIDateRangeType(query.type as string) ? query.type : undefined
-  return await getStats(type as IDateRangeType, group)
+  try {
+    if (query.room_id) {
+      const type = isIDateRangeMemberType(query.type as string) ? query.type : undefined
+      return await getMemberStats(type as IDateRangeMemberType, query.room_id as number)
+    }
+    else {
+      const type = isIDateRangeType(query.type as string) ? query.type : undefined
+      return await getStats(type as IDateRangeType, group)
+    }
+  }
+  catch (e) {
+    console.log(e)
+    throw e
+  }
 })
 
 export { getDateRange }
 
+export async function getMemberStats(type: IDateRangeMemberType = 'all', roomId: number): Promise<IShowroomMemberStats> {
+  const dateRange = type === 'all' ? null : getDateRange(type)
+  const cacheString = `${roomId}-${type}`
+  const data = await cache.fetch<IShowroomMemberStats>(cacheString, () => fetchData(type, null, roomId), time)
+  if (data?.date?.to === dateRange?.to) return data
+  return await fetchData(type, null, roomId)
+}
+
 export async function getStats(type: IDateRangeType = 'quarterly', group: string | null = null): Promise<IShowroomStats> {
   const dateRange = getDateRange(type)
   const cacheString = (group == null) ? type : `${group}-${type}`
-  const data = await cache.fetch<IShowroomStats>(cacheString, () => fetchData(type, group), 2629800000)
+  const data = await cache.fetch<IShowroomStats>(cacheString, () => fetchData(type, group, null), time)
   if (data?.date?.to === dateRange.to) return data
-  return await fetchData(type)
+  return await fetchData(type, group, null)
 }
 
-export async function fetchData(type: IDateRangeType, group: string | null = null): Promise<IShowroomStats> {
-  const dateRange = {
-    from: getDateRange('quarterly').from,
-    to: getDateRange('weekly').to,
-  } // get all data and then convert it to monthly and weekly
-  const members = await getMembers(group)
-  if (!members) {
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'Failed to fetch data!',
-    })
+export async function fetchData(type: IDateRangeType, group: string | null, roomId: number | null): Promise<IShowroomStats>
+export async function fetchData(type: IDateRangeMemberType, group: string | null, roomId: number | null): Promise<IShowroomMemberStats>
+export async function fetchData(type: IDateRangeType | IDateRangeMemberType, group: string | null = null, roomId: number | null = null): Promise<IShowroomStats | IShowroomMemberStats> {
+  const dateRange = (roomId)
+    ? null
+    : {
+        from: getDateRange('quarterly').from,
+        to: getDateRange('weekly').to,
+      } // get all data and then convert it to monthly and weekly
+
+  let members: IMember[] = []
+  if (!roomId) {
+    members = await getMembers(group)
+    if (!members?.length) {
+      throw createError({
+        statusCode: 500,
+        statusMessage: 'Failed to fetch data!',
+      })
+    }
   }
 
   const select = {
@@ -47,20 +81,26 @@ export async function fetchData(type: IDateRangeType, group: string | null = nul
       stage_list: 1,
       start_date: 1,
       end_date: 1,
-      penonton: {
+      viewers: {
         peak: 1,
       },
     },
     data_id: 1,
     room_id: 1,
   }
+
   const option: StatsOptions = {
-    'room_id': members.map(i => i.room_id),
-    'live_info.end_date': {
+    room_id: roomId || members.map(i => i.room_id),
+
+  }
+
+  if (dateRange) {
+    option['live_info.end_date'] = {
       $gte: dateRange.from,
       $lte: dateRange.to,
-    },
+    }
   }
+
   if (!process.env.IS_DEV) option.is_dev = false
   const logs = await ShowroomLog.find(option, select)
     .lean()
@@ -73,30 +113,51 @@ export async function fetchData(type: IDateRangeType, group: string | null = nul
       },
     }) as unknown as Database.IShowroomLog[]
 
-  const weekly = generate(logs, 'weekly')
-  const monthly = generate(logs, 'monthly')
-  const quarterly = generate(logs, 'quarterly')
-
-  cache.set(weekly.type, weekly)
-  cache.set(monthly.type, monthly)
-  cache.set(quarterly.type, quarterly)
-
-  if (type === 'quarterly') {
-    return quarterly
-  }
-  else if (type === 'monthly') {
-    return monthly
+  if (roomId) {
+    const weekly = generate(logs, 'weekly', 'member')
+    const monthly = generate(logs, 'monthly', 'member')
+    const all = generate(logs, 'all', 'member')
+    cache.set(`${roomId}-${weekly.type}`, weekly)
+    cache.set(`${roomId}-${monthly.type}`, monthly)
+    cache.set(`${roomId}-${all.type}`, all)
+    if (type === 'all') {
+      return all
+    }
+    else if (type === 'monthly') {
+      return monthly
+    }
+    else {
+      return weekly
+    }
   }
   else {
-    return weekly
+    const weekly = generate(logs, 'weekly', 'all')
+    const monthly = generate(logs, 'monthly', 'all')
+    const quarterly = generate(logs, 'quarterly', 'all')
+    cache.set(group ? `${group}-${weekly.type}` : weekly.type, weekly)
+    cache.set(group ? `${group}-${monthly.type}` : monthly.type, monthly)
+    cache.set(group ? `${group}-${quarterly.type}` : quarterly.type, quarterly)
+    if (type === 'quarterly') {
+      return quarterly
+    }
+    else if (type === 'monthly') {
+      return monthly
+    }
+    else {
+      return weekly
+    }
   }
 }
 
-function generate(logs: Database.IShowroomLog[], type: IDateRangeType) {
-  const dateRange = getDateRange(type)
-
-  logs = logs.filter(i => new Date(i.live_info.start_date).getTime() >= new Date(dateRange.from).getTime() && new Date(i.live_info.start_date).getTime() <= new Date(dateRange.to).getTime())
-  const all = calculateRanks(logs)
+function generate(logs: Database.IShowroomLog[], type: IDateRangeType, typeStats: 'member' | 'all'): IShowroomStats | IShowroomMemberStats
+function generate(logs: Database.IShowroomLog[], type: IDateRangeMemberType, typeStats: 'member' | 'all'): IShowroomMemberStats
+function generate(logs: Database.IShowroomLog[], type: IDateRangeType | IDateRangeMemberType, typeStats: 'member' | 'all'): IShowroomStats | IShowroomMemberStats {
+  const dateRange = type === 'all' ? null : getDateRange(type)
+  let log = logs
+  if (dateRange) {
+    log = logs.filter(i => new Date(i.live_info.start_date).getTime() >= new Date(dateRange.from).getTime() && new Date(i.live_info.start_date).getTime() <= new Date(dateRange.to).getTime())
+  }
+  const all = calculateRanks(log)
   const memberList = all.member.map((i) => {
     return {
       ...i,
@@ -112,52 +173,80 @@ function generate(logs: Database.IShowroomLog[], type: IDateRangeType) {
     },
   ]
   if (memberList.length) {
-    const mostLive = memberList.sort((a, b) => b.live_count - a.live_count)[0]
-    const topMember = memberList.sort((a, b) => b.live_point - a.live_point)[0]
-    const mostViews = memberList.sort((a, b) => b.avg_viewer - a.avg_viewer)[0]
-    statsLive.push(
-      ...[
-        {
-          title: 'Most Live',
-          key: 'mostlive',
-          img: {
-            title: mostLive.name,
-            src: mostLive.img,
+    if (typeStats === 'all') {
+      const mostViews = memberList.sort((a, b) => b.most_viewer - a.most_viewer)[0]
+      const mostLive = memberList.sort((a, b) => b.live_count - a.live_count)[0]
+      const topMember = memberList.sort((a, b) => b.live_point - a.live_point)[0]
+      statsLive.push(
+        ...[
+          {
+            title: 'Most Live',
+            key: 'mostlive',
+            img: {
+              title: mostLive.name,
+              src: mostLive.img,
+            },
+            value: `${mostLive.live_count} ${mostLive.live_count > 1 ? 'Lives' : 'Live'}`,
           },
-          value: `${mostLive.live_count} ${mostLive.live_count > 1 ? 'Lives' : 'Live'}`,
-        },
-        {
-          title: 'Top Member',
-          key: 'topmember',
-          img: {
-            title: topMember.name,
-            src: topMember.img,
+          {
+            title: 'Top Member',
+            key: 'topmember',
+            img: {
+              title: topMember.name,
+              src: topMember.img,
+            },
+            value: topMember.name,
           },
-          value: topMember.name,
+        ],
+      )
+
+      statsLive.push({
+        title: 'Most Viewer',
+        key: 'mostviewer',
+        img: {
+          title: mostViews.name,
+          src: mostViews.img,
         },
-        {
-          title: 'Most Viewer',
-          key: 'mostviewer',
-          img: {
-            title: mostViews.name,
-            src: mostViews.img,
-          },
-          value:
-            mostViews.avg_viewer > 1000
-              ? `${(mostViews.avg_viewer / 1000).toFixed(2)}K Viewers`
-              : `${mostViews.avg_viewer} ${mostViews.avg_viewer > 1 ? 'Viewers' : 'Viewer'}`,
-        },
-      ],
-    )
+        value: mostViews.most_viewer,
+        parseType: 'viewer',
+      })
+    }
+    else {
+      statsLive.push({
+        title: 'Most Gifts',
+        key: 'mostgifts',
+        value: memberList[0].most_point,
+        parseType: 'gift',
+      })
+
+      statsLive.push({
+        title: 'Most Viewer',
+        key: 'mostviewer',
+        value:
+          memberList[0].most_viewer > 1000
+            ? `${(memberList[0].most_viewer / 1000).toFixed(2)}K Viewers`
+            : `${memberList[0].most_viewer} ${memberList[0].most_viewer > 1 ? 'Viewers' : 'Viewer'}`,
+      })
+      statsLive.push({
+        title: 'Longest Live',
+        key: 'longestlive',
+        value: memberList[0].duration,
+        parseType: 'duration',
+      })
+    }
   }
+
   return {
     type,
     ranks: all,
     stats: statsLive,
-    date: {
-      from: dateRange.from,
-      to: dateRange.to,
-    },
+    date: !dateRange
+      ? undefined
+      : {
+          from: dateRange?.from ?? '',
+          to: dateRange?.to ?? '',
+        }
+    ,
   }
 }
 
@@ -173,9 +262,14 @@ function calculateRanks(logs: Database.IShowroomLog[]): CalculatedRanks {
     if (memberRanks.has(log.room_id)) {
       const member = memberRanks.get(log.room_id)
       if (member) {
+        const viewer = log.live_info?.viewers?.peak ?? 0
+        const duration = new Date(log?.live_info?.end_date).getTime() - new Date(log?.live_info?.start_date).getTime()
         member.live_count += 1
-        member.total_viewer += log?.live_info?.penonton?.peak ?? 0
+        member.total_viewer += log?.live_info?.viewers?.peak ?? 0
         member.point += log.total_point
+        member.most_viewer = viewer > member.most_viewer ? viewer : member.most_viewer
+        member.duration = duration > member.duration ? duration : member.duration
+        member.most_point = log?.total_point > member.most_point ? log?.total_point : member.most_point
       }
     }
     else {
@@ -188,8 +282,11 @@ function calculateRanks(logs: Database.IShowroomLog[]): CalculatedRanks {
           || 'https://image.showroom-cdn.com/showroom-prod/assets/img/v3/img-err-404.jpg?t=1602821561',
         url: log.room_info?.url ?? '',
         live_count: 1,
-        total_viewer: log?.live_info?.penonton?.peak ?? 0,
+        total_viewer: log?.live_info?.viewers?.peak ?? 0,
+        duration: new Date(log?.live_info?.end_date).getTime() - new Date(log?.live_info?.start_date).getTime(),
         point: log.total_point,
+        most_viewer: log.live_info?.viewers?.peak ?? 0,
+        most_point: log.total_point,
       })
     }
   }
@@ -252,7 +349,7 @@ export function calculateFansPoints(usersData: IFansCompact[], stageList: Databa
     }
   })
     .sort((a, b) => b.fans_point - a.fans_point)
-    .slice(0, 100)
+    .slice(0, fansMaxSize)
 }
 
 function getRankPoints(rank: number) {

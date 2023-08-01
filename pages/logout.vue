@@ -34,7 +34,12 @@ function cancel() {
         {{ $t('logoutwarn') }}
       </div>
       <div class="mt-3 flex flex-col gap-3">
-        <button class="rounded-full bg-red-400 p-3 text-sm font-semibold text-white" @click="() => signOut({ redirect: true, callbackUrl: '/' })">
+        <button
+          class="rounded-full bg-red-400 p-3 text-sm font-semibold text-white" @click="() => {
+            settings.session = null
+            signOut({ redirect: true, callbackUrl: '/' })
+          }"
+        >
           {{ $t('logout') }}
         </button>
         <button class="rounded-full p-3 text-sm font-semibold transition-colors duration-300 active:bg-hover" @click="cancel">

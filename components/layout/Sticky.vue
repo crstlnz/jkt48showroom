@@ -10,9 +10,9 @@ const stickyContainer = ref<HTMLElement>()
 const marginElement = ref<HTMLElement>()
 const lastScroll = ref<number>(0)
 const { height } = useWindowSize()
-const { smallerOrEqual } = useResponsive()
+const { greaterOrEqual } = useResponsive()
 const scrollState = ref<'up' | 'down' | 'overflow' | null>()
-const stopSticky = smallerOrEqual(props.stopSticky ?? 'sm')
+const stopSticky = greaterOrEqual(props.stopSticky ?? 'xl')
 useEventListener('resize', () => {
   scrollState.value = null
   if (stopSticky.value) {
@@ -27,7 +27,7 @@ useEventListener('resize', () => {
 
 const padding = 40
 function calculateSticky() {
-  if (stopSticky.value) return
+  if (!stopSticky.value) return
   if (stickyElement.value && stickyContainer.value && marginElement.value) {
     const rect = stickyElement.value.getBoundingClientRect()
     const containerRect = stickyContainer.value.getBoundingClientRect()

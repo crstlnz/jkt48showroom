@@ -22,8 +22,8 @@ async function submit() {
     type: 'loading',
     title: 'Submit',
   })
-  const formData = new FormData()
 
+  const formData = new FormData()
   formData.append('roomId', roomId.value ?? '')
   formData.append('liveId', liveId.value ?? '')
   formData.append('penonton', penonton.value ?? '')
