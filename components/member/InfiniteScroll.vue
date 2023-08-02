@@ -66,12 +66,12 @@ const recentHeight = computed(() => {
 })
 
 watch(recentHeight, (val) => {
-  console.log(val)
+  // console.log(val)
 }, { immediate: true })
 
-const bufferSize = computed(() => {
-  return height.value
-})
+// const bufferSize = computed(() => {
+//   return height.value
+// })
 </script>
 
 <template>

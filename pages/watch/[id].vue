@@ -121,9 +121,7 @@ watch(polling, (poll) => {
 })
 
 const { pause, resume } = useIntervalFn(() => {
-  console.log('INTERVAL')
   if (roomId) {
-    console.log('UPDATING POLLING')
     refreshPolling()
   }
 }, 60000)

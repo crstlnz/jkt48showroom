@@ -53,9 +53,7 @@ class TieMembers extends Array {
   }
 
   get(): string {
-    const id = this[Math.floor(Math.random() * this.length)]
-    console.log(id)
-    return id
+    return this[Math.floor(Math.random() * this.length)]
   }
 }
 

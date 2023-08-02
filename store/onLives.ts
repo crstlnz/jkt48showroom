@@ -22,7 +22,7 @@ export const useOnLives = defineStore('onLives', () => {
 
   async function refreshLives(): Promise<IRoomLive[]> {
     if (!config.public.isDev) {
-      return await $fetch(`/api/showroom/now_live?_=${new Date().getTime()}`, { query: { group: settings.group } })
+      return await $fetch('/api/showroom/now_live', { query: { group: settings.group, _: new Date().getTime() } })
     }
     else {
       // return await $fetch(`/api/showroom/now_live?_=${new Date().getTime()}`, { query: { group: settings.group } })

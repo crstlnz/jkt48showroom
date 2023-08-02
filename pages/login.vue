@@ -185,7 +185,7 @@ watch(captcha, () => {
 const { t } = useI18n()
 const errorData = ref()
 
-function submit() {
+function checkSubmit() {
   if (submitDisabled.value) return
   if (username.value === '') {
     usernameError.value = t('form.error.empty.username')
@@ -245,17 +245,18 @@ async function signInHandler() {
           <div class="flex items-center justify-center gap-1.5 text-center text-2xl font-bold">
             <Icon name="solar:login-3-bold-duotone" class="text-red-500" size="2.5rem" />
             <span>Login to Showroom</span>
+            {{ submitDisabled }}
           </div>
           <div />
           <div class="mt-8 flex flex-col gap-8 md:mt-10">
             <div class="relative rounded-xl bg-dark-3 px-3.5 py-2.5" :class="{ 'ring-1 ring-red-500': usernameError, 'cursor-not-allowed opacity-50': loading }">
-              <input v-model="username" class="w-full bg-transparent outline-none disabled:pointer-events-none" placeholder="Username" :disabled="loading" @keyup.enter="submit">
+              <input v-model="username" class="w-full bg-transparent outline-none disabled:pointer-events-none" placeholder="Username" :disabled="loading" @keyup.enter="checkSubmit">
               <div v-if="usernameError" class="absolute top-[calc(100%_+_5px)] text-sm text-red-500">
                 {{ usernameError }}
               </div>
             </div>
             <div class="relative rounded-xl bg-dark-3 px-3.5 py-2.5" :class="{ 'ring-1 ring-red-500': passwordError, 'cursor-not-allowed opacity-50': loading }">
-              <input v-model="password" class="w-full bg-transparent outline-none disabled:pointer-events-none" placeholder="Password" type="password" :disabled="loading" @keyup.enter="submit">
+              <input v-model="password" class="w-full bg-transparent outline-none disabled:pointer-events-none" placeholder="Password" type="password" :disabled="loading" @keyup.enter="checkSubmit">
               <div v-if="passwordError" class="absolute top-[calc(100%_+_5px)] text-sm text-red-500">
                 {{ passwordError }}
               </div>
@@ -266,7 +267,7 @@ async function signInHandler() {
                 <img :src="errorData.captcha_url" alt="Captcha Image" class="w-full rounded-xl">
               </div>
               <div class="relative rounded-xl bg-dark-3 px-3.5 py-2.5 sm:mt-3" :class="{ 'ring-1 ring-red-500': captchaError, 'cursor-not-allowed opacity-50': loading }">
-                <input v-model="captcha" class="w-full bg-transparent outline-none disabled:pointer-events-none" placeholder="Captcha" :disabled="loading" @keyup.enter="submit">
+                <input v-model="captcha" class="w-full bg-transparent outline-none disabled:pointer-events-none" placeholder="Captcha" :disabled="loading" @keyup.enter="checkSubmit">
                 <div v-if="captchaError" class="absolute top-[calc(100%_+_5px)] text-sm text-red-500">
                   {{ captchaError }}
                 </div>
@@ -275,17 +276,10 @@ async function signInHandler() {
             <div v-if="errorData?.error" class="mt-3 text-red-500">
               {{ errorData?.error }}
             </div>
-            <ClientOnly>
-              <template #fallback>
-                <ButtonText class="relative mt-5 rounded-xl bg-blue-500 p-2.5 text-xl font-bold" :disabled="true">
-                  <span :class="{ 'opacity-0': loading }">Login</span>
-                </ButtonText>
-              </template>
-              <ButtonText class="relative mt-5 rounded-xl bg-blue-500 p-2.5 text-xl font-bold" :disabled="submitDisabled" @click="submit">
-                <Icon v-if="loading" name="svg-spinners:ring-resize" size="1.8rem" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
-                <span :class="{ 'opacity-0': loading }">Login</span>
-              </ButtonText>
-            </ClientOnly>
+            <ButtonText class="relative mt-5 rounded-xl bg-blue-500 p-2.5 text-xl font-bold" :disabled="submitDisabled" @click="checkSubmit">
+              <Icon v-if="loading" name="svg-spinners:ring-resize" size="1.8rem" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
+              <span :class="{ 'opacity-0': loading }">Login</span>
+            </ButtonText>
             <NuxtLink to="https://twitter.com/crstlnz" target="_blank" class="mt-4 opacity-50">
               @crstlnz
             </NuxtLink>

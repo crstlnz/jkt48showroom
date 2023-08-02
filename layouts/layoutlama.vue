@@ -81,14 +81,14 @@ function handleError(error: any) {
 
 <template>
   <div class="relative flex min-h-[100vh] w-full flex-col">
-    <nav class="dark:bg-dark-1 z-nav fixed inset-x-0 top-0 bg-white shadow-sm">
+    <nav class="fixed inset-x-0 top-0 z-nav bg-white shadow-sm dark:bg-dark-1">
       <div class="container mx-auto flex h-16 flex-row-reverse items-center px-4 md:flex-row md:px-3">
         <button
           key="burger"
           type="button"
           aria-label="Open Menu"
           :class="{ open: menuOpen }"
-          class="burger nav-btn"
+          class="nav-btn burger"
           @click="toggleMenu"
         >
           <span />
@@ -110,13 +110,13 @@ function handleError(error: any) {
           <div
             v-if="menuOpen"
             key="background-nav"
-            class="z-belowNav fixed inset-0 !m-0 bg-black/50 dark:bg-black/60 md:hidden md:opacity-0"
+            class="fixed inset-0 z-belowNav !m-0 bg-black/50 dark:bg-black/60 md:hidden md:opacity-0"
             @click="toggleMenu"
           />
         </transition>
         <ul
           :class="{ 'invisible -translate-x-full': !menuOpen }"
-          class="dark:bg-dark-1 z-belowNav fixed inset-y-0 left-0 flex h-[100%] w-[75%] flex-col overflow-y-auto bg-white p-6 px-10 transition-[visibility,transform] duration-500 md:!visible md:static md:top-0 md:h-auto md:w-0 md:flex-1 md:translate-y-0 md:flex-row md:items-center md:justify-end md:gap-6 md:overflow-y-visible md:!bg-transparent md:pt-0 md:transition-none"
+          class="fixed inset-y-0 left-0 z-belowNav flex h-[100%] w-[75%] flex-col overflow-y-auto bg-white p-6 px-10 transition-[visibility,transform] duration-500 dark:bg-dark-1 md:!visible md:static md:top-0 md:h-auto md:w-0 md:flex-1 md:translate-y-0 md:flex-row md:items-center md:justify-end md:gap-6 md:overflow-y-visible md:!bg-transparent md:pt-0 md:transition-none"
         >
           <li v-for="menu in menus" :key="menu.title" :class="{ 'md:hidden': !menu.mobile }">
             <NuxtLink
@@ -150,7 +150,7 @@ function handleError(error: any) {
               </button>
               <LangSwitch />
               <div class="flex-1">
-                <NuxtLink to="/login" aria-label="Login" class="dark:border-dark-3 dark:bg-dark-2 float-right flex h-10 w-10 items-center justify-center rounded-full border-2 bg-slate-100">
+                <NuxtLink to="/login" aria-label="Login" class="float-right flex h-10 w-10 items-center justify-center rounded-full border-2 bg-slate-100 dark:border-dark-3 dark:bg-dark-2">
                   <Icon name="ic:baseline-person" class="text-slate-400 dark:text-slate-500/50" size="1.5em" />
                 </NuxtLink>
               </div>

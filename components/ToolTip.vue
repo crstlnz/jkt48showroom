@@ -54,7 +54,6 @@ function open() {
 }
 
 function calculatePosition(space: ElementSpace, size: Size): Position {
-  console.log(space)
   return {
     x: clamp(0, width.value - size.width, space.rect.left + space.rect.width / 2 - size.width / 2),
     y: clamp(0, height.value - size.height, space.rect.top - size.height - props.offset - 10), // 10 is chat arrow size
@@ -102,7 +101,7 @@ function getRemainingSpace(el: HTMLElement): ElementSpace {
 </script>
 
 <template>
-  <button  ref="container" class="inline-block" @click="onClick">
+  <button ref="container" class="inline-block" @click="onClick">
     <slot />
     <Transition name="fade">
       <div v-if="isOpen" ref="tooltip" class="fixed" :style="{ left: `${pos.x}px`, top: `${pos.y}px` }">
