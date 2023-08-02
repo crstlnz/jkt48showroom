@@ -80,6 +80,7 @@ onMounted(async () => {
 
 <template>
   <div>
+    <slot />
     <NuxtLink v-if="!authenticated" to="/login" class="absolute inset-0 z-10 flex items-center justify-center bg-black/50">
       Please login to comment!
     </NuxtLink>

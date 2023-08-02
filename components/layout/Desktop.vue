@@ -8,7 +8,7 @@ const props = defineProps<{
 defineEmits(['toggleDark'])
 const route = useRoute()
 const { isLarge } = useResponsive()
-const navbar = ref()
+const navbar = ref<HTMLElement | null>()
 const { authenticated, user } = useUser()
 const menus = computed(() => {
   return props.menus.filter(i =>
@@ -17,6 +17,18 @@ const menus = computed(() => {
 
 const settings = useSettings()
 const { getIcon } = useAppConfig()
+const navRect = useState<DOMRect | null>('navRect', () => null)
+onMounted(() => {
+  navRect.value = navbar.value?.getBoundingClientRect() ?? null
+})
+
+const { width } = useWindowSize()
+watch(width, () => {
+  navRect.value = navbar.value?.getBoundingClientRect() ?? null
+})
+onBeforeUnmount(() => {
+  navRect.value = null
+})
 </script>
 
 <template>

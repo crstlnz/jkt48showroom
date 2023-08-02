@@ -367,7 +367,7 @@ defineExpose({ stop })
       <Icon name="svg-spinners:270-ring-with-bg" class="h-[10%] w-[10%] text-white" />
     </div>
 
-    <div id="control" ref="videoControl" :class="{ 'opacity-100': showControl || isFocusControl || isHoverControl }" class="absolute inset-x-0 bottom-0 z-50 bg-black/70 px-2 text-slate-200 opacity-0 duration-200 ease-in-out dark:bg-black/75" @click="setShowControl(true)">
+    <div id="control" ref="videoControl" :class="{ 'opacity-100': showControl || isFocusControl || isHoverControl }" class="absolute inset-x-0 bottom-0 z-0 bg-black/70 px-2 text-slate-200 opacity-0 duration-200 ease-in-out dark:bg-black/75" @click="setShowControl(true)">
       <ClientOnly>
         <div class="flex w-full duration-200">
           <button class="h-8 w-8 p-1" aria-label="Play" type="button" @click="togglePlay">
