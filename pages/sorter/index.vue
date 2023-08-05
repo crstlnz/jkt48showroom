@@ -20,6 +20,6 @@ const { data, pending, error } = useFetch('/api/member/list', { params: { group 
       <img class="mx-auto w-96 max-w-[80%]" src="/svg/empty-box.svg">
       <span>{{ $t("data.nodata") }}</span>
     </div>
-    <SorterGame v-else :members="data" class="flex w-[768px] max-w-[95%] flex-col flex-wrap items-center justify-center gap-3 self-start" />
+    <SorterGame v-else :members="data" class="mx-auto flex w-[768px] max-w-[95%] flex-col flex-wrap items-stretch justify-center gap-3 self-start" />
   </div>
 </template>

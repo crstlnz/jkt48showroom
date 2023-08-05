@@ -18,6 +18,7 @@ interface UndoData {
 }
 
 type CompareResult = {
+  cursor: number
   data: FillTypeOne | FillTypeTwo | null
 } | null
 
@@ -32,6 +33,7 @@ interface FillTypeOne {
 interface FillTypeTwo {
   rankCursor: number
   fillData: FillTypeOne | null
+  finish: boolean
 }
 
 interface CompareManager {
@@ -40,21 +42,6 @@ interface CompareManager {
   initialOne: number
   initialTwo: number
   sorted: RanksCompare
-}
-
-class TieMembers extends Array {
-  add(member: string | string[]) {
-    if (Array.isArray(member)) {
-      this.push(...member)
-    }
-    else {
-      this.push(member)
-    }
-  }
-
-  get(): string {
-    return this[Math.floor(Math.random() * this.length)]
-  }
 }
 
 function getRandomFromArray(array: any[]) {
@@ -85,19 +72,8 @@ export default function () {
     const compareTwoProgress = compare.value.two.length / compare.value.initialTwo
     return (members.value.length - ranks.value.length - compareOneProgress - compareTwoProgress - rankTemp.value.length) / members.value.length
   })
-  ///
 
   const undoTemp = useSessionStorage<UndoData[]>('sorter-undoTemp', () => [], { deep: true })
-  // const undoTemp = ref<{ compare: CompareManager; rankTemp: RanksContainer; ranks: RanksContainer }[]>([])
-
-  function setTemp() {
-    undoTemp.value.push(JSON.parse(JSON.stringify({
-      compare: compare.value,
-      rankTemp: rankTemp.value,
-      ranks: ranks.value,
-    })))
-  }
-  ///
   const cardOne = computed<ISortMember | null>(() => {
     if (!compare.value.one?.length) return null
     const id = compare.value.one[0]
@@ -158,14 +134,20 @@ export default function () {
       }
     }
 
+    const check = checkCompare()
     undoTemp.value.push({
       ...compareData,
-      check: checkCompare(),
+      check,
     })
+
+    if ((check?.data as FillTypeTwo)?.finish === true) {
+      finish()
+    }
   }
 
   function checkCompare(): CompareResult {
     if (!compare.value.one.length || !compare.value.two.length) {
+      const cursor = compare.value.sorted.length
       if (!compare.value.one.length) {
         compare.value.sorted.push(...compare.value.two)
       }
@@ -175,6 +157,7 @@ export default function () {
       rankTemp.value.push(compare.value.sorted)
       compare.value.sorted = []
       return {
+        cursor,
         data: fillCompare(),
       }
     }
@@ -206,11 +189,15 @@ export default function () {
         return {
           rankCursor: cursor,
           fillData: fillCompare() as FillTypeOne,
+          finish: false,
         }
       }
       else {
-        finish()
-        return null
+        return {
+          rankCursor: cursor,
+          fillData: null,
+          finish: true,
+        }
       }
     }
   }
@@ -241,6 +228,7 @@ export default function () {
 
   const defaultSortMember = { id: '', img: '', is_graduate: true, name: 'Not found!', generation: '' }
   function finish() {
+    result.value = []
     for (const ids of ranks.value[0]) {
       if (Array.isArray(ids)) {
         result.value.push(ids.map(i => memberMap.value.get(i) || defaultSortMember))
@@ -286,15 +274,15 @@ export default function () {
             compare.value.initialTwo = data.fillData.initialTwo
             ranks.value = [...data.fillData.ranks, ...ranks.value]
           }
-          const rankData = ranks.value.slice(0, data.rankCursor)
-          const rankTempData = ranks.value.slice(data.rankCursor, ranks.value.length)
-          ranks.value = rankData
-          rankTemp.value = rankTempData
+          rankTemp.value = ranks.value.slice(data.rankCursor, ranks.value.length)
+          ranks.value = ranks.value.slice(0, data.rankCursor)
         }
       }
 
       if (undoData.check !== null) {
-        rankTemp.value.pop()
+        const cursor = undoData.check.cursor
+        const temp = rankTemp.value.pop()
+        compare.value.sorted = temp?.slice(0, cursor) || []
       }
 
       if (undoData.one) {
@@ -311,5 +299,9 @@ export default function () {
     }
   }
 
-  return { start, stop, state, GameState, cardOne, cardTwo, pick, result, undo, reset, progress }
+  function setState(s: GameState) {
+    state.value = s
+  }
+
+  return { start, stop, state, GameState, cardOne, cardTwo, pick, result, undo, reset, progress, setState }
 }

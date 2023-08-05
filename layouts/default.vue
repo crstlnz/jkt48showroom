@@ -59,7 +59,6 @@ const menus: MenuItem[] = [
     title: 'Oshi Sorter',
     url: '/sorter',
     mobile: false,
-    admin: true,
     icon: 'solar:square-sort-vertical-linear',
     activeIcon: 'solar:square-sort-vertical-bold',
   },
@@ -72,11 +71,6 @@ const menus: MenuItem[] = [
     icon: 'material-symbols:shield-person-outline-rounded',
     activeIcon: 'material-symbols:shield-person-rounded',
   },
-  // {
-  //   title: 'Watch',
-  //   url: '/watch/Kareai_hinata',
-  //   mobile: true
-  // }
 ]
 const colorMode = useColorMode()
 function toggleDark() {

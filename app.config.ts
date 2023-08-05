@@ -1,5 +1,5 @@
 type GiftSize = 'small' | 'medium'
-const admin_ids = (process.env.DISCORD_ADMINS ?? '').split(',').map(i => i.trim())
+
 const defaultRecentQuery: RecentsQuery = {
   sort: 'date',
   page: 1,
@@ -136,9 +136,6 @@ export default {
         return '/favicon.ico'
       }
     }
-  },
-  isAdmin(id: string) {
-    return admin_ids.includes(id)
   },
   getGroup(group: string | null) {
     return (group == null) ? 'jkt48' : ['jkt48', 'hinatazaka46'].includes(String(group)) ? String(group) : null

@@ -22,27 +22,14 @@ export default defineNuxtConfig({
         },
       },
     },
-    // '/api/user/logins': {
-    //   proxy: 'https://www.showroom-live.com/user/login',
-    //   security: {
-    //     rateLimiter: {
-    //       tokensPerInterval: 5,
-    //       interval: 'minute',
-    //       fireImmediately: false,
-    //     },
-    //   },
-
   },
-  // auth: {
-  //   globalAppMiddleware: true,
-  // },
   app: {
     rootId: 'app',
     layoutTransition: { name: 'layout', mode: 'out-in' },
     pageTransition: { name: 'page', mode: 'out-in' },
   },
   runtimeConfig: {
-    admin_ids: process.env.DISCORD_ADMINS,
+    admin_ids: (process.env.DISCORD_ADMINS ?? '').trim().split(',').map(i => i.trim()) || [],
     public: {
       baseURL: process.env.BASE_URL,
       isDev,

@@ -25,11 +25,11 @@ useHead({
       </template>
       <template #default>
         <div class="flex min-h-[100vh] flex-col">
-          <div class="mt-10 flex items-center gap-2 self-center text-4xl font-bold">
+          <div class="mt-8 flex items-center gap-2 self-center text-4xl font-bold md:mt-10">
             <Icon name="solar:square-sort-vertical-bold-duotone" class="text-red-400" size="3rem" />
             <span>Oshi Sorter!</span>
           </div>
-          <NuxtLink to="/" class="mb-5 mt-2 text-center font-bold">
+          <NuxtLink to="/" class="mb-3 mt-2 text-center font-bold md:mb-5">
             Home
           </NuxtLink>
           <div class="flex flex-1 flex-col">

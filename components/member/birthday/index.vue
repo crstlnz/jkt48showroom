@@ -3,6 +3,10 @@ import { useSettings } from '~~/store/settings'
 
 const { group } = useSettings()
 const { data, pending, error } = useFetch('/api/member/birthday', { params: { group } })
+const sortedBirthdays = computed(() => {
+  if (!data.value) return null
+  return data.value.sort((a, b) => new Date(a.birthdate).getDate() - new Date(b.birthdate).getDate())
+})
 </script>
 
 <template>
@@ -23,7 +27,7 @@ const { data, pending, error } = useFetch('/api/member/birthday', { params: { gr
       <span>{{ $t("birthday.empty") }}</span>
     </div>
     <div v-else class="grid grid-cols-[repeat(auto-fill,minmax(100px,1fr))] py-4 md:grid-cols-[repeat(auto-fill,minmax(180px,1fr))] md:py-6">
-      <MemberBirthdayCard v-for="member in data" :key="member.room_id || member.name" :member="member" />
+      <MemberBirthdayCard v-for="member in sortedBirthdays" :key="member.room_id || member.name" :member="member" />
     </div>
   </div>
 </template>

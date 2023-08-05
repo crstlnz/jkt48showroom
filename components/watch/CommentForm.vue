@@ -67,7 +67,7 @@ async function sendComment() {
 
 async function registerUserToRoom() {
   if (!authenticated) return
-  await $fetch('/api/showroom/current_user', { params: { room_id: props.roomId || 0 }, headers: { cookie: session?.cookie || '' } })
+  await $fetch('/api/showroom/current_user', { params: { room_id: props.roomId || 0, _: new Date().getTime() }, headers: { cookie: session?.cookie || '' } })
 }
 
 onMounted(async () => {

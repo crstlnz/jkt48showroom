@@ -81,7 +81,7 @@ export default NuxtAuthHandler({
       if (isSignIn) {
         token.jwt = user ? ((user as any).access_token || '') : ''
         token.id = user ? (user.id || '') : ''
-        token.role = user ? (useAppConfig().isAdmin(user.id) ? 'admin' : 'user') : 'user'
+        token.role = user ? (useRuntimeConfig().admin_ids.includes(user.id) ? 'admin' : 'user') : 'user'
         token.name = user ? ((user as any).name || '') : ''
         token.img = user ? ((user as any).image || '') : ''
         token.account_id = user ? ((user as any).account_id || '') : ''
@@ -90,7 +90,7 @@ export default NuxtAuthHandler({
       return Promise.resolve(token)
     },
     session: ({ session, token }) => {
-      (session as any).role = useAppConfig().isAdmin(token.id as string) ? 'admin' : 'user';
+      (session as any).role = useRuntimeConfig().admin_ids.includes(token.id as string) ? 'admin' : 'user';
       (session as any).id = token.id;
       (session as any).account_id = token.account_id as any
       (session as any).error = token.cookie_id == null

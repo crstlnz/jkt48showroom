@@ -19,7 +19,7 @@ watch(state, (val) => {
     </button>
     <Transition name="gamecontrol" mode="out-in">
       <div
-        class="flex w-[678px] max-w-[95%] flex-col"
+        class="flex flex-col"
       >
         <div class="flex w-full items-center justify-evenly">
           <SorterCard :flip="state !== GameState.STARTED" class="w-40 md:w-44 lg:w-60" :member="cardOne" @click="() => pick('one')" />
