@@ -92,7 +92,7 @@ watch(recentHeight, (val) => {
       <PulseRecentDetailCard v-for="index in Array(10).keys()" :key="index" />
     </div>
 
-    <div v-else-if="!dataset || !dataset.length" class="bg-container flex aspect-video w-full flex-col items-center justify-center rounded-xl">
+    <div v-else-if="!dataset || !dataset.length" class="bg-container flex aspect-video w-full flex-col items-center justify-center rounded-xl pb-8">
       <img class="mx-auto w-96 max-w-[80%]" src="/svg/empty-box.svg">
       <span class="text-lg">{{ $t("data.nodata") }}</span>
     </div>

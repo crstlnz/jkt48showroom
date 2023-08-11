@@ -41,9 +41,9 @@ const memberSchema = new Schema<Database.I48Member>({
     ],
     default: [],
   },
-  birthdate: {
-    type: Date,
-  },
+  birthdate: Date,
+  bloodType: String,
+  height: String,
   showroom_id: Number,
 })
 

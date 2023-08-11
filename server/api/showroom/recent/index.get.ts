@@ -91,7 +91,7 @@ export async function getRecents(qq: any = null): Promise<IApiRecents> {
     }
   }
 
-  if (members.length) {
+  if (members.length || query.room_id) {
     logs = await ShowroomLog.find(options)
       .select({
         live_info: {

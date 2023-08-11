@@ -58,7 +58,7 @@ ShowroomSchema.statics.getProfile = async function (key: string): Promise<Databa
   const doc = await this.findOne({ url: key })
     .populate({
       path: 'member_data',
-      select: 'img isGraduate banner jikosokai socials birthdate',
+      select: 'img isGraduate banner jikosokai socials birthdate name nicknames height bloodType',
     })
     .lean()
 
@@ -66,6 +66,8 @@ ShowroomSchema.statics.getProfile = async function (key: string): Promise<Databa
 
   return {
     name: doc.name,
+    nickname: doc.member_data?.nicknames?.length ? doc.member_data.nicknames[0] : undefined,
+    fullname: doc.member_data?.name || 'No name!',
     img: doc.img,
     img_alt: doc.member_data?.img ?? doc.img,
     banner: doc.member_data?.banner ?? '',
@@ -76,6 +78,8 @@ ShowroomSchema.statics.getProfile = async function (key: string): Promise<Databa
     room_id: doc.room_id,
     socials: doc.member_data?.socials ?? [],
     is_graduate: doc.member_data?.isGraduate ?? false,
+    bloodType: doc.member_data?.bloodType,
+    height: doc.member_data?.height,
     is_group: doc.is_group ?? false,
     url: doc.url ?? key,
     birthdate: doc.member_data?.birthdate,

@@ -36,6 +36,8 @@ declare namespace Database {
     socials: SocialNetwork[];
     generation?: string;
     birthdate? : Date;
+    bloodType?: string
+    height?: string
     showroom_id?: number;
   }
 
@@ -75,6 +77,8 @@ declare namespace Database {
 
   interface IMemberProfile {
     name : string
+    nickname? : string
+    fullname : string
     description : string
     img : string
     img_alt : string
@@ -88,6 +92,8 @@ declare namespace Database {
     socials : SocialNetwork[],
     generation? : string
     birthdate? : Date;
+    bloodType? : string
+    height? : string
   }
 
   interface FreeGift {

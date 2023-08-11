@@ -107,26 +107,47 @@ useHead({
                 </div>
               </div>
               <div class="text-2xl font-semibold lg:text-3xl">
-                {{ member.name }}
+                {{ member.fullname || member.name }}
               </div>
             </div>
-            <div v-if="birth" class="flex gap-3 px-3 md:px-4">
-              <div class="bg-container flex flex-col gap-2 rounded-xl px-4 py-3 max-sm:flex-1">
+            <div class="flex flex-wrap gap-3 px-3 md:px-4 [&>div]:flex-[40%] xl:[&>div]:flex-[20%]">
+              <div v-if="birth" class="bg-container flex flex-col gap-1 rounded-xl px-4 py-3 md:gap-2">
                 <div class="flex items-center gap-2">
                   <Icon name="twemoji:birthday-cake" size="1.2rem" />
                   <span class="text-sm font-semibold">{{ $t("birthdate") }}</span>
                 </div>
-                <div class="flex items-center gap-2">
-                  <span>{{ $d(birth.date, 'birthdate') }}</span>
+                <div>
+                  {{ $d(birth.date, 'birthdate') }}
                 </div>
               </div>
-              <div class="bg-container flex flex-col gap-2 rounded-xl px-4 py-3 max-sm:flex-1">
+              <div v-if="birth" class="bg-container flex flex-col gap-1 rounded-xl px-4 py-3 md:gap-2">
                 <div class="flex items-center gap-2">
                   <Icon :name="`emojione:${birth.horoscope.toLowerCase()}`" size="1.2rem" />
                   <span class="text-sm font-semibold">{{ $t("horoscope.title") }}</span>
                 </div>
+                <div>
+                  {{ $t(`horoscope.${birth.horoscope.toLowerCase()}`) }}
+                </div>
+              </div>
+              <div class="bg-container flex flex-col gap-1 rounded-xl px-4 py-3 md:gap-2">
+                <div class="flex items-center gap-2 ">
+                  <div class="relative">
+                    <Icon name="ic:sharp-bloodtype" size="1.2rem" class="text-red-500" />
+                    <div class="absolute left-1/2 top-1/2 -z-10 h-2 w-2 -translate-x-1/2 bg-white" />
+                  </div>
+                  <span class="text-sm font-semibold">{{ $t("bloodtype") }}</span>
+                </div>
+                <div>
+                  {{ member.bloodType }}
+                </div>
+              </div>
+              <div class="bg-container flex flex-col gap-1 rounded-xl px-4 py-3 md:gap-2">
                 <div class="flex items-center gap-2">
-                  <span> {{ $t(`horoscope.${birth.horoscope.toLowerCase()}`) }}</span>
+                  <Icon name="solar:ruler-pen-bold" size="1.2rem" class="text-yellow-500" />
+                  <span class="text-sm font-semibold">{{ $t("height") }}</span>
+                </div>
+                <div>
+                  {{ member.height }}
                 </div>
               </div>
             </div>

@@ -156,3 +156,5 @@ form:
 tooltip:
   activeuser: User aktif yang berinteraksi dengan member, seperti memberi gift, memfollow member, atau mengirimkan komen.
   usercomment: '{msg} user memberi komentar.'
+height: Tinggi
+bloodtype: Golongan darah
