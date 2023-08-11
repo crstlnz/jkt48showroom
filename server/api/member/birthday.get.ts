@@ -43,7 +43,7 @@ async function fetchData(group: string | null = null): Promise<API.IMemberBirthD
   if (!data) throw createError({ statusMessage: 'Data not found!', statusCode: 404 })
   return data.map((i) => {
     return {
-      name: i.name,
+      name: i.nicknames?.length ? i.nicknames[0] : i.name,
       birthdate: i.birthdate,
       img: i.img,
       room_id: i.showroom_id,

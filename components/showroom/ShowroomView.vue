@@ -181,6 +181,9 @@ watch(focused, (isFocus) => {
     stage.pause()
   }
 })
+
+const dayjs = useDayjs()
+const { locale } = useI18n()
 </script>
 
 <template>
@@ -225,7 +228,7 @@ watch(focused, (isFocus) => {
               class="absolute bottom-[calc(100%_+_5px)] text-xs font-bold md:text-sm"
               :class="{ 'lg:!text-2xl': isFullscreen }"
             >
-              {{ $moment(selectedTime).format("LLLL") }}
+              {{ dayjs(selectedTime).locale(locale).format("LLLL") }}
             </div>
             <input
               id="timeslider"

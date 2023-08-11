@@ -146,9 +146,13 @@ birthday:
 form:
   captcha: Tolong isi captcha dibawah ini
   error:
-    comment: Gagal mengirim komen! Pastikan sudah verifikasi nomor hp di Showroom!
+    commentsms: Gagal mengirim komen! Pastikan sudah verifikasi nomor hp di Showroom!
+    comment: Gagal mengirim komen! Tolong coba lagi setelah beberapa saat
     commentretry: Gagal mengirim komen! Tolong coba lagi setelah beberapa saat
     empty:
       username: Username tidak boleh kosong!
       password: Password tidak boleh kosong!
       captcha: Isi captcha!
+tooltip:
+  activeuser: User aktif yang berinteraksi dengan member, seperti memberi gift, memfollow member, atau mengirimkan komen.
+  usercomment: '{msg} user memberi komentar.'

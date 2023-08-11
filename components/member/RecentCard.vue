@@ -13,13 +13,14 @@ const showDetailedDate = computed(() => {
   oneMonthAgo.setDate(0)
   return new Date(props.recent.live_info?.date?.start) > oneMonthAgo
 })
+const { locale } = useI18n()
 </script>
 
 <template>
   <div class="bg-container rounded-xl p-3 shadow-sm md:p-4">
     <div class="flex gap-3 md:gap-4">
       <NuxtLink
-        aria-label="View profile"
+        :aria-label="`${recent.member?.name} Live detail`"
         class="group relative flex aspect-video h-20 items-center justify-center gap-0.5 overflow-hidden rounded-xl font-bold text-white drop-shadow-sm sm:h-24 md:h-28 lg:h-32 xl:h-36"
         :to="`/recent/${recent.data_id}`"
       >
@@ -45,7 +46,7 @@ const showDetailedDate = computed(() => {
           />
         </svg>
       </NuxtLink>
-      <div class="flex w-0 flex-1 flex-col justify-between space-y-2">
+      <div class="flex min-w-0 flex-1 flex-col justify-between space-y-2">
         <div class="truncate">
           <NuxtLink :to="`/member/${recent.member.url}`" :aria-label="`Open ${recent.member.name} profile`" class="text-base font-bold md:text-lg lg:text-xl">
             {{ recent.member?.name }}
@@ -77,7 +78,7 @@ const showDetailedDate = computed(() => {
         <Icon name="ph:clock-bold" />
         <div v-if="showDetailedDate">
           <div :key="recent.data_id" class="group-hover:hidden">
-            {{ dayjs(recent.live_info?.date?.end).fromNow() }}
+            {{ dayjs(recent.live_info?.date?.end).locale(locale).fromNow() }}
           </div>
           <div class="hidden group-hover:block">
             {{ $d(new Date(props.recent.live_info?.date?.start), 'long') }}

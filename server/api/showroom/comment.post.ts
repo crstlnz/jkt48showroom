@@ -15,5 +15,13 @@ export default defineEventHandler(async (event): Promise<Watch.CommentResponse> 
       'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: params.toString(),
+  }).catch((e) => {
+    console.log('Cookies', event.context.showroom_cookie)
+    console.log('CSRF', body.csrf_token)
+    console.log(e.data)
+    if (e.data?.errors?.length && e.data.errors[0].code === 1005) {
+      throw createError({ statusCode: 400, statusMessage: 'SMS not authenticated!' })
+    }
+    throw e
   })
 })

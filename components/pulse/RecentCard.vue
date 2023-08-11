@@ -10,7 +10,7 @@
       />
     </NuxtLink>
 
-    <div class="info flex w-0 flex-1 flex-col text-left">
+    <div class="info flex min-w-0 flex-1 flex-col text-left">
       <div class="name flex flex-1 gap-2">
         <span
           class="pulse-color h-5 w-3/4 overflow-hidden text-ellipsis whitespace-nowrap rounded-xl font-bold md:h-6"

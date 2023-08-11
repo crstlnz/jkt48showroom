@@ -146,9 +146,13 @@ birthday:
 form:
   captcha: Please fill out the captcha
   error:
-    comment: Comment failed! Make sure you have verified your phone number on Showroom!
+    commentsms: Comment failed! Make sure you have verified your phone number on Showroom!
+    comment: Comment failed! Please try again later
     commentretry: Comment failed! Please try again later
     empty:
       username: Username cannot be empty!
       password: Password cannot be empty!
       captcha: Fill the captcha!
+tooltip:
+  activeuser: Active user is user that interact with live, like following, sending gift, or comment.
+  usercomment: '{msg} users commented.'

@@ -1,4 +1,4 @@
-import { getCommentLog, getGiftList, getGiftLog, getRoomStatus, getStreamingURL } from '~~/library/api/showroom'
+import { getCommentLog, getCurrentUser, getGiftList, getGiftLog, getRoomStatus, getStreamingURL } from '~~/library/api/showroom'
 import cache from '~~/library/utils/cache'
 
 const time = 10000 // 10 seconds
@@ -16,6 +16,16 @@ async function getData(params: any, cookies?: string | undefined): Promise<Watch
   const comments = (data.is_live ? (await getCommentLog(data.room_id, cookies)).comment_log : []).filter(i => !(!Number.isNaN(i.comment) && Number.parseInt(i.comment) <= 50))
   const giftLog = (data.is_live ? (await getGiftLog(data.room_id, cookies)).gift_log : [])
   const giftList = (data.is_live ? (await getGiftList(data.room_id, cookies)).normal : [])
+  const activateComment = (cookies
+    ? (await getCurrentUser({
+        headers: {
+          cookie: cookies || '',
+        },
+        params: {
+          room_id: data.room_id,
+        },
+      }).catch(_ => null))
+    : null)
   return {
     name: data.room_name,
     started_at: data.started_at,
@@ -31,6 +41,11 @@ async function getData(params: any, cookies?: string | undefined): Promise<Watch
     is_live: data.is_live,
     gift_log: giftLog,
     gift_list: giftList,
+    user: {
+      id: activateComment?.user_id || 0,
+      name: activateComment?.name || null,
+      avatar_id: activateComment?.avatar_id || 0,
+    },
     comments: comments.map((i) => {
       return <Watch.Comment>{
         id: i.user_id.toString() + i.created_at.toString(),

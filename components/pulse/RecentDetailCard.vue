@@ -4,7 +4,7 @@
       <div
         class="dark:bg-dark-3/50 aspect-video h-20 animate-pulse overflow-hidden rounded-xl bg-slate-200 sm:h-24 md:h-28 lg:h-32 xl:h-36"
       />
-      <div class="flex w-0 flex-1 flex-col justify-between space-y-2">
+      <div class="flex min-w-0 flex-1 flex-col justify-between space-y-2">
         <div
           class="dark:bg-dark-3/50 h-6 w-[450px] max-w-[80%] animate-pulse overflow-hidden rounded-xl bg-slate-200 text-xl font-bold md:h-7 lg:max-w-[60%]"
         />

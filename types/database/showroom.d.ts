@@ -23,6 +23,7 @@ declare namespace Database {
   }
 
   interface I48Member {
+    nicknames: string[];
     name: string;
     kanji?: string;
     isGraduate: boolean;
@@ -238,6 +239,7 @@ declare namespace Database {
     screenshot?: IScreenshot
     comments?: IComments
     viewer: number
+    active_viewer : number
     background_image?: string
     stage_list: IStage[]
     date: ILiveDate

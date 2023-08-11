@@ -1,8 +1,13 @@
-import JSONSerializer from '~~/library/serializer/json'
+import ExpiredSerializer from '~~/library/serializer/expired'
 
 export const useSettings = defineStore('settings', () => {
+  const { status } = useAuth()
+  const authenticated = computed(() => {
+    return status.value === 'authenticated'
+  })
+
   const session = useSessionStorage<{ csrf_token: string; cookie: string } | null>('showroom_session', null, {
-    serializer: new JSONSerializer(null),
+    serializer: new ExpiredSerializer(null, authenticated.value ? 1000 * 60 * 15 : 1000 * 60 * 5),
   })
 
   const subDomain = ref('')

@@ -250,6 +250,7 @@ showroomLogSchema.statics.getDetails = async function (dataId: string | number):
           list: i.list,
         })) ?? [],
       viewer: doc.live_info.viewers?.peak ?? 0,
+      active_viewer: doc.live_info.viewers?.active ?? 0,
       date: {
         start: doc.live_info?.start_date.toISOString(),
         end: doc.live_info?.end_date.toISOString(),

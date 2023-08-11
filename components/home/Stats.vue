@@ -254,7 +254,7 @@ function setButton(key: string) {
           :key="stat?.key ?? stat.title"
           class="flex items-center gap-3 rounded-xl px-5 py-3 sm:bg-container max-sm:p-3 sm:flex-[calc(50%_-_1rem)]"
         >
-          <div class="min-w-0 flex-1 space-y-2">
+          <div class="w-0 flex-1 space-y-2">
             <div :key="data?.type ?? 'data'" class="opacity-50">
               {{ stat?.key ? $t(stat?.key) : stat.title }}
             </div>

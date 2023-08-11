@@ -96,7 +96,7 @@ function handleError(error: any) {
           <span />
         </button>
 
-        <div class="flex w-0 flex-1 items-center md:w-auto md:flex-none">
+        <div class="flex min-w-0 flex-1 items-center md:w-auto md:flex-none">
           <NuxtLink
             class="inline-block truncate py-2 text-2xl font-bold hover:text-blue-400"
             to="/"

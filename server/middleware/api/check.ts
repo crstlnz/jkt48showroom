@@ -4,13 +4,14 @@ import { connection } from '~~/library/database'
 export default defineEventHandler(async (event) => {
   if (event.node.req.url?.startsWith('/api')) {
     const token = await getToken({ event })
+    event.context.token = token
     if (token?.cookie_id) {
       event.context.sr_id = token.cookie_id
       event.context.showroom_cookie = `sr_id=${token?.cookie_id};`
     }
     if (event.node.req.url?.startsWith('/api/admin')) {
       const token = await getToken({ event })
-      if (token?.role !== 'admin' || !useRuntimeConfig().admin_ids.includes(String(token?.id))) {
+      if (!useRuntimeConfig().admin_ids.includes(String(token?.id))) {
         throw createError({ statusCode: 404, statusMessage: `Page not found: ${event.node.req.url}` })
       }
     }

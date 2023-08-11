@@ -89,7 +89,20 @@ function onGift(gift: ShowroomAPI.GiftLogItem) {
   // giftLogRaw.value.push(gift)
 }
 
-const { data: polling, refresh: refreshPolling } = useFetch(() => `/api/showroom/polling?_=${new Date().getTime()}`, { params: { room_id: roomId }, server: false, immediate: false })
+const viewers = ref(0)
+
+async function getPolling() {
+  try {
+    const poll = await $fetch('/api/showroom/polling', { params: { _: new Date().getTime(), room_id: roomId.value } })
+    if (!poll) return
+    if ('online_user_num' in poll) {
+      viewers.value = poll.online_user_num
+    }
+  }
+  catch (e) {
+    console.log(e)
+  }
+}
 
 if (error.value?.statusCode === 404) {
   const e = error.value?.data?.data?.errors
@@ -112,19 +125,11 @@ useHead({
   title: () => title.value,
 })
 
-const viewers = ref(0)
-watch(polling, (poll) => {
-  if (!poll) return
-  if ('online_user_num' in poll) {
-    viewers.value = poll.online_user_num
-  }
-})
-
 const { pause, resume } = useIntervalFn(() => {
   if (roomId) {
-    refreshPolling()
+    getPolling()
   }
-}, 60000)
+}, 60000, { immediate: false, immediateCallback: true })
 
 watch(isPremium, (premium) => {
   if (premium) {
@@ -165,7 +170,7 @@ const { t } = useI18n()
 
 function onStart() {
   if (roomId) {
-    refreshPolling()
+    getPolling()
   }
   resume()
   refreshWatchData()
@@ -215,6 +220,7 @@ const isLarge = greaterOrEqual('lg')
     <div v-else-if="error" class="h-full w-full">
       <Error :message="$t('error.unknown')" :alt="$t('error.unknown')" img-src="/svg/error.svg" url="/" />
     </div>
+
     <div v-else class="h-full w-full">
       <div class="relative flex min-h-full w-full flex-col gap-3 md:gap-4 lg:flex-row">
         <div class="flex flex-1 flex-col lg:w-auto">
@@ -238,7 +244,7 @@ const isLarge = greaterOrEqual('lg')
             <div class="h-8 w-14 overflow-hidden rounded-md max-sm:hidden md:h-14 md:w-24 md:rounded-xl">
               <img :src="data?.image" :alt="data?.name" class="h-full w-full object-cover">
             </div>
-            <div class="flex w-0 flex-1 gap-2 max-sm:flex-[100%]">
+            <div class="flex min-w-0 flex-1 gap-2 max-sm:flex-[100%]">
               <div class="truncate max-lg:flex-1" :title="data?.name">
                 {{ data?.name }}
               </div>

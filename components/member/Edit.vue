@@ -164,10 +164,10 @@ const tabList = ref([
                 v-model="memberDataId"
                 form-id="memberDataId"
                 input-class="bg-container-2 text-base"
-                class="w-0 flex-1"
+                class="min-w-0 flex-1"
                 :data="stage48members.map(i => { return { title: i.name, value: (i as any)._id } })"
               />
-              <!-- <select v-if="stage48members != null" id="member_data" v-model="memberDataId" class="bg-container-2 w-0 flex-1 rounded-md p-1.5 text-base">
+              <!-- <select v-if="stage48members != null" id="member_data" v-model="memberDataId" class="bg-container-2 min-w-0 flex-1 rounded-md p-1.5 text-base">
                 <option>
                   No data
                 </option>
@@ -216,7 +216,7 @@ const tabList = ref([
                       <div class="w-[70px] shrink-0 truncate pt-1.5 md:w-[90px] lg:w-[120px]">
                         {{ form.title }}
                       </div>
-                      <component :is="form.component ?? FormText" v-model="form.data" form-id="start" :placeholder="form.placeholder ?? form.title" input-class="bg-container-2 flex-1" class="w-0 flex-1" />
+                      <component :is="form.component ?? FormText" v-model="form.data" form-id="start" :placeholder="form.placeholder ?? form.title" input-class="bg-container-2 flex-1" class="min-w-0 flex-1" />
                     </div>
                   </div> -->
                 </div>

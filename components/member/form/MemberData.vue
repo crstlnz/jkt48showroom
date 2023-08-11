@@ -71,6 +71,16 @@ function generateForm() {
       },
     },
     {
+      title: 'Social Media',
+      id: 'socials',
+      component: 'select',
+      data: props.memberData?.socials,
+      options: group,
+      check: (data: any): boolean => {
+        return props.memberData.socials === data
+      },
+    },
+    {
       title: 'Generation',
       id: 'generation',
       component: 'select',
@@ -134,7 +144,7 @@ async function apply() {
       <div class="w-[70px] shrink-0 truncate pt-1.5 md:w-[90px] lg:w-[120px]">
         {{ form.title }}
       </div>
-      <component :is="getForm(form.component ?? 'text')" v-model="form.data" :data="form.options" form-id="start" :placeholder="form.placeholder ?? form.title" input-class="bg-container-2 flex-1" class="w-0 flex-1" />
+      <component :is="getForm(form.component ?? 'text')" v-model="form.data" :data="form.options" form-id="start" :placeholder="form.placeholder ?? form.title" input-class="bg-container-2 flex-1" class="min-w-0 flex-1" />
     </div>
     <div class="mt-1 flex justify-end gap-3">
       <button

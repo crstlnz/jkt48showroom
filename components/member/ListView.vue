@@ -58,7 +58,7 @@ const config = useAppConfig()
               </NuxtLink>
               <div class="flex flex-1 flex-col">
                 <NuxtLink :to="`/member/${item.url}`">
-                  {{ item.name }}
+                  {{ item.nicknames[0] || item.name }}
                 </NuxtLink>
                 <div class="flex flex-1 justify-between">
                   <div class="text-base" :class="item.is_group ? 'text-blue-500' : (item.is_graduate ? 'text-red-500' : 'text-green-500')">

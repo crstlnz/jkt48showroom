@@ -4,7 +4,6 @@ import ShowroomLog from '~~/library/database/schema/showroom/ShowroomLog'
 import config from '~~/app.config'
 
 export default defineEventHandler(async (event): Promise<IApiRecents> => await getRecents(getQuery(event)))
-
 export async function getRecents(qq: any = null): Promise<IApiRecents> {
   let page = 1
   const group = config.getGroup(qq.group)
@@ -15,8 +14,6 @@ export async function getRecents(qq: any = null): Promise<IApiRecents> {
   if (page < 1) page = 1
   const sort: sortType = config.isSort(query.sort) ? query.sort : 'date'
   const order = Number.parseInt((query.order ?? '-1') as string) || -1
-  // ORDER : if -1 is descending. if 1 is ascending
-
   function getSort(sort: sortType): string {
     return `${order < 0 ? '-' : ''}${(() => {
       switch (sort) {
@@ -36,6 +33,7 @@ export async function getRecents(qq: any = null): Promise<IApiRecents> {
 
   let logs = [] as any[]
   let total = 0
+  let members = []
 
   interface Options {
     room_id?: number[] | number
@@ -51,14 +49,14 @@ export async function getRecents(qq: any = null): Promise<IApiRecents> {
   }
   else {
     const search = query.search ? String(query.search) ?? '' : ''
-    let members = await getMembers(group)
+    members = await getMembers(group)
     if (search !== '') {
       const fuse = new Fuse(members, {
         threshold: 0.2,
         keys: [
-          { name: 'name', weight: 0.4 },
-          { name: 'member_data.name', weight: 0.4 },
-          { name: 'description', weight: 0.2 },
+          { name: 'name', weight: 0.3 },
+          { name: 'nicknames', weight: 0.3 },
+          { name: 'description', weight: 0.1 },
         ],
       })
       members = fuse.search(search).map(i => i.item)
@@ -92,42 +90,46 @@ export async function getRecents(qq: any = null): Promise<IApiRecents> {
       $ne: 0,
     }
   }
-  logs = await ShowroomLog.find(options)
-    .select({
-      live_info: {
-        duration: 1,
-        viewers: {
-          peak: 1,
-        },
-        start_date: 1,
-        end_date: 1,
-      },
-      data_id: 1,
-      total_point: 1,
-      created_at: 1,
-      room_id: 1,
-      room_info: 1,
-    })
-    .sort(getSort(sort))
-    .skip((page - 1) * perpage)
-    .limit(perpage)
-    .populate({
-      path: 'room_info',
-      select: '-_id name img url -room_id member_data',
-      populate: {
-        path: 'member_data',
-        select: '-_id isGraduate img',
-      },
-    })
-    .lean()
 
-  total = await ShowroomLog.count(options)
+  if (members.length) {
+    logs = await ShowroomLog.find(options)
+      .select({
+        live_info: {
+          duration: 1,
+          viewers: {
+            peak: 1,
+          },
+          start_date: 1,
+          end_date: 1,
+        },
+        data_id: 1,
+        total_point: 1,
+        created_at: 1,
+        room_id: 1,
+        room_info: 1,
+      })
+      .sort(getSort(sort))
+      .skip((page - 1) * perpage)
+      .limit(perpage)
+      .populate({
+        path: 'room_info',
+        select: '-_id name img url -room_id member_data',
+        populate: {
+          path: 'member_data',
+          select: '-_id isGraduate img nicknames',
+        },
+      })
+      .lean()
+
+    total = await ShowroomLog.count(options)
+  }
   return {
     recents: logs.map<IRecent>(i => ({
       _id: i._id,
       data_id: i.data_id,
       member: {
         name: i.room_info?.name ?? 'Member not Found!',
+        nickname: i.room_info?.member_data?.nicknames[0] || undefined,
         img_alt: i.room_info?.member_data?.img ?? i.room_info?.img ?? config.errorPicture,
         img: i.room_info?.img ?? config.errorPicture,
         url: i.room_info?.url ?? '',

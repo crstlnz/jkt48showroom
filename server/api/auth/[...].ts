@@ -71,6 +71,7 @@ export default NuxtAuthHandler({
           const userProfile = await $fetch<ShowroomAPI.UserProfile>('https://www.showroom-live.com/api/user/profile', { params: { user_id: userData.user_id } })
           return { id: userData.user_id, name: userProfile.name, account_id: userData.account_id || userProfile.account_id, image: userProfile.image, avatar_id: userProfile.avatar_id, cookie_id }
         }
+
         throw new Error(JSON.stringify(data))
       },
     }),
