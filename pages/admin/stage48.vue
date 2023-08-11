@@ -123,8 +123,8 @@ function toggleGen(key: string) {
           @on-dismiss="onDismiss"
         />
       </Transition>
-      <div class="space-y-5 px-4">
-        <div v-if="pending" class="flex flex-col px-3">
+      <div class="space-y-5 px-3 md:px-4">
+        <div v-if="pending" class="flex flex-col">
           <div v-for="num in 10" :key="num" class="pulse-color mb-3 h-[116px] animate-pulse rounded-xl" />
         </div>
         <div v-else>
@@ -134,7 +134,6 @@ function toggleGen(key: string) {
             :min-item-size="104"
             :items="members"
             key-field="_id"
-            class="px-3"
             page-mode
           >
             <template #default="{ item, index, active }">

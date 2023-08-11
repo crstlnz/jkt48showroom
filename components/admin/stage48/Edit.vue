@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { useNotifications } from '~~/store/notifications'
-
 const props = defineProps<{
   stage48member: Admin.I48Member
 
@@ -10,10 +8,8 @@ const emit = defineEmits<{
   (e: 'onUpdateMember', data: Admin.I48Member): void
 }>()
 
-const { addNotif } = useNotifications()
 const stage48member = ref(props.stage48member)
 const editDialog = ref()
-const config = useAppConfig()
 
 watch(() => props.stage48member, (val) => {
   stage48member.value = val

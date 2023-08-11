@@ -46,10 +46,10 @@ const { locale } = useI18n()
           />
         </svg>
       </NuxtLink>
-      <div class="flex min-w-0 flex-1 flex-col justify-between space-y-2">
+      <div class="flex min-w-0 flex-1 flex-col space-y-2">
         <div class="truncate">
           <NuxtLink :to="`/member/${recent.member.url}`" :aria-label="`Open ${recent.member.name} profile`" class="text-base font-bold md:text-lg lg:text-xl">
-            {{ recent.member?.name }}
+            {{ recent.member?.nickname || recent.member?.name }}
           </NuxtLink>
         </div>
         <ul class="space-y-1 text-xs md:text-sm lg:text-base [&>li]:flex [&>li]:gap-2">

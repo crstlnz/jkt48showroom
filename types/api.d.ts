@@ -6,4 +6,9 @@ declare namespace API {
     room_id?: string
     url_key?: string
   }
+
+  interface Status {
+    code : number
+    message : string
+  }
 }
