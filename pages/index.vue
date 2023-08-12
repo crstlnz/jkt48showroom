@@ -17,7 +17,7 @@ const searchInput = ref()
 <template>
   <LayoutRow title="Home">
     <template #actionSection>
-      <div class="pointer-events-none inset-x-0 max-sm:absolute">
+      <div v-if="!isXL" class="pointer-events-none inset-x-0 max-sm:absolute">
         <div class="bg-container pointer-events-auto float-right flex items-center rounded-2xl p-1.5 text-sm ring-blue-500 focus-within:ring-2 max-sm:mx-3 max-sm:focus-within:w-[calc(100%_-_24px)] max-sm:focus-within:pl-3" :class="{ 'pl-3 max-sm:w-[calc(100%_-_24px)]': search.length !== 0 }">
           <input ref="searchInput" v-model="search" class="flex-1 truncate bg-transparent outline-none focus-visible:!outline-none max-sm:w-0 sm:ml-3" placeholder="Search..." @keyup.enter="applySearch">
           <button v-if="search.length === 0" class="group flex h-7 w-7 items-center justify-center rounded-xl p-1 sm:hover:bg-blue-500" @click="searchInput?.focus()">
