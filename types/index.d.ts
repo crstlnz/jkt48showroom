@@ -87,6 +87,8 @@ interface INextLive {
 interface IMember {
   name: string
   nicknames : string[]
+  bloodType? : string
+  height? : string
   img: string
   img_alt?: string
   url: string

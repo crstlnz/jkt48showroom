@@ -73,22 +73,22 @@ const { locale } = useI18n()
       </div>
     </div>
 
-    <div class="mt-2 flex justify-between text-sm sm:text-base md:mt-2.5 md:text-lg">
-      <div class="group flex cursor-pointer items-center gap-1.5">
+    <div class="mt-2 flex justify-between gap-5 text-sm sm:text-base md:mt-2.5 md:text-lg">
+      <div class="group flex w-0 flex-1 cursor-pointer items-center gap-1.5">
         <Icon name="ph:clock-bold" />
         <div v-if="showDetailedDate">
           <div :key="recent.data_id" class="group-hover:hidden">
             {{ dayjs(recent.live_info?.date?.end).locale(locale).fromNow() }}
           </div>
-          <div class="hidden group-hover:block">
+          <div class="hidden truncate group-hover:block">
             {{ $d(new Date(props.recent.live_info?.date?.start), 'long') }}
           </div>
         </div>
-        <div v-else>
+        <div v-else class="truncate">
           {{ $d(new Date(props.recent.live_info?.date?.start), 'long') }}
         </div>
       </div>
-      <NuxtLink :to="`/recent/${recent.data_id}`" aria-label="Detailed log data" class="font-bold">
+      <NuxtLink :to="`/recent/${recent.data_id}`" aria-label="Detailed log data" class="shrink-0 font-bold">
         Details
       </NuxtLink>
     </div>

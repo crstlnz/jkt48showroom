@@ -48,11 +48,12 @@ function closeMenu() {
   <div class="w-full">
     <nav class="fixed inset-x-0 bottom-0 z-nav border-t-2 bg-white drop-shadow-md dark:border-dark-3 dark:bg-dark-2">
       <div class="relative flex h-[60px] gap-4 overflow-hidden px-4">
-        <!-- <div class="absolute inset-x-0 top-1/2 flex h-[60px] -translate-y-1/2 items-stretch justify-around "> -->
         <div v-for="menu in menus" :key="menu.title" class="relative flex min-w-0 flex-1 flex-col items-center">
           <NuxtLink v-ripple :to="menu.url" class="relative top-1/2 h-20 w-20 shrink-0 -translate-y-1/2 cursor-pointer rounded-full" :aria-label="menu.title">
             <div class="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center">
-              <Icon :name="route.path !== menu.url ? menu.icon : menu.activeIcon" class="h-9 w-9 shrink-0 rounded-full p-1.5" :class="{ 'bg-hover': route.path === menu.url }" />
+              <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full p-1.5" :class="{ 'bg-hover': route.path === menu.url }">
+                <Icon :name="route.path !== menu.url ? menu.icon : menu.activeIcon" class="h-full w-full" />
+              </div>
               <div class="shrink-0 text-xs">
                 {{ menu.title }}
               </div>
@@ -67,7 +68,6 @@ function closeMenu() {
             </div>
           </div>
         </button>
-        <!-- </div> -->
       </div>
     </nav>
     <div

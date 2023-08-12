@@ -9,12 +9,26 @@ const { t: $t } = useI18n()
 const memberState = useMembers()
 const { members: raw, pending, error } = storeToRefs(memberState)
 const route = useRoute()
+const router = useRouter()
 let filterOptions: Ref< {
   generation: string[]
   graduate: boolean
   active: boolean
 }>
 let search: Ref<string>
+if (route.query?.s) {
+  search = ref(String(route.query?.s || ''))
+}
+else {
+  search = useSessionStorage('member-page-search', () => String(route.query.s || ''), { mergeDefaults: true })
+}
+
+watch(search, () => {
+  if (route.query.s) {
+    router.replace({ query: {} })
+  }
+})
+
 if (route.query?.gen) {
   filterOptions = ref<{
     generation: string[]
@@ -25,7 +39,6 @@ if (route.query?.gen) {
     graduate: false,
     active: true,
   })
-  search = ref('')
 }
 else {
   filterOptions = useSessionStorage<{
@@ -37,7 +50,6 @@ else {
     graduate: false,
     active: true,
   })
-  search = useSessionStorage('member-page-search', () => '')
 }
 
 const { group } = useSettings()
