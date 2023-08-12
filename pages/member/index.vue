@@ -3,20 +3,54 @@ import { Switch, SwitchGroup, SwitchLabel } from '@headlessui/vue'
 import { useFuse } from '@vueuse/integrations/useFuse'
 import { useMembers } from '~~/store/members'
 import { useSettings } from '~~/store/settings'
-import { generateGen } from '~~/library/utils/stage48'
+import { generateGen, parseGeneration } from '~~/library/utils/stage48'
 
 const { t: $t } = useI18n()
 const memberState = useMembers()
 const { members: raw, pending, error } = storeToRefs(memberState)
-const filterOptions = useSessionStorage<{
+const route = useRoute()
+const router = useRouter()
+let filterOptions: Ref< {
   generation: string[]
   graduate: boolean
   active: boolean
-}>('filterOption', {
-  generation: [],
-  graduate: true,
-  active: true,
+}>
+let search: Ref<string>
+if (route.query?.s) {
+  search = ref(String(route.query?.s || ''))
+}
+else {
+  search = useSessionStorage('member-page-search', () => String(route.query.s || ''), { mergeDefaults: true })
+}
+
+watch(search, () => {
+  if (route.query.s) {
+    router.replace({ query: {} })
+  }
 })
+
+if (route.query?.gen) {
+  filterOptions = ref<{
+    generation: string[]
+    graduate: boolean
+    active: boolean
+  }>({
+    generation: [String(route.query.gen)],
+    graduate: false,
+    active: true,
+  })
+}
+else {
+  filterOptions = useSessionStorage<{
+    generation: string[]
+    graduate: boolean
+    active: boolean
+  }>('filterOption', {
+    generation: [],
+    graduate: false,
+    active: true,
+  })
+}
 
 const { group } = useSettings()
 const generations = computed(() => {
@@ -39,7 +73,6 @@ const data = computed(() => {
 })
 
 const perpage = 8
-const search = useSessionStorage('member-page-search', () => '')
 const { results } = useFuse(search, data, {
   fuseOptions: {
     threshold: 0.35,
@@ -48,10 +81,14 @@ const { results } = useFuse(search, data, {
     keys: [
       {
         name: 'name',
-        weight: 0.5,
+        weight: 0.4,
       },
       {
         name: 'description',
+        weight: 0.1,
+      },
+      {
+        name: 'nicknames',
         weight: 0.4,
       },
       {
@@ -129,12 +166,21 @@ function toggleGen(key: string) {
     filterOptions.value.generation.push(key)
   }
 }
-
-useHead({ title: computed(() => $t('page.title.member')) })
+const title = computed(() => {
+  if (route.query?.gen) {
+    return parseGeneration(String(route.query.gen)) || $t('page.title.member')
+  }
+  else {
+    return $t('page.title.member')
+  }
+})
+useHead({
+  title,
+})
 </script>
 
 <template>
-  <LayoutSingleRow title="Member List" :search="search" :enable-search="true" @search="(v) => search = v">
+  <LayoutSingleRow :title="title" :search="search" :enable-search="true" @search="(v) => search = v">
     <template #default>
       <MemberListView v-if="isMobile" :pending="pending" :error="error" :members="members" />
       <MemberGridView v-else :key-id="id" :pending="pending" :error="error" :members="members" :perpage="perpage" />
@@ -154,7 +200,7 @@ useHead({ title: computed(() => $t('page.title.member')) })
                 <div
                   v-for="gen in generations" :key="gen.key"
                   class="cursor-pointer rounded-full px-2 py-1 text-sm"
-                  :class=" filterOptions.generation.includes(gen.key) ? 'bg-blue-500 text-white' : 'dark:bg-blue-400/5 bg-blue-400/10 hover:bg-blue-400/50  dark:hover:bg-blue-400/50'"
+                  :class="filterOptions.generation.includes(gen.key) ? 'bg-blue-500 text-white' : 'dark:bg-blue-400/5 bg-blue-400/10 hover:bg-blue-400/50  dark:hover:bg-blue-400/50'"
                   @click="() => toggleGen(gen.key)"
                 >
                   {{ gen.short_title }}

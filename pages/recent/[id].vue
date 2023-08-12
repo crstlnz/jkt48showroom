@@ -150,10 +150,9 @@ useHead({
                     />
                   </NuxtLink>
                 </div>
-                <!-- {{ $d(new Date(member?.birthdate ?? ''), 'birthdate') }} -->
               </div>
-              <div class="flex w-0 flex-1 items-start justify-end gap-2 pt-2 md:gap-3 md:pt-3">
-                <NuxtLink v-if="data.room_info.generation" :to="`/${data.room_info.generation}`" class="select-none rounded-full bg-gray-500 px-3 py-1.5 text-sm text-white dark:bg-dark-3">
+              <div class="flex min-w-0 flex-1 items-start justify-end gap-2 pt-2 md:gap-3 md:pt-3">
+                <NuxtLink v-if="data.room_info.generation" :to="`/member?gen=${data.room_info.generation}`" class="select-none rounded-full bg-gray-500 px-3 py-1.5 text-sm text-white dark:bg-dark-3">
                   {{ $parseGeneration(data.room_info.generation) }}
                 </NuxtLink>
                 <div
@@ -198,6 +197,9 @@ useHead({
                     </template>
                     <template #value>
                       {{ $n(data.live_info?.viewer) }}
+                      <span v-if="data.live_info?.active_viewer" v-tooltip="$t('tooltip.activeuser')" class="inline-flex items-center gap-0.5">
+                        ( {{ $n(data.live_info?.active_viewer) }}<Icon name="ph:info-duotone" /> )
+                      </span>
                     </template>
                   </ShowroomStat>
 
@@ -219,7 +221,7 @@ useHead({
                         <span :title="`${data.live_info.comments.num} ${$t('totalcomments')}`">
                           {{ $n(data.live_info?.comments.num) }}
                         </span>
-                        <span class="inline-flex items-center justify-center gap-0.5" :title="`${data.live_info.comments.users} ${$t('user', data.live_info.comments.users)}`">
+                        <span v-tooltip="`${$t('tooltip.usercomment', { msg: $n(data.live_info.comments.users) })}`" class="inline-flex items-center justify-center gap-0.5">
                           ( {{ $n(data.live_info.comments.users) }}
                           <Icon title="Users" name="carbon:user-avatar-filled" class="h-6" /> )
                         </span>
@@ -270,7 +272,7 @@ useHead({
       </template>
 
       <template #actionSection>
-        <button @click="setLike">
+        <button type="button" aria-label="Like" @click="setLike">
           <Icon name="ic:round-favorite" class="rounded-full p-1.5 pt-2.5 hover:bg-hover" :class="liked ? 'text-red-400' : 'text-slate-500'" size="2.8rem" />
         </button>
       </template>

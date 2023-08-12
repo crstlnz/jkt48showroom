@@ -15,7 +15,7 @@ const date = $fromNow(
 <template>
   <div class="flex gap-3 py-2 text-center md:py-3">
     <NuxtLink
-      aria-label="View profile"
+      :aria-label="`${recent.member?.name} Live detail`"
       class="relative aspect-square h-[4.5rem] cursor-pointer overflow-hidden rounded-full drop-shadow-sm md:h-[70px]"
       :to="`/member/${recent.member.url}`"
     >
@@ -27,14 +27,14 @@ const date = $fromNow(
       />
     </NuxtLink>
 
-    <div class="info flex w-0 flex-1 flex-col text-left">
+    <div class="info flex min-w-0 flex-1 flex-col text-left">
       <div class="name flex flex-1 gap-2">
         <NuxtLink :to="`/member/${recent.member.url}`" class="min-w-0 flex-1" :aria-label="`Open ${recent.member.name} profile`">
           <div
             class="truncate text-sm font-bold md:text-base"
             :title="recent.member?.name"
           >
-            {{ recent.member?.name }}
+            {{ recent.member?.nickname || recent.member?.name }}
           </div>
         </NuxtLink>
         <div

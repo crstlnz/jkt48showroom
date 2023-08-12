@@ -5,18 +5,22 @@ definePageMeta({ middleware: 'admin' })
 <template>
   <LayoutRow title="Admin">
     <div class="space-y-3 px-4">
-      <div class="flex flex-wrap gap-4">
-        <NuxtLink class="bg-container rounded-3xl px-4 py-3 hover:bg-hover" to="/admin/input/url_data">
+      <div class="flex flex-wrap gap-3">
+        <NuxtLink class="bg-container rounded-3xl px-3.5 py-2 text-sm hover:bg-hover" to="/admin/input/url_data">
           Input Data
         </NuxtLink>
-        <NuxtLink class="bg-container rounded-3xl px-4 py-3 hover:bg-hover" to="/admin/member">
+        <NuxtLink class="bg-container rounded-3xl px-3.5 py-2 text-sm hover:bg-hover" to="/admin/member">
           Showroom Member
         </NuxtLink>
-        <NuxtLink class="bg-container rounded-3xl px-4 py-3 hover:bg-hover" to="/admin/stage48">
+        <NuxtLink class="bg-container rounded-3xl px-3.5 py-2 text-sm hover:bg-hover" to="/admin/stage48">
           Stage48
         </NuxtLink>
-        <NuxtLink class="bg-container rounded-3xl px-4 py-3 hover:bg-hover" to="/fans">
+        <NuxtLink class="bg-container rounded-3xl px-3.5 py-2 text-sm hover:bg-hover" to="/fans">
           Fans List
+        </NuxtLink>
+        <NuxtLink class="bg-container flex items-center gap-1 rounded-3xl px-3.5 py-2 text-sm hover:bg-hover" to="/admin/settings">
+          <Icon name="ic:round-settings" />
+          Settings
         </NuxtLink>
       </div>
       <AdminMissingJiko />

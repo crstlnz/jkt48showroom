@@ -189,7 +189,7 @@ defineExpose({ setPosition })
           left: `${posX}px`,
           bottom: `${windowHeight - posY}px`,
         }"
-        class="fixed z-aboveNav transition-all duration-[350ms] ease-out max-md:inset-0 max-md:!bottom-0 max-md:!left-0"
+        class="fixed z-notification transition-all duration-[350ms] ease-out max-md:inset-0 max-md:!bottom-0 max-md:!left-0"
         @pointerdown="startDrag"
       >
         <div class="absolute -inset-40 bg-black/40 md:hidden" @click="isHidden = true" />

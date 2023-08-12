@@ -22,6 +22,7 @@ export async function getSession(cookieString: string | null = null) {
   else {
     let cookies = ''
     const token = await $fetch<{ csrf_token: string }>('https://www.showroom-live.com/api/csrf_token', {
+      params: { _: new Date().getTime() },
       headers: {
         cookie: cookieString || '',
       },

@@ -57,6 +57,11 @@ namespace Watch {
     is_live: boolean
     gift_list: ShowroomAPI.Gift[]
     gift_log: ShowroomAPI.GiftLogItem[]
+    user : {
+      id : number,
+      name : string | null,
+      avatar_id : number,
+    },
     comments: Comment[]
     image: string
   }

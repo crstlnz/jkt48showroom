@@ -3,7 +3,7 @@
     <div
       class="pulse-color aspect-square h-20 animate-pulse overflow-hidden rounded-full drop-shadow-sm"
     />
-    <div class="info flex w-0 flex-1 flex-col text-left">
+    <div class="info flex min-w-0 flex-1 flex-col text-left">
       <div class="name flex flex-1 gap-2">
         <div
           class="pulse-color h-6 w-[60%] animate-pulse overflow-hidden text-ellipsis whitespace-nowrap rounded-xl font-bold"

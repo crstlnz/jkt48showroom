@@ -6,13 +6,10 @@ export default defineNuxtRouteMiddleware(async () => {
   if (process.client) {
     const settings = useSettings()
     const { session } = storeToRefs(settings)
-
-    if (process.client) {
-      if (!session.value) {
-        $fetch('/api/showroom/session').then((res) => {
-          session.value = res
-        })
-      }
+    if (!session.value) {
+      $fetch(`/api/showroom/session?_=${new Date().getTime()}`).then((res) => {
+        session.value = res
+      })
     }
   }
 })

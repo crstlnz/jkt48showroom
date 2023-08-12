@@ -10,7 +10,7 @@ const { $formatSR } = useNuxtApp()
   <div>
     <NuxtLink :to="`/watch/${live.url}`" class="my-1 flex items-start gap-3">
       <img class="aspect-square w-[70px] rounded-full object-cover" :src="$fixCloudinary(live.img_alt ?? live.img ?? config.errorPicture)" :alt="`${live.name} Profile picture`">
-      <div class="flex w-0 flex-1 flex-col items-start gap-2 self-stretch">
+      <div class="flex min-w-0 flex-1 flex-col items-start gap-2 self-stretch">
         <div class="text-sm font-semibold">
           {{ live.name }}
         </div>

@@ -86,6 +86,9 @@ interface INextLive {
 
 interface IMember {
   name: string
+  nicknames : string[]
+  bloodType? : string
+  height? : string
   img: string
   img_alt?: string
   url: string
@@ -102,6 +105,7 @@ interface IRecent {
   data_id: string
   member: {
     name: string
+    nickname? : string
     img: string
     img_alt?: string
     url: string

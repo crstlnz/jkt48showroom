@@ -1,4 +1,3 @@
-// TODO di hp pas tekan tombol unmute nda auto close pas tekan live card yang lain
 <script lang="ts" setup>
 import Hls, { Events } from 'hls.js/dist/hls.min.js'
 

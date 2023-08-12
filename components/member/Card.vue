@@ -31,7 +31,7 @@ watch(openMenu, (isOpen) => {
     </div>
     <div class="text-center">
       <div class="truncate text-xl font-bold">
-        {{ member.name }}
+        {{ member.nicknames[0] || member.name }}
       </div>
       <div class="text-base" :class="member.is_group ? 'text-blue-500' : (member.is_graduate ? 'text-red-500' : 'text-green-500')">
         {{ member.is_group ? "Official" : (member.is_graduate ? "Graduated" : "Active") }}

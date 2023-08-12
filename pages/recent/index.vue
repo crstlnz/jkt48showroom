@@ -149,7 +149,7 @@ const recentHeight = computed(() => {
   <LayoutRow :title="$t(title)" :mobile-side="false">
     <template #sidebar>
       <div class="flex flex-col gap-4">
-        <div v-if="isXL" class="bg-background sticky top-0 z-nav -mb-3 pb-3 pt-5">
+        <div v-if="isXL" class="bg-background sticky top-0 z-nav -mb-3 pb-3 pt-4">
           <div class="group bg-container flex items-center gap-4 rounded-full px-4">
             <Icon name="uil:search" class="ml-1 h-5 w-5 shrink-0" />
             <input

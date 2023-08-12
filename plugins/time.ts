@@ -11,9 +11,9 @@ export default defineNuxtPlugin((nuxtApp) => {
   function duration(dateFrom: Date | string | number, dateTo?: Date | string | number | boolean, short?: boolean): ComputedRef<string>
   function duration(dateFrom: Date | string | number, dateTo?: Date | string | number | boolean, short?: boolean): ComputedRef<string> {
     if (!dateTo || typeof dateTo === 'boolean') {
-      return computed(() => timeFormat.detailDuration(0, dateFrom, locale.value.code, dateTo ? 2 : Infinity))
+      return computed(() => timeFormat.detailDuration(0, dateFrom, locale.value.code, dateTo ? 2 : Number.POSITIVE_INFINITY))
     }
-    return computed(() => timeFormat.detailDuration(dateFrom, dateTo, locale.value.code, short ? 2 : Infinity))
+    return computed(() => timeFormat.detailDuration(dateFrom, dateTo, locale.value.code, short ? 2 : Number.POSITIVE_INFINITY))
   }
 
   return {
@@ -22,7 +22,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         return computed(() => moment(date).locale(locale.value.code).fromNow())
       },
       duration,
-      moment,
+      // moment,
       day(time: MaybeRef<Date | string | number | null | undefined>) {
         return computed(() => {
           const d = get(time)

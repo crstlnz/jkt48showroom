@@ -23,6 +23,7 @@ declare namespace Database {
   }
 
   interface I48Member {
+    nicknames: string[];
     name: string;
     kanji?: string;
     isGraduate: boolean;
@@ -35,6 +36,8 @@ declare namespace Database {
     socials: SocialNetwork[];
     generation?: string;
     birthdate? : Date;
+    bloodType?: string
+    height?: string
     showroom_id?: number;
   }
 
@@ -74,6 +77,8 @@ declare namespace Database {
 
   interface IMemberProfile {
     name : string
+    nickname? : string
+    fullname : string
     description : string
     img : string
     img_alt : string
@@ -87,6 +92,8 @@ declare namespace Database {
     socials : SocialNetwork[],
     generation? : string
     birthdate? : Date;
+    bloodType? : string
+    height? : string
   }
 
   interface FreeGift {
@@ -238,6 +245,7 @@ declare namespace Database {
     screenshot?: IScreenshot
     comments?: IComments
     viewer: number
+    active_viewer : number
     background_image?: string
     stage_list: IStage[]
     date: ILiveDate

@@ -1,6 +1,6 @@
-// https://v3.nuxtjs.org/api/configuration/nuxt.config
 const isDev = process.env.NODE_ENV === 'development'
-const allowedOrigins = ['https://jkt48-showroom.vercel.app']
+// const allowedOrigins = ['https://jkt48-showroom.vercel.app']
+const allowedOrigins = '*'
 export default defineNuxtConfig({
   routeRules: {
     '/api/showroom/**': { cache: !isDev ? { maxAge: 3600, staleMaxAge: 360 } : false },
@@ -79,7 +79,7 @@ export default defineNuxtConfig({
   },
   watch: ['~/assets/css/tailwindcss.css'],
   modules: [
-    '@sidebase/nuxt-session',
+    'floating-vue/nuxt',
     'nuxt-security',
     '@vite-pwa/nuxt',
     'dayjs-nuxt',
@@ -92,7 +92,6 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     '@vueuse/nuxt',
     '@nuxtjs/i18n',
-    // '@nuxtjs/html-validator',
     [
       '@pinia/nuxt',
       {
@@ -121,7 +120,7 @@ export default defineNuxtConfig({
   },
   dayjs: {
     locales: ['en', 'id'],
-    plugins: ['relativeTime', 'utc', 'timezone', 'duration', 'localeData'],
+    plugins: ['relativeTime', 'utc', 'timezone', 'duration', 'localeData', 'localizedFormat'],
     defaultLocale: 'en',
     defaultTimezone: 'Asia/Jakarta',
   },
@@ -151,27 +150,6 @@ export default defineNuxtConfig({
     lazy: true,
     defaultLocale: 'en',
   },
-  // htmlValidator: {
-  //   usePrettier: true,
-  //   logLevel: 'verbose',
-  //   failOnError: false,
-  //   options: {
-  //     extends: ['html-validate:document', 'html-validate:recommended', 'html-validate:standard'],
-  //     rules: {
-  //       'svg-focusable': 'off',
-  //       'no-unknown-elements': 'error',
-  //       // Conflicts or not needed as we use prettier formatting
-  //       'void-style': 'off',
-  //       'no-trailing-whitespace': 'off',
-  //       // Conflict with Nuxt defaults
-  //       'require-sri': 'off',
-  //       'attribute-boolean-style': 'off',
-  //       'doctype-style': 'off',
-  //       // Unreasonable rule
-  //       'no-inline-style': 'off',
-  //     },
-  //   },
-  // },
   typescript: {
     shim: false,
     strict: true,
@@ -188,6 +166,6 @@ export default defineNuxtConfig({
     compressPublicAssets: true,
   },
   devtools: {
-    enabled: true,
+    enabled: false,
   },
 })

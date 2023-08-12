@@ -24,13 +24,14 @@ async function fetchData(group: string | null = null, roomId: number | null = nu
       .select('name description img url room_id member_data room_exists generation')
       .populate({
         path: 'member_data',
-        select: '-_id isGraduate img',
+        select: '-_id isGraduate img nicknames bloodType height',
       })
       .lean()
     return members
       .map((member): IMember => {
         return {
           name: member.name,
+          nicknames: member?.member_data?.nicknames || [],
           img: member.img ?? member.member_data?.img ?? config.errorPicture,
           img_alt: member.member_data?.img ?? member.img ?? config.errorPicture,
           url: member.url,
@@ -41,6 +42,8 @@ async function fetchData(group: string | null = null, roomId: number | null = nu
           is_graduate: member.member_data?.isGraduate ?? jkt48officialId !== member.room_id,
           is_group: jkt48officialId === member.room_id,
           generation: member.generation,
+          bloodType: member.member_data?.bloodType,
+          height: member.member_data?.height,
         }
       })
       .sort((a, b) => a.name.localeCompare(b.name))

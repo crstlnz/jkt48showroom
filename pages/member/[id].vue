@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { getSign } from 'horoscope'
-import { LazyImage } from '#components'
+import { LazyImage, NuxtLink } from '#components'
 import { useOnLives } from '~~/store/onLives'
 
 const route = useRoute()
@@ -74,7 +74,7 @@ useHead({
             <div class="-mt-3 flex flex-col gap-3 px-3 md:-mt-4 lg:px-4">
               <div class="flex">
                 <div class="bg-background relative mt-[-45px] h-[5.3rem] w-[5.3rem] shrink-0 rounded-full 2xl:mt-[-8%] 2xl:h-[15%] 2xl:w-[15%]">
-                  <div class="relative m-1 md:m-1.5">
+                  <component :is="isLive ? NuxtLink : 'div'" :to="isLive ? `/watch/${member.url}` : undefined" class="relative m-1 block md:m-1.5">
                     <div v-if="isLive" class="absolute bottom-[14.5%] right-[14.5%] z-10 h-[15%] w-[15%] translate-x-1/2 translate-y-1/2">
                       <div class="absolute inset-0 z-10 rounded-full bg-red-500" />
                       <div class="absolute inset-0 -z-10 animate-ping rounded-full bg-red-500" />
@@ -85,11 +85,10 @@ useHead({
                       :src="$fixCloudinary(member.img_alt ?? member.img ?? '')"
                       :alt="`${member.name} Display Picture`"
                     />
-                  </div>
-                <!-- {{ $d(new Date(member?.birthdate ?? ''), 'birthdate') }} -->
+                  </component>
                 </div>
-                <div class="flex w-0 flex-1 items-start justify-end gap-2 pt-2 md:gap-3 md:pt-3">
-                  <NuxtLink v-if="member.generation" :to="`/${member.generation}`" class="select-none rounded-full bg-gray-500 px-3 py-1.5 text-sm text-white dark:bg-dark-3">
+                <div class="flex min-w-0 flex-1 items-start justify-end gap-2 pt-2 md:gap-3 md:pt-3">
+                  <NuxtLink v-if="member.generation" :to="`/member?gen=${member.generation}`" class="select-none rounded-full bg-gray-500 px-3 py-1.5 text-sm text-white dark:bg-dark-3">
                     {{ $parseGeneration(member.generation) || member.generation }}
                   </NuxtLink>
                   <div
@@ -108,32 +107,49 @@ useHead({
                 </div>
               </div>
               <div class="text-2xl font-semibold lg:text-3xl">
-                {{ member.name }}
+                {{ member.fullname || member.name }}
               </div>
             </div>
-            <div v-if="birth" class="flex gap-3 px-3 md:px-4">
-              <div class="bg-container flex flex-col gap-2 rounded-xl px-4 py-3 max-sm:flex-1">
+            <div class="flex flex-wrap gap-3 px-3 md:px-4 [&>div]:flex-[40%] xl:[&>div]:flex-[20%]">
+              <div v-if="birth" class="bg-container flex flex-col gap-1 rounded-xl px-4 py-3 md:gap-2">
                 <div class="flex items-center gap-2">
                   <Icon name="twemoji:birthday-cake" size="1.2rem" />
                   <span class="text-sm font-semibold">{{ $t("birthdate") }}</span>
                 </div>
-                <div class="flex items-center gap-2">
-                  <span>{{ $d(birth.date, 'birthdate') }}</span>
+                <div>
+                  {{ $d(birth.date, 'birthdate') }}
                 </div>
               </div>
-              <div class="bg-container flex flex-col gap-2 rounded-xl px-4 py-3 max-sm:flex-1">
+              <div v-if="birth" class="bg-container flex flex-col gap-1 rounded-xl px-4 py-3 md:gap-2">
                 <div class="flex items-center gap-2">
                   <Icon :name="`emojione:${birth.horoscope.toLowerCase()}`" size="1.2rem" />
                   <span class="text-sm font-semibold">{{ $t("horoscope.title") }}</span>
                 </div>
-                <div class="flex items-center gap-2">
-                  <span> {{ $t(`horoscope.${birth.horoscope.toLowerCase()}`) }}</span>
+                <div>
+                  {{ $t(`horoscope.${birth.horoscope.toLowerCase()}`) }}
                 </div>
               </div>
-            <!-- <div class="bg-container flex items-center gap-2 rounded-full px-4 py-3">
-              <Icon :name="`emojione:${getSign({ month: birthdate.getMonth() + 1, day: birthdate.getDate() }).toLowerCase()}`" size="1.3rem" />
-              <span> {{ getSign({ month: birthdate.getMonth() + 1, day: birthdate.getDate() }) }}</span>
-            </div> -->
+              <div class="bg-container flex flex-col gap-1 rounded-xl px-4 py-3 md:gap-2">
+                <div class="flex items-center gap-2 ">
+                  <div class="relative">
+                    <Icon name="ic:sharp-bloodtype" size="1.2rem" class="text-red-500" />
+                    <div class="absolute left-1/2 top-1/2 -z-10 h-2 w-2 -translate-x-1/2 bg-white" />
+                  </div>
+                  <span class="text-sm font-semibold">{{ $t("bloodtype") }}</span>
+                </div>
+                <div>
+                  {{ member.bloodType }}
+                </div>
+              </div>
+              <div class="bg-container flex flex-col gap-1 rounded-xl px-4 py-3 md:gap-2">
+                <div class="flex items-center gap-2">
+                  <Icon name="solar:ruler-pen-bold" size="1.2rem" class="text-yellow-500" />
+                  <span class="text-sm font-semibold">{{ $t("height") }}</span>
+                </div>
+                <div>
+                  {{ member.height }}
+                </div>
+              </div>
             </div>
             <div v-if="member.jikosokai" class="bg-container mx-3 flex flex-col gap-2 rounded-xl p-4 md:mx-4">
               <div class="flex items-center gap-2 text-lg font-semibold">

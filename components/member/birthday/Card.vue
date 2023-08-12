@@ -17,7 +17,7 @@ const isToday = computed(() => {
         Hari ini
       </div>
     </NuxtLink>
-    <NuxtLink :to="`/member/${member.url_key}`" class="rounded-xl bg-blue-500/10 px-3 py-1 text-center text-sm font-bold opacity-80 md:text-base lg:text-lg">
+    <NuxtLink :to="`/member/${member.url_key}`" class="w-[130px] max-w-full rounded-xl bg-blue-400/25 px-3 py-1 text-center text-sm font-bold opacity-80 dark:bg-blue-400/20 md:text-base lg:text-lg">
       {{ member.name }}
     </NuxtLink>
   </div>

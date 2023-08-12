@@ -194,14 +194,17 @@ async function refreshDate() {
             class="flex cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-red-500 p-2  hover:bg-red-600 md:px-4 md:py-2"
           >
             <Icon name="ic:round-videocam" class="text-sm md:text-base" />
-            Open
+            <span class="truncate">Open</span>
           </NuxtLink>
           <a
             :tabindex="openMenu ? -1 : undefined"
             :href="$liveURL(live.url)"
             target="_blank"
             class="flex cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-blue-500 p-2 hover:bg-blue-600 md:px-4 md:py-2"
-          ><Icon name="octicon:link-external-16" /> View</a>
+          >
+            <Icon name="octicon:link-external-16" />
+            <span class="truncate">View</span>
+          </a>
         </div>
       </div>
       <div

@@ -58,7 +58,7 @@ const showCount = computed(() => {
               :src="$avatarURL(fans.avatar_id)"
             >
           </div>
-          <div class="w-0 flex-1 truncate text-left">
+          <div class="min-w-0 flex-1 truncate text-left">
             <div class="truncate text-base font-semibold">
               {{ fans.name }}
             </div>
@@ -86,7 +86,7 @@ const showCount = computed(() => {
               :src="$avatarURL(item.avatar_id)"
             >
           </button>
-          <div class="w-0 flex-1 font-semibold">
+          <div class="min-w-0 flex-1 font-semibold">
             {{ item.name }}
           </div>
         </div>

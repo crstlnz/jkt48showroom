@@ -44,9 +44,9 @@ const bufferSize = computed(() => {
                   :alt="`${item.name} Avatar`"
                 >
               </button>
-              <div class="w-0 flex-1">
+              <div class="min-w-0 flex-1">
                 <div class="flex flex-wrap gap-2 pb-[8px] md:gap-2.5">
-                  <div v-for="gift in item.gifts" :key="item.id + gift.id" class="relative" :title="$currency(gift.point)">
+                  <div v-for="gift in item.gifts" :key="item.id + gift.id" v-tooltip="$currency(gift.point)" class="relative">
                     <div class="max-h-[45px] max-w-[45px]">
                       <img :key="`${item.id}${gift.id}`" :src="gift.img" alt="Gift" class="aspect-square">
                       <div

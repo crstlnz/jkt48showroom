@@ -10,13 +10,13 @@
       />
     </NuxtLink>
 
-    <div class="info flex w-0 flex-1 flex-col text-left">
+    <div class="info flex min-w-0 flex-1 flex-col text-left">
       <div class="name flex flex-1 gap-2">
         <span
-          class="pulse-color h-5 w-3/4 overflow-hidden text-ellipsis whitespace-nowrap rounded-xl font-bold md:h-6"
+          class="pulse-color h-5 w-3/4 truncate rounded-xl font-bold md:h-6"
         />
       </div>
-      <div class="[&>span]:pulse-color mt-1 flex flex-col space-y-1 text-xs md:text-sm">
+      <div class="mt-1 flex flex-col space-y-1 text-xs [&>span]:pulse-color md:text-sm">
         <span class="inline-block h-4 w-1/3 rounded-xl md:h-5" />
         <span class="inline-block h-4 w-1/2 rounded-xl md:h-5" />
       </div>
