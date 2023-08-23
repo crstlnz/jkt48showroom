@@ -22,7 +22,8 @@ const props = withDefaults(
   },
 )
 const { isSmallerOrEqual } = useBreakpoints(breakpointsTailwind)
-const { $device, $createDragListener, $createSwipeDetector } = useNuxtApp()
+const { $createDragListener, $createSwipeDetector } = useNuxtApp()
+const $device = useDevice()
 const isOpen = ref(false)
 const isDrag = ref(false)
 const background = ref(null)

@@ -126,6 +126,9 @@ export default defineNuxtConfig({
   },
   gtag: {
     id: 'G-C92JVM8CR4',
+    config: {
+      isDev,
+    },
   },
   css: ['~/assets/css/fonts.scss', '~/assets/css/style.scss', '~/assets/css/transition.scss'],
   colorMode: {
