@@ -4,7 +4,7 @@ import { parseCookieString } from '~~/library/utils'
 import { logout } from '~~/library/api/showroom'
 import { getSession } from '~~/library/showroom/session'
 
-const scopes = ['identify'].join(' ')
+// const scopes = ['identify'].join(' ')
 export default NuxtAuthHandler({
   secret: process.env.AUTH_SECRET,
   pages: {

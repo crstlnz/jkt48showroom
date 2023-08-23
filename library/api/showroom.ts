@@ -53,8 +53,8 @@ export function getStreamingURL(params: object, cookies: string | null = null): 
 export function getCommentLog(roomId: number, cookies: string | null = null): Promise<{ comment_log: Watch.APIComment[] }> {
   return fetchAPI(`https://www.showroom-live.com/api/live/comment_log?room_id=${roomId}&_=${new Date().getTime()}`, { headers: { cookie: cookies || '' } })
 }
-export function getPolling(roomId: number): Promise<ShowroomAPI.Polling | ShowroomAPI.PollingLiveEnd> {
-  return fetchAPI(`https://www.showroom-live.com/api/live/polling?room_id=${roomId}&_=${new Date().getTime()}`)
+export function getPolling(roomId: number, cookies: string | null = null): Promise<ShowroomAPI.Polling | ShowroomAPI.PollingLiveEnd> {
+  return fetchAPI(`https://www.showroom-live.com/api/live/polling?room_id=${roomId}&_=${new Date().getTime()}`, { headers: { cookie: cookies || '' } })
 }
 
 export function getUserProfile(userId: number): Promise<ShowroomAPI.UserProfile> {
