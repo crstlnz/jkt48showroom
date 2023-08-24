@@ -1,4 +1,22 @@
 namespace Watch {
+
+  interface TelopApi {
+    telops : Telops[],
+    telop : string | null,
+    interval : number
+  }
+  
+  interface Telops {
+    color: {
+      r : number,
+      g : number,
+      b : number,
+    }
+    live_id: string,
+    text : string,
+    type : string,
+  }
+
   interface CommentRequest {
     live_id: number
     comment: string

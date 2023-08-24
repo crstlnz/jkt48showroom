@@ -57,6 +57,10 @@ export function getPolling(roomId: number, cookies: string | null = null): Promi
   return fetchAPI(`https://www.showroom-live.com/api/live/polling?room_id=${roomId}&_=${new Date().getTime()}`, { headers: { cookie: cookies || '' } })
 }
 
+export function getTelops(roomId: number, cookies: string | null = null): Promise<Watch.TelopApi> {
+  return $fetch(`https://www.showroom-live.com/api/live/telop?room_id=${roomId}`, { headers: { cookie: cookies || '' } })
+}
+
 export function getUserProfile(userId: number): Promise<ShowroomAPI.UserProfile> {
   return fetchAPI(`https://www.showroom-live.com/api/user/profile?user_id=${userId}`)
 }

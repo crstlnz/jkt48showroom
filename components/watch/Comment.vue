@@ -2,17 +2,21 @@
 import useShowroomWatcher from '~~/composables/useShowroomWatcher'
 
 const props = defineProps<{ data?: Watch.WatchData | null | undefined; isLive: boolean }>()
-const emit = defineEmits<{ (e: 'gift', gift: ShowroomAPI.GiftLogItem): void; (e: 'finish'): void; (e: 'start'): void }>()
+const emit = defineEmits<{ (e: 'gift', gift: ShowroomAPI.GiftLogItem): void; (e: 'finish'): void; (e: 'start'): void ; (e: 'telops', telops: Watch.Telops | null): void }>()
 const pageMode = false
 const comments = ref(props.data?.comments ?? [])
 const dynamicScroller = ref<ComponentPublicInstance<HTMLElement> | null>(null)
 
-const { onComment, onLiveState, onGift } = useShowroomWatcher(`wss://${props.data?.socket_host}` ?? '', props.data?.socket_key ?? '')
+const { onComment, onLiveState, onGift, onTelops } = useShowroomWatcher(`wss://${props.data?.socket_host}` ?? '', props.data?.socket_key ?? '')
 const autoAppend = ref(true)
 const lastScroll = ref(0)
 const delayedComments = ref<Watch.Comment[]>([])
 
 const showNewCommentButton = ref(true)
+
+onTelops((telops) => {
+  emit('telops', telops)
+})
 
 onGift((gift) => {
   emit('gift', gift)

@@ -41,7 +41,6 @@ export default defineNuxtConfig({
   runtimeConfig: {
     admin_ids: (process.env.DISCORD_ADMINS ?? '').trim().split(',').map(i => i.trim()) || [],
     public: {
-      baseURL: process.env.BASE_URL,
       isDev,
     },
   },
