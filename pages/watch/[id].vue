@@ -91,9 +91,21 @@ function onGift(gift: ShowroomAPI.GiftLogItem) {
 
 const viewers = ref(0)
 
+const user = ref({
+  name: '',
+  rank: 0,
+  avatar: '',
+})
+
 async function getPolling() {
   try {
     const poll = await $fetch('/api/showroom/polling', { params: { _: new Date().getTime(), room_id: roomId.value } })
+    const current_user = await $fetch('/api/showroom/current_user', { params: { _: new Date().getTime(), room_id: roomId.value } })
+    user.value = {
+      name: current_user.name,
+      rank: current_user.live_rank,
+      avatar: current_user.avatar_url,
+    }
     if (!poll) return
     if ('online_user_num' in poll) {
       viewers.value = poll.online_user_num
@@ -129,7 +141,7 @@ const { pause, resume } = useIntervalFn(() => {
   if (roomId) {
     getPolling()
   }
-}, 60000, { immediate: false, immediateCallback: true })
+}, 120000, { immediate: false, immediateCallback: true })
 
 watch(isPremium, (premium) => {
   if (premium) {
@@ -153,6 +165,25 @@ watch(data, (val) => {
   isLive.value = val?.is_live ?? false
 })
 
+const telops = ref<Watch.Telops | null>(null)
+async function fetchTelops() {
+  try {
+    const data = await $fetch(`/api/showroom/telops?room_id=${roomId.value}`)
+    const tel = data.telops[0]
+    if (tel) {
+      telops.value = {
+        color: tel.color,
+        text: tel.text,
+        type: tel.type,
+        live_id: tel.live_id,
+      }
+    }
+  }
+  catch (e) {
+    console.log(e)
+  }
+}
+
 const video = ref<typeof WatchVideo>()
 watch(isLive, (live) => {
   if (!live) {
@@ -161,6 +192,7 @@ watch(isLive, (live) => {
     video.value?.stop()
   }
   else {
+    fetchTelops()
     resume()
   }
 }, { immediate: true })
@@ -198,6 +230,7 @@ function onFinish() {
 const comment = ref<typeof WatchComment | null>()
 const { greaterOrEqual } = useResponsive()
 const isLarge = greaterOrEqual('lg')
+const userOpen = ref(false)
 </script>
 
 <template>
@@ -224,7 +257,15 @@ const isLarge = greaterOrEqual('lg')
     <div v-else class="h-full w-full">
       <div class="relative flex min-h-full w-full flex-col gap-3 md:gap-4 lg:flex-row">
         <div class="flex flex-1 flex-col lg:w-auto">
-          <div class="aspect-video overflow-hidden bg-white outline-none dark:bg-dark-1 max-lg:shadow-sm lg:rounded-xl">
+          <div class="relative aspect-video overflow-hidden bg-white outline-none dark:bg-dark-1 max-lg:shadow-sm lg:rounded-xl">
+            <div
+              v-if="telops && isLive" class="absolute inset-x-0 top-0 z-[10] bg-black/50 p-1.5 text-center text-base md:text-lg lg:text-xl"
+              :style="{
+                color: `rgb(${telops.color.r}, ${telops.color.g}, ${telops.color.b})`,
+              }"
+            >
+              {{ telops.text }}
+            </div>
             <div v-if="!isLive" class="flex h-full w-full items-center justify-center">
               <div class="space-y-4 md:space-y-6 lg:space-y-10">
                 <img src="/svg/video_files.svg" class="mx-auto w-[250px] max-w-[70%] dark:brightness-90" alt="">
@@ -233,6 +274,7 @@ const isLarge = greaterOrEqual('lg')
                 </div>
               </div>
             </div>
+
             <LazyWatchVideo
               v-else
               ref="video" :poster="data?.image ?? ''" :sources="data?.streaming_url_list ?? []" @fullsceen="(isFullscreen) => {
@@ -256,22 +298,55 @@ const isLarge = greaterOrEqual('lg')
                 {{ $formatSR(data?.started_at ?? 0) }}
               </span>
             </div>
+
             <a
               target="_blank"
-              class="select-none rounded-lg bg-second-2/80 p-1 px-3 text-center text-sm font-bold text-white transition-transform hover:bg-second-2 active:scale-95 disabled:bg-second-2/40 disabled:text-gray-400 disabled:active:scale-100 disabled:dark:text-gray-500 max-sm:flex-1 lg:p-1.5 lg:px-2.5"
+              class="select-none rounded-lg bg-blue-500/80 p-1 px-3 text-center text-sm font-bold text-white transition-transform hover:bg-blue-500 active:scale-95 disabled:bg-blue-500/40 disabled:text-gray-400 disabled:active:scale-100 disabled:dark:text-gray-500 max-sm:flex-1 lg:p-1.5 lg:px-2.5"
               :href="$liveURL(data?.room_url_key ?? '')"
             >
-              {{ $t("openshowroom") }}
+              <!-- {{ $t("openshowroom") }} -->
+              Showroom
             </a>
+
             <button
               v-if="!isLarge"
               type="button"
-              class="select-none rounded-lg bg-yellow-500/80 p-1 px-3 text-center text-sm font-bold text-white transition-transform hover:bg-yellow-500 active:scale-95 disabled:bg-second-2/40 disabled:text-gray-400 disabled:active:scale-100 disabled:dark:text-gray-500 max-sm:flex-1 lg:p-1.5 lg:px-2.5"
+              class="select-none rounded-lg bg-blue-500/80 p-1 px-3 text-center text-sm font-bold text-white transition-transform hover:bg-blue-500 active:scale-95 disabled:bg-blue-500/40 disabled:text-gray-400 disabled:active:scale-100 disabled:dark:text-gray-500 max-sm:flex-1 lg:p-1.5 lg:px-2.5"
               :href="$liveURL(data?.room_url_key ?? '')"
               @click="giftOpen = !giftOpen"
             >
               {{ giftOpen ? $t("hide_gifts") : $t("show_gifts") }}
             </button>
+            <button
+              v-if="!isLarge"
+              type="button"
+              class="select-none rounded-lg bg-blue-500/80 p-1 px-3 text-center text-sm font-bold text-white transition-transform hover:bg-blue-500 active:scale-95 disabled:bg-blue-500/40 disabled:text-gray-400 disabled:active:scale-100 disabled:dark:text-gray-500 max-sm:flex-1 lg:p-1.5 lg:px-2.5"
+              @click="userOpen = !userOpen"
+            >
+              User
+            </button>
+
+            <Transition name="fade">
+              <div v-if="!isLarge && userOpen" class="fixed inset-0 z-notification bg-black/50" @click="userOpen = false" />
+            </Transition>
+            <div
+              class="flex items-center gap-2 text-base transition-[visibility,opacity] duration-300 ease-in-out lg:gap-2 lg:text-sm"
+              :class="{
+                'bg-container-2 fixed left-1/2 top-1/2 z-notification -translate-x-1/2 -translate-y-1/2 rounded-xl p-8': !isLarge,
+                'visible opacity-100': !isLarge && userOpen,
+                'invisible opacity-0': !isLarge && !userOpen,
+              }"
+            >
+              <div class="h-20 w-20 lg:h-10 lg:w-10">
+                <img :src="user.avatar" alt="User Avatar" class="h-full w-full object-cover">
+              </div>
+              <div class="flex flex-col">
+                <div>{{ user.name }}</div>
+                <div class="whitespace-nowrap">
+                  Rank : {{ user.rank > 0 ? user.rank : "Out" }}
+                </div>
+              </div>
+            </div>
           </div>
 
           <Transition name="height">
@@ -312,7 +387,7 @@ const isLarge = greaterOrEqual('lg')
         </div>
         <div class="relative min-h-[640px] w-full bg-white dark:bg-dark-1 max-lg:max-h-[70vh] max-lg:shadow-sm lg:max-h-[85vh] lg:w-[300px] lg:rounded-xl xl:w-[350px]">
           <div class="absolute inset-0 z-0 overflow-hidden rounded-xl">
-            <WatchComment ref="comment" :is-live="isLive" :data="data" class="h-full w-full" @finish="onFinish" @start="onStart" @gift="onGift" />
+            <WatchComment ref="comment" :is-live="isLive" :data="data" class="h-full w-full" @finish="onFinish" @start="onStart" @gift="onGift" @telops="(t) => telops = t" />
           </div>
         </div>
       </div>

@@ -104,6 +104,11 @@ function createHLS(url: string) {
     enableWorker: true,
     lowLatencyMode: lowLatencyMode.value,
     backBufferLength: 90,
+    fetchSetup(context: any, initParams: any) {
+      // Always send cookies, even for cross-origin calls.
+      initParams.credentials = 'include'
+      return new Request(context.url, initParams)
+    },
   })
 
   hls.value.on(Events.ERROR, (event: any, data: any) => {
