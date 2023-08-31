@@ -4,12 +4,22 @@ const allowedOrigins = '*'
 export default defineNuxtConfig({
   routeRules: {
     '/api/showroom/**': { cache: !isDev ? { maxAge: 3600, staleMaxAge: 360 } : false },
-    '/api/showroom/polling': { cache: false },
     '/api/showroom/members': { cache: !isDev ? { maxAge: 21600, staleMaxAge: 1800 } : false },
     '/api/showroom/recent': { cache: !isDev ? { maxAge: 1, staleMaxAge: 0 } : false },
     '/api/showroom/recent/**': { cache: !isDev ? { maxAge: 600, staleMaxAge: 10 } : false },
     '/api/member/birthday': { cache: !isDev ? { maxAge: 86400, staleMaxAge: 3600 } : false },
     '/api/showroom/records': { cache: !isDev ? { maxAge: 1800, staleMaxAge: 0 } : false },
+    '/api/showroom/polling': { cache: false },
+    '/api/showroom/comment': {
+      cache: false,
+      security: {
+        rateLimiter: {
+          tokensPerInterval: 20,
+          interval: 'minute',
+          fireImmediately: false,
+        },
+      },
+    },
     '/api/jpn_rates': { cache: !isDev ? { maxAge: 86400, staleMaxAge: 0 } : false },
     '/img/**': { cache: !isDev ? { maxAge: 86400, staleMaxAge: 3600 } : false },
     '/svg/**': { cache: !isDev ? { maxAge: 86400, staleMaxAge: 3600 } : false },
@@ -31,7 +41,6 @@ export default defineNuxtConfig({
   runtimeConfig: {
     admin_ids: (process.env.DISCORD_ADMINS ?? '').trim().split(',').map(i => i.trim()) || [],
     public: {
-      baseURL: process.env.BASE_URL,
       isDev,
     },
   },
@@ -126,6 +135,9 @@ export default defineNuxtConfig({
   },
   gtag: {
     id: 'G-C92JVM8CR4',
+    config: {
+      isDev,
+    },
   },
   css: ['~/assets/css/fonts.scss', '~/assets/css/style.scss', '~/assets/css/transition.scss'],
   colorMode: {

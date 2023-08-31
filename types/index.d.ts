@@ -289,4 +289,4 @@ declare module 'vue-gtag-next'
 declare module 'cloudinary'
 declare module 'horoscope'
 
-declare function useNuxtApp(): NuxtApp & { $device: any }
+// declare function useNuxtApp(): NuxtApp & { $device: any }
