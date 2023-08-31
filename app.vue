@@ -51,7 +51,6 @@ const messages = [
   'Uncaught NotFoundError: Failed to execute \'insertBefore\' on \'Node\': The node before which the new node is to be inserted is not a child of this node.', // chromium based
   'NotFoundError: The object can not be found here.', // safari
 ]
-
 if (typeof window !== 'undefined') {
   // @ts-expect-error using arbitrary window key
   if (!window.__vue5513) {
@@ -68,6 +67,8 @@ if (typeof window !== 'undefined') {
   // @ts-expect-error using arbitrary window key
   window.__vue5513 = true
 }
+
+const { $pwa } = useNuxtApp()
 </script>
 
 <template>
@@ -91,5 +92,16 @@ if (typeof window !== 'undefined') {
         }"
       /> -->
     </NuxtLayout>
+    <ClientOnly>
+      <div v-show="$pwa.needRefresh" class="fixed bottom-[72px] left-1/2 z-notification flex max-w-[90%] -translate-x-1/2 items-center rounded-xl bg-blue-400/75 p-3 backdrop-blur-md sm:bottom-4 md:p-4">
+        <Icon name="ic:round-browser-updated" class="mr-1.5 h-4 w-4 md:h-5 md:w-5" />
+        <span class="truncate whitespace-nowrap text-sm md:text-base">
+          New update available!
+        </span>
+        <button class="ml-2.5 rounded-md bg-blue-500 px-2.5 py-0.5 text-sm transition-transform active:scale-95 md:ml-3.5 md:px-3 md:py-1 md:text-base" @click="$pwa.updateServiceWorker()">
+          Reload
+        </button>
+      </div>
+    </ClientOnly>
   </div>
 </template>

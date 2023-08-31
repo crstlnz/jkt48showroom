@@ -6,12 +6,14 @@ import { LazyImage } from '#components'
 
 const props = defineProps<{ live: IRoomLive }>()
 defineEmits(['refreshliveinfo'])
-const { $formatSR, $device } = useNuxtApp()
+const { $device } = useNuxtApp()
 const openMenu = ref(false)
 const container = ref(null)
 const listener = ref<(() => void)>()
 const date = ref(props.live.started_at)
-const dateString = $formatSR(date)
+const dayjs = useDayjs()
+// const dateString = $formatSR(date)
+const dateString = computed(() => dayjs(date.value).format('h:mm A'))
 
 const hover = ref(null)
 const isPreview = ref(false)

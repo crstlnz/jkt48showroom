@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 import { WatchComment } from '#components'
 import type { WatchVideo } from '#components'
+import { convertToMilliseconds } from '~~/library/utils'
 import { useNotifications } from '~~/store/notifications'
 
 definePageMeta({ middleware: 'showroom-session' })
+const dayjs = useDayjs()
 const route = useRoute()
 const { data, pending, error, refresh: refreshWatchData } = useFetch('/api/showroom/watch', { params: { room_url_key: route.params.id, _: new Date().getTime() } })
 
@@ -253,7 +255,7 @@ const isLarge = greaterOrEqual('lg')
                 <span>{{ $n(viewers) }}</span>
               </span>
               <span v-if="isLive" class="shrink-0 space-x-1 rounded-lg bg-slate-700 px-1.5 py-1 text-sm text-slate-50 dark:bg-slate-500">
-                {{ $formatSR(data?.started_at ?? 0) }}
+                {{ dayjs(convertToMilliseconds(data?.started_at ?? 0)).format('h:mm A') }}
               </span>
             </div>
             <a
