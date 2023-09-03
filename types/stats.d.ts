@@ -51,7 +51,7 @@ interface IStats {
 interface IShowroomStats {
   type: IDateRangeType;
   ranks: {
-    member: StatMember[];
+    member: IStatMember[];
     fans: IStatFans[];
   };
   stats: IStats[];
@@ -65,7 +65,7 @@ interface IShowroomStats {
 interface IShowroomMemberStats {
   type: IDateRangeMemberType;
   ranks: {
-    member: StatMember[];
+    member: IStatMember[];
     fans: IStatFans[];
   };
   stats: IStats[];

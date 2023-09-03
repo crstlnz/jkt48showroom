@@ -92,7 +92,7 @@ const { $pwa } = useNuxtApp()
         }"
       /> -->
     </NuxtLayout>
-    <ClientOnly>
+    <!-- <ClientOnly>
       <div v-show="$pwa.needRefresh" class="fixed bottom-[72px] left-1/2 z-notification flex max-w-[90%] -translate-x-1/2 items-center rounded-xl bg-blue-400/75 p-3 backdrop-blur-md sm:bottom-4 md:p-4">
         <Icon name="ic:round-browser-updated" class="mr-1.5 h-4 w-4 md:h-5 md:w-5" />
         <span class="truncate whitespace-nowrap text-sm md:text-base">
@@ -102,6 +102,6 @@ const { $pwa } = useNuxtApp()
           Reload
         </button>
       </div>
-    </ClientOnly>
+    </ClientOnly> -->
   </div>
 </template>

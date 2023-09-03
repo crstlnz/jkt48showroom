@@ -242,17 +242,17 @@ function setButton(key: string) {
   <div class="relative px-3 md:px-4">
     <PulseStats v-if="pending" key="loading" />
     <div v-else key="data" class="space-y-3 md:space-y-4">
-      <div v-if="(data?.stats?.length ?? 0) <= 1" class="rounded-xl bg-white p-3 shadow-sm dark:bg-dark-1 md:p-4 xl:p-5 ">
+      <div v-if="(data?.stats?.length ?? 0) <= 1" class="dark:bg-dark-1 rounded-xl bg-white p-3 shadow-sm md:p-4 xl:p-5 ">
         <div class="pb-6 text-center">
           <img src="/svg/empty-box.svg" :alt="$t('data.notenough')" class="mx-auto aspect-[4/3] w-72 max-w-[80%]">
           {{ $t('data.notenough') }}
         </div>
       </div>
-      <div v-else class="flex flex-wrap gap-1 max-sm:bg-container max-sm:flex-col max-sm:rounded-xl max-sm:p-3 sm:gap-4">
+      <div v-else class="max-sm:bg-container flex flex-wrap gap-1 max-sm:flex-col max-sm:rounded-xl max-sm:p-3 sm:gap-4">
         <div
           v-for="stat in (data?.stats ?? []).slice(0, 4)"
           :key="stat?.key ?? stat.title"
-          class="flex items-center gap-3 rounded-xl px-5 py-3 sm:bg-container max-sm:p-3 sm:flex-[calc(50%_-_1rem)]"
+          class="sm:bg-container flex items-center gap-3 rounded-xl px-5 py-3 max-sm:p-3 sm:flex-[calc(50%_-_1rem)]"
         >
           <div class="w-0 flex-1 space-y-2">
             <div :key="data?.type ?? 'data'" class="opacity-50">
@@ -274,6 +274,24 @@ function setButton(key: string) {
           <div v-else class="h-16 w-16 md:h-20 md:w-20" />
         </div>
       </div>
+      <!-- <div class="flex gap-3 md:gap-4">
+        <div class="bg-container flex-1 space-y-2 rounded-xl p-4 md:p-5">
+          <div class="flex items-center gap-1.5">
+            <Icon name="streamline-emojis:wrapped-gift-1" size="2rem" class="pb-0.5" />
+            <span class="text-xl font-bold">
+              Most Gifts
+            </span>
+          </div>
+          <div v-for="member in (data?.ranks.member || [])" :key="member.room_id">
+            <div />
+            <div> {{ member.name }}</div>
+            <div> {{ member.point }}</div>
+          </div>
+        </div>
+        <div class="bg-container flex-1 rounded-xl p-4 md:p-5">
+          wew
+        </div>
+      </div> -->
       <HomeFans v-if="(data?.ranks?.fans?.length)" :key="data?.type ?? 'data'" class="rounded-xl" :data="data?.ranks.fans" />
     </div>
   </div>

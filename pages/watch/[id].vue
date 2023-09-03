@@ -340,10 +340,11 @@ const userOpen = ref(false)
               }"
             >
               <div class="h-20 w-20 lg:h-10 lg:w-10">
-                <img :src="user.avatar" alt="User Avatar" class="h-full w-full object-cover">
+                <img v-if="user.avatar" :src="user.avatar" alt="User Avatar" class="h-full w-full object-cover">
+                <div v-else class="bg-container h-full w-full rounded-full object-cover" />
               </div>
               <div class="flex flex-col">
-                <div>{{ user.name }}</div>
+                <div>{{ user.name ? user.name : "Loading" }}</div>
                 <div class="whitespace-nowrap">
                   Rank : {{ user.rank > 0 ? user.rank : "Out" }}
                 </div>

@@ -3,7 +3,7 @@ export default function (host: string, key: string) {
   const comment = createEventHook<Watch.Comment>()
   const isLive = createEventHook<boolean>()
   const gift = createEventHook<ShowroomAPI.GiftLogItem>()
-  const telops = createEventHook<Watch.Telops | null>()
+  const onTelops = createEventHook<Watch.Telops | null>()
   function createSocket() {
     destroySocket()
     socket = new WebSocket(host)
@@ -34,26 +34,30 @@ export default function (host: string, key: string) {
           isLive.trigger(true)
         }
         else if (code === 8) { // telop start
+          console.log('telops start')
           try {
-            const telops = msg.telops[0]
-            if (telops) {
-              telops.trigger({
-                color: telops.color,
-                text: telops.text,
-                live_id: telops.live_id,
-                type: telops.type,
+            console.log('telops check', msg)
+            const telopsData = msg.telops[0]
+            if (telopsData) {
+              onTelops.trigger({
+                color: telopsData.color,
+                text: telopsData.text,
+                live_id: telopsData.live_id,
+                type: telopsData.type,
               })
             }
             else {
-              telops.trigger(null)
+              onTelops.trigger(null)
             }
           }
           catch (e) {
-            telops.trigger(null)
+            console.log(e)
+            onTelops.trigger(null)
           }
         }
         else if (code === 9) { // telop stop
-          telops.trigger(null)
+          console.log('telops stop')
+          onTelops.trigger(null)
         }
         else if (code === 2) {
           gift.trigger(
@@ -100,6 +104,6 @@ export default function (host: string, key: string) {
     onComment: comment.on,
     onLiveState: isLive.on,
     onGift: gift.on,
-    onTelops: telops.on,
+    onTelops: onTelops.on,
   }
 }

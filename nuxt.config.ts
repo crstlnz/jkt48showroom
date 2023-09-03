@@ -45,7 +45,7 @@ export default defineNuxtConfig({
     },
   },
   pwa: {
-    registerType: 'prompt',
+    registerType: 'autoUpdate',
     manifest: {
       name: 'JKT48 Showroom',
       short_name: 'JKT48 Showroom',
