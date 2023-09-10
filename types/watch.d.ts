@@ -93,4 +93,26 @@ namespace Watch {
     free: boolean
     point: number
   }
+
+  export interface StageList {
+    stage_user_list: StageUserList[]
+  }
+  
+  export interface StageUserList {
+    order_no: number
+    user: User
+    rank: number
+  }
+  
+  export interface User {
+    avatar_id: number
+    badge_type: number
+    badge: number
+    name: string
+    avatar_url: string
+    user_id: number
+    image: string
+  }
+  
+  type TabView = 'gift-list' | 'gift-log' | 'ranks' | 'comment'
 }

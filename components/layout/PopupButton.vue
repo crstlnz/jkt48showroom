@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
+import { Popover, PopoverButton, PopoverPanel,PopoverOverlay } from '@headlessui/vue'
 const { isMobile, smallerOrEqual } = useResponsive()
 const isSmall = smallerOrEqual('sm')
 defineProps<{
@@ -13,7 +13,17 @@ defineProps<{
       <slot :close="close"/>
     </PopoverButton>
     <Teleport to="body" :disabled="!isMobile">
-    <Transition
+       <Transition
+      enter-active-class="transition ease duration-200"
+      enter-from-class="opacity-0"
+      enter-to-class="opacity-100"
+      leave-active-class="transition ease duration-200" 
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
+    >
+    <PopoverOverlay v-if="open && (isSmall || isMobile)" class="fixed inset-0 bg-black/50" />
+    </Transition>
+    <!-- <Transition
     v-if="isSmall || isMobile"
       enter-active-class="transition ease duration-200"
       enter-from-class="opacity-0"
@@ -23,7 +33,7 @@ defineProps<{
       leave-to-class="opacity-0"
     >
       <div v-if="open" @click="close" class="bg-black/50 fixed inset-0 z-aboveNav"/>
-    </Transition>
+    </Transition> -->
 
     <Transition
       enter-active-class="transition duration-300 sm:duration-200"

@@ -241,7 +241,10 @@ function generate(logs: Database.IShowroomLog[], type: IDateRangeType | IDateRan
     ranks: all,
     stats: statsLive,
     date: !dateRange
-      ? undefined
+      ? {
+          from: '',
+          to: getDateRange('weekly').to,
+        }
       : {
           from: dateRange?.from ?? '',
           to: dateRange?.to ?? '',

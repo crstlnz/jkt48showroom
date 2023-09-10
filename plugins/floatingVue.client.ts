@@ -1,4 +1,4 @@
-import FloatingVue from 'floating-vue'
+import FloatingVue, { hideAllPoppers } from 'floating-vue'
 
 export default defineNuxtPlugin(() => {
   const { isMobile, greaterOrEqual } = useResponsive()
@@ -7,4 +7,8 @@ export default defineNuxtPlugin(() => {
   FloatingVue.options.themes.tooltip.delay.show = 150
   FloatingVue.options.themes.tooltip.triggers = ['hover', 'focus', 'touch', 'click']
   FloatingVue.options.themes.tooltip.hideTriggers = (events: any) => [...events, 'scroll', 'click']
+  const { y } = useScroll(document)
+  watch(y, () => {
+    hideAllPoppers()
+  })
 })

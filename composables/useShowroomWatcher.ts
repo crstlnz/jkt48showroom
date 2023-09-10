@@ -1,14 +1,21 @@
-export default function (host: string, key: string) {
+// export default function (host: string, key: string) {
+export default function (data: Ref<Watch.WatchData | null>) {
   let socket: WebSocket | null = null
   const comment = createEventHook<Watch.Comment>()
   const isLive = createEventHook<boolean>()
   const gift = createEventHook<ShowroomAPI.GiftLogItem>()
   const onTelops = createEventHook<Watch.Telops | null>()
+
+  watch(data, () => {
+    createSocket()
+  })
+
   function createSocket() {
     destroySocket()
-    socket = new WebSocket(host)
+    if (!data.value?.socket_host) return
+    socket = new WebSocket(`wss://${data.value?.socket_host}` ?? '')
     socket.onopen = () => {
-      socket?.send(`SUB\t${key}`)
+      socket?.send(`SUB\t${data.value?.socket_key ?? ''}`)
     }
 
     socket.onmessage = (message) => {
@@ -34,9 +41,7 @@ export default function (host: string, key: string) {
           isLive.trigger(true)
         }
         else if (code === 8) { // telop start
-          console.log('telops start')
           try {
-            console.log('telops check', msg)
             const telopsData = msg.telops[0]
             if (telopsData) {
               onTelops.trigger({
@@ -56,7 +61,6 @@ export default function (host: string, key: string) {
           }
         }
         else if (code === 9) { // telop stop
-          console.log('telops stop')
           onTelops.trigger(null)
         }
         else if (code === 2) {
@@ -92,9 +96,9 @@ export default function (host: string, key: string) {
     if (socket) socket.close(3030, 'Manual Stop')
   }
 
-  onMounted(() => {
-    createSocket()
-  })
+  // onMounted(() => {
+  //   createSocket()
+  // })
 
   onBeforeUnmount(() => {
     destroySocket()

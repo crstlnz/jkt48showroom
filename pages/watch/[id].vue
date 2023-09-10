@@ -1,13 +1,14 @@
 <script lang="ts" setup>
 import { WatchComment } from '#components'
 import type { WatchVideo } from '#components'
+import { useUser } from '~/store/user'
 import { convertToMilliseconds } from '~~/library/utils'
 import { useNotifications } from '~~/store/notifications'
 
 definePageMeta({ middleware: 'showroom-session' })
 const dayjs = useDayjs()
 const route = useRoute()
-const { data, pending, error, refresh: refreshWatchData } = useFetch('/api/showroom/watch', { params: { room_url_key: route.params.id, _: new Date().getTime() } })
+const { data, pending, error, refresh: refreshWatchData } = useFetch<Watch.WatchData>('/api/showroom/watch', { params: { room_url_key: route.params.id, _: new Date().getTime() } })
 
 const roomId = computed(() => {
   return data.value?.room_id || 0
@@ -85,11 +86,6 @@ const totalPoint = computed(() => {
     return a
   }, 0)
 })
-
-function onGift(gift: ShowroomAPI.GiftLogItem) {
-  addGift(gift)
-  // giftLogRaw.value.push(gift)
-}
 
 const viewers = ref(0)
 
@@ -233,6 +229,53 @@ const comment = ref<typeof WatchComment | null>()
 const { greaterOrEqual } = useResponsive()
 const isLarge = greaterOrEqual('lg')
 const userOpen = ref(false)
+const { authenticated } = useUser()
+const startTime = computed(() => {
+  return new Date(convertToMilliseconds((data.value?.started_at ?? 0)))
+})
+const timeAgo = useTimeAgo(startTime)
+
+const rawView = useLocalStorage<Watch.TabView>('watch-tab-view', 'comment')
+const tabView = computed(() => {
+  // if (isLarge.value && rawView.value === 'comment') {
+  //   return 'gift-list'
+  // }
+  // else {
+  //   return rawView.value
+  // }
+  return rawView.value
+})
+
+function setView(tab: Watch.TabView) {
+  rawView.value = tab
+}
+
+// const { onComment, onLiveState, onGift, onTelops } = useShowroomWatcher(`wss://${data.value?.socket_host}` ?? '', data.value?.socket_key ?? '')
+const { onComment, onLiveState, onGift, onTelops } = useShowroomWatcher(data)
+onLiveState((isLive) => {
+  if (isLive) {
+    onStart()
+  }
+  else {
+    onFinish()
+  }
+})
+onTelops((t) => {
+  telops.value = t
+})
+const { comments, delayedComments, appendComment, createComment, appendDelayedComments } = useShowroomComments(data)
+// function onGift(gift: ShowroomAPI.GiftLogItem) {
+//   addGift(gift)
+//   // giftLogRaw.value.push(gift)
+// }
+
+onGift((gift: ShowroomAPI.GiftLogItem) => {
+  addGift(gift)
+})
+onComment((comment) => {
+  if (data.value?.user?.id === comment.user_id) return
+  appendComment(comment)
+})
 </script>
 
 <template>
@@ -296,42 +339,41 @@ const userOpen = ref(false)
                 <Icon name="mingcute:user-3-fill" />
                 <span>{{ $n(viewers) }}</span>
               </span>
-              <span v-if="isLive" class="shrink-0 space-x-1 rounded-lg bg-slate-700 px-1.5 py-1 text-sm text-slate-50 dark:bg-slate-500">
+              <span
+                v-if="isLive" v-tooltip="`${timeAgo}`" class="shrink-0 space-x-1 rounded-lg bg-slate-700 px-1.5 py-1 text-sm text-slate-50 dark:bg-slate-500"
+              >
                 {{ dayjs(convertToMilliseconds(data?.started_at ?? 0)).format('h:mm A') }}
               </span>
             </div>
 
             <a
               target="_blank"
-              class="select-none rounded-lg bg-blue-500/80 p-1 px-3 text-center text-sm font-bold text-white transition-transform hover:bg-blue-500 active:scale-95 disabled:bg-blue-500/40 disabled:text-gray-400 disabled:active:scale-100 disabled:dark:text-gray-500 max-sm:flex-1 lg:p-1.5 lg:px-2.5"
+              class="flex select-none items-center justify-center rounded-lg bg-blue-500/80 p-1 px-3 text-center text-sm font-bold text-white transition-transform hover:bg-blue-500 active:scale-95 disabled:bg-blue-500/40 disabled:text-gray-400 disabled:active:scale-100 disabled:dark:text-gray-500 max-sm:flex-1 lg:p-1.5 lg:px-2.5"
               :href="$liveURL(data?.room_url_key ?? '')"
             >
               <!-- {{ $t("openshowroom") }} -->
               Showroom
             </a>
 
+            <WatchTabButtons v-if="!isLarge" :tab-view="tabView" @set-view="setView" />
             <button
-              v-if="!isLarge"
+              v-if="!isLarge && authenticated"
               type="button"
-              class="select-none rounded-lg bg-blue-500/80 p-1 px-3 text-center text-sm font-bold text-white transition-transform hover:bg-blue-500 active:scale-95 disabled:bg-blue-500/40 disabled:text-gray-400 disabled:active:scale-100 disabled:dark:text-gray-500 max-sm:flex-1 lg:p-1.5 lg:px-2.5"
-              :href="$liveURL(data?.room_url_key ?? '')"
-              @click="giftOpen = !giftOpen"
-            >
-              {{ giftOpen ? $t("hide_gifts") : $t("show_gifts") }}
-            </button>
-            <button
-              v-if="!isLarge"
-              type="button"
-              class="select-none rounded-lg bg-blue-500/80 p-1 px-3 text-center text-sm font-bold text-white transition-transform hover:bg-blue-500 active:scale-95 disabled:bg-blue-500/40 disabled:text-gray-400 disabled:active:scale-100 disabled:dark:text-gray-500 max-sm:flex-1 lg:p-1.5 lg:px-2.5"
+              class="flex select-none items-center justify-center rounded-lg bg-blue-500/80 p-1 px-1.5 text-center text-sm font-bold text-white transition-transform hover:bg-blue-500 active:scale-95 disabled:bg-blue-500/40 disabled:text-gray-400 disabled:active:scale-100 disabled:dark:text-gray-500 lg:p-1.5 lg:px-2.5"
               @click="userOpen = !userOpen"
             >
-              User
+              <Icon name="ic:baseline-person" size="1.2rem" />
             </button>
+
+            <!-- <button type="button" class="flex select-none items-center justify-center rounded-lg bg-blue-500/80 p-1 px-1.5 text-center text-sm font-bold text-white transition-transform hover:bg-blue-500 active:scale-95 disabled:bg-blue-500/40 disabled:text-gray-400 disabled:active:scale-100 disabled:dark:text-gray-500 lg:p-1.5 lg:px-2.5">
+              <Icon name="material-symbols:settings" size="1.2rem" />
+            </button> -->
 
             <Transition name="fade">
               <div v-if="!isLarge && userOpen" class="fixed inset-0 z-notification bg-black/50" @click="userOpen = false" />
             </Transition>
             <div
+              v-if="authenticated"
               class="flex items-center gap-2 text-base transition-[visibility,opacity] duration-300 ease-in-out lg:gap-2 lg:text-sm"
               :class="{
                 'bg-container-2 fixed left-1/2 top-1/2 z-notification -translate-x-1/2 -translate-y-1/2 rounded-xl p-8': !isLarge,
@@ -352,45 +394,56 @@ const userOpen = ref(false)
             </div>
           </div>
 
-          <Transition name="height">
-            <div v-if="giftOpen || isLarge" class="duration-300 max-lg:h-72">
-              <div class="h-full pt-3">
-                <div class="bg-container flex h-full flex-col gap-3 overflow-hidden px-3 pt-3 lg:rounded-xl lg:p-4 lg:pb-5">
-                  <div class="flex items-center gap-2 text-xl font-bold">
-                    <Icon name="fluent-emoji-flat:wrapped-gift" />
-                    <span class="pt-1">Gifts</span>
-                    <div class="flex flex-1 items-center justify-end gap-1.5 pt-1" :title="$t('totalpaidgift')">
-                      <Icon name="twemoji:coin" />
-                      <span>{{ $n(totalPoint) }}G</span>
-                    </div>
-                  </div>
-                  <div v-if="data?.gift_log?.length" class="roundedscrollbar h-0 flex-1 max-lg:overflow-y-scroll">
-                    <div class="grid grid-cols-[repeat(auto-fill,minmax(50px,1fr))] gap-3 lg:grid-cols-[repeat(auto-fill,minmax(60px,1fr))]">
-                      <div v-for="gift in sortedGift" :key="gift.id" class="relative max-h-[40px] max-w-[40px] lg:max-h-[50px] lg:max-w-[50px]" :title="$currency(gift.point)">
-                        <img :src="gift.image" alt="Gift" class="aspect-square">
-                        <div
-                          v-if="gift.num > 1"
-                          :class="$getNumColor(gift.num)"
-                          class="text-stroke absolute bottom-[-7px] right-[-4px] rounded-full text-sm font-extrabold leading-6 lg:text-base"
-                        >
-                          x{{ gift.num >= 1000 ? `${(gift.num / 1000).toFixed(0)}k` : gift.num }}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div v-else class="h-0 flex-1 overflow-y-auto">
-                    <div class="flex flex-col items-center justify-center">
-                      <img class="h-32" src="/svg/empty-box.svg">
+          <WatchLiveNow v-if="isLarge" :room-key="String(route.params.id)" />
+
+          <!-- <div v-if="false" id="info-panel" class="pt-3">
+            <div v-if="tabView === 'gift-list'" class="bg-container flex h-full flex-col gap-3 overflow-hidden px-3 pt-3 lg:rounded-xl lg:p-4 lg:pb-5">
+              <div class="flex items-center gap-2 text-xl font-bold">
+                <Icon name="fluent-emoji-flat:wrapped-gift" />
+                <span class="pt-1">Gifts</span>
+                <div class="flex flex-1 items-center justify-end gap-1.5 pt-1" :title="$t('totalpaidgift')">
+                  <Icon name="twemoji:coin" />
+                  <span>{{ $n(totalPoint) }}G</span>
+                </div>
+              </div>
+              <div v-if="data?.gift_log?.length" class="roundedscrollbar h-0 flex-1 max-lg:overflow-y-scroll">
+                <div class="grid grid-cols-[repeat(auto-fill,minmax(50px,1fr))] gap-3 lg:grid-cols-[repeat(auto-fill,minmax(60px,1fr))]">
+                  <div v-for="gift in sortedGift" :key="gift.id" class="relative max-h-[40px] max-w-[40px] lg:max-h-[50px] lg:max-w-[50px]" :title="$currency(gift.point)">
+                    <img :src="gift.image" alt="Gift" class="aspect-square">
+                    <div
+                      v-if="gift.num > 1"
+                      :class="$getNumColor(gift.num)"
+                      class="text-stroke absolute bottom-[-7px] right-[-4px] rounded-full text-sm font-extrabold leading-6 lg:text-base"
+                    >
+                      x{{ gift.num >= 1000 ? `${(gift.num / 1000).toFixed(0)}k` : gift.num }}
                     </div>
                   </div>
                 </div>
               </div>
+              <div v-else class="h-0 flex-1 overflow-y-auto">
+                <div class="flex flex-col items-center justify-center">
+                  <img class="h-32" src="/svg/empty-box.svg">
+                </div>
+              </div>
             </div>
-          </Transition>
+            <div v-else-if="tabView === 'gift-log'" class="bg-container flex h-full flex-col gap-3 overflow-hidden px-3 pt-3 lg:rounded-xl lg:p-4 lg:pb-5">
+              Gift log
+            </div>
+            <div v-else-if="tabView === 'ranks'" class="bg-container flex h-full flex-col gap-3 overflow-hidden px-3 pt-3 lg:rounded-xl lg:p-4 lg:pb-5">
+              <WatchRanks :room-id="roomId" />
+            </div>
+          </div> -->
         </div>
-        <div class="relative min-h-[640px] w-full bg-white dark:bg-dark-1 max-lg:max-h-[70vh] max-lg:shadow-sm lg:max-h-[85vh] lg:w-[300px] lg:rounded-xl xl:w-[350px]">
-          <div class="absolute inset-0 z-0 overflow-hidden rounded-xl">
-            <WatchComment ref="comment" :is-live="isLive" :data="data" class="h-full w-full" @finish="onFinish" @start="onStart" @gift="onGift" @telops="(t) => telops = t" />
+        <div class="space-y-3">
+          <WatchTabButtons v-if="isLarge" :tab-view="tabView" @set-view="setView" />
+          <div class="relative h-full min-h-[640px] w-full bg-white dark:bg-dark-1 max-lg:max-h-[70vh] max-lg:shadow-sm lg:max-h-[85vh] lg:w-[300px] lg:rounded-xl xl:w-[350px]">
+            <div class="absolute inset-0 z-0 overflow-hidden rounded-xl">
+              <!-- <WatchComment v-if="tabView === 'comment'" ref="comment" :is-live="isLive" :data="data" class="h-full w-full" @finish="onFinish" @start="onStart" @gift="onGift" @telops="(t) => telops = t" /> -->
+              <WatchComment v-if="tabView === 'comment'" ref="comment" :is-live="isLive" :data="data" :comments="comments" :delayed-comments="delayedComments" class="h-full w-full" @create-comment="createComment" @append-delayed-comments="appendDelayedComments" />
+              <WatchRanks v-else-if="tabView === 'ranks'" :room-id="roomId" />
+              <WatchGiftList v-else-if="tabView === 'gift-list'" :sorted-gift="sortedGift" />
+              <WatchGiftLog v-else-if="tabView === 'gift-log'" :gift-log="giftLogStore" />
+            </div>
           </div>
         </div>
       </div>

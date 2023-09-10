@@ -158,3 +158,9 @@ tooltip:
   usercomment: '{msg} users commented.'
 height: Height
 bloodtype: Blood type
+otherlive: Other live
+tabview:
+  comment: Comment
+  ranks: User ranks
+  gift_log: Gift logs
+  gift_list: Gift lists

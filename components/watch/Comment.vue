@@ -1,66 +1,59 @@
 <script lang="ts" setup>
-import useShowroomWatcher from '~~/composables/useShowroomWatcher'
+// import useShowroomWatcher from '~~/composables/useShowroomWatcher'
 
-const props = defineProps<{ data?: Watch.WatchData | null | undefined; isLive: boolean }>()
-const emit = defineEmits<{ (e: 'gift', gift: ShowroomAPI.GiftLogItem): void; (e: 'finish'): void; (e: 'start'): void ; (e: 'telops', telops: Watch.Telops | null): void }>()
+// const props = defineProps<{ data?: Watch.WatchData | null | undefined; isLive: boolean }>()
+defineProps<{ comments: Watch.Comment[]; delayedComments: Watch.Comment[]; data?: Watch.WatchData | null | undefined; isLive: boolean }>()
+// const emit = defineEmits<{ (e: 'gift', gift: ShowroomAPI.GiftLogItem): void; (e: 'finish'): void; (e: 'start'): void ; (e: 'telops', telops: Watch.Telops | null): void }>()
+const emit = defineEmits<{ (e: 'createComment', comment: string): void; (e: 'appendDelayedComments'): void; (e: 'setAutoAppend', value: boolean): void }>()
 const pageMode = false
-const comments = ref(props.data?.comments ?? [])
 const dynamicScroller = ref<ComponentPublicInstance<HTMLElement> | null>(null)
 
-const { onComment, onLiveState, onGift, onTelops } = useShowroomWatcher(`wss://${props.data?.socket_host}` ?? '', props.data?.socket_key ?? '')
-const autoAppend = ref(true)
 const lastScroll = ref(0)
-const delayedComments = ref<Watch.Comment[]>([])
 
 const showNewCommentButton = ref(true)
 
-onTelops((telops) => {
-  emit('telops', telops)
-})
+// onTelops((telops) => {
+//   emit('telops', telops)
+// })
 
-onGift((gift) => {
-  emit('gift', gift)
-})
-
-onComment((comment) => {
-  if (props.data?.user?.id === comment.user_id) return
-  appendComment(comment)
-})
+// onGift((gift) => {
+//   emit('gift', gift)
+// })
 
 // create comment from current user to ensure user comments are displayed (not rely on socket)
-function createComment(comment: string) {
-  const user = props.data?.user
-  if (user) {
-    const created_at = Math.floor(new Date().getTime() / 1000)
-    appendComment({
-      id: `${user.id}${created_at}`,
-      avatar_id: user.avatar_id,
-      name: user.name || '',
-      user_id: user.id,
-      comment,
-      created_at,
-    })
-  }
-}
+// function createComment(comment: string) {
+//   const user = props.data?.user
+//   if (user) {
+//     const created_at = Math.floor(new Date().getTime() / 1000)
+//     appendComment({
+//       id: `${user.id}${created_at}`,
+//       avatar_id: user.avatar_id,
+//       name: user.name || '',
+//       user_id: user.id,
+//       comment,
+//       created_at,
+//     })
+//   }
+// }
 
-function appendComment(comment: Watch.Comment) {
-  if (autoAppend.value) {
-    comments.value.unshift(comment)
-  }
-  else {
-    delayedComments.value.push(comment)
-  }
-}
+// function appendComment(comment: Watch.Comment) {
+//   if (autoAppend.value) {
+//     comments.value.unshift(comment)
+//   }
+//   else {
+//     delayedComments.value.push(comment)
+//   }
+// }
 
-onLiveState((isLive) => {
-  if (isLive) {
-    comments.value = []
-    emit('start')
-  }
-  else {
-    emit('finish')
-  }
-})
+// onLiveState((isLive) => {
+//   if (isLive) {
+//     comments.value = []
+//     emit('start')
+//   }
+//   else {
+//     emit('finish')
+//   }
+// })
 
 useEventListener(dynamicScroller, 'scroll', (evt) => {
   if (!evt.isTrusted) return
@@ -70,31 +63,23 @@ useEventListener(dynamicScroller, 'scroll', (evt) => {
     showNewCommentButton.value = true
   }
   else {
-    autoAppend.value = false
+    emit('setAutoAppend', false)
+    // autoAppend.value = false
   }
   lastScroll.value = scrollPos
 })
 
 function appendDelayedComments() {
   dynamicScroller.value?.$el?.scrollTo({ top: 0 })
-  comments.value.unshift(...delayedComments.value)
-  if (comments.value.length > 150) {
-    comments.value = comments.value.slice(0, 50)
-  }
-  delayedComments.value = []
-  autoAppend.value = true
-}
-
-function stopAutoAppend() {
-  autoAppend.value = false
+  emit('appendDelayedComments')
 }
 
 const { isMobile, greaterOrEqual } = useResponsive()
 const isSmall = greaterOrEqual('sm')
 const navRect = useState<DOMRect | null>('navRect', () => null)
-defineExpose({
-  stopAutoAppend,
-})
+// defineExpose({
+//   stopAutoAppend,
+// })
 const showCommentForm = useLocalStorage('show_comment_form', true)
 </script>
 
@@ -117,7 +102,12 @@ const showCommentForm = useLocalStorage('show_comment_form', true)
           <div
             class="-z-10 border-b-2 border-slate-100/60 bg-white/90 p-3 text-xl font-bold backdrop-blur-sm dark:border-dark-2/60 dark:bg-dark-1/90 md:p-5"
           >
-            {{ $t("comment") }}
+            <div class="flex items-center gap-2" size="1.4rem">
+              <Icon name="iconamoon:comment-dots-fill" />
+              <span>
+                {{ $t("comment") }}
+              </span>
+            </div>
           </div>
           <Transition :duration="500" name="height-shrink">
             <button v-if="showNewCommentButton && delayedComments.length" class="absolute h-[28px] w-full overflow-hidden bg-blue-500 px-3 text-center text-sm text-slate-100 md:h-[32px] md:text-base" @click="appendDelayedComments">
@@ -170,7 +160,7 @@ const showCommentForm = useLocalStorage('show_comment_form', true)
       :room-id="data?.room_id" :class="{ 'bottom-[60px]': isMobile || !isSmall, ' dark:!border-dark-2': isMobile || isSmall, 'bottom-[0px] border-slate-100/60 dark:border-dark-2/60': !isMobile || !isSmall, 'translate-y-full': (isMobile || !isSmall) && !showCommentForm }"
       :style="{ left: `${navRect?.width || 0}px`, right: 0 }"
       class="z-10 flex gap-3 border-b-2 border-t-4 bg-white/90 p-2 font-bold backdrop-blur-sm transition-transform duration-300 dark:bg-dark-1/90 max-lg:fixed md:p-3"
-      @comment="createComment"
+      @comment="(comment) => $emit('createComment', comment)"
     >
       <button v-if="isMobile || !isSmall" type="button" class="bg-container fixed bottom-full right-2 rounded-t-md border-x-2 border-t-2 px-2.5 dark:border-dark-2" @click="showCommentForm = !showCommentForm">
         <Icon name="ic:round-keyboard-arrow-down" size="1.5rem" :class="{ 'rotate-180': !showCommentForm }" class="transition-transform duration-300" />

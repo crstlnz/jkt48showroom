@@ -69,6 +69,10 @@ export function getSummaryRanking(roomId: number): Promise<ShowroomAPI.SummaryRa
   return fetchAPI(`https://www.showroom-live.com/api/live/summary_ranking?room_id=${roomId}`)
 }
 
+export function getStageUserList(roomId: number, cookies: string | null = null): Promise<Watch.StageList> {
+  return $fetch('https://www.showroom-live.com/api/live/stage_user_list', { params: { room_id: roomId, _: new Date().getTime() }, headers: { cookie: cookies || '' } })
+}
+
 export function sendComment(opts?: any | undefined): Promise<Watch.CommentResponse> {
   return $fetch('https://www.showroom-live.com/api/live/post_live_comment', { ...opts, method: 'POST' })
 }

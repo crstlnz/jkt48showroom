@@ -3,7 +3,7 @@ const isDev = process.env.NODE_ENV === 'development'
 const allowedOrigins = '*'
 export default defineNuxtConfig({
   routeRules: {
-    '/api/showroom/**': { cache: !isDev ? { maxAge: 3600, staleMaxAge: 360 } : false },
+    // '/api/showroom/**': { cache: !isDev ? { maxAge: 3600, staleMaxAge: 360 } : false },
     '/api/showroom/members': { cache: !isDev ? { maxAge: 21600, staleMaxAge: 1800 } : false },
     '/api/showroom/recent': { cache: !isDev ? { maxAge: 1, staleMaxAge: 0 } : false },
     '/api/showroom/recent/**': { cache: !isDev ? { maxAge: 600, staleMaxAge: 10 } : false },

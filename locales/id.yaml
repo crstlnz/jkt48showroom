@@ -158,3 +158,9 @@ tooltip:
   usercomment: '{msg} user memberi komentar.'
 height: Tinggi
 bloodtype: Golongan darah
+otherlive: Live lainnya
+tabview:
+  comment: Komentar
+  ranks: Ranking user
+  gift_log: Sejarah hadiah
+  gift_list: Daftar hadiah

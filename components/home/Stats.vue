@@ -87,7 +87,10 @@ async function refresh() {
     return await fetch()
   }
   const dateRange = getDateRange(type.value as IDateRangeType)
-  if (statsData.date?.to === dateRange.to) {
+  const dataDate = new Date(statsData.date?.to ?? '')
+  const requestDate = new Date(dateRange.to)
+
+  if (dataDate.getDate() === requestDate.getDate()) {
     if (pending.value === true) pending.value = false
   }
   else {
@@ -106,7 +109,7 @@ const defaultStyle = { top: 0, left: 0, width: 0, height: 0 }
 const activeStyle = ref(defaultStyle)
 
 watch(localData, () => {
-  refresh()
+  // refresh()
 })
 
 function getStyle() {
@@ -134,6 +137,7 @@ useEventListener(win, 'resize', () => {
 })
 
 watch(type, () => {
+  refresh()
   calculateActiveButton()
 })
 
@@ -242,17 +246,17 @@ function setButton(key: string) {
   <div class="relative px-3 md:px-4">
     <PulseStats v-if="pending" key="loading" />
     <div v-else key="data" class="space-y-3 md:space-y-4">
-      <div v-if="(data?.stats?.length ?? 0) <= 1" class="dark:bg-dark-1 rounded-xl bg-white p-3 shadow-sm md:p-4 xl:p-5 ">
+      <div v-if="(data?.stats?.length ?? 0) <= 1" class="rounded-xl bg-white p-3 shadow-sm dark:bg-dark-1 md:p-4 xl:p-5 ">
         <div class="pb-6 text-center">
           <img src="/svg/empty-box.svg" :alt="$t('data.notenough')" class="mx-auto aspect-[4/3] w-72 max-w-[80%]">
           {{ $t('data.notenough') }}
         </div>
       </div>
-      <div v-else class="max-sm:bg-container flex flex-wrap gap-1 max-sm:flex-col max-sm:rounded-xl max-sm:p-3 sm:gap-4">
+      <div v-else class="flex flex-wrap gap-1 max-sm:bg-container max-sm:flex-col max-sm:rounded-xl max-sm:p-3 sm:gap-4">
         <div
           v-for="stat in (data?.stats ?? []).slice(0, 4)"
           :key="stat?.key ?? stat.title"
-          class="sm:bg-container flex items-center gap-3 rounded-xl px-5 py-3 max-sm:p-3 sm:flex-[calc(50%_-_1rem)]"
+          class="flex items-center gap-3 rounded-xl px-5 py-3 sm:bg-container max-sm:p-3 sm:flex-[calc(50%_-_1rem)]"
         >
           <div class="w-0 flex-1 space-y-2">
             <div :key="data?.type ?? 'data'" class="opacity-50">

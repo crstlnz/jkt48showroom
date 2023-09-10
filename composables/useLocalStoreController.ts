@@ -38,6 +38,7 @@ class ExtendedSerializer<T> implements Serializer<DataValue<T> | null> {
   }
 
   write(value: DataValue<T>): string {
+    if (value === null) return ''
     return JSON.stringify({ data: this.serializer.write(value.data), created_at: value.created_at })
   }
 }
