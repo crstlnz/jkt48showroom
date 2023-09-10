@@ -68,9 +68,9 @@ const sortedGift = computed(() => {
       return a.free ? 1 : -1
     }
     else
-    if (a.point === b.point) {
-      return b.num - a.num
-    }
+      if (a.point === b.point) {
+        return b.num - a.num
+      }
     return b.point - a.point
   })
 })

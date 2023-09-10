@@ -14,7 +14,7 @@ export default defineNuxtConfig({
       cache: false,
       security: {
         rateLimiter: {
-          tokensPerInterval: 20,
+          tokensPerInterval: 30,
           interval: 'minute',
           fireImmediately: false,
         },
@@ -26,7 +26,7 @@ export default defineNuxtConfig({
     '/api/auth/callback/credentials': {
       security: {
         rateLimiter: {
-          tokensPerInterval: 5,
+          tokensPerInterval: 10,
           interval: 'minute',
           fireImmediately: false,
         },
@@ -117,7 +117,7 @@ export default defineNuxtConfig({
       credentials: true,
     },
     rateLimiter: {
-      tokensPerInterval: 50,
+      tokensPerInterval: 80,
       interval: 'minute',
       fireImmediately: false,
       throwError: true,

@@ -7,6 +7,8 @@ const props = withDefaults(defineProps<{
   detailedDate: false,
 })
 
+const doc = ref<Document>()
+const { cloudinaryURL } = useAppConfig()
 const dayjs = useDayjs()
 const showDetailedDate = computed(() => {
   const oneMonthAgo = new Date()
@@ -14,38 +16,135 @@ const showDetailedDate = computed(() => {
   return new Date(props.recent.live_info?.date?.start) > oneMonthAgo
 })
 const { locale } = useI18n()
+const finishLoading = ref(false)
+const showLoading = ref(true)
+const thumbnail = ref()
+const isHoveredRaw = useElementHover(thumbnail)
+const isAlreadyFetch = ref(false)
+const screenshots = ref<string[]>([])
+const ssIndex = ref<number | null>(null)
+
+const { start, stop } = useTimeoutFn(async () => {
+  let nextIndex = (ssIndex.value ?? 0) + 1
+  if (nextIndex > screenshots.value.length - 1) {
+    nextIndex = 0
+  }
+  await preloadImage(screenshots.value[0])
+  ssIndex.value = nextIndex
+  start()
+}, 1500, { immediate: false })
+
+const scrolled = ref(false)
+
+function listenScroll() {
+  scrolled.value = true
+  doc.value?.removeEventListener('scroll', listenScroll)
+}
+
+const isHovered = computed(() => {
+  return isHoveredRaw.value && scrolled.value === false
+})
+
+const delayShowSS = ref<NodeJS.Timeout | null>(null)
+watch(isHoveredRaw, () => {
+  scrolled.value = false
+  if (delayShowSS.value) clearTimeout(delayShowSS.value)
+})
+
+watch(isHovered, (hover) => {
+  if (hover) {
+    scrolled.value = false
+    doc.value?.addEventListener('scroll', listenScroll)
+    if (delayShowSS.value) clearTimeout(delayShowSS.value)
+    delayShowSS.value = setTimeout(() => {
+      if (isAlreadyFetch.value) {
+        showLoading.value = false
+        startScreenshotSlide()
+      }
+      else {
+        showLoading.value = true
+        fetchScreenshot()
+      }
+    }, 300)
+  }
+  else {
+    doc.value?.removeEventListener('scroll', listenScroll)
+    ssIndex.value = null
+    stopScreenshotSlide()
+  }
+})
+
+async function startScreenshotSlide() {
+  await preloadImage(screenshots.value[0])
+  ssIndex.value = 0
+  finishLoading.value = true
+  start()
+}
+
+function stopScreenshotSlide() {
+  ssIndex.value = null
+  stop()
+}
+
+const ss = computed(() => {
+  if (!isHovered.value) return null
+  if (ssIndex.value == null) return null
+  if (screenshots.value.length <= 0) return null
+  return screenshots.value[ssIndex.value]
+})
+
+async function fetchScreenshot() {
+  if (!isAlreadyFetch.value) {
+    isAlreadyFetch.value = true
+    try {
+      const data = await $fetch('/api/showroom/screenshots', { params: { data_id: props.recent.data_id } })
+      screenshots.value = data.list.map((id) => {
+        return `${cloudinaryURL}${data.folder}/${id}.${data.format}`
+      })
+      startScreenshotSlide()
+    }
+    catch (e) {
+      finishLoading.value = true
+    }
+  }
+}
+
+async function preloadImage(src: string) {
+  return new Promise<void>((resolve) => {
+    if (!src) return resolve()
+    const img = new Image()
+    img.onload = () => {
+      resolve()
+    }
+    img.onerror = () => {
+      resolve()
+    }
+
+    img.src = src
+  })
+}
+
+onMounted(() => {
+  doc.value = document
+})
 </script>
 
 <template>
   <div class="bg-container rounded-xl p-3 shadow-sm md:p-4">
     <div class="flex gap-3 md:gap-4">
-      <NuxtLink
-        :aria-label="`${recent.member?.name} Live detail`"
+      <div
+        ref="thumbnail"
         class="group relative flex aspect-video h-20 items-center justify-center gap-0.5 overflow-hidden rounded-xl font-bold text-white drop-shadow-sm sm:h-24 md:h-28 lg:h-32 xl:h-36"
-        :to="`/recent/${recent.data_id}`"
       >
+        <div v-if="isHovered" :class="{ 'recentcardprogress': !finishLoading, 'progressfinish w-[100%]': showLoading && finishLoading }" class="absolute left-0 top-0 z-10 h-1 bg-blue-500/70" />
         <img
           :key="recent.room_id"
           lazy="false"
-          class="relative h-full w-full cursor-pointer bg-slate-200 object-cover text-xs transition-all duration-200 group-hover:brightness-50 dark:bg-dark-3 md:text-sm lg:text-base"
+          class="relative h-full w-full cursor-pointer bg-slate-200 object-cover text-xs transition-all duration-200 dark:bg-dark-3 md:text-sm lg:text-base"
           :alt="`${recent.member?.name}Display Picture`"
-          :src="recent.member?.img ?? ''"
+          :src="ss ?? recent.member?.img ?? recent.member.img_alt"
         >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="invisible absolute left-1/2 top-1/2 inline-block h-8 w-8 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:visible group-hover:opacity-100"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-          />
-        </svg>
-      </NuxtLink>
+      </div>
       <div class="flex min-w-0 flex-1 flex-col space-y-2">
         <div class="truncate">
           <NuxtLink :to="`/member/${recent.member.url}`" :aria-label="`Open ${recent.member.name} profile`" class="text-base font-bold md:text-lg lg:text-xl">
@@ -94,3 +193,24 @@ const { locale } = useI18n()
     </div>
   </div>
 </template>
+
+<style lang="scss">
+.recentcardprogress {
+  animation: 10s progress;
+}
+
+.progressfinish {
+  animation: 0.1s finish forwards;
+  animation-delay: 0.3s;
+}
+
+@keyframes progress {
+  from {width: 0;}
+  to {width: 100%;}
+}
+
+@keyframes finish {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+</style>

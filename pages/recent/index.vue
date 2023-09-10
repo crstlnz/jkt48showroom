@@ -267,7 +267,7 @@ const recentHeight = computed(() => {
           >
             <template #default="{ item }">
               <div class="pb-3 md:pb-4">
-                <MemberRecentCard :recent="item" />
+                <MemberRecentCard :key="item.data_id" :recent="item" />
               </div>
             </template>
             <template #after>
