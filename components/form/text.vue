@@ -4,7 +4,7 @@ withDefaults(defineProps<{
   label?: string
   placeholder?: string
   modelValue: any
-  inputClass: string
+  inputClass?: string
 }>(), {
   inputClass: '',
 })

@@ -4,7 +4,7 @@ import { useUser } from '~~/store/user'
 
 export default defineNuxtPlugin(({ hook }) => {
   const route = useRoute()
-  const gtag = useGtag()
+  const { gtag } = useGtag()
   const { authenticated } = useUser()
 
   watch(() => route.fullPath, (path) => {
