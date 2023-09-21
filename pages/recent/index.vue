@@ -174,7 +174,7 @@ const recentHeight = computed(() => {
           :query="query"
           @show-duration="(show : boolean) => showDuration = show"
           @title="(t:string) => titleChange(t)"
-          @apply="(filter) => {
+          @apply="(filter: any) => {
             applyFilter(filter)
           }"
         />
@@ -195,7 +195,7 @@ const recentHeight = computed(() => {
               class="relative z-aboveNav rounded-t-xl p-4"
               :query="query"
               @show-duration="(show : boolean) => showDuration = show"
-              @apply="(filter) => {
+              @apply="(filter: any) => {
                 applyFilter(filter)
                 close()
               }"

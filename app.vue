@@ -34,14 +34,16 @@ useHead({
 })
 
 const { group } = useSettings()
-const { getGroupTitle, getIcon } = useAppConfig()
+const { getGroupTitle, getMetaImage } = useAppConfig()
+const description = `A Fanmade Website for ${getGroupTitle(group)} Showroom. Discover the latest and archived ${getGroupTitle(group)} member showroom live streams, member profile, and fans ranking!`
 useSeoMeta({
   ogTitle: () => `${getGroupTitle(group)} Showroom Log`,
-  ogDescription: `A fanmade web for ${getGroupTitle(group)} Showroom live`,
-  ogImage: getIcon(group),
+  description,
+  ogDescription: description,
+  ogImage: getMetaImage(group),
   twitterTitle: `${getGroupTitle(group)} Showroom Log`,
-  twitterDescription: `A fanmade web for ${getGroupTitle(group)} Showroom live`,
-  twitterImage: getIcon(group),
+  twitterDescription: description,
+  twitterImage: getMetaImage(group),
   twitterCard: 'summary',
 })
 

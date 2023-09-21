@@ -1,5 +1,5 @@
-import { defineNuxtPlugin } from '#app'
 import VWave from 'v-wave'
+import { defineNuxtPlugin } from '#app'
 
 const directiveName = 'ripple'
 

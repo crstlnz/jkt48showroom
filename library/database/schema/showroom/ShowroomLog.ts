@@ -1,5 +1,6 @@
 import type { Model } from 'mongoose'
 import { Schema, model } from 'mongoose'
+import { StageList } from '../../showroomDB'
 import Showroom from './Showroom'
 import ShowroomGift from './ShowroomGift'
 import ShowroomUser from './ShowroomUser'
@@ -41,20 +42,16 @@ const showroomLogSchema = new Schema<Database.IShowroomLog, IShowroomLogModel>({
     background_image: {
       type: String,
     },
-    stage_list: {
-      type: [
-        {
-          _id: false,
-          date: {
-            type: Date,
-          },
-          list: {
-            type: [Number],
-          },
-        },
-      ],
-      default: [],
-    },
+    // stage_list: {
+    //   type: [
+    //     {
+    //       _id: false,
+    //       date: Date,
+    //       list: [Number],
+    //     },
+    //   ],
+    //   default: [],
+    // },
     viewers: {
       active: {
         type: Number,
@@ -69,27 +66,7 @@ const showroomLogSchema = new Schema<Database.IShowroomLog, IShowroomLogModel>({
         index: true,
         default: 0,
       },
-    },
-    penonton: {
-      history: {
-        type: [
-          {
-            _id: false,
-            num: {
-              type: Number,
-            },
-            waktu: {
-              type: Date,
-            },
-          },
-        ],
-        default: [],
-      },
-      peak: {
-        type: Number,
-        index: true,
-        default: 0,
-      },
+      is_excitement: Boolean,
     },
     duration: {
       index: true,
@@ -224,6 +201,8 @@ showroomLogSchema.statics.getDetails = async function (dataId: string | number):
 
   if (!doc) return null
 
+  const data = await StageList.findOne({ data_id: dataId }).lean()
+
   return {
     data_id: doc.data_id,
     live_id: doc.live_id,
@@ -244,13 +223,19 @@ showroomLogSchema.statics.getDetails = async function (dataId: string | number):
       comments: doc.live_info?.comments,
       screenshot: doc.live_info?.screenshot,
       background_image: doc.live_info?.background_image,
-      stage_list:
-        doc.live_info?.stage_list?.map<Database.IStage>(i => ({
-          date: i.date,
-          list: i.list,
-        })) ?? [],
-      viewer: doc.live_info.viewers?.peak ?? 0,
-      active_viewer: doc.live_info.viewers?.active ?? 0,
+      // stage_list:
+      //   doc.live_info?.stage_list?.map<Database.IStage>(i => ({
+      //     date: i.date,
+      //     list: i.list,
+      //   })) ?? [],
+      stage_list: data?.stage_list ?? [],
+      viewers: {
+        num: doc.live_info.viewers?.peak ?? 0,
+        active: doc.live_info.viewers?.active ?? 0,
+        is_excitement: doc.live_info.viewers?.is_excitement ?? false,
+      },
+      // viewer: doc.live_info.viewers?.peak ?? 0,
+      // active_viewer: doc.live_info.viewers?.active ?? 0,
       date: {
         start: doc.live_info?.start_date.toISOString(),
         end: doc.live_info?.end_date.toISOString(),

@@ -23,7 +23,7 @@ const bufferSize = computed(() => {
     >
       <template #before>
         <div
-          class="-z-10 border-b-2 border-slate-100/60 bg-white/90 p-4 text-xl font-bold backdrop-blur-sm dark:border-dark-2/60 dark:bg-dark-1/90 md:p-5 lg:text-2xl"
+          class="-z-10 rounded-xl border-b-2 border-slate-100/60 bg-white/90 p-4 text-xl font-bold backdrop-blur-sm dark:border-dark-2/60 dark:bg-dark-1/90 md:p-5 lg:text-2xl"
         >
           {{ $t("fansgift") }}
         </div>

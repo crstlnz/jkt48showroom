@@ -4,14 +4,23 @@ import { useSettings } from '~~/store/settings'
 const { group } = useSettings()
 const { getIcon, getGroupTitle } = useAppConfig()
 useHead({
-  title: `${getGroupTitle(group)} Sorter`,
+  title: `${getGroupTitle(group)} Oshi Sorter`,
   meta: [
     {
       hid: 'description',
       name: 'description',
-      content: `Oshi sorter for ${getGroupTitle(group)}`,
+      content: `Sort your favorite ${getGroupTitle(group)} members and discover your top picks. Find your real oshi!`,
     },
   ],
+})
+
+const description = `Sort your favorite ${getGroupTitle(group)} members and discover your top picks. Find your real oshi!`
+useSeoMeta({
+  ogImage: 'https://res.cloudinary.com/haymzm4wp/image/upload/v1695028178/assets/img/oshi_sorter_rfhpsz.png',
+  twitterImage: 'https://res.cloudinary.com/haymzm4wp/image/upload/v1695028178/assets/img/oshi_sorter_rfhpsz.png',
+  description,
+  twitterDescription: description,
+  ogDescription: description,
 })
 </script>
 

@@ -108,6 +108,7 @@ declare namespace Database {
     active: number
     peak: number
     last: number
+    is_excitement : boolean
   }
 
   interface IShowroomLog {
@@ -121,7 +122,7 @@ declare namespace Database {
       comments: IComments
       screenshot?: IScreenshot
       background_image?: string
-      stage_list?: IStage[]
+      // stage_list?: IStage[]
       viewers : Viewers
       penonton?: {
         history: {
@@ -240,12 +241,18 @@ declare namespace Database {
     users: number
   }
 
+  interface ViewersInfo {
+    num : number
+    active: number
+    is_excitement : boolean
+  }
+
+
   interface IDetailLiveInfo {
     duration : number
     screenshot?: IScreenshot
     comments?: IComments
-    viewer: number
-    active_viewer : number
+    viewers : ViewersInfo
     background_image?: string
     stage_list: IStage[]
     date: ILiveDate
@@ -293,5 +300,10 @@ declare namespace Database {
     last_seen? : string
     image : string
     avatar_id : number
+  }
+
+  interface IStageListItem {
+    data_id : string
+    stage_list : IStage[]
   }
 }

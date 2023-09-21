@@ -79,6 +79,16 @@ export default {
       }
     }
   },
+  getMetaImage(group: string): string {
+    switch (group) {
+      case 'hinatazaka46' : {
+        return 'https://res.cloudinary.com/haymzm4wp/image/upload/v1695109471/assets/img/showroomloglogo2_mmjara.jpg'
+      }
+      default : {
+        return 'https://res.cloudinary.com/haymzm4wp/image/upload/v1695109471/assets/img/jkt48showroomlog2_qdqnbw.jpg'
+      }
+    }
+  },
   getBanner(group: string): Banner {
     switch (group) {
       case 'hinatazaka46' : {

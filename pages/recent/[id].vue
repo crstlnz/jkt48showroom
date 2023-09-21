@@ -191,14 +191,14 @@ useHead({
                     </template>
                   </ShowroomStat>
 
-                  <ShowroomStat v-if="data.live_info?.viewer">
+                  <ShowroomStat v-if="data.live_info?.viewers">
                     <template #title>
-                      <Icon name="ph:users-fill" /> {{ $t("viewer") }}
+                      <Icon :name="data.live_info?.viewers?.is_excitement ? 'ic:round-star' : 'ph:users-fill'" /> {{ data.live_info?.viewers?.is_excitement ? $t("excitement_points") : $t("viewer") }}
                     </template>
                     <template #value>
-                      {{ $n(data.live_info?.viewer) }}
-                      <span v-if="data.live_info?.active_viewer" v-tooltip="$t('tooltip.activeuser')" class="inline-flex items-center gap-0.5">
-                        ( {{ $n(data.live_info?.active_viewer) }}<Icon name="ph:info-duotone" /> )
+                      {{ $n(data.live_info?.viewers?.num ?? 0) }}
+                      <span v-if="data.live_info?.viewers?.active ?? 0" v-tooltip="$t('tooltip.activeuser')" class="inline-flex items-center gap-0.5">
+                        ( {{ $n(data.live_info?.viewers?.active ?? 0) }}<Icon name="ph:info-duotone" /> )
                       </span>
                     </template>
                   </ShowroomStat>

@@ -4,8 +4,26 @@ const allowedOrigins = '*'
 export default defineNuxtConfig({
   routeRules: {
     // '/api/showroom/**': { cache: !isDev ? { maxAge: 3600, staleMaxAge: 360 } : false },
+    '/api/**': {
+      security: {
+        rateLimiter: {
+          tokensPerInterval: 120,
+          interval: 'minute',
+          fireImmediately: false,
+        },
+      },
+    },
     '/api/showroom/members': { cache: !isDev ? { maxAge: 21600, staleMaxAge: 1800 } : false },
-    '/api/showroom/recent': { cache: !isDev ? { maxAge: 1, staleMaxAge: 0 } : false },
+    '/api/showroom/recent': {
+      cache: !isDev ? { maxAge: 1, staleMaxAge: 0 } : false,
+      security: {
+        rateLimiter: {
+          tokensPerInterval: 80,
+          interval: 'minute',
+          fireImmediately: false,
+        },
+      },
+    },
     '/api/showroom/recent/**': { cache: !isDev ? { maxAge: 600, staleMaxAge: 10 } : false },
     '/api/member/birthday': { cache: !isDev ? { maxAge: 3600, staleMaxAge: 0 } : false },
     '/api/showroom/records': { cache: !isDev ? { maxAge: 1800, staleMaxAge: 0 } : false },
@@ -26,7 +44,7 @@ export default defineNuxtConfig({
     '/api/auth/callback/credentials': {
       security: {
         rateLimiter: {
-          tokensPerInterval: 10,
+          tokensPerInterval: 15,
           interval: 'minute',
           fireImmediately: false,
         },
@@ -116,12 +134,12 @@ export default defineNuxtConfig({
       methods: '*',
       credentials: true,
     },
-    rateLimiter: {
-      tokensPerInterval: 80,
-      interval: 'minute',
-      fireImmediately: false,
-      throwError: true,
-    },
+    // rateLimiter: {
+    //   tokensPerInterval: 80,
+    //   interval: 'minute',
+    //   fireImmediately: false,
+    //   throwError: true,
+    // },
     requestSizeLimiter: {
       maxRequestSizeInBytes: 3000000,
       maxUploadFileRequestInBytes: 12000000,
@@ -178,6 +196,9 @@ export default defineNuxtConfig({
     compressPublicAssets: true,
   },
   devtools: {
-    enabled: false,
+    enabled: true,
+    timeline: {
+      enabled: true,
+    },
   },
 })

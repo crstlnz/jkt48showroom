@@ -22,7 +22,8 @@ const giftList = computed(() => {
   return map
 })
 
-const giftLogStore = useSessionStorage<ShowroomAPI.GiftLogItem[]>(`giftlog-${route.params.id}`, [])
+// const giftLogStore = useSessionStorage<ShowroomAPI.GiftLogItem[]>(`giftlog-${route.params.id}`, [])
+const giftLogStore = ref<ShowroomAPI.GiftLogItem[]>([])
 const giftLog = ref<Map<number, Watch.Gift>>(new Map())
 
 function storeGift(gift: ShowroomAPI.GiftLogItem) {

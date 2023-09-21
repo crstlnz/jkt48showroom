@@ -98,6 +98,7 @@ export async function getRecents(qq: any = null): Promise<IApiRecents> {
           duration: 1,
           viewers: {
             peak: 1,
+            is_excitement: 1,
           },
           start_date: 1,
           end_date: 1,
@@ -139,7 +140,12 @@ export async function getRecents(qq: any = null): Promise<IApiRecents> {
       live_info: {
         comments: i.live_info?.comments ?? undefined,
         duration: i.live_info?.duration ?? 0,
-        viewers: i.live_info?.viewers?.peak ?? undefined,
+        viewers: i.live_info?.viewers?.peak
+          ? {
+              num: i.live_info?.viewers?.peak ?? 0,
+              is_excitement: i.live_info?.viewers?.is_excitement ?? false,
+            }
+          : undefined,
         date: {
           start: i.live_info.start_date.toISOString(),
           end: i.live_info.end_date.toISOString(),

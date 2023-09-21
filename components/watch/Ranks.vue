@@ -25,7 +25,7 @@ useIntervalFn(() => {
         <div class="h-12 w-12 shrink-0">
           <img :src="item.user.avatar_url" alt="User avatar" class="h-full w-full object-contain">
         </div>
-        <div>
+        <div class="truncate">
           {{ item.user.name }}
         </div>
       </div>

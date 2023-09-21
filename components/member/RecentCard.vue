@@ -19,7 +19,8 @@ const { locale } = useI18n()
 const finishLoading = ref(false)
 const showLoading = ref(true)
 const thumbnail = ref()
-const isHoveredRaw = useElementHover(thumbnail)
+// const isHoveredRaw = useElementHover(thumbnail)
+const { isOutside } = useMouseInElement(thumbnail)
 const isAlreadyFetch = ref(false)
 const screenshots = ref<string[]>([])
 const ssIndex = ref<number | null>(null)
@@ -32,43 +33,38 @@ const { start, stop } = useTimeoutFn(async () => {
   await preloadImage(screenshots.value[0])
   ssIndex.value = nextIndex
   start()
-}, 1500, { immediate: false })
+}, 1000, { immediate: false })
 
 const scrolled = ref(false)
 
-function listenScroll() {
-  scrolled.value = true
-  doc.value?.removeEventListener('scroll', listenScroll)
-}
+// function listenScroll() {
+//   scrolled.value = true
+//   doc.value?.removeEventListener('scroll', listenScroll)
+// }
 
 const isHovered = computed(() => {
-  return isHoveredRaw.value && scrolled.value === false
+  return !isOutside.value
 })
 
 const delayShowSS = ref<NodeJS.Timeout | null>(null)
-watch(isHoveredRaw, () => {
-  scrolled.value = false
-  if (delayShowSS.value) clearTimeout(delayShowSS.value)
-})
 
 watch(isHovered, (hover) => {
+  showLoading.value = !isAlreadyFetch.value
+  if (delayShowSS.value) clearTimeout(delayShowSS.value)
   if (hover) {
     scrolled.value = false
-    doc.value?.addEventListener('scroll', listenScroll)
-    if (delayShowSS.value) clearTimeout(delayShowSS.value)
+    // doc.value?.addEventListener('scroll', listenScroll)
     delayShowSS.value = setTimeout(() => {
       if (isAlreadyFetch.value) {
-        showLoading.value = false
         startScreenshotSlide()
       }
       else {
-        showLoading.value = true
         fetchScreenshot()
       }
     }, 300)
   }
   else {
-    doc.value?.removeEventListener('scroll', listenScroll)
+    // doc.value?.removeEventListener('scroll', listenScroll)
     ssIndex.value = null
     stopScreenshotSlide()
   }
@@ -159,9 +155,9 @@ onMounted(() => {
             </div>
           </li>
           <li v-if="recent.live_info?.viewers != null" class="flex items-center">
-            <Icon name="mingcute:user-2-fill" class="h-5 w-auto rounded-full bg-blue-500 p-1 text-white lg:h-6" />
+            <Icon :name="recent.live_info?.viewers?.is_excitement ? 'ic:round-star' : 'mingcute:user-2-fill'" class="h-5 w-auto rounded-full bg-blue-500 p-1 text-white lg:h-6" />
             <div>
-              {{ recent.live_info?.viewers ? `${$n(recent.live_info?.viewers ?? 0)} ${$t("viewer", recent.live_info?.viewers ?? 0)}` : $t('data.nodata') }}
+              {{ recent.live_info?.viewers?.num ? `${$n(recent.live_info?.viewers?.num ?? 0)} ${$t(recent.live_info?.viewers?.is_excitement ? "excitement_points" : "viewer", recent.live_info?.viewers?.num ?? 0)}` : $t('data.nodata') }}
             </div>
           </li>
           <li class="flex items-center">
@@ -196,7 +192,7 @@ onMounted(() => {
 
 <style lang="scss">
 .recentcardprogress {
-  animation: 10s progress;
+  animation: 3s progress;
 }
 
 .progressfinish {

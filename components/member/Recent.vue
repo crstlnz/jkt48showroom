@@ -63,9 +63,9 @@ const date = $fromNow(
         </div>
       </div>
       <ul class="mt-1 space-y-1 text-xs md:text-sm [&>li]:flex [&>li]:gap-1">
-        <li v-if="recent.live_info?.viewers">
-          <Icon name="ph:users-bold" class="self-center text-sm md:text-base" />
-          {{ $n(recent.live_info.viewers) }}
+        <li v-if="recent.live_info.viewers?.num">
+          <Icon :name="recent.live_info.viewers?.is_excitement ? 'ic:round-star' : 'ph:users-bold'" class="self-center text-sm md:text-base" />
+          {{ $n(recent.live_info.viewers?.num) }}
         </li>
         <li>
           <Icon name="ph:clock-bold" class="self-center text-sm md:text-base" />

@@ -25,6 +25,7 @@ streamoffline: Stream is offline
 view: View
 viewlive: View Live
 viewer: Viewer | Viewers
+excitement_points: Excitement Points
 totalgift: Total gift
 totalpaidgift: Total paid gift
 totalcomments: Comments
@@ -154,7 +155,7 @@ form:
       password: Password cannot be empty!
       captcha: Fill the captcha!
 tooltip:
-  activeuser: Active user is user that interact with live, like following, sending gift, or comment.
+  activeuser: Total of active user that interact with live, like following, sending gift, or comment.
   usercomment: '{msg} users commented.'
 height: Height
 bloodtype: Blood type

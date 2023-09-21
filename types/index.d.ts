@@ -114,7 +114,10 @@ interface IRecent {
   created_at: string
   live_info: {
     duration: number
-    viewers?: number
+    viewers?: {
+      num : number,
+      is_excitement : boolean
+    }
     date: {
       start: string
       end: string

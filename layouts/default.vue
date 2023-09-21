@@ -13,13 +13,13 @@ useHead({
     class: () => menuOpen.value ? 'max-md:overflow-hidden' : '',
   },
   titleTemplate: t => t ? `${t} - ${title}` : title,
-  meta: [
-    {
-      hid: 'description',
-      name: 'description',
-      content: `A fanmade ${title} log web`,
-    },
-  ],
+  // meta: [
+  //   {
+  //     hid: 'description',
+  //     name: 'description',
+  //     content: `A fanmade ${title} log web`,
+  //   },
+  // ],
   link: [
     { rel: 'icon', type: 'image/x-icon', href: getFavicon(settings.group) },
   ],

@@ -25,7 +25,9 @@ const sortedGift = computed(() => {
           <img :src="item.avatar_url" alt="User avatar" class="h-full w-full object-contain">
         </div>
         <div class="flex-1 space-y-1">
-          <div>{{ item.name }}</div>
+          <div class="truncate">
+            {{ item.name }}
+          </div>
           <div class="flex items-center gap-1.5">
             <div class="h-8 w-8 shrink-0">
               <img :src="item.image" alt="User avatar" class="h-full w-full object-contain">

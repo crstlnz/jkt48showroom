@@ -3,6 +3,7 @@ import { getDateRange } from '~~/library/utils'
 import ShowroomLog from '~~/library/database/schema/showroom/ShowroomLog'
 import cache from '~~/library/utils/cache'
 import config from '~~/app.config'
+import { StageList } from '~/library/database/showroomDB'
 
 const fansMaxSize = 50
 const time = 43200000 // 12 hours
@@ -78,7 +79,6 @@ export async function fetchData(type: IDateRangeType | IDateRangeMemberType, gro
     created_at: 1,
     users: 1,
     live_info: {
-      stage_list: 1,
       start_date: 1,
       end_date: 1,
       viewers: {
@@ -113,10 +113,14 @@ export async function fetchData(type: IDateRangeType | IDateRangeMemberType, gro
       },
     }) as unknown as Database.IShowroomLog[]
 
+  const stageListData = await StageList.find({
+    data_id: logs.map(i => i.data_id),
+  })
+
   if (roomId) {
-    const weekly = generate(logs, 'weekly', 'member')
-    const monthly = generate(logs, 'monthly', 'member')
-    const all = generate(logs, 'all', 'member')
+    const weekly = generate(logs, stageListData, 'weekly', 'member')
+    const monthly = generate(logs, stageListData, 'monthly', 'member')
+    const all = generate(logs, stageListData, 'all', 'member')
     cache.set(`${roomId}-${weekly.type}`, weekly)
     cache.set(`${roomId}-${monthly.type}`, monthly)
     cache.set(`${roomId}-${all.type}`, all)
@@ -131,9 +135,9 @@ export async function fetchData(type: IDateRangeType | IDateRangeMemberType, gro
     }
   }
   else {
-    const weekly = generate(logs, 'weekly', 'all')
-    const monthly = generate(logs, 'monthly', 'all')
-    const quarterly = generate(logs, 'quarterly', 'all')
+    const weekly = generate(logs, stageListData, 'weekly', 'all')
+    const monthly = generate(logs, stageListData, 'monthly', 'all')
+    const quarterly = generate(logs, stageListData, 'quarterly', 'all')
     cache.set(group ? `${group}-${weekly.type}` : weekly.type, weekly)
     cache.set(group ? `${group}-${monthly.type}` : monthly.type, monthly)
     cache.set(group ? `${group}-${quarterly.type}` : quarterly.type, quarterly)
@@ -149,15 +153,15 @@ export async function fetchData(type: IDateRangeType | IDateRangeMemberType, gro
   }
 }
 
-function generate(logs: Database.IShowroomLog[], type: IDateRangeType, typeStats: 'member' | 'all'): IShowroomStats | IShowroomMemberStats
-function generate(logs: Database.IShowroomLog[], type: IDateRangeMemberType, typeStats: 'member' | 'all'): IShowroomMemberStats
-function generate(logs: Database.IShowroomLog[], type: IDateRangeType | IDateRangeMemberType, typeStats: 'member' | 'all'): IShowroomStats | IShowroomMemberStats {
+function generate(logs: Database.IShowroomLog[], stageListData: Database.IStageListItem[], type: IDateRangeType, typeStats: 'member' | 'all'): IShowroomStats | IShowroomMemberStats
+function generate(logs: Database.IShowroomLog[], stageListData: Database.IStageListItem[], type: IDateRangeMemberType, typeStats: 'member' | 'all'): IShowroomMemberStats
+function generate(logs: Database.IShowroomLog[], stageListData: Database.IStageListItem[], type: IDateRangeType | IDateRangeMemberType, typeStats: 'member' | 'all'): IShowroomStats | IShowroomMemberStats {
   const dateRange = type === 'all' ? null : getDateRange(type)
   let log = logs
   if (dateRange) {
     log = logs.filter(i => new Date(i.live_info.start_date).getTime() >= new Date(dateRange.from).getTime() && new Date(i.live_info.start_date).getTime() <= new Date(dateRange.to).getTime())
   }
-  const all = calculateRanks(log)
+  const all = calculateRanks(log, stageListData)
   const memberList = all.member.map((i) => {
     return {
       ...i,
@@ -258,7 +262,7 @@ interface CalculatedRanks {
   fans: IStatFans[]
 }
 
-function calculateRanks(logs: Database.IShowroomLog[]): CalculatedRanks {
+function calculateRanks(logs: Database.IShowroomLog[], stageListData: Database.IStageListItem[]): CalculatedRanks {
   const memberRanks: Map<string | number, IStatMember> = new Map()
 
   for (const log of logs) {
@@ -305,8 +309,8 @@ function calculateRanks(logs: Database.IShowroomLog[]): CalculatedRanks {
     return a
   }, [] as IFansCompact[])
 
-  const stageList = logs.reduce<Database.IStage[]>((a, b) => {
-    a.push(...(b.live_info?.stage_list ?? []))
+  const stageList = stageListData.reduce<Database.IStage[]>((a, b) => {
+    a.push(...(b.stage_list ?? []))
     return a
   }, [] as IStageList[])
 
