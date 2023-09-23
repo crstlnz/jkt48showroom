@@ -57,6 +57,7 @@ const showNewCommentButton = ref(true)
 
 useEventListener(dynamicScroller, 'scroll', (evt) => {
   if (!evt.isTrusted) return
+
   const scrollPos = dynamicScroller.value?.$el?.scrollTop
   if (lastScroll.value === scrollPos) return
   if (lastScroll.value > scrollPos) {
@@ -77,9 +78,6 @@ function appendDelayedComments() {
 const { isMobile, greaterOrEqual } = useResponsive()
 const isSmall = greaterOrEqual('sm')
 const navRect = useState<DOMRect | null>('navRect', () => null)
-// defineExpose({
-//   stopAutoAppend,
-// })
 const showCommentForm = useLocalStorage('show_comment_form', true)
 </script>
 

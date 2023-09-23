@@ -149,9 +149,10 @@ onMounted(() => {
 
 <template>
   <div ref="element" class="roundedscrollbar space-y-4 overflow-y-auto" :style="{ height: fixedHeight ?? '' }">
-    <div v-if="showSearch" class="group flex items-center gap-4 rounded-xl bg-slate-200/70 px-4 dark:bg-dark-2">
+    <div v-if="showSearch" class="group flex items-center gap-4 rounded-xl bg-slate-200/70 px-4 ring-blue-500 focus-within:ring-2 dark:bg-dark-2">
       <Icon name="uil:search" class="ml-1 h-5 w-5 shrink-0" />
       <input
+        id="search"
         v-model="search"
         :aria-label="$t('search')"
         :placeholder="`${$t('search')}...`"

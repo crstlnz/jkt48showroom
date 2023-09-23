@@ -6,7 +6,7 @@ import { LazyImage } from '#components'
 
 const props = defineProps<{ live: IRoomLive }>()
 defineEmits(['refreshliveinfo'])
-const { $device } = useNuxtApp()
+const $device = useDevice()
 const openMenu = ref(false)
 const container = ref(null)
 const listener = ref<(() => void)>()

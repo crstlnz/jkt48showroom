@@ -70,12 +70,35 @@ if (typeof window !== 'undefined') {
   window.__vue5513 = true
 }
 
-const { $pwa } = useNuxtApp()
+// const { $pwa } = useNuxtApp()
+const keys = useMagicKeys({
+  passive: false,
+  onEventFired(e) {
+    if (e.code === 'Escape' && e.type === 'keydown' && document.activeElement?.id === 'search') {
+      if ((document.activeElement as HTMLInputElement | null)?.value !== '') {
+        (document.activeElement as HTMLInputElement).value = '';
+        (document.activeElement as HTMLInputElement).blur()
+      }
+    }
+    else
+      if (e.code === 'KeyK' && e.ctrlKey) {
+        e.preventDefault()
+      }
+  },
+})
+const shiftCtrlA = keys['Ctrl+K']
+
+watch(shiftCtrlA, (v) => {
+  if (v) {
+    const input = document.querySelector('input#search') as HTMLElement | null
+    input?.focus()
+  }
+})
 </script>
 
 <template>
   <div>
-    <VitePwaManifest />
+    <!-- <VitePwaManifest /> -->
     <NuxtLoadingIndicator
       :height="4"
     />

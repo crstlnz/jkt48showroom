@@ -60,9 +60,10 @@ const searchInput = ref()
       </div>
     </template>
     <template #sidebar>
-      <div v-if="isXL" class="group bg-container flex items-center gap-4 rounded-full px-4 xl:mt-4">
+      <div v-if="isXL" class="group bg-container flex items-center gap-4 rounded-full px-4 ring-blue-500 focus-within:ring-2 xl:mt-4">
         <Icon name="uil:search" class="ml-1 h-5 w-5 shrink-0" />
         <input
+          id="search"
           v-model="search"
           :aria-label="$t('search')"
           :placeholder="`${$t('search')}...`"

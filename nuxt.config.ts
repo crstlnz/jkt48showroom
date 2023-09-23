@@ -62,53 +62,53 @@ export default defineNuxtConfig({
       isDev,
     },
   },
-  pwa: {
-    registerType: 'autoUpdate',
-    manifest: {
-      name: 'JKT48 Showroom',
-      short_name: 'JKT48 Showroom',
-      description: 'Fanmade JKT48 Showroom Log',
-      orientation: 'portrait',
-      start_url: '/',
-      icons: [
-        {
-          src: 'img/192x192-logo.png',
-          sizes: '192x192',
-          type: 'image/png',
-        },
-        {
-          src: 'img/512x512-logo.png',
-          sizes: '512x512',
-          type: 'image/png',
-        },
-        {
-          src: 'img/512x512-masklogo.png',
-          sizes: '512x512',
-          type: 'image/png',
-          purpose: 'maskable',
-        },
-      ],
-    },
-    workbox: {
-      navigateFallback: undefined,
-      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
-    },
-    client: {
-      installPrompt: true,
-      periodicSyncForUpdates: 3600,
-    },
-    devOptions: {
-      enabled: isDev,
-      suppressWarnings: true,
-      navigateFallbackAllowlist: [/^\/$/],
-      type: 'module',
-    },
-  },
+  // pwa: {
+  //   registerType: 'autoUpdate',
+  //   manifest: {
+  //     name: 'JKT48 Showroom',
+  //     short_name: 'JKT48 Showroom',
+  //     description: 'Fanmade JKT48 Showroom Log',
+  //     orientation: 'portrait',
+  //     start_url: '/',
+  //     icons: [
+  //       {
+  //         src: 'img/192x192-logo.png',
+  //         sizes: '192x192',
+  //         type: 'image/png',
+  //       },
+  //       {
+  //         src: 'img/512x512-logo.png',
+  //         sizes: '512x512',
+  //         type: 'image/png',
+  //       },
+  //       {
+  //         src: 'img/512x512-masklogo.png',
+  //         sizes: '512x512',
+  //         type: 'image/png',
+  //         purpose: 'maskable',
+  //       },
+  //     ],
+  //   },
+  //   workbox: {
+  //     navigateFallback: undefined,
+  //     globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
+  //   },
+  //   client: {
+  //     installPrompt: true,
+  //     periodicSyncForUpdates: 3600,
+  //   },
+  //   devOptions: {
+  //     enabled: isDev,
+  //     suppressWarnings: true,
+  //     navigateFallbackAllowlist: [/^\/$/],
+  //     type: 'module',
+  //   },
+  // },
   watch: ['~/assets/css/tailwindcss.css'],
   modules: [
     'floating-vue/nuxt',
     'nuxt-security',
-    '@vite-pwa/nuxt',
+    // '@vite-pwa/nuxt',
     'dayjs-nuxt',
     'nuxt-gtag',
     '@nuxt/devtools',

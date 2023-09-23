@@ -264,7 +264,7 @@ onLiveState((isLive) => {
 onTelops((t) => {
   telops.value = t
 })
-const { comments, delayedComments, appendComment, createComment, appendDelayedComments } = useShowroomComments(data)
+const { comments, delayedComments, appendComment, createComment, appendDelayedComments, setAutoAppend, stopAutoAppend } = useShowroomComments(data)
 // function onGift(gift: ShowroomAPI.GiftLogItem) {
 //   addGift(gift)
 //   // giftLogRaw.value.push(gift)
@@ -324,7 +324,7 @@ onComment((comment) => {
             <LazyWatchVideo
               v-else
               ref="video" :poster="data?.image ?? ''" :sources="data?.streaming_url_list ?? []" @fullsceen="(isFullscreen) => {
-                if (isFullscreen && comment) comment.stopAutoAppend()
+                if (isFullscreen && comment) stopAutoAppend()
               }"
             />
           </div>
@@ -440,7 +440,9 @@ onComment((comment) => {
           <div class="relative h-full min-h-[640px] w-full bg-white dark:bg-dark-1 max-lg:max-h-[70vh] max-lg:shadow-sm lg:max-h-[85vh] lg:w-[300px] lg:rounded-xl xl:w-[350px]">
             <div class="absolute inset-0 z-0 overflow-hidden rounded-xl">
               <!-- <WatchComment v-if="tabView === 'comment'" ref="comment" :is-live="isLive" :data="data" class="h-full w-full" @finish="onFinish" @start="onStart" @gift="onGift" @telops="(t) => telops = t" /> -->
-              <WatchComment v-if="tabView === 'comment'" ref="comment" :is-live="isLive" :data="data" :comments="comments" :delayed-comments="delayedComments" class="h-full w-full" @create-comment="createComment" @append-delayed-comments="appendDelayedComments" />
+              <WatchComment
+                v-if="tabView === 'comment'" ref="comment" :is-live="isLive" :data="data" :comments="comments" :delayed-comments="delayedComments" class="h-full w-full" @set-auto-append="(val) => setAutoAppend(val)" @create-comment="createComment" @append-delayed-comments="appendDelayedComments"
+              />
               <WatchRanks v-else-if="tabView === 'ranks'" :room-id="roomId" />
               <WatchGiftList v-else-if="tabView === 'gift-list'" :sorted-gift="sortedGift" />
               <WatchGiftLog v-else-if="tabView === 'gift-log'" :gift-log="giftLogStore" />

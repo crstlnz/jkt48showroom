@@ -28,8 +28,11 @@ const { $formatSR } = useNuxtApp()
             />
             <div class="text-xs leading-5 md:font-semibold" />
           </div>
-          <div class="rounded-md bg-red-500 px-1 text-sm font-semibold text-white">
+          <div v-if="!live.is_premium" class="rounded-md bg-red-500 px-1 text-sm font-semibold text-white">
             {{ $formatSR(live.started_at) }}
+          </div>
+          <div v-else class="inline-block h-4 rounded-md bg-gray-500 px-1.5 align-middle text-[10px] leading-4 text-white md:h-5 md:text-xs md:font-semibold md:leading-5">
+            Premium Live
           </div>
         </div>
       </div>
