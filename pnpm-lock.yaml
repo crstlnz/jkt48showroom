@@ -145,9 +145,6 @@ devDependencies:
   nuxt-security:
     specifier: ^1.0.0-rc.2
     version: 1.0.0-rc.2(rollup@2.79.1)(vite@4.5.0)(webpack@5.89.0)
-  pinia:
-    specifier: ^2.1.7
-    version: 2.1.7(typescript@5.2.2)(vue@3.3.4)
   sass:
     specifier: ^1.69.4
     version: 1.69.4
