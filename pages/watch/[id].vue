@@ -297,7 +297,7 @@ onComment((comment) => {
       </div>
     </div>
     <div v-else-if="error" class="h-full w-full">
-      <Error :message="$t('error.unknown')" :alt="$t('error.unknown')" img-src="/svg/error.svg" url="/" />
+      <Error :message="$t('error.unknown')" :alt="$t('error.unknown')" :img-src="`${$cloudinaryURL}/assets/svg/web/error.svg`" url="/" />
     </div>
 
     <div v-else class="h-full w-full">
@@ -314,7 +314,7 @@ onComment((comment) => {
             </div>
             <div v-if="!isLive" class="flex h-full w-full items-center justify-center">
               <div class="space-y-4 md:space-y-6 lg:space-y-10">
-                <img src="/svg/video_files.svg" class="mx-auto w-[250px] max-w-[70%] dark:brightness-90" alt="">
+                <img :src="`${$cloudinaryURL}/assets/svg/web/video_files.svg`" class="mx-auto w-[250px] max-w-[70%] dark:brightness-90" alt="">
                 <div class="text-center text-xl font-semibold">
                   {{ $t('streamoffline') }}
                 </div>
@@ -423,7 +423,7 @@ onComment((comment) => {
               </div>
               <div v-else class="h-0 flex-1 overflow-y-auto">
                 <div class="flex flex-col items-center justify-center">
-                  <img class="h-32" src="/svg/empty-box.svg">
+                  <img class="h-32" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`">
                 </div>
               </div>
             </div>

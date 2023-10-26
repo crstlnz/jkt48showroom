@@ -47,7 +47,7 @@ async function fetchAllData(
 /**
  * It fetches data from an API and returns a promise that resolves to an object
  * @param {number | string} roomId - number | string
- * @param [bulk=false] - if true return null instead throw error when fetching more than 1 room but there are rooms that are not found
+ * @param [bulk] - if true return null instead throw error when fetching more than 1 room but there are rooms that are not found
  */
 async function fetchData(roomId: number | string, bulk = false): Promise<APILiveInfo> {
   // bulk is for prevent error when fetching more than 1 room but there are rooms that are not found

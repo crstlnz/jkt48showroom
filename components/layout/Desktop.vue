@@ -7,15 +7,15 @@ const props = defineProps<{
 }>()
 defineEmits(['toggleDark'])
 const route = useRoute()
-const { isLarge } = useResponsive()
+const { isLarge, greaterOrEqual } = useResponsive()
 const navbar = ref<HTMLElement | null>()
 const { authenticated, user } = useUser()
+const settings = useSettings()
 const menus = computed(() => {
   return props.menus.filter(i =>
-    (!i.login || authenticated) && (!i.admin || user?.isAdmin))
+    (!i.login || authenticated) && (!i.admin || user?.isAdmin) && (!i.group || i.group === settings.group || i.group === 'all'))
 })
 
-const settings = useSettings()
 const { getIcon } = useAppConfig()
 const navRect = useState<DOMRect | null>('navRect', () => null)
 onMounted(() => {
@@ -29,6 +29,8 @@ watch(width, () => {
 onBeforeUnmount(() => {
   navRect.value = null
 })
+
+const isXL = greaterOrEqual('2xl')
 </script>
 
 <template>
@@ -41,6 +43,7 @@ onBeforeUnmount(() => {
         <LayoutMenu
           v-for="m in menus"
           :key="m.url"
+          v-tooltip="!isXL ? m.title : undefined"
           class="block"
           :compact="!isLarge"
           :title="m.title"

@@ -170,7 +170,7 @@ defineExpose({ setPosition })
 </script>
 
 <template>
-  <teleport to="body">
+  <Teleport to="body">
     <Transition
       enter-from-class="opacity-0 scale-90"
       leave-to-class="opacity-0 scale-90"
@@ -207,7 +207,7 @@ defineExpose({ setPosition })
             </div>
           </div>
           <div v-else-if="error" class="w-[210px] space-y-10 px-5">
-            <img src="/svg/error.svg" class="h-full px-2 pt-3" alt="Not found">
+            <img :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" class="h-full px-2 pt-3" alt="Not found">
             <div class="pb-5 text-center">
               {{ $t('data.notfound') }}
             </div>
@@ -233,7 +233,7 @@ defineExpose({ setPosition })
             </div>
           </div>
           <div v-else class="w-[210px] space-y-10 px-5">
-            <img src="/svg/ufo.svg" class="h-full px-2 pt-2" alt="Not found">
+            <img :src="`${$cloudinaryURL}/assets/svg/web/ufo.svg`" class="h-full px-2 pt-2" alt="Not found">
             <div class="pb-5 text-center">
               {{ $t('data.notfound') }}
             </div>
@@ -241,5 +241,5 @@ defineExpose({ setPosition })
         </div>
       </div>
     </Transition>
-  </teleport>
+  </Teleport>
 </template>

@@ -37,9 +37,25 @@ const menus: MenuItem[] = [
     title: 'Recent',
     url: '/recent',
     mobile: true,
-    icon: 'majesticons:list-box-line',
-    activeIcon: 'majesticons:list-box',
+    icon: 'fluent:history-16-regular',
+    activeIcon: 'fluent:history-16-filled',
   },
+  {
+    title: 'News',
+    url: '/news',
+    group: 'jkt48',
+    mobile: false,
+    icon: 'fluent:news-20-regular',
+    activeIcon: 'fluent:news-20-filled',
+  },
+  // {
+  //   title: 'Schedule',
+  //   url: '/schedule',
+  //   group: 'jkt48',
+  //   mobile: false,
+  //   icon: 'bx:calendar',
+  //   activeIcon: 'bxs:calendar',
+  // },
   {
     title: 'Member',
     url: '/member',
@@ -97,9 +113,9 @@ const DesktopLayout = resolveComponent('LayoutDesktop')
 <template>
   <main class="relative mx-auto flex max-w-[1630px]">
     <SplashScreen>
-      <component :is="!isMobile ? (isSmall ? MobileLayout : DesktopLayout) : MobileLayout" :menus="menus" @toggle-dark="toggleDark()">
+      <Component :is="!isMobile ? (isSmall ? MobileLayout : DesktopLayout) : MobileLayout" :menus="menus" @toggle-dark="toggleDark()">
         <slot />
-      </component>
+      </Component>
     </SplashScreen>
   </main>
 </template>

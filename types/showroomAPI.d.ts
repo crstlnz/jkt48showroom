@@ -25,18 +25,17 @@ declare namespace ShowroomAPI {
     contribution_point: number
     user_id: number
   }
-  
+
   export interface UserGiftList {
     enquete: any[]
     normal: UserFreeGift[]
   }
-  
+
   export interface UserFreeGift {
     gift_id: number
     free_num: number
   }
 
-  
   interface Follow {
     next_page: number | null
     rooms: RoomFollow[]
@@ -199,7 +198,6 @@ declare namespace ShowroomAPI {
     }
     is_login: boolean
     online_user_num: number
-    live_watch_incentive: {}
   }
 
   interface PollingLiveEnd {

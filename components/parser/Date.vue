@@ -2,9 +2,12 @@
 const props = defineProps<{
   parseType: ParseType
   value: string
+  customFormat?: string
 }>()
 
 const date = ref(parseDate())
+const dayjs = useDayjs()
+const { locale } = useI18n()
 
 function parseDate() {
   try {
@@ -20,7 +23,7 @@ function parseDate() {
 
 <template>
   <div v-if="date">
-    {{ $d(date, "long") }}
+    {{ customFormat ? dayjs(date).locale(locale).format(customFormat) : $d(date, "long") }}
   </div>
   <div v-else>
     Error parsing date!

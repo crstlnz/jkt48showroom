@@ -5,6 +5,7 @@ import { useNotifications } from '~~/store/notifications'
 
 const props = defineProps<{
   memberData: Admin.I48Member
+  jkt48members: JKT48.Member[]
 }>()
 
 const emit = defineEmits<{
@@ -67,17 +68,32 @@ function generateForm() {
       data: props.memberData?.group,
       options: group,
       check: (data: any): boolean => {
-        return props.memberData.group === data
+        return props.memberData?.group === data
       },
     },
+    // {
+    //   title: 'Social Media',
+    //   id: 'socials',
+    //   component: 'select',
+    //   data: props.memberData?.socials,
+    //   options: group,
+    //   check: (data: any): boolean => {
+    //     return props.memberData.socials === data
+    //   },
+    // },
     {
-      title: 'Social Media',
-      id: 'socials',
+      title: 'JKT48 ID',
+      id: 'jkt48id',
       component: 'select',
-      data: props.memberData?.socials,
-      options: group,
+      data: props.memberData?.jkt48id,
+      options: (props.jkt48members ?? []).map((i) => {
+        return {
+          title: i.name,
+          value: i.id,
+        }
+      }),
       check: (data: any): boolean => {
-        return props.memberData.socials === data
+        return props.memberData.jkt48id === data
       },
     },
     {
@@ -144,7 +160,7 @@ async function apply() {
       <div class="w-[70px] shrink-0 truncate pt-1.5 md:w-[90px] lg:w-[120px]">
         {{ form.title }}
       </div>
-      <component :is="getForm(form.component ?? 'text')" v-model="form.data" :data="form.options" form-id="start" :placeholder="form.placeholder ?? form.title" input-class="bg-container-2 flex-1" class="min-w-0 flex-1" />
+      <Component :is="getForm(form.component ?? 'text')" v-model="form.data" :data="form.options" form-id="start" :placeholder="form.placeholder ?? form.title" input-class="bg-container-2 flex-1" class="min-w-0 flex-1" />
     </div>
     <div class="mt-1 flex justify-end gap-3">
       <button

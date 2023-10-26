@@ -82,7 +82,7 @@ function changePage(val: number) {
     >
       <Icon name="material-symbols:arrow-left-rounded" size="1.5rem" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
     </button>
-    <component
+    <Component
       :is="typeof dot === 'number' ? 'button' : 'span'"
       v-for="[index, dot] in dots.entries()"
       :key="index"
@@ -102,7 +102,7 @@ function changePage(val: number) {
       }"
     >
       {{ dot }}
-    </component>
+    </Component>
     <button
       aria-label="Next Page"
       type="button"

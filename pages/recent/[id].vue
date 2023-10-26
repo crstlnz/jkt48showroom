@@ -8,7 +8,7 @@ import { useSettings } from '~~/store/settings'
 const route = useRoute()
 const settings = useSettings()
 const { getTitle } = useAppConfig()
-const { data, error, pending } = useFetch(`/api/showroom/recent/${route.params.id}`)
+const { data, error, pending } = useFetch<API.IRecentDetail>(`/api/showroom/recent/${route.params.id}`)
 const { data: likeData, error: likeError, pending: likePending } = useFetch('/api/user/like', { query: { id: route.params.id } })
 const liked = ref(false)
 
@@ -105,8 +105,13 @@ function setLike() {
   }
 }
 
+const dayjs = useDayjs()
+const { locale } = useI18n()
+const date = computed(() => {
+  return dayjs(data.value?.live_info?.date?.start).locale(locale.value).format('DD MMMM YYYY')
+})
 const title = computed(() => {
-  return (!pending.value && (data.value || !error.value)) ? `${data.value?.room_info?.name} Log` : getTitle(settings.group)
+  return (!pending.value && (data.value || !error.value)) ? `${data.value?.room_info?.fullname ?? data.value?.room_info?.nickname ?? data.value?.room_info?.name} - ${date.value}` : getTitle(settings.group)
 })
 
 const { getGroupTitle } = useAppConfig()
@@ -124,6 +129,9 @@ useSeoMeta({
 useHead({
   title,
 })
+
+const { greaterOrEqual } = useResponsive()
+const isXL = greaterOrEqual('xl')
 </script>
 
 <template>
@@ -135,7 +143,7 @@ useHead({
     <LayoutRow v-else :title="title">
       <template #default>
         <div class="flex flex-col gap-3 md:gap-4">
-          <div class="bg-container aspect-[15/5] w-full md:aspect-[15/3]">
+          <!-- <div class="bg-container aspect-[15/5] w-full md:aspect-[15/3]">
             <LazyImage :src="data.room_info.banner || $getDefaultBanner(data.room_info.group)" :alt="`${data.room_info.name} banner`" class="h-full w-full" />
           </div>
           <div class="-mt-3 flex flex-col gap-3 px-3 md:-mt-4 lg:px-4">
@@ -173,10 +181,138 @@ useHead({
             <div class="text-2xl font-semibold lg:text-3xl">
               {{ data.room_info.name }}
             </div>
-          </div>
+          </div> -->
+          <MemberProfileBanner :room-id="data.room_id" :member="data.room_info" />
+          <!-- <div class="flex gap-3 md:gap-4 bg-container rounded-xl p-3 md:p-4 mx-3 md:mx-4 items-stretch">
+            <div class="space-y-3">
+              <div>
+                <div class="text-base opacity-60">
+                  Start Date
+                </div>
+                <div>
+                  {{ dayjs(data.live_info.date.start).format("DD MMMM YYYY") }}
+                </div>
+                <div>
+                  {{ dayjs(data.live_info.date.start).format("hh:mm:ss WIB") }}
+                </div>
+              </div>
+              <div>
+                <div class="text-base opacity-60">
+                  End Date
+                </div>
+                <div>
+                  {{ dayjs(data.live_info.date.end).format("DD MMMM YYYY") }}
+                </div>
+                <div>
+                  {{ dayjs(data.live_info.date.end).format("hh:mm:ss WIB") }}
+                </div>
+              </div>
+            </div>
+            <div class="bg-black w-1 rounded-md self-stretch opacity-20 mx-3" />
+            <div>
+              wew
+            </div>
+          </div> -->
+          <div class="flex flex-1 flex-col mx-3 md:mx-4">
+            <div
+              class="flex flex-1 flex-wrap items-start justify-center gap-4 [&>*]:min-w-[230px] [&>div]:flex-[100%] lg:[&>div]:flex-[calc(50%_-_1rem)]"
+            >
+              <ShowroomStat>
+                <template #title>
+                  <Icon name="ph:timer-fill" />{{ $t("date.start") }}
+                </template>
+                <template #value>
+                  <Parser parse-type="date" :value="new Date(data.live_info.date.start).getTime()" custom-format="DD MMMM YYYY hh:mm A" />
+                </template>
+              </ShowroomStat>
 
-          <div class="mx-3 space-y-3 md:mx-4 md:space-y-4">
-            <div class="bg-container flex flex-1 flex-col gap-5 rounded-2xl p-5 lg:flex-row-reverse">
+              <ShowroomStat>
+                <template #title>
+                  <Icon name="ph:timer-fill" />{{ $t("date.end") }}
+                </template>
+                <template #value>
+                  <Parser parse-type="date" :value="new Date(data.live_info.date.end).getTime()" custom-format="DD MMMM YYYY hh:mm A" />
+                </template>
+              </ShowroomStat>
+
+              <ShowroomStat>
+                <template #title>
+                  <Icon name="ph:timer-fill" />{{ $t("duration") }}
+                </template>
+                <template #value>
+                  <Parser parse-type="duration" :value="data.live_info?.duration ?? 0" class="lowercase" />
+                </template>
+              </ShowroomStat>
+
+              <ShowroomStat v-if="data.live_info?.viewers">
+                <template #title>
+                  <Icon :name="data.live_info?.viewers?.is_excitement ? 'ic:round-star' : 'ph:users-fill'" /> {{ data.live_info?.viewers?.is_excitement ? $t("excitement_points") : $t("viewer") }}
+                </template>
+                <template #value>
+                  {{ $n(data.live_info?.viewers?.num ?? 0) }}
+                  <span v-if="data.live_info?.viewers?.active ?? 0" v-tooltip="$t('tooltip.activeuser')" class="inline-flex items-center gap-0.5">
+                    ( {{ $n(data.live_info?.viewers?.active ?? 0) }}<Icon name="ph:info-duotone" /> )
+                  </span>
+                </template>
+              </ShowroomStat>
+
+              <ShowroomStat>
+                <template #title>
+                  <Icon name="bx:bxs-gift" />{{ $t("totalgift") }}
+                </template>
+                <template #value>
+                  {{ $currency(data.total_point ?? 0) }}
+                </template>
+              </ShowroomStat>
+
+              <ShowroomStat v-if="data.live_info?.comments">
+                <template #title>
+                  <Icon name="ph:chat-circle-dots-fill" />{{ $t("totalcomments") }}
+                </template>
+                <template #value>
+                  <div class="flex items-center justify-center gap-2">
+                    <span :title="`${data.live_info.comments.num} ${$t('totalcomments')}`">
+                      {{ $n(data.live_info?.comments.num) }}
+                    </span>
+                    <span v-tooltip="`${$t('tooltip.usercomment', { msg: $n(data.live_info.comments.users) })}`" class="inline-flex items-center justify-center gap-0.5">
+                      ( {{ $n(data.live_info.comments.users) }}
+                      <Icon title="Users" name="carbon:user-avatar-filled" class="h-6" /> )
+                    </span>
+                  </div>
+                </template>
+              </ShowroomStat>
+            </div>
+          </div>
+          <HomeFans v-if="data.fans?.length" :data="data.fans" class="rounded-xl mx-3 md:mx-4" />
+          <ShowroomGiftList :gifts="data.live_info.gift.list" class="mx-3 md:mx-4" />
+
+          <div
+            class="pulse-color col-span-2 aspect-[16/13] flex-1 overflow-hidden shadow-sm sm:mx-3 md:mx-4 sm:rounded-xl md:aspect-[16/10] lg:w-auto 2xl:aspect-[16/9]"
+          >
+            <ShowroomView
+              v-if="data.live_info?.stage_list?.length"
+              :member-image="data.room_info?.img"
+              :date="data.live_info?.date"
+              :background="
+                data.live_info?.background_image
+                  ?? 'https://image.showroom-cdn.com/showroom-prod/assets/img/room/background/default.png'
+              "
+              :screenshot="data.live_info?.screenshot"
+              :live-info="data.live_info"
+              :stage-list="data.live_info.stage_list"
+              :users="users"
+              :gift-data="data.live_info.gift"
+            />
+
+            <div v-else class="flex h-full w-full items-center justify-center bg-zinc-600 text-3xl font-bold text-white">
+              No data
+            </div>
+          </div>
+          <div class="mx-3 md:mx-4 overflow-hidden rounded-xl bg-white shadow-sm dark:bg-dark-1">
+            <ShowroomGiftScroll :gifts="calculatedGift" :page-mode="true" :data-id="data.data_id" :gift-list="data?.live_info?.gift?.list ?? []" />
+          </div>
+          <!-- <div class="mx-3 space-y-3 md:mx-4 md:space-y-4"> -->
+          <!-- <div class="bg-container flex flex-1 flex-col gap-5 rounded-2xl p-5 lg:flex-row-reverse">
               <ShowroomTimeline :date-start="data.live_info?.date?.start" :date-end="data.live_info?.date?.end" />
               <div class="flex flex-1 flex-col">
                 <div
@@ -230,45 +366,18 @@ useHead({
                   </ShowroomStat>
                 </div>
               </div>
-            </div>
-
-            <HomeFans v-if="data.fans?.length" :data="data.fans" class="rounded-xl" />
-            <ShowroomGiftList :gifts="data.live_info.gift.list" />
-
-            <div
-              class="pulse-color col-span-2 aspect-[16/13] flex-1 overflow-hidden shadow-sm max-sm:-mx-3 sm:rounded-xl md:aspect-[16/10] lg:w-auto 2xl:aspect-[16/9]"
-            >
-              <ShowroomView
-                v-if="data.live_info?.stage_list?.length"
-                :member-image="data.room_info?.img"
-                :date="data.live_info?.date"
-                :background="
-                  data.live_info?.background_image
-                    ?? 'https://image.showroom-cdn.com/showroom-prod/assets/img/room/background/default.png'
-                "
-                :screenshot="data.live_info?.screenshot"
-                :live-info="data.live_info"
-                :stage-list="data.live_info.stage_list"
-                :users="users"
-                :gift-data="data.live_info.gift"
-              />
-
-              <div v-else class="flex h-full w-full items-center justify-center bg-zinc-600 text-3xl font-bold text-white">
-                No data
-              </div>
-            </div>
-            <div class="sticky col-span-2 w-full overflow-hidden rounded-xl bg-white shadow-sm dark:bg-dark-1">
-              <ShowroomGiftScroll :gifts="calculatedGift" :page-mode="true" />
-            </div>
-          </div>
+            </div> -->
+          <!-- </div> -->
         </div>
       </template>
 
       <template #sidebar>
-        <HomeLiveNowSide class="xl:mt-4" />
-        <HomeContainer :title="$t('page.title.recent')" icon-class="bg-blue-500" more="/recent" more-label="More recents data" :more-text="$t('more')">
-          <HomeRecents />
-        </HomeContainer>
+        <div v-if="isXL" class="flex flex-col gap-3 md:gap-4">
+          <HomeLiveNowSide class="xl:mt-4" />
+          <HomeContainer :title="$t('page.title.recent')" icon-class="bg-blue-500" more="/recent" more-label="More recents data" :more-text="$t('more')">
+            <HomeRecents />
+          </HomeContainer>
+        </div>
       </template>
 
       <template #actionSection>

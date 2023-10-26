@@ -37,7 +37,7 @@ onClickOutside(dialog, () => {
 </script>
 
 <template>
-  <teleport to="body">
+  <Teleport to="body">
     <Transition
       enter-from-class="opacity-0 scale-90"
       leave-to-class="opacity-0 scale-90"
@@ -70,5 +70,5 @@ onClickOutside(dialog, () => {
         <div class="absolute -inset-40  z-0 bg-black/30 dark:bg-black/50" />
       </div>
     </Transition>
-  </teleport>
+  </Teleport>
 </template>

@@ -23,7 +23,7 @@ function beforeLeave(el: Element) {
 </script>
 
 <template>
-  <teleport to="body">
+  <Teleport to="body">
     <div class="pointer-events-none fixed inset-0 z-notification md:m-8">
       <TransitionGroup
         ref="containerNotif"
@@ -72,5 +72,5 @@ function beforeLeave(el: Element) {
         </div>
       </TransitionGroup>
     </div>
-  </teleport>
+  </Teleport>
 </template>

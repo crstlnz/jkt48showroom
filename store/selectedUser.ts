@@ -16,7 +16,8 @@ export const useSelectedUser = defineStore('selectedUser', () => {
 
   function setPosition(x: number, y: number) {
     position.value = {
-      x, y,
+      x,
+      y,
     }
     isHidden.value = false
   }

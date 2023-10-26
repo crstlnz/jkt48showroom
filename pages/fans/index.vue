@@ -9,14 +9,14 @@ const { data: jpn_rate } = useFetch('/api/jpn_rates')
   <LayoutRow title="Fans List">
     <div class="space-y-3 px-4">
       <div v-if="error" class="flex flex-col items-center justify-center gap-5">
-        <img class="mx-auto aspect-square w-72 max-w-[65%]" src="/svg/error.svg">
+        <img class="mx-auto aspect-square w-72 max-w-[65%]" :src="`${$cloudinaryURL}/assets/svg/web/error.svg`">
         <span>{{ $t("data.failed") }}</span>
       </div>
       <div v-else-if="pending" class="flex aspect-video items-center justify-center">
         <Icon name="svg-spinners:ring-resize" size="2.5rem" />
       </div>
       <div v-else-if="!data" class="flex aspect-video flex-col items-center justify-center gap-2">
-        <img class="mx-auto w-72 max-w-[80%]" src="/svg/empty-box.svg">
+        <img class="mx-auto w-72 max-w-[80%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`">
         <span>{{ $t("data.nodata") }}</span>
       </div>
       <div v-else class="flex flex-col gap-3">

@@ -17,7 +17,7 @@ const { data, pending, error } = storeToRefs(onLives)
       class="aspect-[10/9]"
     >
       <div class="pt-2 text-center">
-        <img class="aspect-squarew-72 mx-auto max-w-[65%]" src="/svg/error.svg">
+        <img class="aspect-squarew-72 mx-auto max-w-[65%]" :src="`${$cloudinaryURL}/assets/svg/web/error.svg`">
         <span>{{ $t("data.failed") }}</span>
       </div>
     </div>
@@ -29,7 +29,7 @@ const { data, pending, error } = storeToRefs(onLives)
       class="aspect-[10/9]"
     >
       <div class="pt-2 text-center">
-        <img class="mx-auto aspect-square w-72 max-w-[65%]" alt="No member onlive" src="/svg/space.svg">
+        <img class="mx-auto aspect-square w-72 max-w-[65%]" alt="No member onlive" :src="`${$cloudinaryURL}/assets/svg/web/space.svg`">
         <span>{{ $t("nolive") }}</span>
       </div>
     </div>

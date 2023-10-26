@@ -8,7 +8,7 @@ declare namespace ShowroomLogin {
   }
 
   interface Error {
-    error : string
-    captcha_url? : string
+    error: string
+    captcha_url?: string
   }
 }

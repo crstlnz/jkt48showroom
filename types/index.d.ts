@@ -1,6 +1,10 @@
 type OrderType = 1 | -1
 type sortType = 'date' | 'gift' | 'views' | 'duration'
 
+interface Id {
+  _id: Types.ObjectId
+}
+
 interface Banner {
   title: string
   img: string
@@ -86,9 +90,9 @@ interface INextLive {
 
 interface IMember {
   name: string
-  nicknames : string[]
-  bloodType? : string
-  height? : string
+  nicknames: string[]
+  bloodType?: string
+  height?: string
   img: string
   img_alt?: string
   url: string
@@ -105,18 +109,19 @@ interface IRecent {
   data_id: string
   member: {
     name: string
-    nickname? : string
+    nickname?: string
     img: string
     img_alt?: string
     url: string
     is_graduate: boolean
+    is_official: boolean
   }
   created_at: string
   live_info: {
     duration: number
     viewers?: {
-      num : number,
-      is_excitement : boolean
+      num: number
+      is_excitement: boolean
     }
     date: {
       start: string
@@ -129,6 +134,53 @@ interface IRecent {
 
 interface IApiRecents {
   recents: IRecent[]
+  page: number
+  perpage: number
+  total_count: number
+}
+
+interface IApiNews {
+  news: JKT48.News[]
+  page: number
+  perpage: number
+  total_count: number
+}
+
+interface JKT48MemberExtend extends JKT48.Member {
+  img?: string
+  url_key?: string
+}
+
+interface IApiTheaterDetail {
+  id: string
+  title: string
+  url: string
+  setlist?: JKT48.Setlist
+  members: JKT48MemberExtend[]
+  seitansai: Member[]
+  date: Date
+  team: {
+    id: string
+    img: string
+  }
+}
+
+interface IApiTheaterDetailList {
+  shows: IApiTheaterDetail[]
+  date: string
+}
+
+interface IApiGifts {
+  gifts: IUserGiftList[]
+  users: IFansCompact[]
+  search: string
+  page: number
+  perpage: number
+  total_count: number
+}
+
+interface IApiSchedule {
+  schedules: JKT48.Schedule[]
   page: number
   perpage: number
   total_count: number
@@ -237,6 +289,7 @@ interface MenuItem {
   url: string
   mobile: boolean
   login?: boolean
+  group?: Group
   icon: string
   admin?: true
   activeIcon: string

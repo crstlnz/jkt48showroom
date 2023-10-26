@@ -50,8 +50,8 @@ sort:
   shortestduration: Durasi Tercepat
   apply: Terapkan
   order:
-    asc: 'Ascending'
-    desc: 'Descending'
+    asc: Ascending
+    desc: Descending
 data:
   notenough: Data yang tersedia tidak cukup 🥲
   nomore: Tidak ada data lagi :(
@@ -83,7 +83,7 @@ date:
   end: Selesai
   started: Mulai dari {date}
 stats:
-  all: 'Semua'
+  all: Semua
   title: Statistik
   weekly: 7 Hari
   monthly: 4 Minggu
@@ -165,3 +165,8 @@ tabview:
   ranks: Ranking user
   gift_log: Sejarah hadiah
   gift_list: Daftar hadiah
+news: News
+schedule: Events
+today: Hari ini
+noresult: Tidak ada hasil dengan pencarian
+total_member: Jumlah member

@@ -8,8 +8,7 @@ export default defineNuxtConfig({
       security: {
         rateLimiter: {
           tokensPerInterval: 120,
-          interval: 'minute',
-          fireImmediately: false,
+          interval: 60000,
         },
       },
     },
@@ -19,8 +18,7 @@ export default defineNuxtConfig({
       security: {
         rateLimiter: {
           tokensPerInterval: 80,
-          interval: 'minute',
-          fireImmediately: false,
+          interval: 60000,
         },
       },
     },
@@ -34,7 +32,6 @@ export default defineNuxtConfig({
         rateLimiter: {
           tokensPerInterval: 30,
           interval: 'minute',
-          fireImmediately: false,
         },
       },
     },
@@ -46,7 +43,6 @@ export default defineNuxtConfig({
         rateLimiter: {
           tokensPerInterval: 15,
           interval: 'minute',
-          fireImmediately: false,
         },
       },
     },
@@ -111,7 +107,6 @@ export default defineNuxtConfig({
     // '@vite-pwa/nuxt',
     'dayjs-nuxt',
     'nuxt-gtag',
-    '@nuxt/devtools',
     '@sidebase/nuxt-auth',
     '@nuxtjs/device',
     'nuxt-icon',
@@ -119,12 +114,7 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     '@vueuse/nuxt',
     '@nuxtjs/i18n',
-    [
-      '@pinia/nuxt',
-      {
-        autoImports: ['storeToRefs', 'defineStore', 'acceptHMRUpdate', 'skipHydrate'],
-      },
-    ],
+    '@pinia/nuxt',
   ],
   security: {
     headers: false,
@@ -134,20 +124,21 @@ export default defineNuxtConfig({
       methods: '*',
       credentials: true,
     },
-    // rateLimiter: {
-    //   tokensPerInterval: 80,
-    //   interval: 'minute',
-    //   fireImmediately: false,
-    //   throwError: true,
-    // },
+    xssValidator: false,
+    rateLimiter: {
+      tokensPerInterval: 80,
+      interval: 60000,
+      throwError: true,
+      headers: true,
+    },
     requestSizeLimiter: {
-      maxRequestSizeInBytes: 3000000,
-      maxUploadFileRequestInBytes: 12000000,
+      maxRequestSizeInBytes: 15000000,
+      maxUploadFileRequestInBytes: 30000000,
     },
   },
   dayjs: {
     locales: ['en', 'id'],
-    plugins: ['relativeTime', 'utc', 'timezone', 'duration', 'localeData', 'localizedFormat'],
+    plugins: ['relativeTime', 'utc', 'timezone', 'duration', 'localeData', 'localizedFormat', 'customParseFormat', 'isToday'],
     defaultLocale: 'en',
     defaultTimezone: 'Asia/Jakarta',
   },
@@ -195,10 +186,10 @@ export default defineNuxtConfig({
   nitro: {
     compressPublicAssets: true,
   },
-  devtools: {
-    enabled: true,
-    timeline: {
-      enabled: true,
-    },
-  },
+  // devtools: {
+  //   enabled: true,
+  //   timeline: {
+  //     enabled: true,
+  //   },
+  // },
 })

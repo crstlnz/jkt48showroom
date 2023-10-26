@@ -160,7 +160,7 @@ onMounted(() => {
         class="w-full bg-transparent py-3 outline-none"
         @keyup.enter="() => { if (isEnabled) apply() }"
       >
-      <button v-if="search != null && search !== ''" type="button" aria-label="Clear" class="hidden h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-500 text-white group-focus-within:flex" @click="clearSearch">
+      <button v-if="search != null && search !== ''" type="button" aria-label="Clear" class="hidden h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-500 text-white group-focus-within:flex group-hover:flex" @click="clearSearch">
         <Icon name="ic:round-close" class="h-full w-full p-1" />
       </button>
     </div>

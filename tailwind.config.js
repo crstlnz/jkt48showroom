@@ -31,21 +31,19 @@ module.exports = {
       },
     },
   },
-  plugins: [require('@headlessui/tailwindcss'),
-    ({ addBase, addComponents, addUtilities }) => {
-      const css = readFileSync('./assets/css/tailwindcss.css', 'utf8')
-      const root = postcss.parse(css)
-      const jss = postcssJs.objectify(root)
+  plugins: [require('@headlessui/tailwindcss'), ({ addBase, addComponents, addUtilities }) => {
+    const css = readFileSync('./assets/css/tailwindcss.css', 'utf8')
+    const root = postcss.parse(css)
+    const jss = postcssJs.objectify(root)
 
-      if ('@layer base' in jss) {
-        addBase(jss['@layer base'])
-      }
-      if ('@layer components' in jss) {
-        addComponents(jss['@layer components'])
-      }
-      if ('@layer utilities' in jss) {
-        addUtilities(jss['@layer utilities'])
-      }
-    },
-  ],
+    if ('@layer base' in jss) {
+      addBase(jss['@layer base'])
+    }
+    if ('@layer components' in jss) {
+      addComponents(jss['@layer components'])
+    }
+    if ('@layer utilities' in jss) {
+      addUtilities(jss['@layer utilities'])
+    }
+  }],
 }

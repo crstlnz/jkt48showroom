@@ -1,5 +1,5 @@
 enum GameState {
   IDLE,
   STARTED,
-  FINISHED
+  FINISHED,
 }

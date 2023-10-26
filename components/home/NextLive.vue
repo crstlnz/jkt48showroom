@@ -24,7 +24,7 @@ const mustLoading = ref(false)
       class="flex aspect-square flex-col items-center justify-center space-y-6 text-center md:space-y-8 xl:space-y-10"
     >
       <img
-        src="/svg/schedule.svg"
+        :src="`${$cloudinaryURL}/assets/svg/web/schedule.svg`"
         alt="Empty"
         class="mx-auto aspect-square w-[50%] max-w-[400px] dark:brightness-110"
       >

@@ -114,7 +114,7 @@ export async function getRecents(qq: any = null): Promise<IApiRecents> {
       .limit(perpage)
       .populate({
         path: 'room_info',
-        select: '-_id name img url -room_id member_data',
+        select: '-_id name img url -room_id member_data img_square is_group',
         populate: {
           path: 'member_data',
           select: '-_id isGraduate img nicknames',
@@ -131,10 +131,11 @@ export async function getRecents(qq: any = null): Promise<IApiRecents> {
       member: {
         name: i.room_info?.name ?? 'Member not Found!',
         nickname: i.room_info?.member_data?.nicknames[0] || undefined,
-        img_alt: i.room_info?.member_data?.img ?? i.room_info?.img ?? config.errorPicture,
+        img_alt: i.room_info?.member_data?.img ?? i.room_info?.img_square ?? i.room_info?.img ?? config.errorPicture,
         img: i.room_info?.img ?? config.errorPicture,
         url: i.room_info?.url ?? '',
-        is_graduate: i.room_info?.member_data?.isGraduate ?? i.room_id === 332503,
+        is_graduate: i.room_info?.is_group ? false : (i.room_info?.member_data?.isGraduate ?? i.room_id === 332503),
+        is_official: i.room_info?.is_group ?? false,
       },
       created_at: i.created_at.toISOString(),
       live_info: {

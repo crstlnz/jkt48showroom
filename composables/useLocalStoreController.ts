@@ -44,14 +44,14 @@ class ExtendedSerializer<T> implements Serializer<DataValue<T> | null> {
 }
 
 /**
-  * @param id The id of localstorage.
-  * @param fetchData A function for fetching the data.
-  * @param opts Custom options of the controller.
-  * @param opts.expiredIn Data expired in milliseconds. Set to 0 for no expire.
-  * @param opts.fetch A promise or function to get the data for refresh fn
-  * @param opts.isValid Custom valid check
-  * @param opts.serializer Custom serializer to serialize data
-  */
+ * @param id The id of localstorage.
+ * @param fetchData A function for fetching the data.
+ * @param opts Custom options of the controller.
+ * @param opts.expiredIn Data expired in milliseconds. Set to 0 for no expire.
+ * @param opts.fetch A promise or function to get the data for refresh fn
+ * @param opts.isValid Custom valid check
+ * @param opts.serializer Custom serializer to serialize data
+ */
 export default function<T> (
   id: string,
   opts?: LocalStoreControllerOptions<T>,

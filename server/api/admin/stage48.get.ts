@@ -6,8 +6,8 @@ export default defineEventHandler(async (event): Promise<Admin.I48Member[]> => {
   const group = (query.group == null) ? 'jkt48' : ['jkt48', 'hinatazaka46'].includes(String(query.group)) ? String(query.group) : null
   return await getStage48Members(group)
 })
-// const group =
-const time = 1000 // 1 hour
+
+const time = 1000
 async function getStage48Members(group: string | null = null): Promise<Admin.I48Member[]> {
   return await cache.fetch<Admin.I48Member[]>(group ? `${group}-stage48-raw` : 'stage48-raw', () => fetchData(group), time).catch(() => [])
 }

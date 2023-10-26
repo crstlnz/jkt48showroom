@@ -35,7 +35,7 @@ moreinfo: More info
 viewprofile: View Profile
 fansgift: Fans Gift
 sort:
-  title: 'Sort'
+  title: Sort
   gift: Gift
   duration: Duration
   date: Date
@@ -50,8 +50,8 @@ sort:
   shortestduration: Shortest Duration
   apply: Apply
   order:
-    asc: 'Ascending'
-    desc: 'Descending'
+    asc: Ascending
+    desc: Descending
 data:
   notenough: Not enough data available 🥲
   nomore: No more data :(
@@ -79,11 +79,11 @@ srview:
     animation: Animation
 search: Search
 date:
-  start: Start
-  end: End
+  start: Date Start
+  end: Date End
   started: Started from {date}
 stats:
-  all: 'All'
+  all: All
   title: Statistics
   weekly: 7 Days
   monthly: 4 Weeks
@@ -165,3 +165,8 @@ tabview:
   ranks: User ranks
   gift_log: Gift logs
   gift_list: Gift lists
+news: News
+schedule: Events
+today: Today
+noresult: No query result for
+total_member: Participating members

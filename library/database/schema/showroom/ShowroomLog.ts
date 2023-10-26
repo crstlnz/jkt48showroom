@@ -26,6 +26,10 @@ const showroomLogSchema = new Schema<Database.IShowroomLog, IShowroomLogModel>({
     unique: true,
   },
   live_info: {
+    is_premium: {
+      type: Boolean,
+      default: false,
+    },
     live_type: Number,
     comments: {
       num: Number,
@@ -178,6 +182,7 @@ showroomLogSchema.virtual('user_list', {
 })
 
 showroomLogSchema.statics.getDetails = async function (dataId: string | number): Promise<Database.IShowroomLogDetail | null> {
+  const per_page = config.gift_perpage
   const doc = await this.findOne({ data_id: dataId })
     .populate({
       path: 'user_list',
@@ -186,10 +191,10 @@ showroomLogSchema.statics.getDetails = async function (dataId: string | number):
     .populate({
       path: 'room_info',
       options: {
-        select: '-_id name img url -room_id member_data is_group generation group',
+        select: '-_id name img url -room_id member_data is_group generation group img_square',
         populate: {
           path: 'member_data',
-          select: 'img isGraduate banner jikosokai',
+          select: 'img isGraduate banner jikosokai name nicknames',
         },
       },
     })
@@ -201,13 +206,54 @@ showroomLogSchema.statics.getDetails = async function (dataId: string | number):
 
   if (!doc) return null
 
-  const data = await StageList.findOne({ data_id: dataId }).lean()
+  const stageListData = await StageList.findOne({ data_id: dataId }).lean()
+
+  const userMap = new Map<number, Database.IFansCompact>()
+  const selectedUser = new Map<number, Database.IFansCompact>()
+
+  const users = doc.users?.map(u => ({
+    id: u.user_id,
+    avatar_id: u.avatar_id,
+    name: u.name,
+  }))
+
+  for (const usr of users) {
+    userMap.set(usr.id, usr)
+  }
+
+  const giftLog = doc.gift_data?.gift_log?.map(i => ({
+    total: i.total,
+    user_id: i.user_id,
+    gifts: i.gifts?.map(g => ({
+      id: g.gift_id,
+      num: g.num,
+      date: g.date.toISOString(),
+    })),
+  })).sort((a, b) => b.total - a.total).slice(0, per_page) // for saving bandwidth
+
+  for (const stageList of (stageListData?.stage_list ?? [])) {
+    for (const userId of stageList.list) {
+      const u = userMap.get(userId)
+      if (u) {
+        selectedUser.set(userId, u)
+      }
+    }
+  }
+
+  for (const giftData of giftLog) {
+    const u = userMap.get(giftData.user_id)
+    if (u) {
+      selectedUser.set(u.id, u)
+    }
+  }
 
   return {
     data_id: doc.data_id,
     live_id: doc.live_id,
     room_info: {
       name: doc.room_info?.name ?? 'Member not found!',
+      nickname: doc.room_info?.member_data?.nicknames?.[0],
+      fullname: doc.room_info?.member_data?.name,
       img: doc.room_info?.img ?? config.errorPicture,
       img_alt: doc.room_info?.member_data?.img ?? doc.room_info?.img_square,
       url: doc.room_info?.url ?? '',
@@ -228,7 +274,7 @@ showroomLogSchema.statics.getDetails = async function (dataId: string | number):
       //     date: i.date,
       //     list: i.list,
       //   })) ?? [],
-      stage_list: data?.stage_list ?? [],
+      stage_list: stageListData?.stage_list ?? [],
       viewers: {
         num: doc.live_info.viewers?.peak ?? 0,
         active: doc.live_info.viewers?.active ?? 0,
@@ -241,15 +287,8 @@ showroomLogSchema.statics.getDetails = async function (dataId: string | number):
         end: doc.live_info?.end_date.toISOString(),
       },
       gift: {
-        log: doc.gift_data?.gift_log?.map(i => ({
-          total: i.total,
-          user_id: i.user_id,
-          gifts: i.gifts?.map(g => ({
-            id: g.gift_id,
-            num: g.num,
-            date: g.date.toISOString(),
-          })),
-        })).sort((a, b) => b.total - a.total),
+        log: giftLog,
+        next_page: per_page < doc.gift_data?.gift_log?.length,
         list:
           doc.gift_data?.gift_list?.map(g => ({
             id: g.gift_id,
@@ -262,11 +301,7 @@ showroomLogSchema.statics.getDetails = async function (dataId: string | number):
     jpn_rate: doc.jpn_rate,
     room_id: doc.room_id,
     total_point: doc.total_point,
-    users: doc.users?.map(u => ({
-      id: u.user_id,
-      avatar_id: u.avatar_id,
-      name: u.name,
-    })),
+    users: [...selectedUser.values()],
     created_at: doc.created_at.toISOString(),
   }
 }

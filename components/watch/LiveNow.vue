@@ -25,7 +25,7 @@ const data = computed(() => {
           v-if="error"
           class="bg-container flex w-full flex-col items-center justify-center gap-2 rounded-xl pb-5 text-xs shadow-sm md:gap-3 md:text-sm xl:gap-5 xl:pb-8 xl:pt-2"
         >
-          <img class="aspect-square w-72 max-w-[70%]" src="/svg/error.svg">
+          <img class="aspect-square w-72 max-w-[70%]" :src="`${$cloudinaryURL}/assets/svg/web/error.svg`">
           {{ $t("data.failed") }}
         </div>
         <div
@@ -50,7 +50,7 @@ const data = computed(() => {
           class="bg-container flex w-full flex-col items-center justify-center rounded-xl shadow-sm"
         >
           <div class="flex h-[245.5px] flex-col items-center justify-center gap-2 text-center text-xs max-sm:aspect-square sm:h-[230.88px] md:h-[250px] md:gap-3 md:text-sm lg:h-[270.55px] xl:h-[349.2px] 2xl:h-[318px]">
-            <img class="mx-auto w-72 max-w-[80%]" alt="No member onlive" src="/svg/space.svg">
+            <img class="mx-auto w-72 max-w-[80%]" alt="No member onlive" :src="`${$cloudinaryURL}/assets/svg/web/space.svg`">
             <span class="mt-5">{{ $t("nolive") }}</span>
           </div>
         </div>
@@ -71,7 +71,7 @@ const data = computed(() => {
               </div>
               <div v-else class="h-0 flex-1 overflow-y-auto">
                 <div class="flex flex-col items-center justify-center">
-                  <img class="h-32" src="/svg/empty-box.svg">
+                  <img class="h-32" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`">
                 </div>
               </div> -->
     </div>

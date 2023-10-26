@@ -95,7 +95,7 @@ async function fetchScreenshot() {
     try {
       const data = await $fetch('/api/showroom/screenshots', { params: { data_id: props.recent.data_id } })
       screenshots.value = data.list.map((id) => {
-        return `${cloudinaryURL}${data.folder}/${id}.${data.format}`
+        return `${cloudinaryURL}/${data.folder}/${id}.${data.format}`
       })
       startScreenshotSlide()
     }

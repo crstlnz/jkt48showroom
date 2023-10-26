@@ -5,18 +5,19 @@ import cache from '~~/library/utils/cache'
 
 const time = 600000 // 10 minutes
 
-interface ExtendedDetails {
-  fans: IStatFans[]
-  live_info: Omit<Database.IDetailLiveInfo, 'gift'> & { gift: Omit<Database.IGiftsLogData, 'list' | 'free'> & { list: Database.GiftData[] } }
-}
+// type RecentDetail = Omit<Database.IShowroomLogDetail, 'live_info'> & ExtendedDetails
+// interface ExtendedDetails {
+//   fans: IStatFans[]
+//   live_info: Omit<Database.IDetailLiveInfo, 'gift'> & { gift: Omit<Database.IGiftsLogData, 'list' | 'free'> & { list: Database.GiftData[] } }
+// }
 
 export default defineEventHandler(async (event: any) => {
   const dataId = event.context.params?.id
   return await cache
-    .fetch<Database.IShowroomLogDetail & ExtendedDetails>(`recent-${dataId}`, () => getRecent(dataId), time)
+    .fetch<API.IRecentDetail>(`recent-${dataId}`, () => getRecent(dataId), time)
 })
 
-export async function getRecent(id: string): Promise<Omit<Database.IShowroomLogDetail, 'live_info'> & ExtendedDetails> {
+export async function getRecent(id: string): Promise<API.IRecentDetail> {
   const data = await ShowroomLog.getDetails(id)
   if (!data) throw createError({ statusMessage: 'Data not found!', statusCode: 404 })
   const fansRank = calculateFansPoints(data.users, data.live_info?.stage_list ?? [])
@@ -79,9 +80,16 @@ export async function getRecent(id: string): Promise<Omit<Database.IShowroomLogD
     ...data,
     fans: fansRank,
     live_info: {
-      ...data.live_info,
+      duration: data.live_info.duration,
+      comments: data.live_info.comments,
+      viewers: data.live_info.viewers,
+      screenshot: data.live_info.screenshot,
+      background_image: data.live_info.background_image,
+      stage_list: data.live_info.stage_list,
+      date: data.live_info.date,
       gift: {
         log: data.live_info.gift.log,
+        next_page: data.live_info.gift.next_page,
         list: gifts.sort((a, b) => {
           if (a.point === b.point) {
             return a.name < b.name ? -1 : (a.name > b.name ? 1 : 0)

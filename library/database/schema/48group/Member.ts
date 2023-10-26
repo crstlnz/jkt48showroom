@@ -30,6 +30,9 @@ const memberSchema = new Schema<Database.I48Member>({
   jikosokai: {
     type: String,
   },
+  jkt48id: {
+    type: String,
+  },
   generation: String,
   nicknames: [String],
   socials: {

@@ -4,8 +4,8 @@ interface FocusOptions {
 }
 
 /**
- * @param {number} [opts.time=0]  Minimal time before required to trigger.
- * @param {number} [opts.idleTime=60000]  Minimal time before required to trigger.
+ * @param {number} [opts.time]  Minimal time before required to trigger.
+ * @param {number} [opts.idleTime]  Minimal time before required to trigger.
  */
 export default function (opts?: FocusOptions) {
   const time = opts?.time ?? 0

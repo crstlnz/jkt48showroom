@@ -5,7 +5,7 @@ import { LazyImage } from '#components'
 const props = defineProps<{
   member: Admin.IShowroomMember
   stage48members: Database.I48Member[]
-
+  jkt48members: JKT48.Member[]
 }>()
 const emit = defineEmits<{
   (e: 'onDismiss'): void
@@ -208,6 +208,7 @@ const tabList = ref([
                   <MemberFormMemberData
                     v-else
                     :member-data="member?.member_data"
+                    :jkt48members="jkt48members"
                     @on-update="(data) => $emit('onUpdateMember', data)"
                     @on-dismiss="$emit('onDismiss')"
                   />

@@ -8,10 +8,10 @@ export default function (scrollElement: MaybeRef<HTMLElement | null>) {
   }
 
   /**
-     * It scrolls to a target position on the page, with a smooth animation
-     * @param {number} scrollTargetY - The target scrollY property of the window
-     * @param [maxDuration=800] - The maximum duration of the animation in milliseconds.
-     */
+   * It scrolls to a target position on the page, with a smooth animation
+   * @param {number} scrollTargetY - The target scrollY property of the window
+   * @param [maxDuration=800] - The maximum duration of the animation in milliseconds.
+   */
 
   // easeInOutSine
   function ease(x: number): number {

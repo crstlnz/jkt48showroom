@@ -44,7 +44,7 @@ const onLives = useOnLives()
 <template>
   <div class="memberList px-4">
     <div v-if="error">
-      <Error message="Something error :(" img-src="/svg/error.svg" />
+      <Error message="Something error :(" :img-src="`${$cloudinaryURL}/assets/svg/web/error.svg`" />
     </div>
     <div
       v-else-if="pending"

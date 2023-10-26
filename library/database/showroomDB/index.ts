@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+import type { Model } from 'mongoose'
 import mongoose, { Schema } from 'mongoose'
 
 console.log('Connecting Showroom Database...')
@@ -25,4 +25,8 @@ const stageListSchema = new Schema<Database.IStageListItem>({
 })
 
 const StageList = connection.model('StageList', stageListSchema)
-export { connection, StageList }
+
+function convertDB<T>(model: Model<T>): Model<T> {
+  return connection.model<T>(model.modelName, model.schema)
+}
+export { connection, StageList, convertDB }

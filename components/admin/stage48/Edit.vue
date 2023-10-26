@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 const props = defineProps<{
   stage48member: Admin.I48Member
+  jkt48members: JKT48.Member[]
 
 }>()
 const emit = defineEmits<{
@@ -101,6 +102,7 @@ const tabList = ref([
             <div class="mt-4">
               <MemberFormMemberData
                 :member-data="stage48member"
+                :jkt48members="jkt48members"
                 @on-update="(data) => $emit('onUpdateMember', data)"
                 @on-dismiss="$emit('onDismiss')"
               />

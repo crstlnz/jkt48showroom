@@ -40,20 +40,20 @@ function calculateSticky() {
       stickyElement.value.style.top = `${stickyContainer.value.offsetTop}px`
     }
     else
-    if (window.scrollY > pos) {
-      marginElement.value.style.marginTop = `${rect.top - containerRect.top}px`
-      if (scrollState.value === 'down') return
-      scrollState.value = 'down'
-      stickyElement.value.style.top = `-${stickyElement.value.clientHeight - height.value + padding}px`
-      stickyElement.value.style.bottom = ''
-    }
-    else {
-      if (scrollState.value === 'up') return
-      marginElement.value.style.marginTop = `${rect.top - containerRect.top}px`
-      scrollState.value = 'up'
-      stickyElement.value.style.top = ''
-      stickyElement.value.style.bottom = `-${stickyElement.value.clientHeight - height.value + stickyContainer.value.offsetTop}px`
-    }
+      if (window.scrollY > pos) {
+        marginElement.value.style.marginTop = `${rect.top - containerRect.top}px`
+        if (scrollState.value === 'down') return
+        scrollState.value = 'down'
+        stickyElement.value.style.top = `-${stickyElement.value.clientHeight - height.value + padding}px`
+        stickyElement.value.style.bottom = ''
+      }
+      else {
+        if (scrollState.value === 'up') return
+        marginElement.value.style.marginTop = `${rect.top - containerRect.top}px`
+        scrollState.value = 'up'
+        stickyElement.value.style.top = ''
+        stickyElement.value.style.bottom = `-${stickyElement.value.clientHeight - height.value + stickyContainer.value.offsetTop}px`
+      }
   }
 }
 

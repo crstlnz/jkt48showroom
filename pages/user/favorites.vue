@@ -12,7 +12,7 @@ const { data, pending, error } = useFetch('/api/user/like_list')
         <PulseRecentDetailCard />
       </div>
       <div v-else-if="error">
-        <Error :message="$t('data.error')" img-src="/svg/error.svg" :redirect-msg="$t('backtohome')" />
+        <Error :message="$t('data.error')" :img-src="`${$cloudinaryURL}/assets/svg/web/error.svg`" :redirect-msg="$t('backtohome')" />
       </div>
       <div v-else-if="!data?.live.length">
         <Error :message="$t('data.nodata')" img-src="/svg/ufo.svg" :redirect-msg="$t('backtohome')" />

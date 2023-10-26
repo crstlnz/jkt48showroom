@@ -54,13 +54,13 @@ useEventListener(document, 'scroll', () => {
 <template>
   <div class="relative min-h-[100vh] min-w-0 flex-1 border-r pb-20 dark:border-zinc-700">
     <div ref="navBar" :class="{ '-translate-y-full': !navShow }" :style="{ top: 0 }" class="disable-highlight sticky  top-0 z-nav flex h-16 w-full cursor-pointer items-center gap-3 px-4 text-2xl transition-[transform] duration-500 ">
-      <div class="bg-navbar absolute inset-0 backdrop-blur-md" />
+      <div class="bg-navbar absolute inset-0 -z-10 backdrop-blur-md" />
       <button v-if="showBack" type="button" aria-label="Back" class="relative h-10 w-10 rounded-full transition-[background-color] hover:bg-hover" @click="back">
         <Icon name="material-symbols:arrow-back-rounded" class="absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2" />
       </button>
       <div class="flex flex-1 cursor-pointer flex-col justify-center self-stretch" @click="scrollTop">
         <div class="relative flex items-center justify-between">
-          <div class="truncate font-semibold md:ml-2 xl:ml-3">
+          <div class="w-0 flex-1 truncate font-semibold md:ml-2 xl:ml-3">
             {{ title ?? 'Missing Title' }}
           </div>
           <div v-if="enableSearch" class="pointer-events-none inset-x-0 max-sm:absolute">

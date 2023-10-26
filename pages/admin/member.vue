@@ -8,6 +8,7 @@ definePageMeta({ middleware: 'admin' })
 
 const config = useAppConfig()
 const { pending, data } = useFetch('/api/admin/members?group=all')
+const { data: jkt48members, pending: jktPending, data: jktData } = useFetch('/api/admin/jkt48members')
 const { data: stage48members, refresh: refreshStage48List } = useFetch('/api/admin/stage48?group=all')
 
 const membersRaw = ref<Admin.IShowroomMember[]>([])
@@ -139,6 +140,7 @@ function toggleGen(key: string) {
           v-if="editMember"
           :member="editMember"
           :stage48members="(stage48members as any) ?? []"
+          :jkt48members="(jkt48members as any) ?? []"
           @on-update-showroom="onUpdateShowroom"
           @on-update-member="(data) => {
             if (editMember)

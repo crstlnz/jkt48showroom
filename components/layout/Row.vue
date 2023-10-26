@@ -58,11 +58,11 @@ const container = ref<HTMLElement>()
         <button v-if="showBack" type="button" aria-label="Back" class="relative h-10 w-10 rounded-full transition-[background-color] hover:bg-hover" @click="back">
           <Icon name="material-symbols:arrow-back-rounded" class="absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2" />
         </button>
-        <div class="z-nav flex min-w-0 flex-1 cursor-pointer flex-col justify-center self-stretch" @click="scrollTop">
+        <div class="z-nav flex w-0 flex-1 cursor-pointer flex-col justify-center self-stretch" @click="scrollTop">
           <div class="truncate font-semibold md:ml-2 xl:ml-3">
             {{ title ?? 'Missing Title' }}
           </div>
-          <div v-if="subTitle" class="text-base font-light">
+          <div v-if="subTitle" class="truncate text-base font-light">
             {{ subTitle }}
           </div>
         </div>
@@ -75,7 +75,7 @@ const container = ref<HTMLElement>()
     <LayoutSticky v-if="!isMobile || (isMobile && mobileSide)" class="px-3 md:px-4 xl:w-[320px] 2xl:w-[350px]" stop-sticky="xl">
       <div class="flex w-full flex-col gap-4">
         <slot name="sidebar" />
-        <footer class="flex items-center pb-10 text-sm text-slate-600 dark:text-zinc-300/50">
+        <footer class="mt-4 flex items-center pb-10 text-sm text-slate-600 dark:text-zinc-300/50">
           <a target="_blank" href="https://twitter.com/crstlnz">@crstlnz</a>
         </footer>
       </div>

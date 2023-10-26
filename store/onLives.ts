@@ -25,7 +25,7 @@ export const useOnLives = defineStore('onLives', () => {
       return await $fetch('/api/showroom/now_live', { query: { group: settings.group, _: new Date().getTime() } })
     }
     else {
-      // return await $fetch(`/api/showroom/now_live?_=${new Date().getTime()}`, { query: { group: settings.group } })
+      return await $fetch(`/api/showroom/now_live?_=${new Date().getTime()}`, { query: { group: settings.group } })
       // TODO remove this
       const data = await $fetch('/api/showroom/onlives')
       const re = (data.onlives[0]?.lives ?? []).splice(0, 3).map((i) => {

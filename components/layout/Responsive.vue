@@ -63,8 +63,8 @@ function toggleDark() {
 
 <template>
   <SplashScreen>
-    <component :is="!isMobile ? (isSmall ? MobileLayout : DesktopLayout) : MobileLayout" :menus="menus" @toggle-dark="toggleDark()">
+    <Component :is="!isMobile ? (isSmall ? MobileLayout : DesktopLayout) : MobileLayout" :menus="menus" @toggle-dark="toggleDark()">
       <slot />
-    </component>
+    </Component>
   </SplashScreen>
 </template>

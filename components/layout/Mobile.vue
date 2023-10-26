@@ -2,6 +2,7 @@
 import { useScrollLock } from '@vueuse/core'
 import { useUser } from '~/store/user'
 import { LazyImage } from '#components'
+import { useSettings } from '~/store/settings'
 
 const props = defineProps<{
   menus: MenuItem[]
@@ -16,14 +17,15 @@ watch(() => route.path, () => {
 })
 
 const { authenticated, user, status } = useUser()
+const settings = useSettings()
 const menus = computed(() => {
   return props.menus.filter(i =>
-    i.mobile && (!i.login || authenticated) && (!i.admin || user.isAdmin))
+    i.mobile && (!i.login || authenticated) && (!i.admin || user.isAdmin) && (!i.group || i.group === settings.group || i.group === 'all'))
 })
 
 const hiddenMenus = computed(() => {
   return props.menus.filter(i =>
-    !i.mobile && (!i.login || authenticated) && (!i.admin || user.isAdmin))
+    !i.mobile && (!i.login || authenticated) && (!i.admin || user.isAdmin) && (!i.group || i.group === settings.group || i.group === 'all'))
 })
 
 const el = ref<HTMLElement | null>()

@@ -9,6 +9,9 @@ definePageMeta({ middleware: 'admin' })
         <NuxtLink class="bg-container rounded-3xl px-3.5 py-2 text-sm hover:bg-hover" to="/admin/input/url_data">
           Input Data
         </NuxtLink>
+        <NuxtLink class="bg-container rounded-3xl px-3.5 py-2 text-sm hover:bg-hover" to="/admin/setlist">
+          Setlist
+        </NuxtLink>
         <NuxtLink class="bg-container rounded-3xl px-3.5 py-2 text-sm hover:bg-hover" to="/admin/member">
           Showroom Member
         </NuxtLink>

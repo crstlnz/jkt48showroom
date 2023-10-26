@@ -1,6 +1,9 @@
 import type { MaybeRef } from '@vueuse/core'
 import { get } from '@vueuse/core'
-import moment from '~~/library/utils/moment'
+
+// import moment from '~~/library/utils/moment'
+import dayjs from 'dayjs'
+import 'dayjs/locale/id'
 import timeFormat from '~~/library/plugins/timeFormat'
 
 export default defineNuxtPlugin((nuxtApp) => {
@@ -19,7 +22,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   return {
     provide: {
       fromNow: (date: Date | string | number) => {
-        return computed(() => moment(date).locale(locale.value.code).fromNow())
+        return computed(() => dayjs(date).locale(locale.value.code).fromNow())
       },
       duration,
       // moment,
@@ -27,7 +30,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         return computed(() => {
           const d = get(time)
           if (!d) return null
-          const date = moment(new Date(d).toISOString()).locale(locale.value.code).format('dddd, DD MMMM YYYY')
+          const date = dayjs(new Date(d).toISOString()).locale(locale.value.code).format('dddd, DD MMMM YYYY')
           if (date === 'Invalid date') return null
           return date
         })
@@ -36,7 +39,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         return computed(() => {
           const d = get(time)
           if (!d) return null
-          const date = moment(new Date(d).toISOString()).locale(locale.value.code).format('HH:mm:ss A')
+          const date = dayjs(new Date(d).toISOString()).locale(locale.value.code).format('HH:mm:ss A')
           if (date === 'Invalid date') return null
           return date
         })
@@ -45,21 +48,21 @@ export default defineNuxtPlugin((nuxtApp) => {
         return computed(() => {
           const d = get(time)
           if (!d) return null
-          const date = moment(new Date(d).toISOString()).locale(locale.value.code).format('LLLL')
+          const date = dayjs(new Date(d).toISOString()).locale(locale.value.code).format('LLLL')
           if (date === 'Invalid date') return null
           return date
         })
       },
       formatSR(time: MaybeRef<Date | string | number>) {
         if (!get(time)) return null
-        const date = moment(new Date(get(time)).toISOString()).locale('en').format('h:mm A')
+        const date = dayjs(new Date(get(time)).toISOString()).locale('en').format('h:mm A')
         if (date === 'Invalid date') return null
         return `${date}~`
       },
       toDateString(time: MaybeRef<Date | string | number>) {
         return computed(() => {
           if (!get(time)) return null
-          const date = moment(new Date(get(time)).toISOString()).locale(locale.value.code).format('D MMM YY')
+          const date = dayjs(new Date(get(time)).toISOString()).locale(locale.value.code).format('D MMM YY')
           if (date === 'Invalid date') return null
           return date
         })

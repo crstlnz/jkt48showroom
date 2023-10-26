@@ -23,22 +23,23 @@ declare namespace Database {
   }
 
   interface I48Member {
-    nicknames: string[];
-    name: string;
-    kanji?: string;
-    isGraduate: boolean;
-    group: string;
-    description: string;
-    img: string;
-    stage48: string;
-    banner: string;
-    jikosokai?: string;
-    socials: SocialNetwork[];
-    generation?: string;
-    birthdate? : Date;
+    nicknames: string[]
+    name: string
+    kanji?: string
+    isGraduate: boolean
+    group: string
+    description: string
+    img: string
+    stage48: string
+    banner: string
+    jikosokai?: string
+    jkt48id?: string
+    socials: SocialNetwork[]
+    generation?: string
+    birthdate?: Date
     bloodType?: string
     height?: string
-    showroom_id?: number;
+    showroom_id?: number
   }
 
   interface IShowroomGift {
@@ -71,29 +72,29 @@ declare namespace Database {
     room_exists: boolean
     is_active: boolean
     is_group: boolean
-    generation? : string;
+    generation?: string
     member_data?: I48Member
   }
 
-  interface IMemberProfile {
-    name : string
-    nickname? : string
-    fullname : string
-    description : string
-    img : string
-    img_alt : string
-    banner : string
-    group : string
-    url : string
-    room_id : number
-    jikosokai? : string
-    is_graduate : boolean
-    is_group : boolean
-    socials : SocialNetwork[],
-    generation? : string
-    birthdate? : Date;
-    bloodType? : string
-    height? : string
+  interface IMemberProfile extends IMemberBasicData {
+    name: string
+    nickname?: string
+    fullname: string
+    description: string
+    img: string
+    img_alt: string
+    banner: string
+    group: string
+    url: string
+    room_id: number
+    jikosokai?: string
+    is_graduate: boolean
+    is_group: boolean
+    socials: SocialNetwork[]
+    generation?: string
+    birthdate?: Date
+    bloodType?: string
+    height?: string
   }
 
   interface FreeGift {
@@ -103,12 +104,11 @@ declare namespace Database {
     users: number
   }
 
-  
-  interface Viewers  {
+  interface Viewers {
     active: number
     peak: number
     last: number
-    is_excitement : boolean
+    is_excitement: boolean
   }
 
   interface IShowroomLog {
@@ -119,11 +119,12 @@ declare namespace Database {
     data_id: string
     record_dates: Watcher.RecordDate[]
     live_info: {
+      is_premium: boolean
       comments: IComments
       screenshot?: IScreenshot
       background_image?: string
       // stage_list?: IStage[]
-      viewers : Viewers
+      viewers: Viewers
       penonton?: {
         history: {
           num: number
@@ -161,7 +162,7 @@ declare namespace Database {
         gift_id: number
         num: number
         date: Date
-      }
+      },
     ]
   }
 
@@ -191,16 +192,19 @@ declare namespace Database {
     date: number
   }
 
-  interface IGiftsLogData {
-    log: {
-      total: number
-      user_id: number
-      gifts: {
-        id: number
-        num: number
-        date: string
-      }[]
+  interface IUserGiftList {
+    total: number
+    user_id: number
+    gifts: {
+      id: number
+      num: number
+      date: string
     }[]
+  }
+
+  interface IGiftsLogData {
+    log: IUserGiftList[]
+    next_page: boolean
     list: IGift[]
     free: FreeGift[]
   }
@@ -242,38 +246,41 @@ declare namespace Database {
   }
 
   interface ViewersInfo {
-    num : number
+    num: number
     active: number
-    is_excitement : boolean
+    is_excitement: boolean
   }
 
-
   interface IDetailLiveInfo {
-    duration : number
+    duration: number
     screenshot?: IScreenshot
     comments?: IComments
-    viewers : ViewersInfo
+    viewers: ViewersInfo
     background_image?: string
     stage_list: IStage[]
     date: ILiveDate
     gift: IGiftsLogData
   }
 
+  interface IMemberBasicData {
+    name: string
+    nickname?: string
+    fullname?: string
+    img_alt?: string
+    img: string
+    url: string
+    is_group: boolean
+    is_graduate: boolean
+    banner: string
+    jikosokai: string
+    generation: string
+    group: string
+  }
+
   interface IShowroomLogDetail {
     data_id: string
     live_id?: number
-    room_info: {
-      name: string
-      img_alt?: string
-      img: string
-      url: string
-      is_group: boolean
-      is_graduate: boolean
-      banner : string
-      jikosokai : string
-      generation : string
-      group : string
-    }
+    room_info: IMemberBasicData
     live_info: IDetailLiveInfo
     jpn_rate?: number
     room_id: number
@@ -281,6 +288,7 @@ declare namespace Database {
     users: IFansCompact[]
     created_at: string
   }
+
   interface IShowrooMessage {
     data_id: string
     message_id: string
@@ -293,17 +301,17 @@ declare namespace Database {
   }
 
   interface IShowroomFans {
-    avatar_url : string
-    point : number
-    user_id : number
-    name : string 
-    last_seen? : string
-    image : string
-    avatar_id : number
+    avatar_url: string
+    point: number
+    user_id: number
+    name: string
+    last_seen?: string
+    image: string
+    avatar_id: number
   }
 
   interface IStageListItem {
-    data_id : string
-    stage_list : IStage[]
+    data_id: string
+    stage_list: IStage[]
   }
 }

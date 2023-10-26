@@ -67,9 +67,9 @@ ShowroomSchema.statics.getProfile = async function (key: string): Promise<Databa
   return {
     name: doc.name,
     nickname: doc.member_data?.nicknames?.length ? doc.member_data.nicknames[0] : undefined,
-    fullname: doc.member_data?.name || 'No name!',
+    fullname: doc.member_data?.name ?? doc.name ?? 'No name!',
     img: doc.img,
-    img_alt: doc.member_data?.img ?? doc.img,
+    img_alt: doc.member_data?.img ?? doc.img_square ?? doc.img,
     banner: doc.member_data?.banner ?? '',
     description: doc.description ?? '',
     group: doc.group ?? '',

@@ -1,20 +1,20 @@
 namespace Watch {
 
   interface TelopApi {
-    telops : Telops[],
-    telop : string | null,
-    interval : number
+    telops: Telops[]
+    telop: string | null
+    interval: number
   }
-  
+
   interface Telops {
     color: {
-      r : number,
-      g : number,
-      b : number,
+      r: number
+      g: number
+      b: number
     }
-    live_id: string,
-    text : string,
-    type : string,
+    live_id: string
+    text: string
+    type: string
   }
 
   interface CommentRequest {
@@ -64,7 +64,7 @@ namespace Watch {
   interface WatchData {
     name: string
     started_at: number
-    live_id : number
+    live_id: number
     can_comment: boolean
     room_id: number
     room_url_key: string
@@ -75,11 +75,11 @@ namespace Watch {
     is_live: boolean
     gift_list: ShowroomAPI.Gift[]
     gift_log: ShowroomAPI.GiftLogItem[]
-    user : {
-      id : number,
-      name : string | null,
-      avatar_id : number,
-    },
+    user: {
+      id: number
+      name: string | null
+      avatar_id: number
+    }
     comments: Comment[]
     image: string
   }
@@ -97,13 +97,13 @@ namespace Watch {
   export interface StageList {
     stage_user_list: StageUserList[]
   }
-  
+
   export interface StageUserList {
     order_no: number
     user: User
     rank: number
   }
-  
+
   export interface User {
     avatar_id: number
     badge_type: number
@@ -113,6 +113,6 @@ namespace Watch {
     user_id: number
     image: string
   }
-  
+
   type TabView = 'gift-list' | 'gift-log' | 'ranks' | 'comment'
 }

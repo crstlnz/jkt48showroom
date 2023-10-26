@@ -10,6 +10,7 @@ export default defineEventHandler(async (event) => {
     jikosokai: query.jikosokai,
     group: query.group,
     generation: query.generation,
+    jkt48id: query.jkt48id,
   }
 
   const member = await Member.findOneAndUpdate(

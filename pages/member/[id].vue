@@ -26,11 +26,6 @@ const birth = computed(() => {
 
 const { greaterOrEqual } = useResponsive()
 const isXL = greaterOrEqual('xl')
-const { isLive: checkLive } = useOnLives()
-
-const isLive = computed(() => {
-  return member.value?.room_id ? checkLive(member.value?.room_id || 0) : false
-})
 
 const { $fixCloudinary } = useNuxtApp()
 
@@ -55,62 +50,21 @@ useHead({
       <Icon name="svg-spinners:ring-resize" size="2.5rem" />
     </div>
     <Error v-else-if="error || !member" :message="error ? (error.statusCode === 404 ? $t('error.pagenotfound') : $t('error.unknown')) : $t('error.pagenotfound')" :img-src="!member || error?.statusCode === 404 ? '/svg/404.svg' : '/svg/error.svg'" />
-    <LayoutRow v-else :title="member?.name ?? ''">
-      <template #actionSection>
+    <LayoutRow v-else :title="member?.fullname ?? member?.name ?? ''">
+      <!-- <template #actionSection>
         <NuxtLink target="_blank" :to="$liveURL(member.url)" class="rounded-full bg-blue-500 px-4 py-1.5 text-sm text-white">
           Showroom
         </NuxtLink>
-      </template>
+      </template> -->
       <template #default>
         <div>
           <div v-if="!member" class="flex aspect-video w-full flex-col items-center justify-center">
-            <img class="mx-auto aspect-square w-72 max-w-[80%]" src="/svg/empty-box.svg">
+            <img class="mx-auto aspect-square w-72 max-w-[80%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`">
             <span>{{ $t("data.nodata") }}</span>
           </div>
           <div v-else class="flex flex-col gap-3 md:gap-4">
-            <div class="bg-container aspect-[15/5] w-full md:aspect-[15/3]">
-              <LazyImage :src="member.banner || $getDefaultBanner(member.group)" :alt="`${member.name} banner`" class="h-full w-full" />
-            </div>
-            <div class="-mt-3 flex flex-col gap-3 px-3 md:-mt-4 lg:px-4">
-              <div class="flex">
-                <div class="bg-background relative mt-[-45px] h-[5.3rem] w-[5.3rem] shrink-0 rounded-full 2xl:mt-[-8%] 2xl:h-[15%] 2xl:w-[15%]">
-                  <component :is="isLive ? NuxtLink : 'div'" :to="isLive ? `/watch/${member.url}` : undefined" class="relative m-1 block md:m-1.5">
-                    <div v-if="isLive" class="absolute bottom-[14.5%] right-[14.5%] z-10 h-[15%] w-[15%] translate-x-1/2 translate-y-1/2">
-                      <div class="absolute inset-0 z-10 rounded-full bg-red-500" />
-                      <div class="absolute inset-0 -z-10 animate-ping rounded-full bg-red-500" />
-                    </div>
-                    <LazyImage
-                      :title="isLive ? 'Now Live!' : undefined"
-                      class="aspect-square h-full overflow-hidden rounded-full"
-                      :src="$fixCloudinary(member.img_alt ?? member.img ?? '')"
-                      :alt="`${member.name} Display Picture`"
-                    />
-                  </component>
-                </div>
-                <div class="flex min-w-0 flex-1 items-start justify-end gap-2 pt-2 md:gap-3 md:pt-3">
-                  <NuxtLink v-if="member.generation" :to="`/member?gen=${member.generation}`" class="select-none rounded-full bg-gray-500 px-3 py-1.5 text-sm text-white dark:bg-dark-3">
-                    {{ $parseGeneration(member.generation) || member.generation }}
-                  </NuxtLink>
-                  <div
-                    class="select-none overflow-hidden rounded-full text-center text-sm text-white"
-                  >
-                    <div v-if="member.is_group" class="bg-sky-400 px-3 py-1.5">
-                      Official
-                    </div>
-                    <div v-else-if="member.is_graduate" class="bg-red-500 px-3 py-1.5">
-                      Graduated
-                    </div>
-                    <div v-else class="bg-green-500 px-3 py-1.5">
-                      Active
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="text-2xl font-semibold lg:text-3xl">
-                {{ member.fullname || member.name }}
-              </div>
-            </div>
-            <div class="flex flex-wrap gap-3 px-3 md:px-4 [&>div]:flex-[40%] xl:[&>div]:flex-[20%]">
+            <MemberProfileBanner :room-id="member.room_id" :member="member as Database.IMemberBasicData" />
+            <div v-if="birth || member.bloodType || member.height" class="flex flex-wrap gap-3 px-3 md:px-4 [&>div]:flex-[40%] xl:[&>div]:flex-[20%]">
               <div v-if="birth" class="bg-container flex flex-col gap-1 rounded-xl px-4 py-3 md:gap-2">
                 <div class="flex items-center gap-2">
                   <Icon name="twemoji:birthday-cake" size="1.2rem" />
@@ -129,7 +83,7 @@ useHead({
                   {{ $t(`horoscope.${birth.horoscope.toLowerCase()}`) }}
                 </div>
               </div>
-              <div class="bg-container flex flex-col gap-1 rounded-xl px-4 py-3 md:gap-2">
+              <div v-if="member.bloodType" class="bg-container flex flex-col gap-1 rounded-xl px-4 py-3 md:gap-2">
                 <div class="flex items-center gap-2 ">
                   <div class="relative">
                     <Icon name="ic:sharp-bloodtype" size="1.2rem" class="text-red-500" />
@@ -141,7 +95,7 @@ useHead({
                   {{ member.bloodType }}
                 </div>
               </div>
-              <div class="bg-container flex flex-col gap-1 rounded-xl px-4 py-3 md:gap-2">
+              <div v-if="member.height" class="bg-container flex flex-col gap-1 rounded-xl px-4 py-3 md:gap-2">
                 <div class="flex items-center gap-2">
                   <Icon name="solar:ruler-pen-bold" size="1.2rem" class="text-yellow-500" />
                   <span class="text-sm font-semibold">{{ $t("height") }}</span>
@@ -183,7 +137,7 @@ useHead({
                     <Icon name="solar:ranking-bold-duotone" class="text-yellow-500" />
                     <span>Summary Ranking</span>
                   </div>
-                  <img class="mx-auto aspect-square w-72 max-w-[80%]" src="/svg/empty-box.svg">
+                  <img class="mx-auto aspect-square w-72 max-w-[80%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`">
                   <span>{{ $t("data.nodata") }}</span>
                 </div>
                 <SummaryRanking v-else :room-id="member?.room_id" class="xl:mt-5" />
@@ -201,7 +155,7 @@ useHead({
               <Icon name="solar:ranking-bold-duotone" class="text-yellow-500" />
               <span>Summary Ranking</span>
             </div>
-            <img class="mx-auto aspect-square w-72 max-w-[80%]" src="/svg/empty-box.svg">
+            <img class="mx-auto aspect-square w-72 max-w-[80%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`">
             <span>{{ $t("data.nodata") }}</span>
           </div>
           <SummaryRanking v-else :room-id="member?.room_id" />

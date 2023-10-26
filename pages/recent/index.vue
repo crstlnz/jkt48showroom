@@ -28,23 +28,6 @@ const { checkTrigger } = useInfiniteScroll(
   { distance: 120 },
 )
 
-// function toggleFilter() {
-//   if (filterOpen.value) {
-//     closeFilter()
-//   }
-//   else {
-//     openFilter()
-//   }
-// }
-
-// function openFilter() {
-//   filterOpen.value = true
-// }
-
-// function closeFilter() {
-//   filterOpen.value = false
-// }
-
 function applyFilter(filter: any) {
   setFilter(filter)
   isEnded.value = false
@@ -237,8 +220,8 @@ const recentHeight = computed(() => {
         >
           <div class="space-y-5">
             <div class="mx-auto w-4/5 lg:w-[350px]">
-              <img v-if="error" src="/img/security-error.png" alt="An Error Occured!" class="mx-auto w-full">
-              <img v-else src="/img/empty-box.png" alt="Empty!" class="mx-auto w-full">
+              <img v-if="error" :src="`${$cloudinaryURL}/assets/img/web/security-error.png`" alt="An Error Occured!" class="mx-auto w-full">
+              <img v-else :src="`${$cloudinaryURL}/assets/img/web/empty-box.png`" alt="Empty!" class="mx-auto w-full">
             </div>
             <div v-if="error">
               <h2 class="mb-1 text-xl lg:text-3xl">

@@ -8,8 +8,7 @@ const props = withDefaults(defineProps<{
   hour?: boolean
   minute?: boolean
   second?: boolean
-}>(),
-{
+}>(), {
   year: false,
   month: false,
   day: false,

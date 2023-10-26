@@ -81,7 +81,7 @@ class ScreenshotManager {
   loadScreenshots(setSS = false) {
     this.isLoaded = true
     for (const id of this.ids) {
-      const url = `${cloudinaryURL}${this.folder}/${id}.${this.format}`
+      const url = `${cloudinaryURL}/${this.folder}/${id}.${this.format}`
       this.list.set(
         id,
         CanvasUtil.createImageCallback(url, () => {

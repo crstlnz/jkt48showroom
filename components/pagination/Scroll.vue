@@ -139,7 +139,7 @@ watch(res, (val) => {
     </div>
 
     <div class="relative z-10">
-      <transition name="fade-abs">
+      <Transition name="fade-abs">
         <div v-if="pending && (dataset?.length ?? 0) === 0" key="loading" class="space-y-2 md:space-y-4">
           <PulseRecentDetailCard v-for="index in Array(10).keys()" :key="index" />
         </div>
@@ -149,8 +149,8 @@ watch(res, (val) => {
         >
           <div class="space-y-5">
             <div class="mx-auto w-4/5 lg:w-[350px]">
-              <img v-if="error" src="/img/security-error.png" alt="An Error Occured!" class="mx-auto w-full">
-              <img v-else src="/img/empty-box.png" alt="Empty!" class="mx-auto w-full">
+              <img v-if="error" :src="`${$cloudinaryURL}/assets/img/web/security-error.png`" alt="An Error Occured!" class="mx-auto w-full">
+              <img v-else :src="`${$cloudinaryURL}/assets/img/web/empty-box.png`" alt="Empty!" class="mx-auto w-full">
             </div>
             <div v-if="error">
               <h2 class="mb-1 text-xl lg:text-3xl">
@@ -186,14 +186,14 @@ watch(res, (val) => {
             </DynamicScrollerItem>
           </template>
         </DynamicScroller>
-      </transition>
+      </Transition>
     </div>
 
     <div
       class="-z-10 flex h-0 items-center justify-center text-center leading-[5rem] transition-[height] duration-300"
       :class="{ '!h-24': pending, '!h-16': isEnded }"
     >
-      <transition name="fade" mode="out-in">
+      <Transition name="fade" mode="out-in">
         <div v-if="pending" key="spinner" class="lds-ring">
           <div />
           <div />
@@ -203,7 +203,7 @@ watch(res, (val) => {
         <div v-else-if="isEnded" key="nomore">
           {{ $t("data.nomore") }}
         </div>
-      </transition>
+      </Transition>
     </div>
   </LayoutSingleRow>
 </template>

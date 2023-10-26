@@ -18,7 +18,7 @@ const { group } = useSettings()
 </script>
 
 <template>
-  <component
+  <Component
     :is="tag || 'button'"
     class="card relative aspect-[4/6] select-none rounded-2xl transition-[transform] duration-200 active:scale-95 disabled:cursor-not-allowed"
     :class="{
@@ -58,5 +58,5 @@ const { group } = useSettings()
         </div>
       </div>
     </div>
-  </component>
+  </Component>
 </template>

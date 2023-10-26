@@ -11,8 +11,7 @@ class APIError extends Error {
     this.code = status ?? 0
   }
 }
-export async function fetchAPI<T>(url: string,
-  opts: RequestInit | undefined = undefined): Promise<T> {
+export async function fetchAPI<T>(url: string, opts: RequestInit | undefined = undefined): Promise<T> {
   try {
     const res = await fetch(url, opts)
     if (!res.ok) throw new APIError(res.statusText, res.status)

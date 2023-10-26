@@ -161,7 +161,10 @@ function generate(logs: Database.IShowroomLog[], stageListData: Database.IStageL
   if (dateRange) {
     log = logs.filter(i => new Date(i.live_info.start_date).getTime() >= new Date(dateRange.from).getTime() && new Date(i.live_info.start_date).getTime() <= new Date(dateRange.to).getTime())
   }
-  const all = calculateRanks(log, stageListData)
+
+  const filteredStageList = log.length > 0 ? stageListData.filter(i => log.some(z => z.data_id === i.data_id)) : []
+
+  const all = calculateRanks(log, filteredStageList)
   const memberList = all.member.map((i) => {
     return {
       ...i,

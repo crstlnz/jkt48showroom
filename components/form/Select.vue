@@ -21,7 +21,7 @@ defineEmits(['update:modelValue'])
       :value="modelValue" class="rounded-md p-1.5 "
       @input="$emit('update:modelValue', ($event.target as HTMLInputElement)?.value)"
     >
-      <option>
+      <option :value="undefined">
         No data
       </option>
       <option v-for="m in data" :key="m.value" :value="m.value">

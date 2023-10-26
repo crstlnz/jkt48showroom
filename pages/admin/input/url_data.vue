@@ -7,7 +7,8 @@ definePageMeta({
 
 const roomId = ref()
 const liveId = ref()
-const penonton = ref()
+const excitement = ref()
+const penontonAktif = ref()
 const dateStart = ref()
 const dateEnd = ref()
 const comments = ref()
@@ -26,7 +27,8 @@ async function submit() {
   const formData = new FormData()
   formData.append('roomId', roomId.value ?? '')
   formData.append('liveId', liveId.value ?? '')
-  formData.append('penonton', penonton.value ?? '')
+  formData.append('excitement', excitement.value ?? '')
+  formData.append('penontonAktif', penontonAktif.value ?? '')
   formData.append('dateStart', dateStart.value ?? '')
   formData.append('dateEnd', dateEnd.value ?? '')
   formData.append('comments', comments.value ?? '')
@@ -35,32 +37,34 @@ async function submit() {
   const gifts = (formFields.value?.elements as any).gifts
   formData.append('gifts', gifts.files[0])
   try {
-    const { data: response, error } = await useFetch('/api/admin/input/url_data', {
+    const res = await $fetch('/api/admin/input/url_data', {
       method: 'post',
       body: formData,
     })
 
+    setTimeout(() => {
+      location.reload()
+    }, 3000)
+    showDialog({
+      type: 'alert',
+      title: 'Success',
+      duration: 3000,
+      message: `Data berhasil ditambah : ${res?.data_id}`,
+    })
     deleteDialog(id)
-    if (error.value) {
-      showDialog({
-        type: 'alert',
-        title: 'Error',
-        message: String(error.value),
-      })
-    }
-    else {
-      setTimeout(() => {
-        location.reload()
-      }, 3000)
-      showDialog({
-        type: 'alert',
-        title: 'Success',
-        duration: 3000,
-        message: `Data berhasil ditambah : ${response.value?.data_id}`,
-      })
-    }
+    // if (error.value) {
+    //   showDialog({
+    //     type: 'alert',
+    //     title: 'Error',
+    //     message: String(error.value),
+    //   })
+    // }
+    // else {
+
+    // }
   }
   catch (e: any) {
+    deleteDialog(id)
     showDialog({
       type: 'alert',
       title: 'Error',
@@ -76,7 +80,8 @@ async function submit() {
       <form ref="formFields" action="/api/admin/input/url_data" class="flex flex-col gap-3 p-4" enctype="multipart/form-data" method="post">
         <FormNumber v-model="roomId" form-id="roomid" label="Room id" placeholder="Room Id" />
         <FormNumber v-model="liveId" form-id="liveid" label="Live id" placeholder="Live Id" />
-        <FormNumber v-model="penonton" form-id="penonton" label="Penonton" placeholder="Penonton" />
+        <FormNumber v-model="excitement" form-id="excitement" label="Excitement" placeholder="Excitement" />
+        <FormNumber v-model="penontonAktif" form-id="penontonAktif" label="Penonton" placeholder="Penonton Aktif" />
         <div class="space-y-1">
           <div class="pl-2.5">
             Comments

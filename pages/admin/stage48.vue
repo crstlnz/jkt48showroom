@@ -9,6 +9,7 @@ definePageMeta({ middleware: 'admin' })
 const config = useAppConfig()
 // const { pending, data } = useFetch('/api/admin/members?group=all')
 const { data: stage48members, refresh: refreshStage48List, pending } = useFetch('/api/admin/stage48?group=all')
+const { data: jkt48members, pending: jktPending, data: jktData } = useFetch('/api/admin/jkt48members')
 
 const membersRaw = ref<Admin.I48Member[]>([])
 
@@ -119,6 +120,7 @@ function toggleGen(key: string) {
         <AdminStage48Edit
           v-if="editMember"
           :stage48member="editMember"
+          :jkt48members="jkt48members ?? []"
           @on-update-member="onUpdate"
           @on-dismiss="onDismiss"
         />

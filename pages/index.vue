@@ -1,5 +1,8 @@
 <script lang="ts" setup>
+import { useSettings } from '~/store/settings'
+
 const search = ref('')
+const { group } = useSettings()
 function applySearch() {
   if (search.value) {
     navigateTo(`/member?s=${search.value}`)
@@ -33,6 +36,7 @@ const searchInput = ref()
       <HomeBanner class="aspect-[3/1] overflow-hidden shadow-sm lg:aspect-[4.5/1]" />
       <div class="flex flex-col gap-3 md:gap-4">
         <HomeLiveNow />
+        <HomeHorizontalRecents v-if="group === 'jkt48'" />
         <HomeStats />
         <div class="mx-3 flex items-center justify-between md:mx-4 xl:mt-2">
           <div class="flex gap-1">
@@ -75,7 +79,14 @@ const searchInput = ref()
           <Icon name="ic:round-close" class="h-full w-full p-1" />
         </button>
       </div>
-      <HomeContainer :title="$t('page.title.recent')" icon-class="bg-blue-500" more="/recent" more-label="More recents data" :more-text="$t('more')">
+      <!-- <HomeContainer v-if="group === 'jkt48'" :title="$t('schedule')" icon-class="bg-blue-500" more="/schedule" more-label="More schedule" :more-text="$t('more')">
+
+      </HomeContainer> -->
+      <HomeSchedule v-if="group === 'jkt48'" />
+      <HomeContainer v-if="group === 'jkt48'" :title="$t('news')" icon-class="bg-blue-500" more="/news" more-label="More news" :more-text="$t('more')">
+        <HomeNews />
+      </HomeContainer>
+      <HomeContainer v-if="group !== 'jkt48'" :title="$t('page.title.recent')" icon-class="bg-blue-500" more="/recent" more-label="More recents data" :more-text="$t('more')">
         <HomeRecents />
       </HomeContainer>
     </template>

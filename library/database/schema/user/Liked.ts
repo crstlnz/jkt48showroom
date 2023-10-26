@@ -13,9 +13,7 @@ const LikedSchema = new Schema<Database.ILiked, ILikedModel>({
   user_id: String,
   type: Number,
   liked_id: String,
-},
-{ timestamps: true },
-)
+}, { timestamps: true })
 
 LikedSchema.statics.isLiveLiked = async function (user_id: string | number, id: string): Promise<boolean> {
   const doc = await this.findOne({ user_id, liked_id: id, type: 2 }).lean()
@@ -51,9 +49,7 @@ LikedSchema.statics.getDetails = async function (user_id: string | number): Prom
     .select({
       live_info: {
         duration: 1,
-        penonton: {
-          peak: 1,
-        },
+        viewers: 1,
         start_date: 1,
         end_date: 1,
       },
@@ -65,7 +61,7 @@ LikedSchema.statics.getDetails = async function (user_id: string | number): Prom
     })
     .populate({
       path: 'room_info',
-      select: '-_id name img url -room_id member_data',
+      select: '-_id name img url -room_id member_data is_group',
       populate: {
         path: 'member_data',
         select: '-_id isGraduate img',
@@ -81,13 +77,18 @@ LikedSchema.statics.getDetails = async function (user_id: string | number): Prom
       img_alt: i.room_info?.member_data?.img ?? i.room_info?.img ?? config.errorPicture,
       img: i.room_info?.img ?? config.errorPicture,
       url: i.room_info?.url ?? '',
-      is_graduate: i.room_info?.member_data?.isGraduate ?? i.room_id === 332503,
+      is_graduate: i.room_info?.is_group ? false : (i.room_info?.member_data?.isGraduate ?? i.room_id === 332503),
+      is_official: i.room_info?.is_group ?? false,
     },
     created_at: i.created_at.toISOString(),
     live_info: {
       comments: i.live_info?.comments ?? undefined,
       duration: Number(i.live_info?.duration ?? 0),
-      viewers: i.live_info?.viewers?.peak ?? undefined,
+      viewers: {
+        num: i.live_info.viewers?.peak ?? 0,
+        active: i.live_info.viewers?.active ?? 0,
+        is_excitement: i.live_info.viewers?.is_excitement ?? false,
+      },
       date: {
         start: i.live_info.start_date.toISOString(),
         end: i.live_info.end_date.toISOString(),
