@@ -65,6 +65,7 @@
     "nuxt-gtag": "^1.1.1",
     "nuxt-icon": "^0.5.0",
     "nuxt-security": "^1.0.0-rc.2",
+    "pinia": "^2.1.7",
     "sass": "^1.69.4",
     "typescript": "^5.2.2",
     "v-wave": "^1.5.1",
