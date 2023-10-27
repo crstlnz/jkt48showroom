@@ -83,7 +83,7 @@ export default function<T> (
 
   function tryRefresh(...args: unknown[]) {
     if (!fetchData) throw new Error('Fetch function required!')
-    if (!pending.value && !isExpired()) return
+    if (pending.value || !isExpired()) return
     refresh(...args)
   }
 
