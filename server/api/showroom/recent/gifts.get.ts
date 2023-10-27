@@ -10,7 +10,6 @@ export default defineEventHandler(async (event: any) => {
   const page = Number(query.page) || 1
   const search = String(query.s || '') || ''
   const dataId = String(query.data_id)
-  await cache.clear()
   return await cache
     .fetch<IApiGifts>(`giftlist-${dataId}-${page}`, () => getGifts(dataId, search, page), time)
 })

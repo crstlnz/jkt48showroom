@@ -7,7 +7,6 @@ const time = 1
 
 export default defineEventHandler(async (event: any) => {
   const id = event.context.params?.id
-  await cache.clear()
   return await cache
     .fetch<IApiTheaterDetailList>(`theater-${id}`, () => getTheaterDetail(id), time)
 })
