@@ -136,9 +136,6 @@ export default defineNuxtConfig({
       maxUploadFileRequestInBytes: 30000000,
     },
   },
-  alias: {
-    pinia: '/node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia.mjs',
-  },
   dayjs: {
     locales: ['en', 'id'],
     plugins: ['relativeTime', 'utc', 'timezone', 'duration', 'localeData', 'localizedFormat', 'customParseFormat', 'isToday'],

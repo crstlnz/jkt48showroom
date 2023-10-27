@@ -1,8 +1,7 @@
 import News from '~/library/database/showroomDB/jkt48/News'
 import cache from '~~/library/utils/cache'
 
-// const time = 1
-const time = 10000
+const time = 60000
 
 export default defineEventHandler(async (event): Promise<IApiNews> => {
   const query = getQuery(event)
