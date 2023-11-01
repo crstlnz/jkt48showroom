@@ -1,3 +1,4 @@
+import { dbConnect } from '~/library/database'
 import Member from '~~/library/database/schema/48group/Member'
 import cache from '~~/library/utils/cache'
 
@@ -31,6 +32,7 @@ async function fetchData(group: string | null = null): Promise<BirthdayData> {
     isGraduate: false,
   }
   if (group) options.group = group
+  await dbConnect()
   const data = await Member.aggregate([
     {
       $match: {

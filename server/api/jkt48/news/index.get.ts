@@ -1,3 +1,4 @@
+import { dbConnect } from '~/library/database'
 import News from '~/library/database/showroomDB/jkt48/News'
 import cache from '~~/library/utils/cache'
 
@@ -15,6 +16,7 @@ async function getNews(page = 1, perpage = 10): Promise<IApiNews> {
   const maxPage = Math.ceil(total / perpage)
   if (page < 1) page = 1
   if (page > maxPage) page = maxPage
+  await dbConnect(1)
   const news = await News.find({}).limit(10).skip((page - 1) * perpage).sort('-date').select('title date label id').lean()
   return {
     news,

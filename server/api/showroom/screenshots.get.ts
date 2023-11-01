@@ -1,3 +1,4 @@
+import { dbConnect } from '~/library/database'
 import ShowroomLog from '~/library/database/schema/showroom/ShowroomLog'
 import cache from '~~/library/utils/cache'
 
@@ -11,6 +12,7 @@ export default defineEventHandler(
 )
 
 async function fetchData(data_id: string): Promise<Database.IScreenshot> {
+  await dbConnect()
   const data = await ShowroomLog.findOne({ data_id }).select({ 'live_info.screenshot': 1 })
   if (!data?.live_info?.screenshot) {
     throw createError({ statusCode: 404, message: 'Not found!' })

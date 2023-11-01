@@ -1,3 +1,4 @@
+import { dbConnect } from '~/library/database'
 import Showroom from '~~/library/database/schema/showroom/Showroom'
 import cache from '~~/library/utils/cache'
 
@@ -31,6 +32,7 @@ async function fetchData(
   group: string | null = null,
 ): Promise<Admin.IShowroomMember[]> {
   try {
+    await dbConnect()
     const members = await Showroom.find(group ? { group } : {})
       .populate({
         path: 'member_data',

@@ -13,6 +13,7 @@ export default defineEventHandler(async (event) => {
     jkt48id: query.jkt48id,
   }
 
+  await dbConnect()
   const member = await Member.findOneAndUpdate(
     { _id: query._id },
     {
@@ -29,3 +30,6 @@ export default defineEventHandler(async (event) => {
     message: 'Request success!',
   }
 })
+function dbConnect() {
+  throw new Error('Function not implemented.')
+}

@@ -1,3 +1,4 @@
+import { dbConnect } from '~/library/database'
 import Member from '~~/library/database/schema/48group/Member'
 import cache from '~~/library/utils/cache'
 
@@ -14,6 +15,7 @@ export default defineEventHandler(
 
 async function fetchData(group: string | null = null): Promise<ISortMember[]> {
   const options = group ? { group } : {}
+  await dbConnect()
   const data = await Member.find(options)
   if (!data) throw createError({ statusMessage: 'Data not found!', statusCode: 404 })
   return data.map((i) => {

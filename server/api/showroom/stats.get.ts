@@ -4,6 +4,7 @@ import ShowroomLog from '~~/library/database/schema/showroom/ShowroomLog'
 import cache from '~~/library/utils/cache'
 import config from '~~/app.config'
 import { StageList } from '~/library/database/showroomDB'
+import { dbConnect } from '~/library/database'
 
 const fansMaxSize = 50
 const time = 43200000 // 12 hours
@@ -113,6 +114,7 @@ export async function fetchData(type: IDateRangeType | IDateRangeMemberType, gro
       },
     }) as unknown as Database.IShowroomLog[]
 
+  await dbConnect(1)
   const stageListData = await StageList.find({
     data_id: logs.map(i => i.data_id),
   })

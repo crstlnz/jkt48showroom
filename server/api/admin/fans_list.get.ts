@@ -1,7 +1,9 @@
+import { dbConnect } from '~/library/database'
 import ShowroomUser from '~~/library/database/schema/showroom/ShowroomUser'
 
 export default defineEventHandler(async (event): Promise<Database.IShowroomFans[]> => {
   let page = 1
+  await dbConnect()
   const query = getQuery(event)
   const maxPerpage = 30
   if (query.page) page = Number(query.page) ?? 1

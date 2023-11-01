@@ -47,11 +47,6 @@ export default defineNuxtConfig({
       },
     },
   },
-  app: {
-    rootId: 'app',
-    layoutTransition: { name: 'layout', mode: 'out-in' },
-    pageTransition: { name: 'page', mode: 'out-in' },
-  },
   runtimeConfig: {
     admin_ids: (process.env.DISCORD_ADMINS ?? '').trim().split(',').map(i => i.trim()) || [],
     public: {
@@ -100,22 +95,19 @@ export default defineNuxtConfig({
   //     type: 'module',
   //   },
   // },
-  watch: ['~/assets/css/tailwindcss.css'],
   modules: [
-    'floating-vue/nuxt',
     'nuxt-security',
-    // '@vite-pwa/nuxt',
     'dayjs-nuxt',
-    'nuxt-gtag',
     '@sidebase/nuxt-auth',
-    '@nuxtjs/device',
-    'nuxt-icon',
-    '@nuxtjs/tailwindcss',
-    '@nuxtjs/color-mode',
-    '@vueuse/nuxt',
     '@nuxtjs/i18n',
-    '@pinia/nuxt',
+    '@nuxtjs/tailwindcss',
   ],
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
+    },
+  },
   security: {
     headers: false,
     csrf: false,
@@ -141,24 +133,6 @@ export default defineNuxtConfig({
     plugins: ['relativeTime', 'utc', 'timezone', 'duration', 'localeData', 'localizedFormat', 'customParseFormat', 'isToday'],
     defaultLocale: 'en',
     defaultTimezone: 'Asia/Jakarta',
-  },
-  gtag: {
-    id: 'G-C92JVM8CR4',
-    config: {
-      isDev,
-    },
-  },
-  css: ['~/assets/css/fonts.scss', '~/assets/css/style.scss', '~/assets/css/transition.scss'],
-  colorMode: {
-    preference: 'dark',
-    fallback: 'light',
-    classSuffix: '',
-  },
-  postcss: {
-    plugins: {
-      tailwindcss: {},
-      autoprefixer: {},
-    },
   },
   i18n: {
     // baseUrl: process.env.BASE_URL,

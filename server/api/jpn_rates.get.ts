@@ -1,4 +1,5 @@
 import Config from '../../library/database/schema/config/config'
+import { dbConnect } from '~/library/database'
 
 export default defineEventHandler(async (): Promise<number> => {
   return await getJapanRate()
@@ -6,6 +7,7 @@ export default defineEventHandler(async (): Promise<number> => {
 
 async function getJapanRate(): Promise<number> {
   try {
+    await dbConnect()
     const data = await Config.findOne({ configname: 'japan_rate' }).lean()
     return data?.value ?? 106.74
   }

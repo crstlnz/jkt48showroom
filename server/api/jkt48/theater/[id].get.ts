@@ -1,3 +1,4 @@
+import { dbConnect } from '~/library/database'
 import Member from '~/library/database/schema/48group/Member'
 import Theater from '~/library/database/showroomDB/jkt48/Theater'
 import cache from '~~/library/utils/cache'
@@ -12,6 +13,7 @@ export default defineEventHandler(async (event: any) => {
 })
 
 export async function getTheaterDetail(id: string): Promise<IApiTheaterDetailList> {
+  await dbConnect(1)
   const data = await Theater.find({ id: new RegExp(`^${id}`) }).populate<{ members: JKT48.Member[] }>('members').populate<{ setlist: JKT48.Setlist }>('setlist').populate<{ seitansai: JKT48.Member[] }>('seitansai').lean()
   const memberList = data.reduce<JKT48.Member[]>((a, b) => {
     a.push(...b.members)

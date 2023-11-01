@@ -43,7 +43,7 @@ class RedisManager {
   ): Promise<T | WithExpire<T> | null> {
     if (retry > 0) await this.sleep(this.delay)
     try {
-      const expireIn = await redis.pTTL(key as RedisCommandArgument)
+      const expireIn = await redis.ttl(key as RedisCommandArgument)
       if (expireIn <= 0) return null
       const d = await redis.get(key as RedisCommandArgument)
       if (!d) return null
@@ -72,7 +72,7 @@ class RedisManager {
   ): Promise<void> {
     if (retry > 0) await this.sleep(this.delay)
     try {
-      await redis.set(String(key), JSON.stringify(value), { PX: ms })
+      await redis.set(String(key), JSON.stringify(value), 'PX', ms)
     }
     catch (e) {
       if (retry < this.maxRetry) {
@@ -85,7 +85,7 @@ class RedisManager {
   }
 
   async clear() {
-    await redis.flushAll()
+    await redis.flushall()
   }
 }
 

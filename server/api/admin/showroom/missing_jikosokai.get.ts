@@ -1,6 +1,8 @@
+import { dbConnect } from '~/library/database'
 import Showroom from '~~/library/database/schema/showroom/Showroom'
 
 export default defineEventHandler(async (): Promise<MissingJiko[]> => {
+  await dbConnect()
   const member = (await Showroom.find({}).populate({
     path: 'member_data',
   })).filter(i => i.member_data != null && i.member_data?.jikosokai == null).sort((a, b) => {

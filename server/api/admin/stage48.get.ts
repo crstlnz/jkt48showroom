@@ -1,3 +1,4 @@
+import { dbConnect } from '~/library/database'
 import Member from '~~/library/database/schema/48group/Member'
 import cache from '~~/library/utils/cache'
 
@@ -14,6 +15,7 @@ async function getStage48Members(group: string | null = null): Promise<Admin.I48
 
 async function fetchData(group: string | null = null): Promise<Admin.I48Member[]> {
   try {
+    await dbConnect()
     const members: Admin.I48Member[] = await Member.find(group ? { group } : {})
       .lean()
     return members

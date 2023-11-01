@@ -1,3 +1,4 @@
+import { dbConnect } from '~/library/database'
 import News from '~/library/database/showroomDB/jkt48/News'
 import cache from '~~/library/utils/cache'
 
@@ -11,6 +12,7 @@ export default defineEventHandler(async (event): Promise<JKT48.News> => {
 })
 
 async function getNews(id: string): Promise<JKT48.News> {
+  await dbConnect(1)
   return await News.findOne({ id }).orFail().select('title date label id content').lean()
 }
 

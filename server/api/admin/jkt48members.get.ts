@@ -1,3 +1,4 @@
+import { dbConnect } from '~/library/database'
 import Member from '~/library/database/showroomDB/jkt48/Member'
 import cache from '~~/library/utils/cache'
 
@@ -20,6 +21,7 @@ async function getMembers(): Promise<JKT48.Member[]> {
 
 async function fetchData(): Promise<JKT48.Member[]> {
   try {
+    await dbConnect()
     const members = await Member.find({})
       .lean()
 

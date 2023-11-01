@@ -1,3 +1,4 @@
+import { dbConnect } from '~/library/database'
 import Setlist from '~/library/database/showroomDB/jkt48/Setlist'
 import cache from '~~/library/utils/cache'
 
@@ -9,6 +10,7 @@ export default defineEventHandler(async (): Promise<JKT48.Setlist[]> => {
 
 async function fetchData() {
   try {
+    await dbConnect()
     const setlists = await Setlist.find({}).populate('songs').lean()
       .lean()
     return setlists
