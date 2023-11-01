@@ -1,0 +1,189 @@
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.3s ease-in-out !important;
+}
+.fade-enter-from,
+.fade-leave-active {
+    opacity: 0;
+}
+
+.sheet-enter-active,
+.sheet-leave-active {
+    .background {
+        transition: 0.5s ease;
+    }
+    .sheet-content {
+        transition: 0.5s ease;
+    }
+    transition: 0.5s ease;
+}
+
+.sheet-enter-from,
+.sheet-leave-to {
+    .background {
+        opacity: 0;
+    }
+    .sheet-content {
+        transform: translateY(100%) !important;
+    }
+}
+
+.fade-abs,
+.fade-abs-enter-active,
+.fade-abs-leave-active {
+    transition: opacity 0.4s ease;
+}
+
+.fade-abs-enter-from,
+.fade-abs-leave-active {
+    opacity: 0;
+}
+
+.fade-abs-leave-active {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+.height-shrink-enter-active,
+.height-shrink-leave-active {
+    transition: height 0.3s ease;
+    height: 32px;
+}
+
+.height-shrink-enter-from,
+.height-shrink-leave-to {
+    height: 0;
+}
+
+.height-enter-active,
+.height-leave-active {
+    transition:
+        height 0.3s ease,
+        opacity 0.3s ease;
+}
+
+.height-enter-from,
+.height-leave-to {
+    height: 0;
+    opacity: 0;
+}
+
+.scale-enter-active,
+.scale-leave-active {
+    transform: scaleY(1);
+    transition: transform 0.3s ease;
+}
+
+.scale-enter-from,
+.scale-leave-to {
+    transform: scaleY(0);
+}
+
+.expand-enter-active,
+.expand-leave-active {
+    transition: height 1s ease-in-out;
+    overflow: hidden;
+}
+
+.expand-enter,
+.expand-leave-to {
+    height: 0;
+}
+
+.notif-enter-active,
+.notif-leave-active {
+    transition: all 0.5s ease;
+}
+.notif-enter-from,
+.notif-leave-to {
+    opacity: 0;
+    transform: translateX(100%);
+}
+
+@media not all and (min-width: 640px) {
+    .notif-enter-active,
+    .notif-leave-active {
+        transition: all 0.5s ease;
+    }
+    .notif-enter-from,
+    .notif-leave-to {
+        opacity: 0;
+        transform: translateY(100%);
+    }
+}
+
+/// list transition
+.list-move ,/* apply transition to moving elements */
+.list-enter-active,
+.list-leave-active {
+    transition-property: all;
+    transition-duration: 0.6s;
+    transition-timing-function: ease-in-out;
+}
+
+.list-enter-active,
+.list-leave-active {
+    z-index: 0;
+}
+
+.list-enter-from {
+    opacity: 0;
+    transform: translateX(100%);
+}
+
+.list-leave-to {
+    opacity: 0;
+    transition-duration: 0.8s;
+    // transition-timing-function: cubic-bezier(0.14, -0.11, 0.94, -0.555);
+    transform: translateX(100%);
+}
+
+/* ensure leaving items are taken out of layout flow so that moving
+   animations can be calculated correctly. */
+.list-leave-active {
+    position: absolute;
+}
+
+@media not all and (min-width: 640px) {
+    .list-enter-from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    .list-leave-to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
+
+.page-enter-active,
+.page-leave-active {
+    transition-property: opacity, filter;
+    transition-duration: 0.15s;
+    transition-timing-function: ease;
+}
+
+.page-enter-from,
+.page-leave-to {
+    opacity: 0;
+}
+
+// layout transition
+.layout-enter-active,
+.layout-leave-active {
+    transition: all 0.35s;
+}
+.layout-enter-from,
+.layout-leave-to {
+    opacity: 0;
+}
+
+.gamecontrol-enter-active,
+.gamecontrol-leave-active {
+    transition: opacity 0.25s ease-out !important;
+}
+.gamecontrol-enter-from,
+.gamecontrol-leave-active {
+    opacity: 0;
+}

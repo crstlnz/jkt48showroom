@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Disallow: /recent/*
+Disallow: /member/*

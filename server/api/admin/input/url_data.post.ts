@@ -5,7 +5,6 @@ import id from 'dayjs/locale/id'
 import CustomParseFormat from 'dayjs/plugin/customParseFormat'
 import ShowroomLog from '../../../../library/database/schema/showroom/ShowroomLog'
 import { getJapanRate } from '../../jpn_rates.get'
-import { dbConnect } from '~/library/database'
 
 dayjs.extend(CustomParseFormat)
 dayjs.locale({ ...id })
@@ -153,7 +152,6 @@ export default defineEventHandler(
               }),
             }
 
-            await dbConnect()
             await ShowroomLog.updateOne(
               { data_id: dataId },
               {

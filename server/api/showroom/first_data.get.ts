@@ -2,7 +2,6 @@ import { getMembers } from './members.get'
 import ShowroomLog from '~~/library/database/schema/showroom/ShowroomLog'
 import config from '~~/app.config'
 import cache from '~~/library/utils/cache'
-import { dbConnect } from '~/library/database'
 
 export default defineEventHandler(async (event): Promise<string> => {
   const query = getQuery(event)
@@ -17,7 +16,6 @@ async function getData(group: string | null = null): Promise<string> {
 }
 
 async function fetchData(group: string | null = null): Promise<string> {
-  await dbConnect()
   const members = await getMembers(group)
   const data = await ShowroomLog.findOne({ room_id: members.map(i => i.room_id) }).sort({ _id: 1 })
   return data?.live_info.start_date.toISOString() || ''

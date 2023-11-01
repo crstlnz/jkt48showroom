@@ -2,7 +2,6 @@ import fs from 'fs'
 import formidable from 'formidable'
 import Member from '~~/library/database/schema/48group/Member'
 import { uploadImage } from '~~/library/utils/cloudinary'
-import { dbConnect } from '~/library/database'
 
 export default defineEventHandler(async (event): Promise<{
   url: string
@@ -18,7 +17,6 @@ export default defineEventHandler(async (event): Promise<{
       try {
         if (!fields.id) return reject(createError({ statusCode: 400, statusMessage: 'Bad request!' }))
         if (!files.banner) return reject(createError({ statusCode: 400, statusMessage: 'Image not included!' }))
-        await dbConnect()
         const member = await Member.findOne({ _id: fields.id })
         if (!member) return reject(createError({ statusCode: 400, statusMessage: 'Bad request!' }))
         const filePath = (files.banner as any).filepath

@@ -1,21 +1,21 @@
-// import { FormNumber, FormSelect, FormText, FormTextArea } from '#components'
+import { FormNumber, FormSelect, FormText, FormTextArea } from '#components'
 
-// export function getForm(formName: string) {
-//   switch (formName) {
-//     case 'textarea' :{
-//       return FormTextArea
-//     }
+export function getForm(formName: string) {
+  switch (formName) {
+    case 'textarea' :{
+      return FormTextArea
+    }
 
-//     case 'select' :{
-//       return FormSelect
-//     }
+    case 'select' :{
+      return FormSelect
+    }
 
-//     case 'number' :{
-//       return FormNumber
-//     }
+    case 'number' :{
+      return FormNumber
+    }
 
-//     default : {
-//       return FormText
-//     }
-//   }
-// }
+    default : {
+      return FormText
+    }
+  }
+}

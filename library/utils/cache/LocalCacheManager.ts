@@ -50,4 +50,4 @@ class LocalCacheManager {
 }
 
 export default LocalCacheManager
-export type { Value }
+export { Value }

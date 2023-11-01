@@ -1,4 +1,3 @@
-import { dbConnect } from '~/library/database'
 import Showroom from '~~/library/database/schema/showroom/Showroom'
 import cache from '~~/library/utils/cache'
 
@@ -13,7 +12,6 @@ export default defineEventHandler(
 )
 
 async function fetchData(key: string) {
-  await dbConnect()
   const data = await Showroom.getProfile(key)
   if (!data) throw createError({ statusMessage: 'Data not found!', statusCode: 404 })
   return data

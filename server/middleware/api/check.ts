@@ -1,4 +1,5 @@
 import { getToken } from '#auth'
+import { connection } from '~~/library/database'
 
 export default defineEventHandler(async (event) => {
   if (event.node.req.url?.startsWith('/api')) {
@@ -15,11 +16,11 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    // if (connection.readyState !== 1) {
-    //   throw createError({
-    //     statusCode: 503,
-    //     statusMessage: 'Service Unavailable',
-    //   })
-    // }
+    if (connection.readyState !== 1) {
+      throw createError({
+        statusCode: 503,
+        statusMessage: 'Service Unavailable',
+      })
+    }
   }
 })

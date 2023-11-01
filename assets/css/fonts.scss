@@ -1,0 +1,56 @@
+/* signika-300 - latin */
+@font-face {
+    font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+    font-family: "Signika";
+    font-style: normal;
+    font-weight: 300;
+    src: url("/fonts/signika/300.eot"); /* IE9 Compat Modes */
+    src:
+        url("/fonts/signika/300.eot?#iefix") format("embedded-opentype"),
+        /* IE6-IE8 */ url("/fonts/signika/300.woff2") format("woff2"),
+        /* Super Modern Browsers */ url("/fonts/signika/300.woff") format("woff"),
+        /* Modern Browsers */ url("/fonts/signika/300.ttf") format("truetype"),
+        /* Safari, Android, iOS */ url("/fonts/signika/300.svg#Signika") format("svg"); /* Legacy iOS */
+}
+/* signika-regular - latin */
+@font-face {
+    font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+    font-family: "Signika";
+    font-style: normal;
+    font-weight: 400;
+    src: url("/fonts/signika/regular.eot"); /* IE9 Compat Modes */
+    src:
+        url("/fonts/signika/regular.eot?#iefix") format("embedded-opentype"),
+        /* IE6-IE8 */ url("/fonts/signika/regular.woff2") format("woff2"),
+        /* Super Modern Browsers */ url("/fonts/signika/regular.woff") format("woff"),
+        /* Modern Browsers */ url("/fonts/signika/regular.ttf") format("truetype"),
+        /* Safari, Android, iOS */ url("/fonts/signika/regular.svg#Signika") format("svg"); /* Legacy iOS */
+}
+/* signika-600 - latin */
+@font-face {
+    font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+    font-family: "Signika";
+    font-style: normal;
+    font-weight: 600;
+    src: url("/fonts/signika/600.eot"); /* IE9 Compat Modes */
+    src:
+        url("/fonts/signika/600.eot?#iefix") format("embedded-opentype"),
+        /* IE6-IE8 */ url("/fonts/signika/600.woff2") format("woff2"),
+        /* Super Modern Browsers */ url("/fonts/signika/600.woff") format("woff"),
+        /* Modern Browsers */ url("/fonts/signika/600.ttf") format("truetype"),
+        /* Safari, Android, iOS */ url("/fonts/signika/600.svg#Signika") format("svg"); /* Legacy iOS */
+}
+/* signika-700 - latin */
+@font-face {
+    font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+    font-family: "Signika";
+    font-style: normal;
+    font-weight: 700;
+    src: url("/fonts/signika/700.eot"); /* IE9 Compat Modes */
+    src:
+        url("/fonts/signika/700.eot?#iefix") format("embedded-opentype"),
+        /* IE6-IE8 */ url("/fonts/signika/700.woff2") format("woff2"),
+        /* Super Modern Browsers */ url("/fonts/signika/700.woff") format("woff"),
+        /* Modern Browsers */ url("/fonts/signika/700.ttf") format("truetype"),
+        /* Safari, Android, iOS */ url("/fonts/signika/700.svg#Signika") format("svg"); /* Legacy iOS */
+}

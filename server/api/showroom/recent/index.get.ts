@@ -2,12 +2,10 @@ import Fuse from 'fuse.js'
 import { getMembers } from '../members.get'
 import ShowroomLog from '~~/library/database/schema/showroom/ShowroomLog'
 import config from '~~/app.config'
-import { dbConnect } from '~/library/database'
 
 export default defineEventHandler(async (event): Promise<IApiRecents> => await getRecents(getQuery(event)))
 export async function getRecents(qq: any = null): Promise<IApiRecents> {
   let page = 1
-  await dbConnect()
   const group = config.getGroup(qq.group)
   const maxPerpage = 30
   const perpage = Math.min(qq.perpage || 10, maxPerpage)

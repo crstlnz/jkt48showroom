@@ -1,0 +1,68 @@
+<script lang="ts" setup>
+import { useOnLives } from '~/store/onLives'
+import { LazyImage } from '#components'
+
+const props = defineProps<{
+  member: Database.IMemberBasicData
+  roomId: number
+}>()
+const { isLive: checkLive } = useOnLives()
+const isLive = computed(() => {
+  return props.roomId ? checkLive(props.roomId || 0) : false
+})
+</script>
+
+<template>
+  <div class="flex flex-col relative">
+    <LazyImage :src="member.banner || $getDefaultBanner(member.group)" :alt="`${member.name} banner`" class="bg-container aspect-[15/5] w-full md:aspect-[15/3]" />
+    <div class="flex flex-col gap-3 px-3 lg:px-4">
+      <div class="flex gap-2 md:gap-3 -mb-1.5 md:-mb-2">
+        <div class="-ml-1.5 md:-ml-2 bg-background relative mt-[-20px] h-[90px] w-[90px] sm:w-[100px] sm:h-[100px] shrink-0 rounded-full sm:mt-[-30px] md:mt-[-35px] 2xl:mt-[-56px] md:h-[120px] md:w-[120px] 2xl:h-[140px] 2xl:w-[140px]">
+          <NuxtLink :to="isLive ? `/watch/${member.url}` : undefined" class="relative m-1.5 block md:m-2">
+            <div v-if="isLive" class="absolute bottom-[14.5%] right-[14.5%] z-10 h-[15%] w-[15%] translate-x-1/2 translate-y-1/2">
+              <div class="absolute inset-0 z-10 rounded-full bg-red-500" />
+              <div class="absolute inset-0 -z-10 animate-ping rounded-full bg-red-500" />
+            </div>
+            <LazyImage
+              :title="isLive ? 'Now Live!' : undefined"
+              class="aspect-square h-full overflow-hidden rounded-full"
+              :src="$fixCloudinary(member.img_alt ?? member.img ?? '')"
+              :alt="`${member.name} Display Picture`"
+            />
+          </NuxtLink>
+        </div>
+        <div class="flex min-w-0 self-start flex-1 items-start justify-end pt-2 md:pt-3 flex-col">
+          <div class="text-xl sm:text-2xl font-semibold md:text-3xl flex gap-3 md:gap-4 self-stretch">
+            <div class="flex-1">
+              {{ member.nickname || member.name }}
+            </div>
+            <NuxtLink target="_blank" :to="$liveURL(member.url)" class="rounded-full bg-blue-500 px-2.5 py-1 md:px-4 md:py-1.5 text-xs sm:text-sm text-white self-center">
+              Showroom
+            </NuxtLink>
+          </div>
+          <div class="flex gap-2 text-sm">
+            <div
+              class="select-none font-bold"
+            >
+              <div v-if="member.is_group" class="text-sky-400">
+                Official
+              </div>
+              <div v-else-if="member.is_graduate" class="text-red-500">
+                Graduated
+              </div>
+              <div v-else class="text-green-500">
+                Active
+              </div>
+            </div>
+            <NuxtLink v-if="member.generation" :to="`/member?gen=${member.generation}`" class="select-none text-gray-400 font-bold">
+              {{ $parseGeneration(member.generation) || member.generation }}
+            </NuxtLink>
+          </div>
+        </div>
+      </div>
+      <!-- <div class="text-2xl font-semibold lg:text-3xl">
+                {{ member.fullname || member.name }}
+              </div> -->
+    </div>
+  </div>
+</template>

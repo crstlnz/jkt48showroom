@@ -2,7 +2,6 @@ import Fuse from 'fuse.js'
 import ShowroomLog from '~/library/database/schema/showroom/ShowroomLog'
 import cache from '~~/library/utils/cache'
 import config from '~~/app.config'
-import { dbConnect } from '~/library/database'
 
 const time = 600000
 
@@ -20,7 +19,6 @@ function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
 }
 
 export async function getGifts(data_id: string, search = '', page = 1, perpage = config.gift_perpage): Promise<IApiGifts> {
-  await dbConnect()
   const data = await ShowroomLog.findOne({ data_id }).select({ gift_data: 1, users: 1 }).lean()
   let total_count = data?.gift_data?.gift_log?.length ?? 0
   const raw = data?.gift_data?.gift_log ?? []

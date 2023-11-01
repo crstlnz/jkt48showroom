@@ -1,5 +1,4 @@
 import { calculateFansPoints } from '../stats.get'
-import { dbConnect } from '~/library/database'
 import ShowroomGift from '~/library/database/schema/showroom/ShowroomGift'
 import ShowroomLog from '~/library/database/schema/showroom/ShowroomLog'
 import cache from '~~/library/utils/cache'
@@ -19,7 +18,6 @@ export default defineEventHandler(async (event: any) => {
 })
 
 export async function getRecent(id: string): Promise<API.IRecentDetail> {
-  await dbConnect(2)
   const data = await ShowroomLog.getDetails(id)
   if (!data) throw createError({ statusMessage: 'Data not found!', statusCode: 404 })
   const fansRank = calculateFansPoints(data.users, data.live_info?.stage_list ?? [])

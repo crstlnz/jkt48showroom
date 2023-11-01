@@ -1,9 +1,7 @@
-import { dbConnect } from '~/library/database'
 import Member from '~~/library/database/schema/48group/Member'
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
-  await dbConnect()
   const member = await Member.findOneAndUpdate(
     { _id: query._id },
     {

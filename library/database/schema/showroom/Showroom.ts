@@ -1,7 +1,6 @@
 import { Schema, model } from 'mongoose'
 import type { Model } from 'mongoose'
 import Member from '../48group/Member'
-import { dbConnect } from '../..'
 
 interface IShowroomModel extends Model<Database.IShowroomMember> {
   getProfile(key: string): Promise<Database.IMemberProfile>
@@ -56,7 +55,6 @@ const ShowroomSchema = new Schema<Database.IShowroomMember, IShowroomModel>({
 })
 
 ShowroomSchema.statics.getProfile = async function (key: string): Promise<Database.IMemberProfile | null> {
-  await dbConnect()
   const doc = await this.findOne({ url: key })
     .populate({
       path: 'member_data',

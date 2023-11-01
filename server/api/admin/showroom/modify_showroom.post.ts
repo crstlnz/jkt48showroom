@@ -1,4 +1,3 @@
-import { dbConnect } from '~/library/database'
 import Showroom from '~~/library/database/schema/showroom/Showroom'
 
 export default defineEventHandler(async (event) => {
@@ -13,7 +12,6 @@ export default defineEventHandler(async (event) => {
     url: query.url,
   }
 
-  await dbConnect()
   const member = await Showroom.findOneAndUpdate(
     { _id: query._id },
     {

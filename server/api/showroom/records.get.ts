@@ -2,7 +2,6 @@ import { getMembers } from './members.get'
 import cache from '~~/library/utils/cache'
 import ShowroomLog from '~~/library/database/schema/showroom/ShowroomLog'
 import config from '~~/app.config'
-import { dbConnect } from '~/library/database'
 
 const time = 60000 * 10
 export default defineEventHandler(
@@ -29,7 +28,7 @@ async function fetchData(group: string | null = null): Promise<ShowroomRecord[]>
     is_dev: false,
   }
   if (members?.length) options.room_id = members.map(i => i.room_id)
-  await dbConnect()
+
   const mostViewer = await ShowroomLog.findOne(options).sort({ 'live_info.viewers.peak': -1 }).populate(populatePath).catch(_ => null)
   const longestDuration = await ShowroomLog.findOne(options).sort({ 'live_info.duration': -1 }).populate(populatePath).catch(_ => null)
   const mostGift = await ShowroomLog.findOne(options).sort({ total_point: -1 }).populate(populatePath).catch(_ => null)
