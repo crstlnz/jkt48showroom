@@ -267,10 +267,10 @@ showroomLogSchema.statics.getDetails = async function (dataId: string | number):
     live_id: doc.live_id,
     room_info: {
       name: doc.room_info?.name ?? 'Member not found!',
-      nickname: doc.room_info?.member_data?.nicknames?.[0],
+      nickname: doc.custom?.title ?? doc.custom?.theater?.title ?? doc.room_info?.member_data?.nicknames?.[0],
       fullname: doc.room_info?.member_data?.name,
-      img: doc.room_info?.img ?? config.errorPicture,
-      img_alt: doc.room_info?.member_data?.img ?? doc.room_info?.img_square,
+      img: doc.custom?.img ?? doc.room_info?.img ?? config.errorPicture,
+      img_alt: doc.custom?.img ?? doc.room_info?.member_data?.img ?? doc.room_info?.img_square,
       url: doc.room_info?.url ?? '',
       is_graduate: doc.room_info?.member_data?.isGraduate ?? doc.room_info?.is_group ?? false,
       is_group: doc.room_info?.is_group ?? false,

@@ -111,7 +111,8 @@ const date = computed(() => {
   return dayjs(data.value?.live_info?.date?.start).locale(locale.value).format('DD MMMM YYYY')
 })
 const title = computed(() => {
-  return (!pending.value && (data.value || !error.value)) ? `${data.value?.room_info?.fullname ?? data.value?.room_info?.nickname ?? data.value?.room_info?.name} - ${date.value}` : getTitle(settings.group)
+  const t = (!pending.value && (data.value || !error.value)) ? `${data.value?.room_info?.fullname ?? data.value?.room_info?.nickname ?? data.value?.room_info?.name}` : getTitle(settings.group)
+  return [t.split('-')[0], date.value].join(' - ')
 })
 
 const { getGroupTitle } = useAppConfig()

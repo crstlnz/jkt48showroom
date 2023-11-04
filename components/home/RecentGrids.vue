@@ -54,7 +54,7 @@ const dayjs = useDayjs()
           <div class="flex flex-1 flex-col">
             <div class="flex-1">
               <div class="text-lg">
-                {{ (recent.member.nickname ?? recent.member.name).split("-")[0] }}
+                {{ (recent.member.nickname ?? recent.member.name).split("-")?.[0] }}
               </div>
               <ul class="mt-1 space-y-1 text-xs md:text-sm [&>li]:flex [&>li]:gap-1">
                 <li v-if="recent.live_info.viewers?.num">

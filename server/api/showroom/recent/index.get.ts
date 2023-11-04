@@ -130,8 +130,8 @@ export async function getRecents(qq: any = null): Promise<IApiRecents> {
       _id: i._id,
       data_id: i.data_id,
       member: {
-        name: i.custom ? (i.custom.title ?? i.custom.theater?.title) : i.room_info?.name ?? 'Member not Found!',
-        nickname: i.room_info?.member_data?.nicknames[0] || undefined,
+        name: i.room_info?.name ?? 'Member not Found!',
+        nickname: i.custom ? (i.custom.title ?? i.custom.theater?.title) : i.room_info?.member_data?.nicknames[0] || undefined,
         img_alt: i.custom?.img ?? i.room_info?.member_data?.img ?? i.room_info?.img_square ?? i.room_info?.img ?? config.errorPicture,
         img: i.custom?.img ?? i.room_info?.img ?? config.errorPicture,
         url: i.room_info?.url ?? '',
