@@ -1,13 +1,18 @@
 <script lang="ts" setup>
 import { Switch, SwitchGroup, SwitchLabel } from '@headlessui/vue'
 import { useFuse } from '@vueuse/integrations/useFuse'
-import { useMembers } from '~~/store/members'
+
 import { useSettings } from '~~/store/settings'
 import { generateGen, parseGeneration } from '~~/library/utils/stage48'
 
+// import { useMembers } from '~~/store/members'
+
 const { t: $t } = useI18n()
-const memberState = useMembers()
-const { members: raw, pending, error } = storeToRefs(memberState)
+// const memberState = useMembers()
+
+// const { members: raw, pending, error } = storeToRefs(memberState)
+const settings = useSettings()
+const { data: raw, pending, error } = useLazyFetch('/api/showroom/members', { query: { group: settings.group }, key: `member-${settings.group}` })
 const route = useRoute()
 const router = useRouter()
 let filterOptions: Ref< {
@@ -62,6 +67,7 @@ const { smallerOrEqual } = useResponsive()
 const isMobile = smallerOrEqual('sm')
 const data = computed(() => {
   let members = raw.value
+  if (!members) return []
   if (filterOptions.value.generation?.length) {
     members = members.filter(i => filterOptions.value.generation.includes(i.generation ?? ''))
   }

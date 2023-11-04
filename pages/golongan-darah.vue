@@ -1,15 +1,19 @@
 <script lang="ts" setup>
+import { useSettings } from '~/store/settings'
 import { useMembers } from '~~/store/members'
 
 const golonganDarah = ['A', 'B', 'AB', 'O']
-const memberState = useMembers()
-const { members, pending, error } = storeToRefs(memberState)
+// const memberState = useMembers()
+// const { members, pending, error } = storeToRefs(memberState)
+const settings = useSettings()
+const { data: members, pending, error } = useLazyFetch('/api/showroom/members', { query: { group: settings.group }, key: `member-${settings.group}` })
+
 interface TipeDarah {
   tipe: string
   list: IMember[]
 }
 const dataDarah = computed(() => {
-  const dataMember = members.value.filter(i => i.is_graduate !== true)
+  const dataMember = members.value?.filter(i => i.is_graduate !== true) ?? []
   const data: TipeDarah[] = []
   for (const golongan of golonganDarah) {
     data.push({

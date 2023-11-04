@@ -2,7 +2,7 @@
 import { LazyImage } from '#components'
 
 defineProps<{
-  error: boolean
+  error: Error | null
   pending: boolean
   members: {
     name: string

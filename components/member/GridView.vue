@@ -2,7 +2,7 @@
 import { useOnLives } from '~/store/onLives'
 
 const props = defineProps<{
-  error: boolean
+  error: Error | null
   pending: boolean
   keyId: number
   members: {

@@ -111,8 +111,25 @@ declare namespace Database {
     is_excitement: boolean
   }
 
+  interface PremiumTheaterData {
+    title: string
+    setlist_id: string
+    price: number
+    tax_info: string
+    date: Date
+    url: string
+  }
+
+  interface CustomData {
+    title: string
+    img?: string
+    banner?: string
+    theater?: PremiumTheaterData
+  }
+
   interface IShowroomLog {
     live_type?: number
+    custom?: CustomData
     is_dev: boolean
     live_id: number
     jpn_rate: number

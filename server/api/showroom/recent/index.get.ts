@@ -94,6 +94,7 @@ export async function getRecents(qq: any = null): Promise<IApiRecents> {
   if (members.length || query.room_id) {
     logs = await ShowroomLog.find(options)
       .select({
+        custom: 1,
         live_info: {
           duration: 1,
           viewers: {
@@ -129,10 +130,10 @@ export async function getRecents(qq: any = null): Promise<IApiRecents> {
       _id: i._id,
       data_id: i.data_id,
       member: {
-        name: i.room_info?.name ?? 'Member not Found!',
+        name: i.custom ? (i.custom.title ?? i.custom.theater?.title) : i.room_info?.name ?? 'Member not Found!',
         nickname: i.room_info?.member_data?.nicknames[0] || undefined,
-        img_alt: i.room_info?.member_data?.img ?? i.room_info?.img_square ?? i.room_info?.img ?? config.errorPicture,
-        img: i.room_info?.img ?? config.errorPicture,
+        img_alt: i.custom?.img ?? i.room_info?.member_data?.img ?? i.room_info?.img_square ?? i.room_info?.img ?? config.errorPicture,
+        img: i.custom?.img ?? i.room_info?.img ?? config.errorPicture,
         url: i.room_info?.url ?? '',
         is_graduate: i.room_info?.is_group ? false : (i.room_info?.member_data?.isGraduate ?? i.room_id === 332503),
         is_official: i.room_info?.is_group ?? false,

@@ -17,6 +17,19 @@ const showroomLogSchema = new Schema<Database.IShowroomLog, IShowroomLogModel>({
     type: Boolean,
     default: false,
   },
+  custom: {
+    title: String,
+    img: String,
+    banner: String,
+    theater: {
+      title: String,
+      setlist_id: String,
+      price: Number,
+      tax_info: String,
+      date: Date,
+      url: String,
+    },
+  },
   live_id: {
     type: Number,
     unique: true,

@@ -36,7 +36,7 @@ const searchInput = ref()
       <HomeBanner class="aspect-[3/1] overflow-hidden shadow-sm lg:aspect-[4.5/1]" />
       <div class="flex flex-col gap-3 md:gap-4">
         <HomeLiveNow />
-        <HomeHorizontalRecents v-if="group === 'jkt48'" />
+        <HomeRecentGrids v-if="group === 'jkt48'" />
         <HomeStats />
         <div class="mx-3 flex items-center justify-between md:mx-4 xl:mt-2">
           <div class="flex gap-1">
