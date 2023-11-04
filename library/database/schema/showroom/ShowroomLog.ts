@@ -5,6 +5,8 @@ import Showroom from './Showroom'
 import ShowroomGift from './ShowroomGift'
 import ShowroomUser from './ShowroomUser'
 import config from '@/app.config'
+import database from '~~/library/database'
+import { database as srDatabase } from '~~/library/database/showroomDB'
 
 interface IShowroomLogModel extends Model<Database.IShowroomLog> {
   getDetails(id: string | number): Promise<Database.IShowroomLogDetail>

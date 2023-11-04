@@ -5,7 +5,7 @@ import { useOnLives } from '~~/store/onLives'
 
 const route = useRoute()
 
-const { data, pending, error } = useFetch('/api/showroom/profile', { params: { room_url_key: route.params.id } })
+const { data, pending, error } = useLazyFetch('/api/showroom/profile', { params: { room_url_key: route.params.id } })
 watch(data, (val) => {
   if (!val) throw createError({ statusMessage: 'Page not found!', statusCode: 404 })
 })

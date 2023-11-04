@@ -6,7 +6,7 @@ definePageMeta({
 })
 
 const { group } = useSettings()
-const { data, pending, error } = useFetch('/api/member/list', { params: { group } })
+const { data, pending, error } = useLazyFetch('/api/member/list', { params: { group } })
 </script>
 
 <template>

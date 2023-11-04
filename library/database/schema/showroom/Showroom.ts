@@ -1,6 +1,7 @@
 import { Schema, model } from 'mongoose'
 import type { Model } from 'mongoose'
 import Member from '../48group/Member'
+import database from '~~/library/database'
 
 interface IShowroomModel extends Model<Database.IShowroomMember> {
   getProfile(key: string): Promise<Database.IMemberProfile>

@@ -2,7 +2,7 @@
 import { useSettings } from '~~/store/settings'
 
 const { group } = useSettings()
-const { data, pending, error } = useFetch('/api/showroom/records', { params: { group } })
+const { data, pending, error } = useLazyFetch('/api/showroom/records', { params: { group } })
 </script>
 
 <template>

@@ -25,8 +25,9 @@ const stageListSchema = new Schema<Database.IStageListItem>({
 })
 
 const StageList = connection.model('StageList', stageListSchema)
+const database = connection.asPromise()
 
 function convertDB<T>(model: Model<T>): Model<T> {
   return connection.model<T>(model.modelName, model.schema)
 }
-export { connection, StageList, convertDB }
+export { database, connection, StageList, convertDB }

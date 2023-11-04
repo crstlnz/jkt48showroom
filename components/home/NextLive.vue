@@ -2,7 +2,7 @@
 import { useSettings } from '~~/store/settings'
 
 const settings = useSettings()
-const { data: next, pending: isLoading } = useFetch('/api/showroom/next_live', {
+const { data: next, pending: isLoading } = useLazyFetch('/api/showroom/next_live', {
   query: {
     group: settings.group,
   },

@@ -89,7 +89,7 @@ if (isSupported.value) {
     }
   })
 }
-// const { pending, data, error, refresh } = await useFetch('/api/showroom/live_info', { params: { room_id: props.live.room_id }, immediate: false })
+// const { pending, data, error, refresh } = await useLazyFetch('/api/showroom/live_info', { params: { room_id: props.live.room_id }, immediate: false })
 const pending = ref(false)
 async function refreshDate() {
   pending.value = true

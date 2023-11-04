@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 const route = useRoute()
-const { data, pending, error } = useFetch(`/api/jkt48/news/${route.params.id}`)
+const { data, pending, error } = useLazyFetch(`/api/jkt48/news/${route.params.id}`)
 const dayjs = useDayjs()
 const { locale } = useI18n()
 </script>

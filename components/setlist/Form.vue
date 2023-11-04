@@ -106,7 +106,7 @@ async function save() {
           </div>
           <div class="item-start flex gap-4">
             <div class="w-[120px] text-xl leading-9">
-              Title
+              Alt Title
             </div>
             <FormText v-model="title_alt" form-id="title_alt" placeholder="Alternative title" class="flex-1" input-class="bg-container-2" />
           </div>

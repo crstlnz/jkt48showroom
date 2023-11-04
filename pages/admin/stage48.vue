@@ -7,9 +7,9 @@ import { useSettings } from '~~/store/settings'
 definePageMeta({ middleware: 'admin' })
 
 const config = useAppConfig()
-// const { pending, data } = useFetch('/api/admin/members?group=all')
-const { data: stage48members, refresh: refreshStage48List, pending } = useFetch('/api/admin/stage48?group=all')
-const { data: jkt48members, pending: jktPending, data: jktData } = useFetch('/api/admin/jkt48members')
+// const { pending, data } = useLazyFetch('/api/admin/members?group=all')
+const { data: stage48members, refresh: refreshStage48List, pending } = useLazyFetch('/api/admin/stage48?group=all')
+const { data: jkt48members, pending: jktPending, data: jktData } = useLazyFetch('/api/admin/jkt48members')
 
 const membersRaw = ref<Admin.I48Member[]>([])
 

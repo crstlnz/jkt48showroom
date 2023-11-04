@@ -8,8 +8,8 @@ import { useSettings } from '~~/store/settings'
 const route = useRoute()
 const settings = useSettings()
 const { getTitle } = useAppConfig()
-const { data, error, pending } = useFetch<API.IRecentDetail>(`/api/showroom/recent/${route.params.id}`)
-const { data: likeData, error: likeError, pending: likePending } = useFetch('/api/user/like', { query: { id: route.params.id } })
+const { data, error, pending } = useLazyFetch<API.IRecentDetail>(`/api/showroom/recent/${route.params.id}`)
+const { data: likeData, error: likeError, pending: likePending } = useLazyFetch('/api/user/like', { query: { id: route.params.id } })
 const liked = ref(false)
 
 watch(likeData, (val) => {

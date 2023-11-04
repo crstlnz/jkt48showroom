@@ -6,7 +6,7 @@ import { useSelectedUser } from '~/store/selectedUser'
 const divId = ref(0)
 const { userId, isHidden, position } = storeToRefs(useSelectedUser())
 
-const { data: userData, pending, error, refresh } = useFetch(() => `/api/showroom/user/profile?user_id=${userId.value}`, { immediate: false })
+const { data: userData, pending, error, refresh } = useLazyFetch(() => `/api/showroom/user/profile?user_id=${userId.value}`, { immediate: false })
 
 watch(position, (v) => {
   if (v) {

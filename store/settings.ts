@@ -12,7 +12,7 @@ export const useSettings = defineStore('settings', () => {
   })
 
   const subDomain = ref('')
-  const { data: firstDateString } = useFetch('/api/showroom/first_data')
+  const { data: firstDateString } = useLazyFetch('/api/showroom/first_data')
   const firstDate = computed(() => firstDateString.value ? new Date(firstDateString.value) : undefined)
   const group = computed(() => {
     switch (subDomain.value) {

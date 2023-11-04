@@ -8,7 +8,7 @@ import { useNotifications } from '~~/store/notifications'
 definePageMeta({ middleware: 'showroom-session' })
 const dayjs = useDayjs()
 const route = useRoute()
-const { data, pending, error, refresh: refreshWatchData } = useFetch<Watch.WatchData>('/api/showroom/watch', { params: { room_url_key: route.params.id, _: new Date().getTime() } })
+const { data, pending, error, refresh: refreshWatchData } = useLazyFetch<Watch.WatchData>('/api/showroom/watch', { params: { room_url_key: route.params.id, _: new Date().getTime() } })
 
 const roomId = computed(() => {
   return data.value?.room_id || 0
@@ -282,7 +282,7 @@ onComment((comment) => {
 <template>
   <div class="h-full w-full pb-5 sm:pb-14 lg:px-3 lg:pb-20 lg:pt-4">
     <div v-if="isPremium">
-      <Error :message="$t('premium_live')" :alt="$t('error.unknown')" img-src="/svg/video_files.svg" url="/" />
+      <Error :message="$t('premium_live')" :alt="$t('error.unknown')" :img-src="`${$cloudinaryURL}/assets/svg/web/video_files.svg`" url="/" />
     </div>
     <div v-else-if="pending" class="h-full w-full">
       <div class="relative flex w-full flex-col gap-3 md:gap-4 lg:flex-row">

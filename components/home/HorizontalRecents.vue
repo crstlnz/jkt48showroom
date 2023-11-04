@@ -2,7 +2,7 @@
 import { useSettings } from '~/store/settings'
 
 const settings = useSettings()
-const { data, pending, refresh } = useFetch('/api/showroom/recent', {
+const { data, pending, refresh } = useLazyFetch('/api/showroom/recent', {
   query: {
     group: settings.group,
   },

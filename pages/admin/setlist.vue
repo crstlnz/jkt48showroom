@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const { data, error, pending, refresh } = useFetch('/api/admin/setlist')
+const { data, error, pending, refresh } = useLazyFetch('/api/admin/setlist')
 const config = useAppConfig()
 const showForm = ref(false)
 

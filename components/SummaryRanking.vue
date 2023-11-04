@@ -9,7 +9,7 @@ const roomId = computed(() => {
   return props.roomId || null
 })
 
-const { data: rankings, pending: rankingPending, refresh: refreshRanking, error: rankingError } = useFetch('/api/showroom/user_ranking', { params: { room_id: roomId }, immediate: true, server: false })
+const { data: rankings, pending: rankingPending, refresh: refreshRanking, error: rankingError } = useLazyFetch('/api/showroom/user_ranking', { params: { room_id: roomId }, immediate: true, server: false })
 
 watch(() => props.roomId, (roomId) => {
   if (roomId && rankingPending.value) refreshRanking()
