@@ -5,22 +5,22 @@ export default defineNuxtConfig({
   routeRules: {
     // '/api/showroom/**': { cache: !isDev ? { maxAge: 3600, staleMaxAge: 360 } : false },
     '/api/**': {
-      security: {
-        rateLimiter: {
-          tokensPerInterval: 120,
-          interval: 60000,
-        },
-      },
+      // security: {
+      //   rateLimiter: {
+      //     tokensPerInterval: 120,
+      //     interval: 60000,
+      //   },
+      // },
     },
     '/api/showroom/members': { cache: !isDev ? { maxAge: 21600, staleMaxAge: 1800 } : false },
     '/api/showroom/recent': {
       cache: !isDev ? { maxAge: 1, staleMaxAge: 0 } : false,
-      security: {
-        rateLimiter: {
-          tokensPerInterval: 80,
-          interval: 60000,
-        },
-      },
+      // security: {
+      //   rateLimiter: {
+      //     tokensPerInterval: 80,
+      //     interval: 60000,
+      //   },
+      // },
     },
     '/api/showroom/recent/**': { cache: !isDev ? { maxAge: 600, staleMaxAge: 10 } : false },
     '/api/member/birthday': { cache: !isDev ? { maxAge: 3600, staleMaxAge: 0 } : false },
@@ -28,23 +28,23 @@ export default defineNuxtConfig({
     '/api/showroom/polling': { cache: false },
     '/api/showroom/comment': {
       cache: false,
-      security: {
-        rateLimiter: {
-          tokensPerInterval: 30,
-          interval: 'minute',
-        },
-      },
+      // security: {
+      //   rateLimiter: {
+      //     tokensPerInterval: 30,
+      //     interval: 'minute',
+      //   },
+      // },
     },
     '/api/jpn_rates': { cache: !isDev ? { maxAge: 86400, staleMaxAge: 0 } : false },
     '/img/**': { cache: !isDev ? { maxAge: 86400, staleMaxAge: 3600 } : false },
     '/svg/**': { cache: !isDev ? { maxAge: 86400, staleMaxAge: 3600 } : false },
     '/api/auth/callback/credentials': {
-      security: {
-        rateLimiter: {
-          tokensPerInterval: 15,
-          interval: 'minute',
-        },
-      },
+      // security: {
+      //   rateLimiter: {
+      //     tokensPerInterval: 15,
+      //     interval: 'minute',
+      //   },
+      // },
     },
   },
   app: {
@@ -125,12 +125,12 @@ export default defineNuxtConfig({
       credentials: true,
     },
     xssValidator: false,
-    rateLimiter: {
-      tokensPerInterval: 80,
-      interval: 60000,
-      throwError: true,
-      headers: true,
-    },
+    // rateLimiter: {
+    //   tokensPerInterval: 80,
+    //   interval: 60000,
+    //   throwError: true,
+    //   headers: true,
+    // },
     requestSizeLimiter: {
       maxRequestSizeInBytes: 15000000,
       maxUploadFileRequestInBytes: 30000000,
@@ -186,10 +186,9 @@ export default defineNuxtConfig({
   nitro: {
     compressPublicAssets: true,
   },
-  // devtools: {
-  //   enabled: true,
-  //   timeline: {
-  //     enabled: true,
-  //   },
-  // },
+  devtools: {
+    timeline: {
+      enabled: true,
+    },
+  },
 })
