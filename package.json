@@ -19,6 +19,7 @@
   "dependencies": {
     "@headlessui/tailwindcss": "^0.2.0",
     "@headlessui/vue": "^1.7.16",
+    "@nuxt/image": "^1.0.0",
     "cloudinary": "^1.41.0",
     "dayjs": "^1.11.10",
     "dotenv": "^16.3.1",

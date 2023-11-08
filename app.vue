@@ -37,8 +37,10 @@ const { group } = useSettings()
 const { getGroupTitle, getMetaImage } = useAppConfig()
 const description = `A Fanmade Website for ${getGroupTitle(group)} Showroom. Discover the latest and archived ${getGroupTitle(group)} member showroom live streams, member profile, and fans ranking!`
 useSeoMeta({
+
   ogTitle: () => `${getGroupTitle(group)} Showroom Log`,
   description,
+  ogSiteName: `${getGroupTitle(group)} Showroom Log`,
   ogDescription: description,
   ogImage: getMetaImage(group),
   twitterTitle: `${getGroupTitle(group)} Showroom Log`,

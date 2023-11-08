@@ -2,7 +2,7 @@
 const props = defineProps<{
   roomId: number
 }>()
-const fetch = useRecentFetch({ changeRoute: false, mode: 'infinite' }, {
+const fetch = await useRecentFetch({ changeRoute: false, mode: 'infinite' }, {
   sort: 'date',
   page: 1,
   filter: 'all',

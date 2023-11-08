@@ -3,7 +3,7 @@
 import { onClickOutside, useScroll } from '@vueuse/core'
 
 defineEmits<{ (e: 'title', title: string): void }>()
-const fetch = useRecentFetch({ changeRoute: false, mode: 'infinite' })
+const fetch = await useRecentFetch({ changeRoute: false, mode: 'infinite' })
 const title = ref('')
 const { data: res, query, pending, error } = fetch.data
 const { changePage, refresh, setFilter, onQueryChange } = fetch

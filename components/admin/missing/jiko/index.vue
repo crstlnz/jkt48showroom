@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const { data, pending: pendingJiko, error: errorJiko, refresh } = useLazyFetch('/api/admin/showroom/missing_jikosokai')
+const { data, pending: pendingJiko, error: errorJiko, refresh } = await useLazyFetch('/api/admin/showroom/missing_jikosokai')
 
 const missingJiko = ref<MissingJiko[]>([])
 watch(data, (val) => {

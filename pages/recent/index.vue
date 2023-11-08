@@ -5,7 +5,7 @@ const { t } = useI18n()
 const title = ref('')
 
 useHead({ title: computed(() => t(title.value || 'page.title.recent')) })
-const fetch = useRecentFetch({ changeRoute: false, mode: 'infinite', initPage: 1 })
+const fetch = await useRecentFetch({ changeRoute: false, mode: 'infinite', initPage: 1 })
 const { data: res, query, pending, error } = fetch.data
 const { changePage, refresh, setFilter, onQueryChange } = fetch
 const filterOpen = ref(false)

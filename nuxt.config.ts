@@ -23,6 +23,7 @@ export default defineNuxtConfig({
       // },
     },
     '/api/showroom/recent/**': { cache: !isDev ? { maxAge: 600, staleMaxAge: 10 } : false },
+    '/api/showroom/first_data': { cache: !isDev ? { maxAge: 43800, staleMaxAge: 3600 } : false },
     '/api/member/birthday': { cache: !isDev ? { maxAge: 3600, staleMaxAge: 0 } : false },
     '/api/showroom/records': { cache: !isDev ? { maxAge: 1800, staleMaxAge: 0 } : false },
     '/api/showroom/polling': { cache: false },
@@ -101,6 +102,14 @@ export default defineNuxtConfig({
   //   },
   // },
   watch: ['~/assets/css/tailwindcss.css'],
+  image: {
+    cloudinary: {
+      baseURL: 'https://res.cloudinary.com/doig4w6cm/image/fetch/',
+    },
+    quality: 80,
+    placeholder: 10,
+    format: ['webp'],
+  },
   modules: [
     'floating-vue/nuxt',
     'nuxt-security',
@@ -115,6 +124,7 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@nuxtjs/i18n',
     '@pinia/nuxt',
+    '@nuxt/image',
   ],
   security: {
     headers: false,

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const { data, pending, error } = useLazyFetch('/api/jkt48/news', { key: 'news', lazy: true, deep: false })
+const { data, pending, error } = await useLazyFetch('/api/jkt48/news', { key: 'news', lazy: true, deep: false })
 const newsFilter = computed(() => data.value?.news.slice(0, 5) ?? [])
 const dayjs = useDayjs()
 const { locale } = useI18n()

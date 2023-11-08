@@ -12,7 +12,7 @@ const { t: $t } = useI18n()
 
 // const { members: raw, pending, error } = storeToRefs(memberState)
 const settings = useSettings()
-const { data: raw, pending, error } = useLazyFetch('/api/showroom/members', { query: { group: settings.group }, key: `member-${settings.group}` })
+const { data: raw, pending, error } = await useLazyFetch('/api/showroom/members', { query: { group: settings.group }, key: `member-${settings.group}` })
 const route = useRoute()
 const router = useRouter()
 let filterOptions: Ref< {

@@ -3,7 +3,7 @@ import { useScroll } from '@vueuse/core'
 
 defineEmits<{ (e: 'title', title: string): void }>()
 const title = ref('')
-const fetch = useRecentFetch()
+const fetch = await useRecentFetch()
 const { data: res, query, totalPage, pending, error } = fetch.data
 const { changePage, refresh, setFilter, onQueryChange } = fetch
 const data = computed(() => {

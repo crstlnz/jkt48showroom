@@ -33,7 +33,7 @@ const searchInput = ref()
       </div>
     </template>
     <template #default>
-      <HomeBanner class="aspect-[3/1] overflow-hidden shadow-sm lg:aspect-[4.5/1]" />
+      <HomeBanner />
       <div class="flex flex-col gap-3 md:gap-4">
         <HomeLiveNow />
         <HomeRecentGrids v-if="group === 'jkt48'" />

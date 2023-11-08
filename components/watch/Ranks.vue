@@ -2,7 +2,7 @@
 const { roomId } = defineProps<{
   roomId: number
 }>()
-const { data, pending, error, refresh } = useLazyFetch('/api/showroom/stage_user_list', { params: { room_id: roomId } })
+const { data, pending, error, refresh } = await useLazyFetch('/api/showroom/stage_user_list', { params: { room_id: roomId } })
 useIntervalFn(() => {
   refresh()
 }, 60000, { immediate: true, immediateCallback: false })

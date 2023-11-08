@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const { data, pending, error } = useLazyFetch('/api/jkt48/next_schedule', { key: 'next_schedule', lazy: true, deep: false })
+const { data, pending, error } = await useLazyFetch('/api/jkt48/next_schedule', { key: 'next_schedule', lazy: true, deep: false })
 const dayjs = useDayjs()
 const groupedSchedule = computed<{ today: boolean; date: string; events: JKT48.Schedule[] }[]>(() => {
   if (!data.value) return []

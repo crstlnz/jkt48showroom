@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 definePageMeta({ middleware: 'admin' })
 
-const { data, pending, error } = useLazyFetch('/api/admin/fans_list')
-const { data: jpn_rate } = useLazyFetch('/api/jpn_rates')
+const { data, pending, error } = await useLazyFetch('/api/admin/fans_list')
+const { data: jpn_rate } = await useLazyFetch('/api/jpn_rates')
 </script>
 
 <template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
-const { data, pending, error } = useLazyFetch('/api/user/like_list')
+const { data, pending, error } = await useLazyFetch('/api/user/like_list')
 </script>
 
 <template>

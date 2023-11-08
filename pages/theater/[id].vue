@@ -2,7 +2,7 @@
 import { LazyImage } from '#components'
 
 const route = useRoute()
-const { data, pending, error } = useLazyFetch<IApiTheaterDetailList>(`/api/jkt48/theater/${route.params.id}`)
+const { data, pending, error } = await useLazyFetch<IApiTheaterDetailList>(`/api/jkt48/theater/${route.params.id}`)
 const dayjs = useDayjs()
 const title = computed(() => {
   if (data.value?.shows) {

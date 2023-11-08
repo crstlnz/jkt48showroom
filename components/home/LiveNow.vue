@@ -50,12 +50,17 @@ const { data, pending, error } = storeToRefs(onLives)
       v-else-if="data?.length"
       class="bg-container grid-live-now gap-4 rounded-xl p-4"
     >
-      <MemberLiveCard
-        v-for="live in data.values()"
-        :key="live.room_id"
-        class="bg-background"
-        :live="live"
-      />
+      <Suspense>
+        <LazyMemberLiveCard
+          v-for="live in data.values()"
+          :key="live.room_id"
+          class="bg-background"
+          :live="live"
+        />
+        <template #fallback>
+          <PulseLiveCard />
+        </template>
+      </Suspense>
     </div>
     <div
       v-else

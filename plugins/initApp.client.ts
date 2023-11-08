@@ -1,3 +1,4 @@
+import { useSettings } from '~/store/settings'
 import { useOnLives } from '~~/store/onLives'
 import { useUser } from '~~/store/user'
 
@@ -5,6 +6,7 @@ export default defineNuxtPlugin(({ hook }) => {
   const route = useRoute()
   const { gtag } = useGtag()
   const { authenticated } = useUser()
+  const {fetchFirstDate} = useSettings()
   watch(() => route.fullPath, (path) => {
     gtag('event', 'path_view', {
       app_name: 'JKT48 Showroom',
@@ -20,6 +22,7 @@ export default defineNuxtPlugin(({ hook }) => {
   })
   hook('app:created', () => {
     onLives.tryRefresh()
+    fetchFirstDate()
   })
 
   onFocus(() => {

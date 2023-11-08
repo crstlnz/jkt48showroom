@@ -8,7 +8,7 @@ import { useNotifications } from '~~/store/notifications'
 definePageMeta({ middleware: 'showroom-session' })
 const dayjs = useDayjs()
 const route = useRoute()
-const { data, pending, error, refresh: refreshWatchData } = useLazyFetch<Watch.WatchData>('/api/showroom/watch', { params: { room_url_key: route.params.id, _: new Date().getTime() } })
+const { data, pending, error, refresh: refreshWatchData } = await useLazyFetch<Watch.WatchData>('/api/showroom/watch', { params: { room_url_key: route.params.id, _: new Date().getTime() } })
 
 const roomId = computed(() => {
   return data.value?.room_id || 0

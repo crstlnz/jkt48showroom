@@ -12,8 +12,19 @@ export const useSettings = defineStore('settings', () => {
   })
 
   const subDomain = ref('')
-  const { data: firstDateString } = useLazyFetch('/api/showroom/first_data')
-  const firstDate = computed(() => firstDateString.value ? new Date(firstDateString.value) : undefined)
+  // const { data: firstDateString } = await useLazyFetch('/api/showroom/first_data')
+
+  // const firstDate = computed(() => firstDateString.value ? new Date(firstDateString.value) : undefined)
+  const firstDate = ref()
+
+  async function fetchFirstDate(){
+    try{
+      firstDate.value = await $fetch('/api/showroom/first_data')
+    }catch(e){
+      console.log(e)
+    }
+  }
+
   const group = computed(() => {
     switch (subDomain.value) {
       case '46' :{
@@ -40,7 +51,7 @@ export const useSettings = defineStore('settings', () => {
     }
   }
 
-  return { setDomain, group, firstDate, session: skipHydrate(session) }
+  return { setDomain, group, firstDate, session: skipHydrate(session), fetchFirstDate }
 })
 
 if (import.meta.hot) {
