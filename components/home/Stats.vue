@@ -269,11 +269,20 @@ function setButton(key: string) {
             class="group h-16 w-16 overflow-hidden rounded-full md:h-20 md:w-20"
             :title="stat.img.title"
           >
-            <img
-              class="aspect-square object-cover brightness-100 transition-all duration-200"
+            <NuxtImg
+              class="h-full w-full"
+              :src="stat.img.src || $errorPicture"
               :alt="stat.img.title"
-              :src="$fixCloudinary(stat.img.src)"
-            >
+              loading="lazy"
+              fit="fill"
+              :modifiers="{
+                aspectRatio: 1,
+                gravity: 'faceCenter',
+              }"
+              sizes="64px md:80px"
+              :placeholder="[10, 10, 75, 5]"
+              format="webp"
+            />
           </NuxtLink>
           <div v-else class="h-16 w-16 md:h-20 md:w-20" />
         </div>

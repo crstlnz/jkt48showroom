@@ -6,6 +6,22 @@ import { useSelectedUser } from '~/store/selectedUser'
 const divId = ref(0)
 const { userId, isHidden, position } = storeToRefs(useSelectedUser())
 
+const padding = 20
+const cursorPadding = 40
+const userContainer = ref<HTMLElement>()
+
+const { width: windowWidth, height: windowHeight } = useWindowSize()
+const { width: containerWidth, height: containerHeight } = useElementSize(userContainer)
+
+const posX = ref(0)
+const posY = ref(0)
+function setPosition(x: number, y: number) {
+  posX.value = clamp(0, windowWidth.value - containerWidth.value, x + cursorPadding, padding)
+  posY.value = clamp(containerHeight.value, windowHeight.value, y + cursorPadding, padding)
+  isHidden.value = false
+}
+defineExpose({ setPosition })
+
 const { data: userData, pending, error, refresh } = await useLazyFetch(() => `/api/showroom/user/profile?user_id=${userId.value}`, { immediate: false })
 
 watch(position, (v) => {
@@ -18,20 +34,6 @@ watch(userId, () => {
   refresh()
 })
 
-const padding = 20
-const cursorPadding = 40
-const userContainer = ref<HTMLElement>()
-const posX = ref(0)
-const posY = ref(0)
-
-const { width: windowWidth, height: windowHeight } = useWindowSize()
-const { width: containerWidth, height: containerHeight } = useElementSize(userContainer)
-
-function setPosition(x: number, y: number) {
-  posX.value = clamp(0, windowWidth.value - containerWidth.value, x + cursorPadding, padding)
-  posY.value = clamp(containerHeight.value, windowHeight.value, y + cursorPadding, padding)
-  isHidden.value = false
-}
 const isDrag = ref(false)
 const isSlide = ref(false)
 const dragPos = ref({ x: 0, y: 0 })
@@ -165,8 +167,6 @@ onMounted(() => {
   }
   el.value = document.body
 })
-
-defineExpose({ setPosition })
 </script>
 
 <template>

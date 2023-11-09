@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { LazyImage } from '#components'
-
 defineProps<{
   error: Error | null
   pending: boolean
@@ -27,12 +25,12 @@ const config = useAppConfig()
     </div>
     <div
       v-else-if="pending"
-      class="grid grid-cols-2 gap-2 py-4 sm:gap-4 md:grid-cols-3 md:gap-5 md:py-6 xl:grid-cols-4 xl:py-8"
+      class="flex flex-col gap-3"
     >
       <div
         v-for="i in 12"
         :key="i"
-        class="item pulse-color-2"
+        class="item pulse-color-2 h-[104px] mx-3"
       />
     </div>
     <div v-else-if="!members?.length">
@@ -53,8 +51,20 @@ const config = useAppConfig()
         <DynamicScrollerItem :item="item" :active="active" :data-index="index">
           <div class="pb-3">
             <div class="bg-container flex gap-3 rounded-xl p-3">
-              <NuxtLink :to="`/member/${item.url}`" class="h-20 w-20 overflow-hidden rounded-full">
-                <LazyImage :key="item.room_id" class="h-full w-full object-cover" :src="$fixCloudinary(item.img_alt ?? item.img ?? config.errorPicture)" alt="Profile picture" />
+              <NuxtLink :key="item.room_id" :to="`/member/${item.url}`" class="h-20 w-20 overflow-hidden rounded-full">
+                <NuxtImg
+                  class="h-full w-full object-cover"
+                  :src="item.img_alt ?? item.img ?? config.errorPicture"
+                  :alt="`${item.name} Profile Picture`"
+                  fit="fill"
+                  :modifiers="{
+                    aspectRatio: 1,
+                    gravity: 'faceCenter',
+                  }"
+                  width="80px"
+                  :placeholder="[5, 5, 55, 100]"
+                  format="webp"
+                />
               </NuxtLink>
               <div class="flex flex-1 flex-col">
                 <NuxtLink :to="`/member/${item.url}`">

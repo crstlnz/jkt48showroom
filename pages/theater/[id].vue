@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { LazyImage } from '#components'
-
 const route = useRoute()
 const { data, pending, error } = await useLazyFetch<IApiTheaterDetailList>(`/api/jkt48/theater/${route.params.id}`)
 const dayjs = useDayjs()
@@ -29,13 +27,33 @@ const config = useAppConfig()
       <div class="px-4 md:px-5">
         <div v-for="theater in data?.shows ?? []" :key="theater.id" class="space-y-4 md:space-y-5">
           <div class="flex flex-col gap-5 md:flex-row md:gap-4">
-            <LazyImage :src="theater.setlist?.poster ?? config.errorPicture" alt="Theater Poster" class="bg-container aspect-[9/12] w-full shrink-0 overflow-hidden rounded-xl object-cover md:w-48 xl:w-80" />
+            <NuxtImg
+              class="bg-container aspect-[9/12] w-full shrink-0 overflow-hidden rounded-xl object-cover md:w-48 xl:w-80 sm"
+              :src="theater.setlist?.poster ?? config.errorPicture"
+              alt="Theater Poster"
+              :modifiers="{
+                aspectRatio: 9 / 12,
+              }"
+              :placeholder="[10, 14, 75, 50]"
+              loading="lazy"
+              fit="fill"
+              sizes="150px xs:170px sm:500px md:192px xl:320px"
+              format="webp"
+            />
             <div class="space-y-2 md:p-8">
               <div class="flex gap-3">
                 <h3 class="text-xl">
                   {{ theater.title }}
                 </h3>
-                <img :src="`https://jkt48.com${theater.team.img}`" alt="Team Label" class="self-center rounded-md">
+                <NuxtImg
+                  class="self-center rounded-md"
+                  :src="`https://jkt48.com${theater.team.img}`"
+                  alt="Team Label"
+                  loading="lazy"
+                  fit="fill"
+                  width="56px"
+                  format="webp"
+                />
               </div>
 
               <div class="font-light opacity-90">
@@ -69,7 +87,19 @@ const config = useAppConfig()
           </div>
           <div v-if="theater.members?.length" class="grid grid-cols-[repeat(auto-fill,minmax(100px,1fr))] gap-4 md:grid-cols-[repeat(auto-fill,minmax(150px,1fr))] md:gap-5">
             <NuxtLink v-for="member in theater.members" :key="member.id" :to="`/member/${member.url_key}`" class="flex flex-col space-y-2">
-              <LazyImage :src="member.img ?? pic" alt="Default profile picture" class="bg-container block aspect-[8/10] h-full w-full overflow-hidden rounded-xl object-cover" />
+              <NuxtImg
+                class="bg-container block aspect-[8/10] h-full w-full overflow-hidden rounded-xl object-cover"
+                :src="member.img ?? pic"
+                alt="Member picture"
+                fit="fill"
+                :modifiers="{
+                  aspectRatio: 8 / 10,
+                  gravity: 'faceCenter',
+                }"
+                sizes="100px md:180px"
+                :placeholder="[8, 10, 75, 5]"
+                format="webp"
+              />
               <div class="truncate">
                 {{ member.name }}
               </div>
@@ -77,7 +107,19 @@ const config = useAppConfig()
           </div>
           <div v-else class="grid grid-cols-[repeat(auto-fill,minmax(100px,1fr))] gap-4 md:grid-cols-[repeat(auto-fill,minmax(150px,1fr))] md:gap-5">
             <div v-for="num in 16" :key="num" class="relative flex flex-col space-y-2">
-              <LazyImage :src="pic" alt="Default profile picture" class="bg-container block aspect-[8/10] h-full w-full overflow-hidden rounded-xl object-cover opacity-60 brightness-50" />
+              <NuxtImg
+                class="bg-container block aspect-[8/10] h-full w-full overflow-hidden rounded-xl object-cover opacity-60 brightness-50"
+                :src="pic"
+                alt="Default member picture"
+                fit="fill"
+                :modifiers="{
+                  aspectRatio: 8 / 10,
+                  gravity: 'faceCenter',
+                }"
+                sizes="100px md:180px"
+                :placeholder="[8, 10, 75, 5]"
+                format="webp"
+              />
               <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-6xl text-white">
                 ?
               </div>

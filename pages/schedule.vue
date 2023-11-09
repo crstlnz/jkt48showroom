@@ -30,7 +30,15 @@ watch(page, (p) => {
       </div>
       <div v-else-if="data" class="flex flex-col gap-3.5">
         <div v-for="news in data.news" :key="news.id" class="bg-container mx-3 flex flex-col gap-2 rounded-xl p-3 md:mx-4 md:p-4">
-          <img :src="`https://jkt48.com${news.label}`" alt="Label" class="h-[18px] w-[58px] rounded-[3px]">
+          <NuxtImg
+            class="h-[19px] w-[56px] rounded-[3px]"
+            :src="`https://jkt48.com${news.label}`"
+            alt="Label"
+            loading="lazy"
+            fit="fill"
+            width="56px"
+            format="webp"
+          />
           <NuxtLink :to="`/news/${news.id}`" class="inline-block leading-5">
             {{ news.title }}
           </NuxtLink>

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { useOnLives } from '~/store/onLives'
-import { LazyImage } from '#components'
 
 const props = defineProps<{
   member: Database.IMemberBasicData
@@ -14,7 +13,18 @@ const isLive = computed(() => {
 
 <template>
   <div class="flex flex-col relative">
-    <LazyImage :src="member.banner || $getDefaultBanner(member.group)" :alt="`${member.name} banner`" class="bg-container aspect-[15/5] w-full md:aspect-[15/3]" />
+    <NuxtImg
+      sizes="500px sm:600px md:900px lg:1000px"
+      :modifiers="{
+        aspectRatio: 4.5 / 1,
+      }"
+      :placeholder="[45, 10, 75, 50]"
+      fit="fill"
+      format="webp"
+      :alt="`${member.name} banner`"
+      class="bg-container aspect-[15/5] w-full md:aspect-[15/3]"
+      :src="member.banner || $getDefaultBanner(member.group)"
+    />
     <div class="flex flex-col gap-3 px-3 lg:px-4">
       <div class="flex gap-2 md:gap-3 -mb-1.5 md:-mb-2">
         <div class="-ml-1.5 md:-ml-2 bg-background relative mt-[-20px] h-[90px] w-[90px] sm:w-[100px] sm:h-[100px] shrink-0 rounded-full sm:mt-[-30px] md:mt-[-35px] 2xl:mt-[-56px] md:h-[120px] md:w-[120px] 2xl:h-[140px] 2xl:w-[140px]">
@@ -23,11 +33,18 @@ const isLive = computed(() => {
               <div class="absolute inset-0 z-10 rounded-full bg-red-500" />
               <div class="absolute inset-0 -z-10 animate-ping rounded-full bg-red-500" />
             </div>
-            <LazyImage
-              :title="isLive ? 'Now Live!' : undefined"
+            <NuxtImg
               class="aspect-square h-full overflow-hidden rounded-full"
-              :src="$fixCloudinary(member.img_alt ?? member.img ?? '')"
-              :alt="`${member.name} Display Picture`"
+              :src="member.img_alt ?? member.img ?? $config.errorPicture"
+              :alt="`${member.name} Profile Picture`"
+              fit="fill"
+              :modifiers="{
+                aspectRatio: 1,
+                gravity: 'faceCenter',
+              }"
+              sizes="90px sm:100px md:120px 2xl:140px"
+              :placeholder="[10, 10, 75, 5]"
+              format="webp"
             />
           </NuxtLink>
         </div>

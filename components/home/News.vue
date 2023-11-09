@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const { data, pending, error } = await useLazyFetch('/api/jkt48/news', { key: 'news', lazy: true, deep: false })
+const { data, pending, error } = await useLazyFetch('/api/jkt48/news', { key: 'news', deep: false })
 const newsFilter = computed(() => data.value?.news.slice(0, 5) ?? [])
 const dayjs = useDayjs()
 const { locale } = useI18n()
@@ -25,7 +25,16 @@ const { locale } = useI18n()
     <div v-else-if="data" class="flex flex-col gap-3.5">
       <div v-for="[index, news] in newsFilter.entries()" :key="news.id" class="pb-3" :class="{ 'border-b-2 border-dashed border-black/20 dark:border-white/20': index !== newsFilter.length - 1 }">
         <div class="mb-1 flex items-center gap-2 text-sm font-light">
-          <img :src="`https://jkt48.com${news.label}`" alt="Label" class="h-[18px] w-[58px] rounded-[3px]"> <span>{{ dayjs(news.date).locale(locale).format("DD MMMM YYYY") }}</span>
+          <NuxtImg
+            class="h-[19px] w-[56px] rounded-[3px]"
+            :src="`https://jkt48.com${news.label}`"
+            alt="Label"
+            loading="lazy"
+            fit="fill"
+            width="56px"
+            format="webp"
+          />
+          <span>{{ dayjs(news.date).locale(locale).format("DD MMMM YYYY") }}</span>
         </div>
         <NuxtLink :to="`/news/${news.id}`" class="inline-block leading-5">
           {{ news.title }}

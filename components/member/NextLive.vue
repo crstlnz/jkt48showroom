@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { LazyImage } from '#components'
-
 const props = defineProps<{
   data: INextLive
 }>()
@@ -12,10 +10,23 @@ const date = $fromNow(props.data.date)
   <div class="flex gap-3 py-2 text-center md:py-3">
     <NuxtLink
       aria-label="View profile"
-      class="relative aspect-square h-[4.5rem] cursor-pointer overflow-hidden rounded-full drop-shadow-sm md:h-20"
+      class="relative aspect-square h-16 cursor-pointer overflow-hidden rounded-full drop-shadow-sm md:h-20"
       :to="`/member/${data.url}`"
     >
-      <LazyImage lazy="false" class="h-full w-full" :alt="data.name" :src="$fixCloudinary(data.img_alt || data.img || $errorPicture)" />
+      <NuxtImg
+        class="h-full w-full"
+        :src="data.img_alt || data.img || $errorPicture"
+        :alt="data.name"
+        loading="lazy"
+        fit="fill"
+        :modifiers="{
+          aspectRatio: 1,
+          gravity: 'faceCenter',
+        }"
+        sizes="64px md:80px"
+        :placeholder="[10, 10, 75, 5]"
+        format="webp"
+      />
     </NuxtLink>
     <div class="info flex min-w-0 flex-1 flex-col text-left">
       <div class="name flex flex-1 gap-2">

@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { LazyImage } from '#components'
-
 const props = defineProps<{
   recent: IRecent
 }>()
@@ -19,17 +17,25 @@ const date = $fromNow(
       class="relative aspect-square h-[4.5rem] cursor-pointer overflow-hidden rounded-full drop-shadow-sm md:h-[70px]"
       :to="`/member/${recent.member.url}`"
     >
-      <LazyImage
-        lazy="false"
+      <NuxtImg
         class="h-full w-full"
+        :src="recent.member?.img_alt || $errorPicture"
         :alt="`${recent.member?.name}Display Picture`"
-        :src="$fixCloudinary(recent.member?.img_alt ?? '')"
+        loading="lazy"
+        fit="fill"
+        :modifiers="{
+          aspectRatio: 1,
+          gravity: 'faceCenter',
+        }"
+        sizes="72px md:70px"
+        :placeholder="[10, 10, 75, 5]"
+        format="webp"
       />
     </NuxtLink>
 
     <div class="info flex min-w-0 flex-1 flex-col text-left">
       <div class="name flex flex-1 gap-2">
-        <NuxtLink :to="`/member/${recent.member.url}`" class="min-w-0 flex-1" :aria-label="`Open ${recent.member.name} profile`">
+        <NuxtLink :to="`/member/${recent.member.url}`" class="min-w-0 flex-1">
           <div
             class="truncate text-sm font-bold md:text-base"
             :title="recent.member?.name"
@@ -77,7 +83,7 @@ const date = $fromNow(
       <div class="mt-2 flex justify-end border-t-2 border-t-neutral-200 pt-2 text-sm dark:border-t-zinc-700/50 md:text-base">
         <ul>
           <li>
-            <NuxtLink :to="`/recent/${recent.data_id}`" aria-label="Detailed log data">
+            <NuxtLink :to="`/recent/${recent.data_id}`">
               Details
             </NuxtLink>
           </li>

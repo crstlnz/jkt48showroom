@@ -133,19 +133,18 @@ onMounted(() => {
         class="group relative flex aspect-video h-20 items-center justify-center gap-0.5 overflow-hidden rounded-xl font-bold text-white drop-shadow-sm sm:h-24 md:h-28 lg:h-32 xl:h-36"
       >
         <div v-if="isHovered" :class="{ 'recentcardprogress': !finishLoading, 'progressfinish w-[100%]': showLoading && finishLoading }" class="absolute left-0 top-0 z-10 h-1 bg-blue-500/70" />
-        <!-- <img
-          :key="recent.room_id"
-          lazy="false"
-          class="relative h-full w-full cursor-pointer bg-slate-200 object-cover text-xs transition-all duration-200 dark:bg-dark-3 md:text-sm lg:text-base"
-          :alt="`${recent.member?.name}Display Picture`"
-          :src="ss ?? recent.member?.img ?? recent.member.img_alt"
-        > -->
+        <img v-if="ss" :src="ss" alt="Screenshot's">
         <NuxtImg
+          v-else
           :key="recent.room_id"
-          lazy="false"
+          loading="lazy"
+          fit="fill"
+          format="webp"
+          sizes="144px sm:172px md:200px lg:228px xl:256px"
+          :placeholder="[32, 18, 75, 100]"
           class="relative h-full w-full cursor-pointer bg-slate-200 object-cover text-xs transition-all duration-200 dark:bg-dark-3 md:text-sm lg:text-base"
           :alt="`${recent.member?.name}Display Picture`"
-          :src="ss ?? recent.member?.img ?? recent.member.img_alt"
+          :src="recent.member?.img ?? recent.member.img_alt"
         />
       </div>
       <div class="flex min-w-0 flex-1 flex-col space-y-2">
@@ -190,7 +189,7 @@ onMounted(() => {
           {{ $d(new Date(props.recent.live_info?.date?.start), 'long') }}
         </div>
       </div>
-      <NuxtLink :to="`/recent/${recent.data_id}`" aria-label="Detailed log data" class="shrink-0 font-bold">
+      <NuxtLink :to="`/recent/${recent.data_id}`" class="shrink-0 font-bold">
         Details
       </NuxtLink>
     </div>

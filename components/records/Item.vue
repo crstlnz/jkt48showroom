@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { LazyImage } from '#components'
-
 const props = defineProps<{
   rekor: ShowroomRecord
 }>()
@@ -19,7 +17,20 @@ const isNew = computed(() => {
       <span class="font-bold">New Record</span>
     </div>
     <NuxtLink :title="rekor.name" :to="rekor.url" class="h-16 w-16 shrink-0 overflow-hidden rounded-full md:h-20 md:w-20">
-      <LazyImage :src="$fixCloudinary(rekor.img)" :alt="rekor.name" class="h-full w-full" />
+      <NuxtImg
+        class="h-full w-full"
+        :src="rekor.img"
+        :alt="rekor.name"
+        loading="lazy"
+        fit="fill"
+        :modifiers="{
+          aspectRatio: 1,
+          gravity: 'faceCenter',
+        }"
+        sizes="64px md:80px"
+        :placeholder="[10, 10, 75, 5]"
+        format="webp"
+      />
     </NuxtLink>
     <div class="w-full sm:space-y-2">
       <NuxtLink :to="`recent/${rekor.data_id}`" class="text-sm opacity-50 sm:text-base">

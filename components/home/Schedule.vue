@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const { data, pending, error } = await useLazyFetch('/api/jkt48/next_schedule', { key: 'next_schedule', lazy: true, deep: false })
+const { data, pending, error } = await useLazyFetch('/api/jkt48/next_schedule', { key: 'next_schedule', deep: false })
 const dayjs = useDayjs()
 const groupedSchedule = computed<{ today: boolean; date: string; events: JKT48.Schedule[] }[]>(() => {
   if (!data.value) return []
@@ -64,7 +64,18 @@ const { locale } = useI18n()
         </td>
         <td class="w-full p-3">
           <NuxtLink v-for="event in schedule.events" :key="event.id" :to="event.url.startsWith('/theater/schedule/id/') ? `/theater/${$getTheaterId(event.url)}` ?? undefined : undefined" class="flex gap-2">
-            <img :src="`https://jkt48.com${event.label}`" alt="Label" class="aspect-[58/18] h-4 self-center"> <span>{{ event.title }}</span>
+            <NuxtImg
+              class="aspect-[56/19] h-4 self-center"
+              :src="`https://jkt48.com${event.label}`"
+              alt="Label"
+              loading="lazy"
+              quality="100"
+              fit="fill"
+              width="56px"
+              format="webp"
+            />
+
+            <span>{{ event.title }}</span>
           </NuxtLink>
         </td>
       </tr>

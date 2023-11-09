@@ -18,7 +18,15 @@ const { locale } = useI18n()
             {{ data?.title }}
           </h3>
           <div class="mb-5 mt-2 flex items-center gap-2">
-            <img v-if="data?.label" :src="`https://jkt48.com${data?.label}`" alt="Label" class="h-[18px] w-[58px] rounded-[3px]">
+            <NuxtImg
+              class="h-[19px] w-[56px] rounded-[3px]"
+              :src="`https://jkt48.com${data.label}`"
+              alt="Label"
+              loading="lazy"
+              fit="fill"
+              width="56px"
+              format="webp"
+            />
             <span class="text-sm"> {{ dayjs(data?.date).locale(locale).format("DD MMMM YYYY") }}</span>
           </div>
           <div id="content" class="overflow-x-auto pb-20" v-html="data?.content" />

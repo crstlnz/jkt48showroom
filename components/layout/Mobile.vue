@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { useScrollLock } from '@vueuse/core'
 import { useUser } from '~/store/user'
-import { LazyImage } from '#components'
 import { useSettings } from '~/store/settings'
 
 const props = defineProps<{
@@ -103,7 +102,20 @@ function closeMenu() {
             </div>
           </NuxtLink>
           <div v-else class="my-5 flex items-center gap-3 rounded-full">
-            <LazyImage v-if="user.img" alt="User profile picture" class="h-12 w-12 overflow-hidden rounded-full bg-slate-400 p-2 text-white dark:bg-dark-1 dark:text-slate-500/50" :src="user.img" />
+            <NuxtImg
+              v-if="user.img"
+              class="h-12 w-12 overflow-hidden rounded-full bg-slate-400 p-2 text-white dark:bg-dark-1 dark:text-slate-500/50"
+              :src="user.img"
+              alt="User profile picture"
+              fit="fill"
+              :modifiers="{
+                aspectRatio: 1,
+                gravity: 'faceCenter',
+              }"
+              width="48px"
+              :placeholder="[4, 4, 75, 5]"
+              format="webp"
+            />
             <Icon v-else name="ic:baseline-person" size="1.5em" class="h-10 w-10 rounded-full bg-slate-400 p-2 text-white dark:bg-dark-1 dark:text-slate-500/50" />
             <div class="mr-3 flex flex-1 flex-col items-start">
               <div class="text-base font-semibold">

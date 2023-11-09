@@ -1,7 +1,5 @@
 <script lang="ts" setup>
 import { getSign } from 'horoscope'
-import { LazyImage, NuxtLink } from '#components'
-import { useOnLives } from '~~/store/onLives'
 
 const route = useRoute()
 

@@ -197,7 +197,7 @@ onMounted(() => {
       <Icon name="ic:baseline-filter-alt" />
       <span class="text-base">{{ $t("filter") }}</span>
     </div>
-    <FormDateRange v-model="date" />
+    <LazyFormDateRange v-model="date" />
     <div
       class="flex space-x-1 overflow-hidden rounded-xl bg-slate-200/70 dark:bg-dark-2 [&>*]:cursor-pointer [&>button]:flex-1 [&>button]:p-2 hover:[&>button]:bg-second-2/20 lg:[&>button]:p-2 [&>div]:flex-1"
     >

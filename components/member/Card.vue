@@ -26,7 +26,20 @@ watch(openMenu, (isOpen) => {
   >
     <div class="h-24 w-24 self-center overflow-hidden rounded-full">
       <NuxtLink :to="`/member/${member.url}`">
-        <LazyImage class="h-full w-full" :src="$fixCloudinary(member.img_alt ?? member.img ?? config.errorPicture)" :alt="`${member.name} Profile Picture`" />
+        <!-- <LazyImage class="h-full w-full" :src="$fixCloudinary(member.img_alt ?? member.img ?? config.errorPicture)" :alt="`${member.name} Profile Picture`" /> -->
+        <NuxtImg
+          class="h-full w-full"
+          :src="member.img_alt ?? member.img ?? config.errorPicture"
+          :alt="`${member.name} Profile Picture`"
+          fit="fill"
+          :modifiers="{
+            aspectRatio: 1,
+            gravity: 'faceCenter',
+          }"
+          width="96px"
+          :placeholder="[10, 10, 75, 5]"
+          format="webp"
+        />
       </NuxtLink>
     </div>
     <div class="text-center">

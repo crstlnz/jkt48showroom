@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { LazyImage } from '#components'
 import c from '~~/app.config'
 import { useUser } from '~/store/user'
 import { useNotifications } from '~/store/notifications'
@@ -144,76 +143,7 @@ const isXL = greaterOrEqual('xl')
     <LayoutRow v-else :title="title">
       <template #default>
         <div class="flex flex-col gap-3 md:gap-4">
-          <!-- <div class="bg-container aspect-[15/5] w-full md:aspect-[15/3]">
-            <LazyImage :src="data.room_info.banner || $getDefaultBanner(data.room_info.group)" :alt="`${data.room_info.name} banner`" class="h-full w-full" />
-          </div>
-          <div class="-mt-3 flex flex-col gap-3 px-3 md:-mt-4 lg:px-4">
-            <div class="flex">
-              <div class="bg-background relative mt-[-45px] w-[5.3rem] shrink-0 rounded-full 2xl:mt-[-8%] 2xl:w-[15%]">
-                <div class="p-1 md:p-1.5">
-                  <NuxtLink :to="`/member/${data.room_info.url}`">
-                    <LazyImage
-                      class="aspect-square h-full overflow-hidden rounded-full"
-                      :src="$fixCloudinary(data.room_info.img_alt ?? data.room_info.img ?? '')"
-                      :alt="`${data.room_info.name} Display Picture`"
-                    />
-                  </NuxtLink>
-                </div>
-              </div>
-              <div class="flex min-w-0 flex-1 items-start justify-end gap-2 pt-2 md:gap-3 md:pt-3">
-                <NuxtLink v-if="data.room_info.generation" :to="`/member?gen=${data.room_info.generation}`" class="select-none rounded-full bg-gray-500 px-3 py-1.5 text-sm text-white dark:bg-dark-3">
-                  {{ $parseGeneration(data.room_info.generation) }}
-                </NuxtLink>
-                <div
-                  class="select-none overflow-hidden rounded-full text-center text-sm text-white"
-                >
-                  <div v-if="data.room_info.is_group" class="bg-sky-400 px-3 py-1.5">
-                    Official
-                  </div>
-                  <div v-else-if="data.room_info.is_graduate" class="bg-red-500 px-3 py-1.5">
-                    Graduated
-                  </div>
-                  <div v-else class="bg-green-500 px-3 py-1.5">
-                    Active
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="text-2xl font-semibold lg:text-3xl">
-              {{ data.room_info.name }}
-            </div>
-          </div> -->
           <MemberProfileBanner :room-id="data.room_id" :member="data.room_info" />
-          <!-- <div class="flex gap-3 md:gap-4 bg-container rounded-xl p-3 md:p-4 mx-3 md:mx-4 items-stretch">
-            <div class="space-y-3">
-              <div>
-                <div class="text-base opacity-60">
-                  Start Date
-                </div>
-                <div>
-                  {{ dayjs(data.live_info.date.start).format("DD MMMM YYYY") }}
-                </div>
-                <div>
-                  {{ dayjs(data.live_info.date.start).format("hh:mm:ss WIB") }}
-                </div>
-              </div>
-              <div>
-                <div class="text-base opacity-60">
-                  End Date
-                </div>
-                <div>
-                  {{ dayjs(data.live_info.date.end).format("DD MMMM YYYY") }}
-                </div>
-                <div>
-                  {{ dayjs(data.live_info.date.end).format("hh:mm:ss WIB") }}
-                </div>
-              </div>
-            </div>
-            <div class="bg-black w-1 rounded-md self-stretch opacity-20 mx-3" />
-            <div>
-              wew
-            </div>
-          </div> -->
           <div class="flex flex-1 flex-col mx-3 md:mx-4">
             <div
               class="flex flex-1 flex-wrap items-start justify-center gap-4 [&>*]:min-w-[230px] [&>div]:flex-[100%] lg:[&>div]:flex-[calc(50%_-_1rem)]"
