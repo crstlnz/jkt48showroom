@@ -1,11 +1,17 @@
 <script lang="ts" setup>
+import { useUser } from '~/store/user'
 import { deepEqual } from '~~/library/utils/index'
 
+definePageMeta({
+  middleware: 'auth',
+})
 const { t } = useI18n()
 const title = ref('')
 
-useHead({ title: computed(() => t(title.value || 'page.title.recent')) })
-const fetch = await useRecentFetch({ changeRoute: false, mode: 'infinite', initPage: 1 })
+// useHead({ title: computed(() => t(title.value || 'page.title.recent')) })
+useHead({ title: 'History Watch' })
+const { user } = useUser()
+const fetch = await useRecentFetch({ changeRoute: false, mode: 'infinite', initPage: 1, userHistory: user.id != null })
 const { data: res, query, pending, error } = fetch.data
 const { changePage, refresh, setFilter, onQueryChange } = fetch
 const filterOpen = ref(false)
@@ -129,7 +135,7 @@ const recentHeight = computed(() => {
 </script>
 
 <template>
-  <LayoutRow :title="$t(title)" :mobile-side="false">
+  <LayoutRow title="History Watch" :mobile-side="false">
     <template #sidebar>
       <div class="flex flex-col gap-4">
         <div v-if="isXL" class="bg-background sticky top-0 z-nav -mb-3 pb-3 pt-4">
@@ -250,7 +256,21 @@ const recentHeight = computed(() => {
             page-mode
           >
             <template #default="{ item }">
-              <div class="pb-3 md:pb-4">
+              <div class="pb-3 md:pb-4 relative">
+                <div class="absolute right-3 md:right-4 top-3 md:top-4">
+                  <div v-if="item.type === 'top100'" class="bg-orange-600 px-2 rounded-md">
+                    Top 100
+                  </div>
+                  <div v-else-if="item.type === 'top50'" class="bg-gray-400 px-2 rounded-md">
+                    Top 50
+                  </div>
+                  <div v-else-if="item.type === 'top13'" class="bg-yellow-500 px-2 rounded-md">
+                    Podium 13
+                  </div>
+                  <div v-else class="bg-green-500 px-2 rounded-md">
+                    Gifter
+                  </div>
+                </div>
                 <MemberRecentCard :key="item.data_id" :recent="item" />
               </div>
             </template>
@@ -266,22 +286,5 @@ const recentHeight = computed(() => {
         </div>
       </transition>
     </div>
-
-    <!-- <div
-      class="-z-10 flex h-0 items-center justify-center text-center leading-[5rem] transition-[height] duration-300"
-      :class="{ '!h-24': pending, '!h-16': isEnded }"
-    >
-      <transition name="fade" mode="out-in">
-        <div v-if="pending" key="spinner" class="lds-ring">
-          <div />
-          <div />
-          <div />
-          <div />
-        </div>
-        <div v-else-if="isEnded" key="nomore">
-          {{ $t("data.nomore") }}
-        </div>
-      </transition>
-    </div> -->
   </LayoutRow>
 </template>

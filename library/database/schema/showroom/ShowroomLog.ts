@@ -322,4 +322,7 @@ showroomLogSchema.statics.getDetails = async function (dataId: string | number):
 }
 
 showroomLogSchema.index({ data_id: 1 }, { unique: true })
+showroomLogSchema.index({ data_id: 1, room_id: 1, is_dev: 1 })
+// showroomLogSchema.index({ 'users.user_id': 1 })
+showroomLogSchema.index({ 'users.user_id': 1, 'room_id': 1, 'is_dev': 1 })
 export default model<Database.IShowroomLog, IShowroomLogModel>('ShowroomLog', showroomLogSchema)

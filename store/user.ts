@@ -1,5 +1,6 @@
 export const useUser = defineStore('user', () => {
   const { data, status, signOut, signIn } = useAuth()
+
   const isAdmin = computed(() => {
     return (data.value as any)?.role === 'admin'
   })

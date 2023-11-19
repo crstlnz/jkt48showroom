@@ -62,7 +62,7 @@ const recentHeight = computed(() => {
   if (isLarge.value) return 214
   if (isMedium.value) return 198
   if (isSmall.value) return 168
-  return 164
+  return 146
 })
 
 watch(recentHeight, (val) => {

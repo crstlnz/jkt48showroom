@@ -147,7 +147,7 @@ onMounted(() => {
           :src="recent.member?.img ?? recent.member.img_alt"
         />
       </div>
-      <div class="flex min-w-0 flex-1 flex-col space-y-2">
+      <div class="flex min-w-0 flex-1 flex-col space-y-0.5 sm:space-y-1 md:space-y-2">
         <div class="truncate">
           <NuxtLink :to="`/member/${recent.member.url}`" :aria-label="`Open ${recent.member.name} profile`" class="text-base font-bold md:text-lg lg:text-xl">
             {{ recent.member?.nickname || recent.member?.name }}
@@ -155,19 +155,19 @@ onMounted(() => {
         </div>
         <ul class="space-y-1 text-xs md:text-sm lg:text-base [&>li]:flex [&>li]:gap-2">
           <li class="flex items-center">
-            <Icon name="bx:bxs-gift" class="h-5 w-auto rounded-full bg-amber-500 p-1 text-white lg:h-6" />
+            <Icon name="bx:bxs-gift" class="h-4 p-[3px] w-auto rounded-full bg-amber-500 md:p-1 text-white lg:h-6" />
             <div class="inline-block align-baseline">
               {{ $currency(recent.points) }}
             </div>
           </li>
           <li v-if="recent.live_info?.viewers != null" class="flex items-center">
-            <Icon :name="recent.live_info?.viewers?.is_excitement ? 'ic:round-star' : 'mingcute:user-2-fill'" class="h-5 w-auto rounded-full bg-blue-500 p-1 text-white lg:h-6" />
-            <div>
+            <Icon :name="recent.live_info?.viewers?.is_excitement ? 'ic:round-star' : 'mingcute:user-2-fill'" class="h-4 p-[3px] w-auto rounded-full bg-blue-500 md:p-1 text-white lg:h-6" />
+            <div class="truncate">
               {{ recent.live_info?.viewers?.num ? `${$n(recent.live_info?.viewers?.num ?? 0)} ${$t(recent.live_info?.viewers?.is_excitement ? "excitement_points" : "viewer", recent.live_info?.viewers?.num ?? 0)}` : $t('data.nodata') }}
             </div>
           </li>
           <li class="flex items-center">
-            <Icon name="ph:clock-countdown-bold" class="h-5 w-auto rounded-full bg-red-500 p-1 text-white lg:h-6" />
+            <Icon name="ph:clock-countdown-bold" class="h-4 p-[3px] w-auto rounded-full bg-red-500 md:p-1 text-white lg:h-6" />
             <Parser parse-type="duration" :value="recent.live_info.duration" class="inline-block align-baseline" />
           </li>
         </ul>

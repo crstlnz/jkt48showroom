@@ -54,7 +54,7 @@ export default defineNuxtConfig({
     pageTransition: { name: 'page', mode: 'out-in' },
   },
   runtimeConfig: {
-    admin_ids: (process.env.DISCORD_ADMINS ?? '').trim().split(',').map(i => i.trim()) || [],
+    admin_ids: (process.env.ADMIN_IDS ?? '').trim().split(',').map(i => i.trim()) || [],
     public: {
       isDev,
     },

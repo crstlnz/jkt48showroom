@@ -26,8 +26,11 @@ const { user, status } = useUser()
     <ToolTip class="w-full rounded-full" :offset="5">
       <template #tooltip>
         <div class="relative min-w-[250px] py-3">
-          <div class="flex flex-col text-sm [&>*]:hover:bg-hover [&>*]:p-3">
-            <NuxtLink to="/logout" class="inline-block text-left">
+          <div class="flex flex-col text-sm [&>*]:p-3">
+            <NuxtLink to="/history" class="inline-block text-left hover:bg-white/5">
+              History
+            </NuxtLink>
+            <NuxtLink to="/logout" class="inline-block text-left hover:bg-white/5">
               Logout {{ user.name }}
             </NuxtLink>
           </div>

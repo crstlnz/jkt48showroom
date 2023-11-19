@@ -11,12 +11,7 @@ function beforeLeave(el: Element) {
     const parentRect = containerNotif.value.$el.getBoundingClientRect()
     const rect = el.getBoundingClientRect()
     s.style.right = '0px'
-    // if (isGreaterOrEqual('md')) {
     s.style.top = `${rect.top - parentRect.top}px`
-    // }
-    // else {
-    //   s.style.bottom = `${parentRect.bottom - rect.bottom}px`
-    // }
     s.style.width = `${rect.width}px`
   }
 }

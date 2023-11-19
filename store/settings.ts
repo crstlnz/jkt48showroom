@@ -17,10 +17,11 @@ export const useSettings = defineStore('settings', () => {
   // const firstDate = computed(() => firstDateString.value ? new Date(firstDateString.value) : undefined)
   const firstDate = ref()
 
-  async function fetchFirstDate(){
-    try{
+  async function fetchFirstDate() {
+    try {
       firstDate.value = await $fetch('/api/showroom/first_data')
-    }catch(e){
+    }
+    catch (e) {
       console.log(e)
     }
   }

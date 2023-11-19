@@ -4,6 +4,7 @@ interface RecentFetchOpts {
   initPage?: number
   changeRoute?: boolean
   mode?: 'infinite' | 'page'
+  userHistory?: boolean
 }
 
 const defaultOpts = {
@@ -13,7 +14,6 @@ const defaultOpts = {
 export default async function (opts: RecentFetchOpts | null = null, q: RecentsQuery | null = null) {
   const cooldownDuration = 300
   const urlroute = useRoute()
-  const router = useRouter()
   const config = useAppConfig()
   const defaultQuery: RecentsQuery = config.defaultRecentQuery
   const settings = useSettings()
@@ -24,7 +24,7 @@ export default async function (opts: RecentFetchOpts | null = null, q: RecentsQu
     query = ref(q)
   }
   else {
-    query = useSessionStorage<RecentsQuery>('recent-fetch-query', buildQuery())
+    query = useSessionStorage<RecentsQuery>(opts?.userHistory ? 'history-fetch-query' : 'recent-fetch-query', buildQuery())
     // query = useSessionStorage<RecentsQuery>('recent-fetch-query', { page: opts?.initPage ?? 1 }, { mergeDefaults: opts?.initPage != null })
     if (opts?.initPage != null) {
       query.value.page = opts.initPage
@@ -37,7 +37,7 @@ export default async function (opts: RecentFetchOpts | null = null, q: RecentsQu
   const cooldown = ref(false)
   const timeout = ref<NodeJS.Timeout | undefined>(undefined)
 
-  const { data: res, error, pending, refresh } = await useLazyFetch<IApiRecents>('/api/showroom/recent', { query, watch: false })
+  const { data: res, error, pending, refresh } = await useLazyFetch<IApiRecents>(opts?.userHistory ? '/api/user/history' : '/api/showroom/recent', { query, watch: false })
   const pageData = computed(() => {
     return {
       totalCount: res.value?.total_count ?? 1,
