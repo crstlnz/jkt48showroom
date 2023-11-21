@@ -92,7 +92,7 @@ function setLike() {
     $fetch('/api/user/like', {
       method: liked.value ? 'DELETE' : 'PUT',
       body: {
-        user_id: user.id,
+        user_id: user?.id,
         type: 2,
         liked_id: data.value.data_id,
       },
@@ -305,9 +305,7 @@ const isXL = greaterOrEqual('xl')
       <template #sidebar>
         <div v-if="isXL" class="flex flex-col gap-3 md:gap-4">
           <HomeLiveNowSide class="xl:mt-4" />
-          <HomeContainer :title="$t('page.title.recent')" icon-class="bg-blue-500" more="/recent" more-label="More recents data" :more-text="$t('more')">
-            <HomeRecents />
-          </HomeContainer>
+          <HomeRecents />
         </div>
       </template>
 

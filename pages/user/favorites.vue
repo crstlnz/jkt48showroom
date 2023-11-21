@@ -38,9 +38,7 @@ const { data, pending, error } = await useLazyFetch('/api/user/like_list')
       </div>
     </template>
     <template #sidebar>
-      <HomeContainer :title="$t('page.title.recent')" class="xl:mt-4" icon-class="bg-blue-500" more="/recent" more-label="More recents data" :more-text="$t('more')">
-        <HomeRecents />
-      </HomeContainer>
+      <HomeRecents />
     </template>
   </LayoutRow>
 </template>

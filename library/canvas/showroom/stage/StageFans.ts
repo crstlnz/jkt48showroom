@@ -12,10 +12,12 @@ export class FansAvatar {
   maxRotation: number
   avatar?: HTMLImageElement
   nameBox?: HTMLImageElement
+  bg?: HTMLImageElement
   boxMargin: number
   size: number
   time: number
   speed: number
+  isCurrentUser: boolean
   // drawAvatar: (ctx: CanvasRenderingContext2D) => void;
 
   static defaultSize = 0.0625 // percent on canvas width
@@ -35,6 +37,15 @@ export class FansAvatar {
     this.avatar = new Image()
     this.nameBox = new Image()
     this.boxMargin = 0
+    this.isCurrentUser = false
+  }
+
+  setCurrentUser(val: boolean) {
+    this.isCurrentUser = val
+  }
+
+  setBG(bg: HTMLImageElement) {
+    this.bg = bg
   }
 
   setId(id: number, name: string | undefined = undefined) {
@@ -71,6 +82,9 @@ export class FansAvatar {
     this.rotation = this.maxRotation * Math.sin(this.time)
     ctx.setTransform(1, 0, 0, 1, this.x, this.y)
     if (isAnimated) ctx.rotate(((this.rotation ?? 0) * Math.PI) / 180)
+    if (this.isCurrentUser && this.bg) {
+      ctx.drawImage(this.bg, -(this.bg?.width / 1.5 ?? 0) / 2, -(this.bg.height / 1.5 ?? 0), this.bg.width / 1.5, this.bg.height / 1.5)
+    }
     this.drawAvatar(ctx)
   }
 
@@ -116,51 +130,51 @@ export class FansAvatar {
     }
   }
 
-  static async generate(
-    avaUrl: string,
-    name = '',
-    rank: number,
-    canvasWidth: number,
-    generateImage = true,
-  ): Promise<HTMLImageElement | HTMLCanvasElement> {
-    const canvas: HTMLCanvasElement = document.createElement('canvas')
-    const ctx: CanvasRenderingContext2D | null = canvas.getContext('2d')
-    if (!ctx) throw new Error('Canvas not initialized!')
-    const size = FansAvatar.defaultSize * canvasWidth
-    const {
-      width: boxW,
-      height: h,
-      name: cuttedName,
-    } = FansAvatar.generateBoxSize(name, ctx, size)
-    const boxH = rank <= 13 ? h * 1.5 : h
-    const width = Math.max(size, boxW)
-    const marginTop = boxH * FansAvatar.nameBoxPos // margin for username box;
-    const height = size + marginTop
-    canvas.width = width
-    canvas.height = height
-    const avaImg = await calculationTime(() => CanvasUtil.createImage(avaUrl))
-    if (avaImg) ctx.drawImage(avaImg, width / 2 - size / 2, height - size, size, size)
-    ctx.fillStyle = 'black'
-    ctx.globalAlpha = FansAvatar.boxOpacity
-    ctx.fillRect(width / 2 - boxW / 2, 0, boxW, boxH)
-    ctx.globalAlpha = 1
-    ctx.textBaseline = 'middle'
-    ctx.textAlign = 'center'
-    ctx.fillStyle = 'white'
-    ctx.font = `bold ${FansAvatar.fontSize}px Arial`
-    ctx.fillText(cuttedName, width / 2, rank <= 13 ? h + (h / 2) * 0.1 : h / 2)
-    if (rank <= 13) {
-      ctx.textBaseline = 'middle'
-      ctx.textAlign = 'center'
-      ctx.font = `bold ${FansAvatar.fontSize + 1}px Arial`
-      ctx.fillStyle = '#F2F20D'
-      ctx.fillText(`${rank}位`, width / 2, h / 2)
-    }
-    if (generateImage) {
-      return await CanvasUtil.createImage(canvas.toDataURL('image/jpg'))
-    }
-    return canvas
-  }
+  // static async generate(
+  //   avaUrl: string,
+  //   name = '',
+  //   rank: number,
+  //   canvasWidth: number,
+  //   generateImage = true,
+  // ): Promise<HTMLImageElement | HTMLCanvasElement> {
+  //   const canvas: HTMLCanvasElement = document.createElement('canvas')
+  //   const ctx: CanvasRenderingContext2D | null = canvas.getContext('2d')
+  //   if (!ctx) throw new Error('Canvas not initialized!')
+  //   const size = FansAvatar.defaultSize * canvasWidth
+  //   const {
+  //     width: boxW,
+  //     height: h,
+  //     name: cuttedName,
+  //   } = FansAvatar.generateBoxSize(name, ctx, size)
+  //   const boxH = rank <= 13 ? h * 1.5 : h
+  //   const width = Math.max(size, boxW)
+  //   const marginTop = boxH * FansAvatar.nameBoxPos // margin for username box;
+  //   const height = size + marginTop
+  //   canvas.width = width
+  //   canvas.height = height
+  //   const avaImg = await calculationTime(() => CanvasUtil.createImage(avaUrl))
+  //   if (avaImg) ctx.drawImage(avaImg, width / 2 - size / 2, height - size, size, size)
+  //   ctx.fillStyle = 'black'
+  //   ctx.globalAlpha = FansAvatar.boxOpacity
+  //   ctx.fillRect(width / 2 - boxW / 2, 0, boxW, boxH)
+  //   ctx.globalAlpha = 1
+  //   ctx.textBaseline = 'middle'
+  //   ctx.textAlign = 'center'
+  //   ctx.fillStyle = 'white'
+  //   ctx.font = `bold ${FansAvatar.fontSize}px Arial`
+  //   ctx.fillText(cuttedName, width / 2, rank <= 13 ? h + (h / 2) * 0.1 : h / 2)
+  //   if (rank <= 13) {
+  //     ctx.textBaseline = 'middle'
+  //     ctx.textAlign = 'center'
+  //     ctx.font = `bold ${FansAvatar.fontSize + 1}px Arial`
+  //     ctx.fillStyle = '#F2F20D'
+  //     ctx.fillText(`${rank}位`, width / 2, h / 2)
+  //   }
+  //   if (generateImage) {
+  //     return await CanvasUtil.createImage(canvas.toDataURL('image/jpg'))
+  //   }
+  //   return canvas
+  // }
 
   // only generate Username Box
   static generateUsername(
@@ -212,6 +226,7 @@ export class FansAvatar {
 
 export class FansRankings {
   ranks: FansAvatar[]
+  userBG?: HTMLImageElement
   ctx: CanvasRenderingContext2D
   canvas: HTMLCanvasElement
   parent: StageShowroom
@@ -220,6 +235,13 @@ export class FansRankings {
     this.processId = 0
     if (!context.ctx || !context.canvas) throw new Error('Canvas not initialized!')
     this.canvas = context.canvas
+    this.userBG = new Image()
+    this.userBG.onload = () => {
+      if (!this.parent.isAnimated) this.parent.requestDraw()
+    }
+
+    this.userBG.src = 'https://res.cloudinary.com/haymzm4wp/image/upload/v1700467900/assets/img/aura_zbndth.png'
+
     this.ctx = context.ctx
     this.parent = context
     this.ranks = []
@@ -237,6 +259,8 @@ export class FansRankings {
         fansAva.avatar.onload = onload
         fansAva.avatar.onerror = onload
       }
+
+      fansAva.setBG(this.userBG)
       this.ranks.push(fansAva)
     }
   }
@@ -257,7 +281,7 @@ export class FansRankings {
     this.ctx.restore()
   }
 
-  async set(stageFans: IStageFans[]) {
+  async set(stageFans: IUIStageFans[]) {
     this.processId++
     const processId = this.processId
     for (let i = 0; i < 100; i++) {
@@ -266,7 +290,7 @@ export class FansRankings {
       const fansAvatar = this.ranks[i]
       if (fans) {
         if (fansAvatar.id === fans.id) continue
-        fansAvatar.setId(fans.id, fans.name).setAvatarSrc(fans.avatar)
+        fansAvatar.setId(fans.id, fans.name).setAvatarSrc(fans.avatar).setCurrentUser(fans.isCurrentUser)
         const nameBox = await FansAvatar.generateUsername(
           fans.name,
           i,

@@ -5,12 +5,12 @@ import ShowroomLog from '~~/library/database/schema/showroom/ShowroomLog'
 import config from '~~/app.config'
 import { StageList } from '~/library/database/showroomDB'
 
-export default defineEventHandler(async (event): Promise<IApiRecents> => {
+export default defineEventHandler(async (event): Promise<IHistoryRecents> => {
   const token = await getToken({ event })
   if (!token?.id) throw createError({ statusCode: 401, statusMessage: 'Unauthenticated!' })
   return await getRecents(getQuery(event), token.id as string)
 })
-export async function getRecents(qq: any = null, userId: string): Promise<IApiRecents> {
+export async function getRecents(qq: any = null, userId: string): Promise<IHistoryRecents> {
   let page = 1
   const group = config.getGroup(qq.group)
   const maxPerpage = 30
@@ -114,10 +114,14 @@ export async function getRecents(qq: any = null, userId: string): Promise<IApiRe
           start_date: 1,
           end_date: 1,
         },
+        gift_data: {
+          gift_log: 1,
+        },
         data_id: 1,
         total_point: 1,
         created_at: 1,
         room_id: 1,
+        users: 1,
         room_info: 1,
       })
       .sort(getSort(sort))
@@ -144,33 +148,39 @@ export async function getRecents(qq: any = null, userId: string): Promise<IApiRe
 
   type HistoryType = 'top100' | 'top50' | 'top13' | 'gifter'
   return {
-    recents: logs.map<IRecent & { type: HistoryType }>((i: any) => {
+    recents: logs.map<IRecent & { type: HistoryType; user?: Database.UserData & { giftSpent: number } }>((i: any) => {
       let type: HistoryType = 'top100'
       const stageList = stageListMap.get(i.data_id)
 
       const rank = (stageList?.stage_list ?? []).reduce((a: any, b: any) => {
         // eslint-disable-next-line eqeqeq
-        const r = b.list.findIndex((x: any) => x == userId)
-        if (r !== -1) {
+        const r = b.list.findIndex((x: any) => x == userId) + 1
+        if (r > 0) {
           return Math.min(r, a)
         }
         return a
       }, 101)
 
       if (rank <= 13) {
-        type = 'top50'
+        type = 'top13'
       }
       else if (rank <= 50) {
-        type = 'top13'
+        type = 'top50'
       }
       else if (rank > 100) {
         type = 'gifter'
       }
 
-      console.log(rank, type)
+      const user = i.users.find((usr: any) => String(usr.user_id) === String(userId)) || undefined
+      const giftSpent = i.gift_data.gift_log.find((usr: any) => String(usr.user_id) === String(userId))
+
       return {
         _id: i._id,
         type,
+        user: {
+          ...user,
+          giftSpent: giftSpent?.total ?? 0,
+        },
         data_id: i.data_id,
         member: {
           name: i.room_info?.name ?? 'Member not Found!',

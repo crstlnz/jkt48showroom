@@ -40,6 +40,9 @@ useSeoMeta({
 useHead({
   title: () => member.value?.name || 'Member Profile',
 })
+
+const dayjs = useDayjs()
+const { locale } = useI18n()
 </script>
 
 <template>
@@ -49,11 +52,6 @@ useHead({
     </div>
     <Error v-else-if="error || !member" :message="error ? (error.statusCode === 404 ? $t('error.pagenotfound') : $t('error.unknown')) : $t('error.pagenotfound')" :img-src="!member || error?.statusCode === 404 ? '/svg/404.svg' : '/svg/error.svg'" />
     <LayoutRow v-else :title="member?.fullname ?? member?.name ?? ''">
-      <!-- <template #actionSection>
-        <NuxtLink target="_blank" :to="$liveURL(member.url)" class="rounded-full bg-blue-500 px-4 py-1.5 text-sm text-white">
-          Showroom
-        </NuxtLink>
-      </template> -->
       <template #default>
         <div>
           <div v-if="!member" class="flex aspect-video w-full flex-col items-center justify-center">
@@ -128,6 +126,25 @@ useHead({
               </div>
             </div>
             <div class="flex flex-col gap-3 md:gap-4">
+              <div v-if="member.recentTheater?.length" class="px-3 md:px-4">
+                <div class="flex gap-1 mb-1">
+                  <Icon name="icon-park-twotone:theater" class="self-center text-xl sm:text-2xl" />
+                  <h2 class="text-xl font-bold leading-10 sm:text-2xl">
+                    {{ $t(`recent_theater`) }}
+                  </h2>
+                </div>
+                <div v-for="theater in member.recentTheater" :key="theater.url" class="p-3 flex gap-3 items-center group hover:bg-dark/5 dark:hover:bg-white/5">
+                  <div class="bg-black/5 dark:bg-white/5 px-2 rounded-md">
+                    {{ dayjs(theater.date).locale(locale).format("DD MMM\nHH:mm") }}
+                  </div>
+                  <NuxtLink :to="`/theater/${theater.id}`" class="text-lg font-bold flex-1">
+                    {{ theater.name }}
+                  </NuxtLink>
+                  <NuxtLink :to="theater.url" target="_blank" class="invisible group-hover:visible bg-blue-500 rounded-md px-3">
+                    Official Web
+                  </NuxtLink>
+                </div>
+              </div>
               <HomeStats v-if="member?.room_id" :room-id="member?.room_id" />
               <div v-if="!isXL" class="px-3 md:px-4">
                 <div v-if=" !member?.room_id" class="bg-container flex aspect-video w-full flex-col items-center justify-center rounded-xl p-4 xl:mt-5">

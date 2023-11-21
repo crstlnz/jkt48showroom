@@ -1,9 +1,11 @@
 import CanvasUtil from '../canvasUtil'
+import stagePositions from '../stage/StagePosition'
 import PodiumGift from './PodiumGifts'
 import ScreenshotManager from './Screenshots'
 
 class ShowroomBackground extends CanvasUtil {
   background?: HTMLImageElement | null
+  userBG?: HTMLImageElement | null
   ssId: number
   screenshots: ScreenshotManager
   podiumGifts: PodiumGift[]
@@ -19,6 +21,10 @@ class ShowroomBackground extends CanvasUtil {
   }
 
   processId: number
+  userPosition: {
+    x: number
+    y: number
+  } | null
 
   constructor(defaultImage: string, showScreenshot: boolean) {
     super()
@@ -37,6 +43,7 @@ class ShowroomBackground extends CanvasUtil {
       width: 0,
       height: 0,
     }
+    this.userPosition = null
   }
 
   destroy() {

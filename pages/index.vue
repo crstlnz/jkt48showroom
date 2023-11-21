@@ -83,12 +83,8 @@ const searchInput = ref()
 
       </HomeContainer> -->
       <HomeSchedule v-if="group === 'jkt48'" />
-      <HomeContainer v-if="group === 'jkt48'" :title="$t('news')" icon-class="bg-blue-500" more="/news" more-label="More news" :more-text="$t('more')">
-        <HomeNews />
-      </HomeContainer>
-      <HomeContainer v-if="group !== 'jkt48'" :title="$t('page.title.recent')" icon-class="bg-blue-500" more="/recent" more-label="More recents data" :more-text="$t('more')">
-        <HomeRecents />
-      </HomeContainer>
+      <HomeNews v-if="group === 'jkt48'" />
+      <HomeRecents v-if="group !== 'jkt48'" />
     </template>
   </LayoutRow>
 </template>

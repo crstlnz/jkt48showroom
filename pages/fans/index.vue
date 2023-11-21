@@ -52,9 +52,7 @@ const { data: jpn_rate } = await useLazyFetch('/api/jpn_rates')
     </div>
     <template #sidebar>
       <HomeLiveNowSide class="mt-4" />
-      <HomeContainer :title="$t('page.title.recent')" icon-class="bg-blue-500" more="/recent" more-label="More recents data" :more-text="$t('more')">
-        <HomeRecents />
-      </HomeContainer>
+      <HomeRecents />
     </template>
   </LayoutRow>
 </template>

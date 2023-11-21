@@ -2,7 +2,7 @@
 const route = useRoute()
 const router = useRouter()
 const page = ref(Number(route.query.page) || 1)
-const { data, pending, error } = await useLazyFetch('/api/jkt48/news', { params: { page } })
+const { data, pending, error } = await useLazyFetch('/api/jkt48/news', { params: { page }, key: 'jkt48news', cache: 'only-if-cached' })
 const dayjs = useDayjs()
 const { locale } = useI18n()
 function changePage(p: number) {
@@ -62,9 +62,7 @@ watch(page, (p) => {
       </div>
     </template>
     <template #sidebar>
-      <HomeContainer :title="$t('page.title.recent')" class="xl:mt-4" icon-class="bg-blue-500" more="/recent" more-label="More recents data" :more-text="$t('more')">
-        <HomeRecents />
-      </HomeContainer>
+      <HomeRecents />
     </template>
   </LayoutRow>
 </template>

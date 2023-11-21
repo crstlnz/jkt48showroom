@@ -48,7 +48,7 @@ const onLives = useOnLives()
     </div>
     <div
       v-else-if="pending"
-      class="grid grid-cols-2 gap-2 py-4 sm:gap-4 md:grid-cols-3 md:gap-5 md:py-6 xl:grid-cols-4 xl:py-8"
+      class="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-3 md:gap-5 xl:grid-cols-4"
     >
       <div
         v-for="i in 12"

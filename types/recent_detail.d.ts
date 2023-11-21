@@ -19,6 +19,13 @@ interface IStageFans {
   avatar: string
 }
 
+interface IUIStageFans {
+  id: number
+  name: string
+  avatar: string
+  isCurrentUser: boolean
+}
+
 interface IStageList {
   date: string
   list: number[]

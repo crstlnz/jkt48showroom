@@ -34,7 +34,7 @@ const isLive = computed(() => {
               <div class="absolute inset-0 -z-10 animate-ping rounded-full bg-red-500" />
             </div>
             <NuxtImg
-              class="aspect-square h-full overflow-hidden rounded-full"
+              class="aspect-square h-full w-full object-cover overflow-hidden rounded-full bg-container"
               :src="member.img_alt ?? member.img ?? $config.errorPicture"
               :alt="`${member.name} Profile Picture`"
               fit="fill"
@@ -77,9 +77,6 @@ const isLive = computed(() => {
           </div>
         </div>
       </div>
-      <!-- <div class="text-2xl font-semibold lg:text-3xl">
-                {{ member.fullname || member.name }}
-              </div> -->
     </div>
   </div>
 </template>

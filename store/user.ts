@@ -21,13 +21,15 @@ export const useUser = defineStore('user', () => {
 
   return {
     authenticated,
-    user: {
-      isAdmin,
-      id,
-      img: data.value?.user?.image,
-      account_id: (data.value as any)?.account_id,
-      name: data.value?.user?.name,
-    },
+    user: authenticated.value
+      ? {
+          isAdmin,
+          id,
+          img: data.value?.user?.image,
+          account_id: (data.value as any)?.account_id,
+          name: data.value?.user?.name,
+        }
+      : null,
     status,
     signOut,
     signIn,

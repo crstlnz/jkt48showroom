@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const { data, pending, error } = await useLazyFetch('/api/jkt48/next_schedule', { key: 'next_schedule', deep: false })
+const { data, pending, error, date, refresh } = useCachedFetch<JKT48.Schedule[]>('/api/jkt48/next_schedule', { expireIn: 600000 })
 const dayjs = useDayjs()
 const groupedSchedule = computed<{ today: boolean; date: string; events: JKT48.Schedule[] }[]>(() => {
   if (!data.value) return []
@@ -43,7 +43,7 @@ const { locale } = useI18n()
     <div v-if="pending" class="aspect-[4/2] flex items-center justify-center mb-5">
       <Icon name="svg-spinners:ring-resize" size="2rem" />
     </div>
-    <div v-else-if="error" class="aspect-[4/2] flex items-center justify-center mb-7 pt-5 flex-col gap-5">
+    <div v-else-if="error && !data" class="aspect-[4/2] flex items-center justify-center mb-7 pt-5 flex-col gap-5">
       <img :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" class="w-[220px] max-w-[80%]">
       <div>{{ $t("error.unknown") }}</div>
     </div>
@@ -80,5 +80,9 @@ const { locale } = useI18n()
         </td>
       </tr>
     </table>
+    <button v-if="date && !pending" type="button" class="text-xs font-light float-right px-3 pt-1 pb-3 truncate" @click="refresh">
+      {{ dayjs(date).locale(locale).fromNow() }}
+      <Icon name="ic:outline-refresh" />
+    </button>
   </div>
 </template>

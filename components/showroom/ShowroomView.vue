@@ -5,6 +5,7 @@ import { StageShowroom } from '~~/library/canvas/showroom/stage'
 import ShowroomBackground from '~~/library/canvas/showroom/background'
 import ShowroomForeground from '~~/library/canvas/showroom/foreground'
 import { useSelectedUser } from '~/store/selectedUser'
+import { useUser } from '~/store/user'
 
 const props = defineProps<{
   memberImage: string
@@ -32,6 +33,8 @@ const showScreenshot = useLocalStorage('showScreenshot', true)
 const isAnimated = useLocalStorage('enableAnimation', true)
 const foreground = new ShowroomForeground()
 const background = new ShowroomBackground(props.memberImage, showScreenshot.value)
+
+const { user } = useUser()
 
 const { isSupported, orientation, lockOrientation, unlockOrientation } = useScreenOrientation()
 const { isFullscreen, toggle } = useFullscreen(container)
@@ -65,14 +68,15 @@ const stageNum = computed(() => {
   return props.stageList?.length - 1 ?? 0
 })
 
-function getFansRankList() {
+function getFansRankList(): IUIStageFans[] {
   if (!props.stageList?.length) return []
-  return props.stageList[stageNum.value].list.map<IStageFans>((i) => {
+  return props.stageList[stageNum.value].list.map<IUIStageFans>((i) => {
     const fans = props.users.get(i)
     return {
       id: i,
       name: fans?.name ?? 'Not Found!',
       avatar: $avatarURL(fans?.avatar_id ?? 1),
+      isCurrentUser: String(user?.id) === String(fans?.id),
     }
   })
 }
@@ -85,7 +89,8 @@ const timeout = ref<NodeJS.Timeout>()
 watch(stageNum, () => {
   if (timeout.value) clearTimeout(timeout.value)
   timeout.value = setTimeout(() => {
-    stage.setFans(getFansRankList())
+    setFansRankingList()
+    // stage.setFans(getFansRankList())
   }, 50)
 })
 
@@ -108,11 +113,20 @@ const podiumGifts = computed<IPodiumGift[]>(() => {
   return gifts
 })
 
+function setFansRankingList() {
+  stage.setFans(getFansRankList())
+  // let userRanks = user?.id ? ranks.findIndex(i => String(i.id) === user.id) + 1 : 101
+  // if (userRanks <= 0) userRanks = 101
+  // console.log('USER RANK', userRanks)
+  // // background.setUserPosition(userRanks)
+}
+
 onMounted(() => {
   if (!stCanvas.value || !bgCanvas.value || !fgCanvas.value) throw new Error('Canvas not found!')
   stage.setAnimated(isAnimated.value)
   stage.inject(stCanvas.value)
-  stage.setFans(getFansRankList())
+  // stage.setFans(getFansRankList())
+  setFansRankingList()
   background.inject(bgCanvas.value)
   background.loadBackground(props.background)
   background.setPodiumGifts(podiumGifts.value)

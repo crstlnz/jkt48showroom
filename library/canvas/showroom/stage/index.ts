@@ -67,7 +67,7 @@ class StageShowroom extends CanvasUtil {
     this.requestDraw()
   }
 
-  setFans(fans: IStageFans[]) {
+  setFans(fans: IUIStageFans[]) {
     this.fansRanks?.set(fans)
   }
 

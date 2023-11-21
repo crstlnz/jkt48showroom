@@ -15,6 +15,13 @@ watch(page, (p) => {
     query: { page: String(p) },
   })
 })
+
+const { greaterOrEqual } = useResponsive()
+const isMd = greaterOrEqual('md')
+const isXl = greaterOrEqual('xl')
+const maxDots = computed(() => {
+  return isXl.value ? 9 : 7
+})
 </script>
 
 <template>
@@ -46,23 +53,21 @@ watch(page, (p) => {
         </div>
       </div>
 
-      <div class="float-right m-3 w-[400px] self-end md:m-4">
-        <PulsePaginationControl v-if="pending || !data" :max-dots="7" />
+      <div class="float-right m-3 w-[400px] max-w-[95vw] self-end md:m-4">
+        <PulsePaginationControl v-if="pending || !data" :max-dots="maxDots" />
         <PaginationControl
           v-else-if="!error"
           key="pagination"
           class="justify-center sm:!left-auto"
           :page="data.page"
-          :max-dots="7"
+          :max-dots="maxDots"
           :total="Math.ceil(data.total_count / data.perpage)"
           @page-change="(page : number) => changePage(page)"
         />
       </div>
     </template>
     <template #sidebar>
-      <HomeContainer :title="$t('page.title.recent')" class="xl:mt-4" icon-class="bg-blue-500" more="/recent" more-label="More recents data" :more-text="$t('more')">
-        <HomeRecents />
-      </HomeContainer>
+      <HomeRecents />
     </template>
   </LayoutRow>
 </template>

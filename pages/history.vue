@@ -11,7 +11,9 @@ const title = ref('')
 // useHead({ title: computed(() => t(title.value || 'page.title.recent')) })
 useHead({ title: 'History Watch' })
 const { user } = useUser()
-const fetch = await useRecentFetch({ changeRoute: false, mode: 'infinite', initPage: 1, userHistory: user.id != null })
+const dayjs = useDayjs()
+const { locale } = useI18n()
+const fetch = await useRecentFetch({ changeRoute: false, mode: 'infinite', initPage: 1, userHistory: user?.id != null })
 const { data: res, query, pending, error } = fetch.data
 const { changePage, refresh, setFilter, onQueryChange } = fetch
 const filterOpen = ref(false)
@@ -126,11 +128,11 @@ const isMedium = greaterOrEqual('md')
 const isSmall = greaterOrEqual('sm')
 
 const recentHeight = computed(() => {
-  if (isXL.value) return 230
-  if (isLarge.value) return 214
-  if (isMedium.value) return 198
-  if (isSmall.value) return 168
-  return 146
+  if (isXL.value) return 205.5
+  if (isLarge.value) return 192
+  if (isMedium.value) return 192
+  if (isSmall.value) return 160
+  return 160
 })
 </script>
 
@@ -257,21 +259,50 @@ const recentHeight = computed(() => {
           >
             <template #default="{ item }">
               <div class="pb-3 md:pb-4 relative">
-                <div class="absolute right-3 md:right-4 top-3 md:top-4">
-                  <div v-if="item.type === 'top100'" class="bg-orange-600 px-2 rounded-md">
-                    Top 100
+                <NuxtLink :to="`/recent/${item.data_id}`" class="flex gap-3 md:gap-4 bg-container rounded-xl p-3 md:p-4">
+                  <div v-if="item.user" class="flex flex-col justify-center items-center gap-2">
+                    <div v-if="item.type === 'top100'" class="bg-orange-600 px-1.5 text-sm md:text-base md:px-2 rounded-md">
+                      Top 100
+                    </div>
+                    <div v-else-if="item.type === 'top50'" class="bg-gray-400 px-1.5 text-sm md:text-base md:px-2 rounded-md">
+                      Top 50
+                    </div>
+                    <div v-else-if="item.type === 'top13'" class="bg-yellow-500 px-1.5 text-sm md:text-base md:px-2 rounded-md">
+                      Podium 13
+                    </div>
+                    <div v-else class="bg-green-500 px-1.5 text-sm md:text-base md:px-2 rounded-md">
+                      Gifter
+                    </div>
+                    <img :src="$avatarURL(item.user?.avatar_id)" alt="" class="w-16 md:w-20 aspect-square">
+                    <div>{{ item.user.name }}</div>
                   </div>
-                  <div v-else-if="item.type === 'top50'" class="bg-gray-400 px-2 rounded-md">
-                    Top 50
+                  <div class="flex-1 flex justify-end gap-3 md:gap-4">
+                    <div class="flex-1 flex flex-col gap-1 md:gap-2">
+                      <div class="flex flex-col">
+                        <div class="flex">
+                          <div class="text-base md:text-lg font-bold truncate w-0 flex-1">
+                            {{ item.member.name }}
+                          </div>
+                        </div>
+                        <div class="text-sm md:text-base">
+                          Gift spent :  {{ item.user?.giftSpent ?? 0 }}
+                        </div>
+                      </div>
+                      <div class="font-light text-xs md:text-sm">
+                        {{ dayjs(item.live_info?.date?.end).locale(locale).fromNow() }}
+                      </div>
+                    </div>
+                    <NuxtImg
+                      provider="cloudinary"
+                      :src="item.member.img_alt ?? item.member.img"
+                      :alt="`${item.member.name} profile picture`"
+                      sizes="80px md:96px 2xl:112px"
+                      fit="fill"
+                      format="webp"
+                      class="aspect-[96/135] w-20 md:w-24 rounded-xl object-cover 2xl:w-28 self-start"
+                    />
                   </div>
-                  <div v-else-if="item.type === 'top13'" class="bg-yellow-500 px-2 rounded-md">
-                    Podium 13
-                  </div>
-                  <div v-else class="bg-green-500 px-2 rounded-md">
-                    Gifter
-                  </div>
-                </div>
-                <MemberRecentCard :key="item.data_id" :recent="item" />
+                </NuxtLink>
               </div>
             </template>
             <template #after>

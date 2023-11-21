@@ -139,6 +139,13 @@ interface IApiRecents {
   total_count: number
 }
 
+interface IHistoryRecents {
+  recents: (IRecent & { type: HistoryType; user?: Database.UserData & { giftSpent: number } })[]
+  page: number
+  perpage: number
+  total_count: number
+}
+
 interface IApiNews {
   news: JKT48.News[]
   page: number

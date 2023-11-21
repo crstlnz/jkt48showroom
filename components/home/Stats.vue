@@ -154,67 +154,9 @@ function setButton(key: string) {
   if (!isAnimated.value) isAnimated.value = true
   type.value = key
 }
-
-// const datasets = computed(() => {
-//   const d = data.value?.ranks.member?.sort((a, b) => a.name > b.name ? 1 : -1)
-//   if (d) {
-//     const liveCountRank = d.sort((a, b) => a.live_count - b.live_count).reverse().slice(0, 25).reverse()
-//     return {
-//       labels: liveCountRank.map(i => i.name),
-//       datasets: [{
-//         label: 'Live Count',
-//         data: liveCountRank.map(i => i.live_count),
-//         tension: 0.1,
-//       }],
-//       backgroundColor: ['rgba(255, 99, 132, 0.2)',
-//         'rgba(255, 159, 64, 0.2)',
-//         'rgba(255, 205, 86, 0.2)',
-//         'rgba(75, 192, 192, 0.2)',
-//         'rgba(54, 162, 235, 0.2)',
-//         'rgba(153, 102, 255, 0.2)',
-//         'rgba(201, 203, 207, 0.2)'],
-//     }
-//   }
-//   return {
-//     labels: [],
-//     datasets: [{
-//       data: [],
-//     }],
-//   }
-// })
-
-// const options = {
-//   responsive: true,
-//   plugins: {
-//     legend: {
-//       labels: {
-//         color: 'blue',
-//       },
-//       position: 'top',
-//     },
-//   },
-//   scales: {
-//     y: {
-//       beginAtZero: true,
-//       grid: {
-//         color: 'rgba(255,255,255,0.2)',
-//       },
-//     },
-//     x: {
-//       grid: {
-//         color: 'rgba(255,255,255,0.2)',
-//       },
-//     },
-//   },
-
-// }
 </script>
 
 <template>
-  <!-- <div class="bg-container mx-3 rounded-xl p-8 md:mx-4">
-    {{ data?.ranks?.member?.length }}
-    <Line :data="datasets" :options="options" />
-  </div> -->
   <div class="flex flex-col items-center justify-between gap-2 px-3 sm:flex-row sm:gap-8 md:gap-3 md:px-4">
     <div class="flex flex-wrap items-center gap-0.5 max-sm:w-full max-sm:justify-between sm:gap-1 md:gap-4">
       <div class="flex gap-1">

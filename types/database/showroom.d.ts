@@ -76,6 +76,13 @@ declare namespace Database {
     member_data?: I48Member
   }
 
+  interface ITheater {
+    id: string
+    name: string
+    date: string
+    url: string
+  }
+
   interface IMemberProfile extends IMemberBasicData {
     name: string
     nickname?: string
@@ -95,6 +102,7 @@ declare namespace Database {
     birthdate?: Date
     bloodType?: string
     height?: string
+    recentTheater?: ITheater[]
   }
 
   interface FreeGift {
@@ -125,6 +133,13 @@ declare namespace Database {
     img?: string
     banner?: string
     theater?: PremiumTheaterData
+  }
+
+  interface UserData {
+    user_id: number
+    avatar_url?: string
+    avatar_id: number
+    name: string
   }
 
   interface IShowroomLog {
@@ -162,12 +177,7 @@ declare namespace Database {
     }
     total_point: number
     created_at: Date
-    users: {
-      user_id: number
-      avatar_url?: string
-      avatar_id: number
-      name: string
-    }[]
+    users: UserData[]
     room_info?: IShowroomMember
   }
 
