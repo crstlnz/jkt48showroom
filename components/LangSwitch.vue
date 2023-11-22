@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 defineProps<{
-  compact?: boolean
   fullTitle?: boolean
 }>()
 
@@ -12,6 +11,8 @@ const otherLocale = computed(() => {
 const currentLocale = computed(() => {
   return (locales.value as any[]).find(i => i.code === locale.value)
 })
+
+const { isMobile } = useResponsive()
 </script>
 
 <template>
@@ -23,7 +24,7 @@ const currentLocale = computed(() => {
     @click.prevent.stop="setLocale(otherLocale.code)"
   >
     <Icon name="ph:translate-bold" class="h-5 w-5" />
-    <span v-if="!compact" class="text-lg font-semibold leading-5">
+    <span class="text-lg font-semibold leading-5" :class="{ 'max-2xl:hidden': !isMobile }">
       {{ fullTitle ? (currentLocale.name === "ID" ? 'Indonesia' : 'English') : currentLocale.name }}
     </span>
   </button>

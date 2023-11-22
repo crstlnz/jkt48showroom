@@ -38,7 +38,7 @@ const { data, pending, error } = await useLazyFetch('/api/user/like_list')
       </div>
     </template>
     <template #sidebar>
-      <HomeRecents />
+      <HomeRecents class="xl:mt-4" />
     </template>
   </LayoutRow>
 </template>

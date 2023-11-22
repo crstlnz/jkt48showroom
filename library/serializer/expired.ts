@@ -13,11 +13,9 @@ export default class JSONSerializer<T> implements Serializer<T> {
       const data = JSON.parse(raw)
       if (!data.time) return this.default
       if (new Date().getTime() - data.time >= this.expiredIn) {
-        console.log('expired')
         return this.default
       }
       else {
-        console.log('not expired')
         return data.value
       }
     }

@@ -120,6 +120,7 @@ export default defineNuxtConfig({
     },
   },
   modules: [
+    '@nuxtjs/fontaine',
     'floating-vue/nuxt',
     'nuxt-security',
     // '@vite-pwa/nuxt',
@@ -167,7 +168,7 @@ export default defineNuxtConfig({
       isDev,
     },
   },
-  css: ['~/assets/css/fonts.scss', '~/assets/css/style.scss', '~/assets/css/transition.scss'],
+  css: ['~/assets/css/fonts.css', '~/assets/css/style.scss', '~/assets/css/transition.scss'],
   colorMode: {
     preference: 'dark',
     fallback: 'light',
@@ -188,7 +189,7 @@ export default defineNuxtConfig({
     ],
     langDir: 'locales',
     lazy: true,
-    defaultLocale: 'en',
+    defaultLocale: 'id',
   },
   typescript: {
     shim: false,

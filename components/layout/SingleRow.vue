@@ -41,7 +41,8 @@ const navBar = ref()
 const { isMobile } = useResponsive()
 const lastScroll = ref(0)
 const navShow = ref(true)
-useEventListener(document, 'scroll', () => {
+const doc = ref()
+useEventListener(doc, 'scroll', () => {
   if (isMobile) {
     const val = window.scrollY - lastScroll.value
     lastScroll.value = window.scrollY
@@ -49,13 +50,17 @@ useEventListener(document, 'scroll', () => {
     navShow.value = val < 0
   }
 })
+
+onMounted(() => {
+  doc.value = document
+})
 </script>
 
 <template>
   <div class="relative min-h-[100vh] min-w-0 flex-1 border-r pb-20 dark:border-zinc-700">
-    <div ref="navBar" :class="{ '-translate-y-full': !navShow }" :style="{ top: 0 }" class="disable-highlight sticky  top-0 z-nav flex h-16 w-full cursor-pointer items-center gap-3 px-4 text-2xl transition-[transform] duration-500 ">
+    <div ref="navBar" :class="{ '-translate-y-full': !navShow }" :style="{ top: 0 }" class="disable-highlight sticky top-0 z-nav flex h-16 w-full cursor-pointer items-center gap-3 px-4 text-2xl transition-[transform] duration-500 ">
       <div class="bg-navbar absolute inset-0 -z-10 backdrop-blur-md" />
-      <button v-if="showBack" type="button" aria-label="Back" class="relative h-10 w-10 rounded-full transition-[background-color] hover:bg-hover" @click="back">
+      <button v-if="showBack" v-ripple type="button" aria-label="Back" class="relative h-10 w-10 rounded-full transition-[background-color] hover:bg-hover" @click="back">
         <Icon name="material-symbols:arrow-back-rounded" class="absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2" />
       </button>
       <div class="flex flex-1 cursor-pointer flex-col justify-center self-stretch" @click="scrollTop">

@@ -81,12 +81,12 @@ const sortedGift = computed(() => {
 //   return
 // }
 
-const totalPoint = computed(() => {
-  return Array.from(giftLog.value.values()).reduce((a, b) => {
-    if (!b.free) return a + b.point
-    return a
-  }, 0)
-})
+// const totalPoint = computed(() => {
+//   return Array.from(giftLog.value.values()).reduce((a, b) => {
+//     if (!b.free) return a + b.point
+//     return a
+//   }, 0)
+// })
 
 const viewers = ref(0)
 
@@ -130,6 +130,11 @@ const isPremium = computed(() => {
 
 const title = computed(() => {
   return `${data?.value?.name ?? 'Showroom'} Room`
+})
+
+useSeoMeta({
+  ogImage: () => data.value?.image,
+  twitterImage: () => data.value?.image,
 })
 
 useHead({
@@ -214,7 +219,7 @@ function onStart() {
   })
 }
 
-const giftOpen = ref(false)
+// const giftOpen = ref(false)
 
 function onFinish() {
   pause()

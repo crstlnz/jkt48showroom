@@ -37,7 +37,7 @@ export default async function (opts: RecentFetchOpts | null = null, q: RecentsQu
   const cooldown = ref(false)
   const timeout = ref<NodeJS.Timeout | undefined>(undefined)
 
-  const { data: res, error, pending, refresh } = await useLazyFetch<IApiRecents>(opts?.userHistory ? '/api/user/history' : '/api/showroom/recent', { query, watch: false, deep: false })
+  const { data: res, error, pending, refresh } = await useFetch<IApiRecents>(opts?.userHistory ? '/api/user/history' : '/api/showroom/recent', { query, watch: false, deep: false, server: false, lazy: true })
   const pageData = computed(() => {
     return {
       totalCount: res.value?.total_count ?? 1,

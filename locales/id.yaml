@@ -171,3 +171,5 @@ today: Hari ini
 noresult: Tidak ada hasil dengan pencarian
 total_member: Jumlah member
 recent_theater: Theater terakhir
+recent_detail_description: Lihat rekap gift dan fans ranking live Showroom {name} pada tanggal {date}
+member_profile_description: Profile lengkap {name} {group} dan semua rekap live showroom

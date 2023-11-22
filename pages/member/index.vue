@@ -25,7 +25,7 @@ if (route.query?.s) {
   search = ref(String(route.query?.s || ''))
 }
 else {
-  search = useSessionStorage('member-page-search', () => String(route.query.s || ''), { mergeDefaults: true })
+  search = useSessionStorage('member-page-search', '', { mergeDefaults: true })
 }
 
 watch(search, () => {
@@ -46,14 +46,18 @@ if (route.query?.gen) {
   })
 }
 else {
-  filterOptions = useSessionStorage<{
+  filterOptions = useCookie<{
     generation: string[]
     graduate: boolean
     active: boolean
   }>('filterOption', {
-    generation: [],
-    graduate: false,
-    active: true,
+    default: () => {
+      return {
+        generation: [],
+        graduate: false,
+        active: true,
+      }
+    },
   })
 }
 
@@ -63,8 +67,7 @@ const generations = computed(() => {
   return gen[group]
 })
 
-const { smallerOrEqual } = useResponsive()
-const isMobile = smallerOrEqual('sm')
+const { isMobile } = useResponsive()
 const data = computed(() => {
   let members = raw.value
   if (!members) return []

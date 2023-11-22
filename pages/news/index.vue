@@ -67,7 +67,7 @@ const maxDots = computed(() => {
       </div>
     </template>
     <template #sidebar>
-      <HomeRecents />
+      <HomeRecents class="mt-3 md:mt-4" />
     </template>
   </LayoutRow>
 </template>

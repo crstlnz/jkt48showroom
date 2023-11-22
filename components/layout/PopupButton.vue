@@ -22,19 +22,8 @@ const isSmall = smallerOrEqual('sm')
         leave-from-class="opacity-100"
         leave-to-class="opacity-0"
       >
-        <PopoverOverlay v-if="open && (isSmall || isMobile)" class="fixed inset-0 bg-black/50" />
+        <PopoverOverlay v-if="open && (isSmall || isMobile)" class="fixed z-aboveNav inset-0 bg-black/50" />
       </Transition>
-      <!-- <Transition
-    v-if="isSmall || isMobile"
-      enter-active-class="transition ease duration-200"
-      enter-from-class="opacity-0"
-      enter-to-class="opacity-100"
-      leave-active-class="transition ease duration-200"
-      leave-from-class="opacity-100"
-      leave-to-class="opacity-0"
-    >
-      <div v-if="open" @click="close" class="bg-black/50 fixed inset-0 z-aboveNav"/>
-    </Transition> -->
 
       <Transition
         enter-active-class="transition duration-300 sm:duration-200"

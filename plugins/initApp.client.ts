@@ -6,7 +6,7 @@ export default defineNuxtPlugin(({ hook }) => {
   const route = useRoute()
   const { gtag } = useGtag()
   const { authenticated } = useUser()
-  const {fetchFirstDate} = useSettings()
+  const { fetchFirstDate } = useSettings()
   watch(() => route.fullPath, (path) => {
     gtag('event', 'path_view', {
       app_name: 'JKT48 Showroom',
@@ -20,8 +20,9 @@ export default defineNuxtPlugin(({ hook }) => {
     time: 1000,
     idleTime: 30000,
   })
+
   hook('app:created', () => {
-    onLives.tryRefresh()
+    onLives.refresh()
     fetchFirstDate()
   })
 

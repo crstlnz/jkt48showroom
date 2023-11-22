@@ -12,24 +12,6 @@ function openRankFans(evt: any) {
 }
 
 const { userClick } = useSelectedUser()
-const { greaterOrEqual } = useResponsive()
-const medium = greaterOrEqual('md')
-const large = greaterOrEqual('lg')
-const xl = greaterOrEqual('extra')
-const showCount = computed(() => {
-  if (xl.value) {
-    return 16
-  }
-  else if (large.value) {
-    return 12
-  }
-  else if (medium.value) {
-    return 8
-  }
-  else {
-    return 5
-  }
-})
 </script>
 
 <template>
@@ -43,7 +25,7 @@ const showCount = computed(() => {
       </button>
     </div>
     <ul class="columns-1 md:columns-2 lg:columns-3 min-[1700px]:columns-4">
-      <li v-for="[i, fans] in data.slice(0, showCount).entries()" :key="fans.id">
+      <li v-for="[i, fans] in data.slice(0, 16).entries()" :key="fans.id" class="max-md:[&:nth-child(n+6)]:hidden max-lg:[&:nth-child(n+9)]:hidden max-[1700px]:[&:nth-child(n+13)]:hidden">
         <button v-ripple aria-label="Open user detail" class="user-btn mb-3 flex w-full items-center gap-4 rounded-3xl p-2 sm:p-3" @click="(e) => userClick(e, fans.id)">
           <span class="w-5 sm:w-6">{{ i + 1 }}</span>
           <div

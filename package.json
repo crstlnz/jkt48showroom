@@ -43,6 +43,7 @@
     "@nuxtjs/color-mode": "^3.3.0",
     "@nuxtjs/device": "^3.1.1",
     "@nuxtjs/eslint-config-typescript": "^12.1.0",
+    "@nuxtjs/fontaine": "^0.4.1",
     "@nuxtjs/i18n": "8.0.0-rc.5",
     "@nuxtjs/tailwindcss": "^6.8.0",
     "@pinia/nuxt": "^0.5.1",
@@ -69,6 +70,6 @@
     "sass": "^1.69.4",
     "typescript": "^5.2.2",
     "v-wave": "^1.5.1",
-    "vue-virtual-scroll-grid": "^1.10.2"
+    "vue-virtual-scroll-grid": "^1.11.0"
   }
 }

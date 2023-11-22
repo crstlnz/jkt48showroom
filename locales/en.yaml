@@ -171,3 +171,5 @@ today: Today
 noresult: No query result for
 total_member: Participating members
 recent_theater: Recent Theater
+recent_detail_description: Explore the gift recap and fan rankings from {name} live Showroom on {date}
+member_profile_description: Profile lengkap {name} {group} dan semua rekap live showroom

@@ -81,13 +81,9 @@ const date = $fromNow(
         </li>
       </ul>
       <div class="mt-2 flex justify-end border-t-2 border-t-neutral-200 pt-2 text-sm dark:border-t-zinc-700/50 md:text-base">
-        <ul>
-          <li>
-            <NuxtLink :to="`/recent/${recent.data_id}`">
-              Details
-            </NuxtLink>
-          </li>
-        </ul>
+        <NuxtLink :to="`/recent/${recent.data_id}`">
+          Details
+        </NuxtLink>
       </div>
     </div>
   </div>

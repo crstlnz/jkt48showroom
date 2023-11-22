@@ -20,17 +20,19 @@ const searchInput = ref()
 <template>
   <LayoutRow title="Home">
     <template #actionSection>
-      <div v-if="!isXL" class="pointer-events-none inset-x-0 max-sm:absolute">
-        <div class="bg-container pointer-events-auto float-right flex items-center rounded-2xl p-1.5 text-sm ring-blue-500 focus-within:ring-2 max-sm:mx-3 max-sm:focus-within:w-[calc(100%_-_24px)] max-sm:focus-within:pl-3" :class="{ 'pl-3 max-sm:w-[calc(100%_-_24px)]': search.length !== 0 }">
-          <input ref="searchInput" v-model="search" class="flex-1 truncate bg-transparent outline-none focus-visible:!outline-none max-sm:w-0 sm:ml-3" placeholder="Search..." @keyup.enter="applySearch">
-          <button v-if="search.length === 0" class="group flex h-7 w-7 items-center justify-center rounded-xl p-1 sm:hover:bg-blue-500" @click="searchInput?.focus()">
-            <Icon name="uil:search" class="h-full w-full text-slate-800  dark:text-white/50 dark:group-hover:text-white" />
-          </button>
-          <button v-else class="group flex h-7 w-7 items-center justify-center rounded-xl p-1 sm:hover:bg-blue-500" @click="search = ''">
-            <Icon name="ic:round-close" class="h-full w-full text-neutral-400/80 group-hover:text-white dark:text-slate-100" />
-          </button>
+      <ClientOnly>
+        <div v-if="!isXL" class="pointer-events-none inset-x-0 max-sm:absolute xl:hidden">
+          <div class="bg-container pointer-events-auto float-right flex items-center rounded-2xl p-1.5 text-sm ring-blue-500 focus-within:ring-2 max-sm:mx-3 max-sm:focus-within:w-[calc(100%_-_24px)] max-sm:focus-within:pl-3" :class="{ 'pl-3 max-sm:w-[calc(100%_-_24px)]': search.length !== 0 }">
+            <input ref="searchInput" v-model="search" class="flex-1 truncate bg-transparent outline-none focus-visible:!outline-none max-sm:w-0 sm:ml-3" placeholder="Search..." @keyup.enter="applySearch">
+            <button v-if="search.length === 0" class="group flex h-7 w-7 items-center justify-center rounded-xl p-1 sm:hover:bg-blue-500" @click="searchInput?.focus()">
+              <Icon name="uil:search" class="h-full w-full text-slate-800  dark:text-white/50 dark:group-hover:text-white" />
+            </button>
+            <button v-else class="group flex h-7 w-7 items-center justify-center rounded-xl p-1 sm:hover:bg-blue-500" @click="search = ''">
+              <Icon name="ic:round-close" class="h-full w-full text-neutral-400/80 group-hover:text-white dark:text-slate-100" />
+            </button>
+          </div>
         </div>
-      </div>
+      </ClientOnly>
     </template>
     <template #default>
       <HomeBanner />
@@ -64,7 +66,7 @@ const searchInput = ref()
       </div>
     </template>
     <template #sidebar>
-      <div v-if="isXL" class="group bg-container flex items-center gap-4 rounded-full px-4 ring-blue-500 focus-within:ring-2 xl:mt-4">
+      <div class="max-xl:hidden group bg-container flex items-center gap-4 rounded-full px-4 ring-blue-500 focus-within:ring-2 xl:mt-4">
         <Icon name="uil:search" class="ml-1 h-5 w-5 shrink-0" />
         <input
           id="search"

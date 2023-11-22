@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-defineProps<{ icon: string; activeIcon: string; title: string; url: string; activeClass?: string; active: boolean; compact?: boolean }>()
+defineProps<{ icon: string; activeIcon: string; title: string; url: string; activeClass?: string; active: boolean }>()
 </script>
 
 <template>
@@ -8,7 +8,7 @@ defineProps<{ icon: string; activeIcon: string; title: string; url: string; acti
       <div class="h-7 w-7">
         <Icon :name="!active ? icon : activeIcon" size="28px" class="h-full w-full" />
       </div>
-      <div v-if="!compact" class="ml-5 mr-4 text-xl leading-7" :class="{ 'font-bold': active }">
+      <div class="ml-5 mr-4 text-xl leading-7 max-2xl:hidden" :class="{ 'font-bold': active }">
         {{ title }}
       </div>
     </div>

@@ -68,12 +68,8 @@ async function fetch() {
   if (error.value === true) error.value = false
   if (pending.value === false) pending.value = true
   try {
-    if (props.roomId) {
-      localData.value.value = await $fetch(`/api/showroom/stats?type=${type.value || defaultStat}&room_id=${props.roomId}`)
-    }
-    else {
-      localData.value.value = await $fetch(`/api/showroom/stats?type=${type.value || defaultStat}&group=${settings.group}`)
-    }
+    const url = props.roomId ? `/api/showroom/stats?type=${type.value || defaultStat}&room_id=${props.roomId}` : `/api/showroom/stats?type=${type.value || defaultStat}&group=${settings.group}`
+    localData.value.value = await $fetch(url)
   }
   catch (e) {
     if (error.value === false) error.value = true
@@ -108,9 +104,9 @@ const typeButtons = ref<HTMLButtonElement[]>([])
 const defaultStyle = { top: 0, left: 0, width: 0, height: 0 }
 const activeStyle = ref(defaultStyle)
 
-watch(localData, () => {
-  // refresh()
-})
+// watch(localData, () => {
+// refresh()
+// })
 
 function getStyle() {
   return new Promise((resolve) => {
@@ -229,24 +225,6 @@ function setButton(key: string) {
           <div v-else class="h-16 w-16 md:h-20 md:w-20" />
         </div>
       </div>
-      <!-- <div class="flex gap-3 md:gap-4">
-        <div class="bg-container flex-1 space-y-2 rounded-xl p-4 md:p-5">
-          <div class="flex items-center gap-1.5">
-            <Icon name="streamline-emojis:wrapped-gift-1" size="2rem" class="pb-0.5" />
-            <span class="text-xl font-bold">
-              Most Gifts
-            </span>
-          </div>
-          <div v-for="member in (data?.ranks.member || [])" :key="member.room_id">
-            <div />
-            <div> {{ member.name }}</div>
-            <div> {{ member.point }}</div>
-          </div>
-        </div>
-        <div class="bg-container flex-1 rounded-xl p-4 md:p-5">
-          wew
-        </div>
-      </div> -->
       <HomeFans v-if="(data?.ranks?.fans?.length)" :key="data?.type ?? 'data'" class="rounded-xl" :data="data?.ranks.fans" />
     </div>
   </div>

@@ -19,12 +19,12 @@ const { authenticated, user, status } = useUser()
 const settings = useSettings()
 const menus = computed(() => {
   return props.menus.filter(i =>
-    i.mobile && (!i.login || authenticated) && (!i.admin || user.isAdmin) && (!i.group || i.group === settings.group || i.group === 'all'))
+    i.mobile && (!i.login || authenticated) && (!i.admin || user?.isAdmin) && (!i.group || i.group === settings.group || i.group === 'all'))
 })
 
 const hiddenMenus = computed(() => {
   return props.menus.filter(i =>
-    !i.mobile && (!i.login || authenticated) && (!i.admin || user.isAdmin) && (!i.group || i.group === settings.group || i.group === 'all'))
+    !i.mobile && (!i.login || authenticated) && (!i.admin || user?.isAdmin) && (!i.group || i.group === settings.group || i.group === 'all'))
 })
 
 const el = ref<HTMLElement | null>()
@@ -103,9 +103,9 @@ function closeMenu() {
           </NuxtLink>
           <div v-else class="my-5 flex items-center gap-3 rounded-full">
             <NuxtImg
-              v-if="user.img"
+              v-if="user?.img"
               class="h-12 w-12 overflow-hidden rounded-full bg-slate-400 p-2 text-white dark:bg-dark-1 dark:text-slate-500/50"
-              :src="user.img"
+              :src="user?.img"
               alt="User profile picture"
               fit="fill"
               :modifiers="{
@@ -119,10 +119,10 @@ function closeMenu() {
             <Icon v-else name="ic:baseline-person" size="1.5em" class="h-10 w-10 rounded-full bg-slate-400 p-2 text-white dark:bg-dark-1 dark:text-slate-500/50" />
             <div class="mr-3 flex flex-1 flex-col items-start">
               <div class="text-base font-semibold">
-                {{ user.name }}
+                {{ user?.name }}
               </div>
-              <div v-if="user.account_id" class="text-left font-light">
-                {{ user.account_id }}
+              <div v-if="user?.account_id" class="text-left font-light">
+                {{ user?.account_id }}
               </div>
             </div>
           </div>

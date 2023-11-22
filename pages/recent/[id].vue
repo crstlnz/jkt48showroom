@@ -105,29 +105,35 @@ function setLike() {
 }
 
 const dayjs = useDayjs()
-const { locale } = useI18n()
+const { locale, t } = useI18n()
+
 const date = computed(() => {
   return dayjs(data.value?.live_info?.date?.start).locale(locale.value).format('DD MMMM YYYY')
 })
+
 const title = computed(() => {
   const t = (!pending.value && (data.value || !error.value)) ? `${data.value?.room_info?.fullname ?? data.value?.room_info?.nickname ?? data.value?.room_info?.name}` : getTitle(settings.group)
   return [t.split('-')[0], date.value].join(' - ')
 })
 
-const { getGroupTitle } = useAppConfig()
-const { group } = useSettings()
 const { $fixCloudinary } = useNuxtApp()
+const description = computed(() => {
+  return t('recent_detail_description', { name: data.value?.room_info.nickname || data.value?.room_info.fullname || data.value?.room_info?.name, date: date.value })
+})
 
 useSeoMeta({
-  ogTitle: () => `${data.value?.room_info?.name} Log` || `${getGroupTitle(group)} Showroom Log`,
+  ogTitle: () => `Live ${title.value}`,
+  description,
   ogImage: () => data.value?.room_info?.img || '',
-  twitterTitle: () => `${data.value?.room_info?.name} Log` || `${getGroupTitle(group)} Showroom Log`,
+  ogDescription: description,
+  twitterDescription: description,
+  twitterTitle: () => `Live ${title.value}`,
   twitterImage: () => $fixCloudinary(data.value?.room_info?.img_alt || data.value?.room_info?.img || ''),
   twitterCard: 'summary',
 })
 
 useHead({
-  title,
+  title: () => `Live ${title.value}`,
 })
 
 const { greaterOrEqual } = useResponsive()
@@ -220,21 +226,24 @@ const isXL = greaterOrEqual('xl')
           <div
             class="pulse-color col-span-2 aspect-[16/13] flex-1 overflow-hidden shadow-sm sm:mx-3 md:mx-4 sm:rounded-xl md:aspect-[16/10] lg:w-auto 2xl:aspect-[16/9]"
           >
-            <ShowroomView
-              v-if="data.live_info?.stage_list?.length"
-              :member-image="data.room_info?.img"
-              :date="data.live_info?.date"
-              :background="
-                data.live_info?.background_image
-                  ?? 'https://image.showroom-cdn.com/showroom-prod/assets/img/room/background/default.png'
-              "
-              :screenshot="data.live_info?.screenshot"
-              :live-info="data.live_info"
-              :stage-list="data.live_info.stage_list"
-              :users="users"
-              :gift-data="data.live_info.gift"
-            />
-
+            <ClientOnly v-if="data.live_info?.stage_list?.length">
+              <template #fallback>
+                <div class="w-full h-full bg-container animate-pulse" />
+              </template>
+              <ShowroomView
+                :member-image="data.room_info?.img"
+                :date="data.live_info?.date"
+                :background="
+                  data.live_info?.background_image
+                    ?? 'https://image.showroom-cdn.com/showroom-prod/assets/img/room/background/default.png'
+                "
+                :screenshot="data.live_info?.screenshot"
+                :live-info="data.live_info"
+                :stage-list="data.live_info.stage_list"
+                :users="users"
+                :gift-data="data.live_info.gift"
+              />
+            </ClientOnly>
             <div v-else class="flex h-full w-full items-center justify-center bg-zinc-600 text-3xl font-bold text-white">
               No data
             </div>
@@ -242,71 +251,20 @@ const isXL = greaterOrEqual('xl')
           <div class="mx-3 md:mx-4 overflow-hidden rounded-xl bg-white shadow-sm dark:bg-dark-1">
             <ShowroomGiftScroll :gifts="calculatedGift" :page-mode="true" :data-id="data.data_id" :gift-list="data?.live_info?.gift?.list ?? []" />
           </div>
-          <!-- <div class="mx-3 space-y-3 md:mx-4 md:space-y-4"> -->
-          <!-- <div class="bg-container flex flex-1 flex-col gap-5 rounded-2xl p-5 lg:flex-row-reverse">
-              <ShowroomTimeline :date-start="data.live_info?.date?.start" :date-end="data.live_info?.date?.end" />
-              <div class="flex flex-1 flex-col">
-                <div
-                  class="flex flex-1 flex-wrap items-start justify-center gap-4 [&>*]:min-w-[230px] [&>div]:flex-[100%] lg:[&>div]:flex-[calc(50%_-_1rem)]"
-                >
-                  <ShowroomStat>
-                    <template #title>
-                      <Icon name="ph:timer-fill" />{{ $t("duration") }}
-                    </template>
-                    <template #value>
-                      <Parser parse-type="duration" :value="data.live_info?.duration ?? 0" class="lowercase" />
-                    </template>
-                  </ShowroomStat>
-
-                  <ShowroomStat v-if="data.live_info?.viewers">
-                    <template #title>
-                      <Icon :name="data.live_info?.viewers?.is_excitement ? 'ic:round-star' : 'ph:users-fill'" /> {{ data.live_info?.viewers?.is_excitement ? $t("excitement_points") : $t("viewer") }}
-                    </template>
-                    <template #value>
-                      {{ $n(data.live_info?.viewers?.num ?? 0) }}
-                      <span v-if="data.live_info?.viewers?.active ?? 0" v-tooltip="$t('tooltip.activeuser')" class="inline-flex items-center gap-0.5">
-                        ( {{ $n(data.live_info?.viewers?.active ?? 0) }}<Icon name="ph:info-duotone" /> )
-                      </span>
-                    </template>
-                  </ShowroomStat>
-
-                  <ShowroomStat>
-                    <template #title>
-                      <Icon name="bx:bxs-gift" />{{ $t("totalgift") }}
-                    </template>
-                    <template #value>
-                      {{ $currency(data.total_point ?? 0) }}
-                    </template>
-                  </ShowroomStat>
-
-                  <ShowroomStat v-if="data.live_info?.comments">
-                    <template #title>
-                      <Icon name="ph:chat-circle-dots-fill" />{{ $t("totalcomments") }}
-                    </template>
-                    <template #value>
-                      <div class="flex items-center justify-center gap-2">
-                        <span :title="`${data.live_info.comments.num} ${$t('totalcomments')}`">
-                          {{ $n(data.live_info?.comments.num) }}
-                        </span>
-                        <span v-tooltip="`${$t('tooltip.usercomment', { msg: $n(data.live_info.comments.users) })}`" class="inline-flex items-center justify-center gap-0.5">
-                          ( {{ $n(data.live_info.comments.users) }}
-                          <Icon title="Users" name="carbon:user-avatar-filled" class="h-6" /> )
-                        </span>
-                      </div>
-                    </template>
-                  </ShowroomStat>
-                </div>
-              </div>
-            </div> -->
-          <!-- </div> -->
         </div>
       </template>
 
       <template #sidebar>
-        <div v-if="isXL" class="flex flex-col gap-3 md:gap-4">
-          <HomeLiveNowSide class="xl:mt-4" />
-          <HomeRecents />
-        </div>
+        <ClientOnly>
+          <template #fallback>
+            <div class="bg-container w-full aspect-[4/5] rounded-xl animate-pulse xl:mt-4" />
+            <div class="bg-container w-full aspect-[4/12] rounded-xl animate-pulse" />
+          </template>
+          <div v-if="isXL" class="flex flex-col gap-3 md:gap-4">
+            <HomeLiveNowSide class="xl:mt-4" />
+            <HomeRecents />
+          </div>
+        </ClientOnly>
       </template>
 
       <template #actionSection>

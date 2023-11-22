@@ -60,7 +60,7 @@ export default function<T> (
   const expiredIn = opts?.expiredIn ?? 3600000
   const serializer = opts?.serializer
   const allowExpiredData = opts?.allowExpiredData ?? false
-  const pending = ref(false)
+  const pending = ref(true)
   const error = ref(false)
   const fetchData = opts?.fetch
   const customIsExpired = opts?.isExpired

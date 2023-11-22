@@ -22,23 +22,25 @@ const birth = computed(() => {
     : null
 })
 
+const { t } = useI18n()
 const { greaterOrEqual } = useResponsive()
 const isXL = greaterOrEqual('xl')
-
 const { $fixCloudinary } = useNuxtApp()
-
+const { getGroup } = useAppConfig()
+const description = ref(member.value?.jikosokai || t('member_profile_description', { name: data.value?.nickname || data.value?.fullname || data.value?.name, group: data.value?.is_group ? undefined : getGroup(data.value?.group ?? '') }))
 useSeoMeta({
-  ogTitle: () => `${member.value?.name} Profile` || 'Member Profile',
-  ogDescription: () => member.value?.jikosokai || undefined,
+  ogTitle: () => `${data.value?.fullname || member.value?.name} Profile` || 'Member Profile',
+  description,
+  ogDescription: description,
   ogImage: () => member.value?.img || '',
   twitterTitle: () => `${member.value?.name} Profile` || 'Member Profile',
-  twitterDescription: () => member.value?.jikosokai || undefined,
+  twitterDescription: description,
   twitterImage: () => $fixCloudinary(member.value?.img_alt || member.value?.img || ''),
   twitterCard: 'summary',
 })
 
 useHead({
-  title: () => member.value?.name || 'Member Profile',
+  title: () => data.value?.fullname || member.value?.name || 'Member Profile',
 })
 
 const dayjs = useDayjs()
@@ -134,13 +136,13 @@ const { locale } = useI18n()
                   </h2>
                 </div>
                 <div v-for="theater in member.recentTheater" :key="theater.url" class="p-3 flex gap-3 items-center group hover:bg-dark/5 dark:hover:bg-white/5">
-                  <div class="bg-black/5 dark:bg-white/5 px-2 rounded-md">
+                  <div class="bg-black/5 dark:bg-white/5 px-2 rounded-md text-sm md:text-base">
                     {{ dayjs(theater.date).locale(locale).format("DD MMM\nHH:mm") }}
                   </div>
-                  <NuxtLink :to="`/theater/${theater.id}`" class="text-lg font-bold flex-1">
+                  <NuxtLink :to="`/theater/${theater.id}`" class="text-base md:text-lg font-bold flex-1">
                     {{ theater.name }}
                   </NuxtLink>
-                  <NuxtLink :to="theater.url" target="_blank" class="invisible group-hover:visible bg-blue-500 rounded-md px-3">
+                  <NuxtLink :to="theater.url" target="_blank" class="invisible group-hover:visible max-md:hidden bg-blue-500 rounded-md px-3">
                     Official Web
                   </NuxtLink>
                 </div>

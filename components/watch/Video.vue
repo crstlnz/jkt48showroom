@@ -413,7 +413,7 @@ defineExpose({ stop })
 
 <template>
   <div ref="videoPlayer" class="group relative">
-    <div v-if="!isPlaying" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/50 p-1">
+    <div v-if="!isPlaying && !isLoading" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/50 p-1">
       <Icon name="material-symbols:pause" class="text-white/60" size="3rem" />
     </div>
     <video
@@ -438,114 +438,107 @@ defineExpose({ stop })
     </div>
 
     <div id="control" ref="videoControl" :class="{ 'opacity-100': showControl || isFocusControl || isHoverControl }" class="absolute inset-x-0 bottom-0 z-10 text-slate-200 opacity-0 duration-200 ease-in-out" @click="setShowControl(true)">
-      <ClientOnly>
-        <div>
-          <div class="group flex items-center justify-center">
-            <!-- <progress /> -->
-            <div class="relative flex h-full w-full duration-200 group-hover/volume:w-20">
-              <div class="absolute bottom-0 z-0 h-1 w-full overflow-hidden bg-neutral-700/75">
-                <div class="h-full bg-red-600" :style="{ width: `${videoProgess}%` }" />
-              </div>
-              <div :class="{ 'opacity-0': !isMobile }" class="absolute bottom-[2px] h-3 w-3 -translate-x-1/2 translate-y-1/2 rounded-full bg-red-600 transition-opacity duration-300 group-hover:opacity-100" :style="{ left: `${videoProgess}%` }" />
-              <input
-                ref="seekSlider"
-                :class="{ 'opacity-0': !isMobile }"
-                aria-label="Playback"
-                type="range"
-                min="0"
-                max="10000"
-                step="1"
-                class="volume-slider hidden-slider z-20 h-4 w-full cursor-pointer transition-opacity duration-300 hover:opacity-100"
-                @change="changeVideoTime"
-                @input="seek"
-                @pointerdown="isSeekDragging = true"
-                @pointerup="isSeekDragging = false"
-              >
+      <!-- <ClientOnly>
+
+      </ClientOnly> -->
+      <div>
+        <div class="group flex items-center justify-center">
+          <div class="relative flex h-full w-full duration-200 group-hover/volume:w-20">
+            <div class="absolute bottom-0 z-0 h-1 w-full overflow-hidden bg-neutral-700/75">
+              <div class="h-full bg-red-600" :style="{ width: `${videoProgess}%` }" />
             </div>
-          </div>
-          <div class="flex w-full bg-black/70 px-1 duration-200 dark:bg-black/75 md:px-2">
-            <button class="h-8 w-8 p-1" aria-label="Play" type="button" @click="togglePlay">
-              <Icon v-if="isPlaying" name="ic:baseline-pause" class="h-full w-full" />
-              <Icon v-else name="ph:play-fill" class="h-full w-full p-[2.5px]" />
-            </button>
-            <div class="group/volume flex items-center gap-1">
-              <button class="h-8 w-8 p-1" aria-label="Mute" type="button" @click="toggleMute">
-                <Icon v-if="!isMuted" :name=" volume >= 50 ? 'ic:round-volume-up' : 'ic:round-volume-down' " class="h-full w-full p-[1px]" />
-                <Icon v-else name="ic:round-volume-off" class="h-full w-full p-[1px]" />
-              </button>
-              <div class="relative flex h-full w-16 items-center duration-200 group-hover/volume:w-20 md:w-20">
-                <div class="absolute inset-0 top-1/2 z-0 h-1 w-16 -translate-y-1/2 overflow-hidden rounded-sm bg-gray-300/25 md:w-20">
-                  <div class="h-full bg-slate-200" :style="{ width: `${volume}%` }" />
-                </div>
-                <input
-                  ref="volumeSlider"
-                  v-model="volume"
-                  aria-label="Volume"
-                  type="range"
-                  min="0"
-                  max="100"
-                  step="5"
-                  class="volume-slider z-20 h-1 w-16 cursor-pointer md:w-20"
-                >
-              </div>
-            </div>
-            <div class="flex-1" />
-            <div class="flex items-center text-xs md:text-sm">
-              {{ dayjs.duration(currentTimeFloor, 'second').format("mm:ss") }} / {{ dayjs.duration(duration, 'second').format("mm:ss") }}
-            </div>
-            <button class="h-8 w-8 p-1" aria-label="Reload" type="button" @click="reload">
-              <Icon name="ic:round-refresh" class="h-full w-full p-[1px]" />
-            </button>
-            <Popover class="h-8 w-8">
-              <PopoverButton aria-label="Setting" class="h-full w-full p-1">
-                <Icon name="ic:baseline-settings" class="h-full w-full p-[2px] duration-300" />
-              </PopoverButton>
-              <Transition
-                enter-active-class="transition duration-200 ease-out"
-                enter-from-class="translate-y-2 translate-x-1 opacity-0"
-                enter-to-class="translate-y-0 translate-x-0 opacity-100"
-                leave-active-class="transition duration-150 ease-in"
-                leave-from-class="translate-y-0 translate-x-x opacity-100"
-                leave-to-class="translate-y-2 translate-x-1 opacity-0"
-              >
-                <PopoverPanel class="absolute bottom-11 right-4 rounded-md bg-black/70 dark:bg-black/80">
-                  <div>
-                    <div class="border-b border-white/20 px-3 py-1.5 md:px-4 md:py-2.5">
-                      {{ $t('quality') }}
-                    </div>
-                    <div class="flex w-[220px] flex-col py-1 text-base md:w-[250px]">
-                      <PopoverButton v-for="source in sources" :key="source.id" class="flex items-center truncate text-left text-sm hover:bg-black/50" @click="() => changeSource(source)">
-                        <div class="h-10 w-10">
-                          <Icon v-if="currentSource.id === source.id" name="ic:round-check" class="h-full w-full p-2.5" />
-                        </div>
-                        <div>
-                          {{ source.label }}
-                        </div>
-                      </PopoverButton>
-                    </div>
-                  </div>
-                </PopoverPanel>
-              </Transition>
-            </Popover>
-            <button class="group h-8 w-8 p-1 " aria-label="Fullscreen" type="button" @click="togglePictureInPicture">
-              <Icon name="ic:round-picture-in-picture" class="h-full w-full p-0.5 duration-300" />
-            </button>
-            <button class="group h-8 w-8 p-1 " aria-label="Fullscreen" type="button" @click="toggleFullscreen">
-              <Icon v-if="!isFullscreen" name="ic:round-fullscreen" class="h-full w-full duration-300 hover:scale-125" />
-              <Icon v-else name="ic:round-fullscreen-exit" class="h-full w-full duration-300 hover:scale-125" />
-            </button>
+            <div :class="{ 'opacity-0': !isMobile }" class="absolute bottom-[2px] h-3 w-3 -translate-x-1/2 translate-y-1/2 rounded-full bg-red-600 transition-opacity duration-300 group-hover:opacity-100" :style="{ left: `${videoProgess}%` }" />
+            <input
+              ref="seekSlider"
+              :class="{ 'opacity-0': !isMobile }"
+              aria-label="Playback"
+              type="range"
+              min="0"
+              max="10000"
+              step="1"
+              class="volume-slider hidden-slider z-20 h-4 w-full cursor-pointer transition-opacity duration-300 hover:opacity-100"
+              @change="changeVideoTime"
+              @input="seek"
+              @pointerdown="isSeekDragging = true"
+              @pointerup="isSeekDragging = false"
+            >
           </div>
         </div>
-      </ClientOnly>
+        <div class="flex w-full bg-black/70 px-1 duration-200 dark:bg-black/75 md:px-2">
+          <button class="h-8 w-8 p-1" aria-label="Play" type="button" @click="togglePlay">
+            <Icon v-if="isPlaying" name="ic:baseline-pause" class="h-full w-full" />
+            <Icon v-else name="ph:play-fill" class="h-full w-full p-[2.5px]" />
+          </button>
+          <div class="group/volume flex items-center gap-1">
+            <button class="h-8 w-8 p-1" aria-label="Mute" type="button" @click="toggleMute">
+              <Icon v-if="!isMuted" :name=" volume >= 50 ? 'ic:round-volume-up' : 'ic:round-volume-down' " class="h-full w-full p-[1px]" />
+              <Icon v-else name="ic:round-volume-off" class="h-full w-full p-[1px]" />
+            </button>
+            <div class="relative flex h-full w-16 items-center duration-200 group-hover/volume:w-20 md:w-20">
+              <div class="absolute inset-0 top-1/2 z-0 h-1 w-16 -translate-y-1/2 overflow-hidden rounded-sm bg-gray-300/25 md:w-20">
+                <div class="h-full bg-slate-200" :style="{ width: `${volume}%` }" />
+              </div>
+              <input
+                ref="volumeSlider"
+                v-model="volume"
+                aria-label="Volume"
+                type="range"
+                min="0"
+                max="100"
+                step="5"
+                class="volume-slider z-20 h-1 w-16 cursor-pointer md:w-20"
+              >
+            </div>
+          </div>
+          <div class="flex-1" />
+          <div class="flex items-center text-xs md:text-sm">
+            {{ dayjs.duration(currentTimeFloor, 'second').format("mm:ss") }} / {{ dayjs.duration(duration, 'second').format("mm:ss") }}
+          </div>
+          <button class="h-8 w-8 p-1" aria-label="Reload" type="button" @click="reload">
+            <Icon name="ic:round-refresh" class="h-full w-full p-[1px]" />
+          </button>
+          <Popover>
+            <PopoverButton aria-label="Setting" class="h-8 w-8 p-1">
+              <Icon name="ic:baseline-settings" class="h-full w-full p-[2px] duration-300" />
+            </PopoverButton>
+            <Transition
+              enter-active-class="transition duration-200 ease-out"
+              enter-from-class="translate-y-2 translate-x-1 opacity-0"
+              enter-to-class="translate-y-0 translate-x-0 opacity-100"
+              leave-active-class="transition duration-150 ease-in"
+              leave-from-class="translate-y-0 translate-x-x opacity-100"
+              leave-to-class="translate-y-2 translate-x-1 opacity-0"
+            >
+              <PopoverPanel class="absolute bottom-11 right-4 rounded-md bg-black/70 dark:bg-black/80">
+                <div>
+                  <div class="border-b border-white/20 px-3 py-1.5 md:px-4 md:py-2.5">
+                    {{ $t('quality') }}
+                  </div>
+                  <div class="flex w-[220px] flex-col py-1 text-base md:w-[250px]">
+                    <PopoverButton v-for="source in sources" :key="source.id" class="flex items-center truncate text-left text-sm hover:bg-black/50" @click="() => changeSource(source)">
+                      <div class="h-10 w-10">
+                        <Icon v-if="currentSource.id === source.id" name="ic:round-check" class="h-full w-full p-2.5" />
+                      </div>
+                      <div>
+                        {{ source.label }}
+                      </div>
+                    </PopoverButton>
+                  </div>
+                </div>
+              </PopoverPanel>
+            </Transition>
+          </Popover>
+          <button class="group h-8 w-8 p-1 " aria-label="Fullscreen" type="button" @click="togglePictureInPicture">
+            <Icon name="ic:round-picture-in-picture" class="h-full w-full p-0.5 duration-300" />
+          </button>
+          <button class="group h-8 w-8 p-1 " aria-label="Fullscreen" type="button" @click="toggleFullscreen">
+            <Icon v-if="!isFullscreen" name="ic:round-fullscreen" class="h-full w-full duration-300 hover:scale-125" />
+            <Icon v-else name="ic:round-fullscreen-exit" class="h-full w-full duration-300 hover:scale-125" />
+          </button>
+        </div>
+      </div>
     </div>
   </div>
-  <!-- <div class="relative aspect-video bg-black">
-    <button type="button" aria-label="Mute/Unmute Button" class="absolute right-0 bottom-0 z-[25] m-2 flex aspect-square w-5 cursor-pointer select-none items-center justify-center rounded-full bg-slate-500/30 text-white hover:bg-slate-500/40 md:m-3 md:w-6 xl:m-4" @click="toggleMute">
-      <Icon v-if="isMuted" name="ph:speaker-simple-slash-fill" />
-      <Icon v-else name="ph:speaker-simple-high-fill" />
-    </button>
-    <video ref="video" class="h-full w-full overflow-hidden bg-slate-200 object-cover opacity-0 transition-opacity duration-300 dark:bg-dark-1/70" :class="{ 'opacity-100': videoLoaded }" />
-  </div> -->
 </template>
 
 <style lang="scss">

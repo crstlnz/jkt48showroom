@@ -12,7 +12,7 @@ useHead({
   htmlAttrs: {
     class: () => menuOpen.value ? 'max-md:overflow-hidden' : '',
   },
-  titleTemplate: t => t ? `${t} - ${title}` : title,
+  titleTemplate: t => t ? `${t} | ${title}` : title,
   // meta: [
   //   {
   //     hid: 'description',
@@ -105,17 +105,16 @@ watch(route, () => {
   })
 })
 
-const { isMobile, isSmall } = useResponsive()
+const { isMobile } = useResponsive()
 const MobileLayout = resolveComponent('LayoutMobile')
 const DesktopLayout = resolveComponent('LayoutDesktop')
 </script>
 
 <template>
   <main class="relative mx-auto flex max-w-[1630px]">
-    <SplashScreen>
-      <Component :is="!isMobile ? (isSmall ? MobileLayout : DesktopLayout) : MobileLayout" :menus="menus" @toggle-dark="toggleDark()">
-        <slot />
-      </Component>
-    </SplashScreen>
+    <Component :is="!isMobile ? DesktopLayout : MobileLayout" :menus="menus" @toggle-dark="toggleDark()">
+      <!-- <Component :is="!isMobile ? (isSmall ? MobileLayout : DesktopLayout) : MobileLayout" :menus="menus" @toggle-dark="toggleDark()"> -->
+      <slot />
+    </Component>
   </main>
 </template>
