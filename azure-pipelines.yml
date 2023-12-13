@@ -26,6 +26,11 @@ steps:
     pnpm config set store-dir $(pnpm_config_cache)
   displayName: "Setup pnpm"
 
+  env:
+    API: $(API)
+    TZ: $(TZ)
+    NUXT_IMAGE_PROVIDER: $(NUXT_IMAGE_PROVIDER)
+
 - script: |
     pnpm install
   displayName: 'Installing apps'
@@ -41,6 +46,15 @@ steps:
     archiveType: 'zip'
     archiveFile: '$(Build.ArtifactStagingDirectory)/app.zip'
     replaceExistingArchive: true
+  displayName: Archiving build files
+
+- task: SSH@0
+  inputs:
+    sshEndpoint: 'Ella'
+    runOptions: 'commands'
+    commands: 'cd ~/apps/jkt48showroom/.output;rm -r *'
+    readyTimeout: '20000'
+  displayName: Deleting old files
 
 - task: CopyFilesOverSSH@0
   inputs:
@@ -51,6 +65,7 @@ steps:
     cleanTargetFolder: true
     cleanHiddenFilesInTarget: true
     readyTimeout: '20000'
+  displayName: Transfer build files to server
 
 - task: SSH@0
   inputs:
@@ -58,3 +73,4 @@ steps:
     runOptions: 'commands'
     commands: 'cd ~/apps/jkt48showroom/.output;unzip app.zip;pm2 restart 1'
     readyTimeout: '20000'
+  displayName: Run deployed apps
