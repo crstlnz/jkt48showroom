@@ -52,7 +52,7 @@ steps:
   inputs:
     sshEndpoint: 'Ella'
     runOptions: 'commands'
-    commands: 'cd ~/apps/jkt48showroom/.output;rm -r *'
+    commands: 'cd ~/apps/jkt48showroom/.output && rm -r *'
     readyTimeout: '20000'
   displayName: Deleting old files
 
@@ -71,6 +71,6 @@ steps:
   inputs:
     sshEndpoint: 'Ella'
     runOptions: 'commands'
-    commands: 'cd ~/apps/jkt48showroom/.output;unzip app.zip;pm2 restart 1'
+    commands: 'cd ~/apps/jkt48showroom/.output && unzip app.zip && pm2 restart 1'
     readyTimeout: '20000'
   displayName: Run deployed apps
