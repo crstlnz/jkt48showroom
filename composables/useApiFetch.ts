@@ -6,7 +6,7 @@ import { useSettings } from '~/store/settings'
 export function useApiFetch<T>(url: string | (() => string), options: UseFetchOptions<T> = {}) {
   const config = useRuntimeConfig()
   if (!config.public.api) throw new Error('Api url not defined!')
-  const { getHeaders, setCookie, combineCookie } = syncServerCookies()
+  const { getHeaders, setCookie } = syncServerCookies()
   const onResponse = options?.onResponse
   const onRequest = options?.onRequest
   const defaults: UseFetchOptions<T> = {
@@ -35,6 +35,12 @@ export function useApiFetch<T>(url: string | (() => string), options: UseFetchOp
           }
         }
       }
+    },
+    onRequestError(ctx) {
+      console.log(ctx.error)
+    },
+    onResponseError(ctx) {
+      console.log(ctx.error)
     },
   }
   // for nice deep defaults, please use unjs/defu

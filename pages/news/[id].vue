@@ -31,8 +31,6 @@ useHead({
 
 <template>
   <div>
-    {{ error }}
-
     <div v-if="pending" class="relative min-h-[100vh] w-full">
       <Icon name="eos-icons:loading" size="3rem" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 " />
     </div>

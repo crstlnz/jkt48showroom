@@ -14,7 +14,7 @@ export async function $apiFetch<T>(request: RequestInfo, options?: FetchOptions<
     ...options,
   }
 
-  const { getHeaders, setCookie, combineCookie } = syncServerCookies()
+  const { getHeaders, setCookie } = syncServerCookies()
 
   const onResponse = options?.onResponse
   const onRequest = options?.onRequest
@@ -40,6 +40,12 @@ export async function $apiFetch<T>(request: RequestInfo, options?: FetchOptions<
           }
         }
       }
+    },
+    onRequestError(ctx) {
+      console.log(ctx.error)
+    },
+    onResponseError(ctx) {
+      console.log(ctx.error)
     },
   })
   return res._data as T
