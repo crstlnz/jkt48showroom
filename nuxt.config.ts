@@ -1,5 +1,5 @@
 const isDev = process.env.NODE_ENV === 'development'
-
+console.log('API',process.env.API)
 export default defineNuxtConfig({
   app: {
     rootId: 'app',
@@ -7,7 +7,6 @@ export default defineNuxtConfig({
     pageTransition: { name: 'page', mode: 'out-in' },
   },
   runtimeConfig: {
-    secret: process.env.SECRET ?? '',
     public: {
       isDev,
       api: process.env.API,
@@ -32,7 +31,8 @@ export default defineNuxtConfig({
   security: {
     headers: {
       crossOriginEmbedderPolicy: false,
-      contentSecurityPolicy: !isDev ? 'base-uri \'none\'; font-src * https: data:; form-action \'self\'; frame-ancestors \'self\'; img-src * data:; object-src \'none\'; script-src-attr \'none\'; style-src \'self\' https: \'unsafe-inline\'; script-src \'self\' https: \'unsafe-inline\' \'strict-dynamic\' \'nonce-{{nonce}}\'; upgrade-insecure-requests' : false,
+      contentSecurityPolicy: false,
+      // contentSecurityPolicy: !isDev ? 'base-uri \'none\'; font-src * https: data:; form-action \'self\'; frame-ancestors \'self\'; img-src * data:; object-src \'none\'; script-src-attr \'none\'; style-src \'self\' https: \'unsafe-inline\'; script-src \'self\' https: \'unsafe-inline\' \'strict-dynamic\' \'nonce-{{nonce}}\'; upgrade-insecure-requests' : false,
     },
     csrf: false,
     xssValidator: false,

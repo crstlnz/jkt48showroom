@@ -14,9 +14,59 @@ variables:
   pnpm_config_cache: $(Pipeline.Workspace)/.pnpm-store
 
 steps:
+- task: Cache@2
+  inputs:
+    key: 'pnpm | "$(Agent.OS)" | pnpm-lock.yaml'
+    path: $(pnpm_config_cache)
+  displayName: Cache pnpm
+
 - script: |
-    cd A:\Programming\apps\jkt48showroom
-    dir
+    corepack enable
+    corepack prepare pnpm@latest-8 --activate
+    pnpm config set store-dir $(pnpm_config_cache)
+  displayName: "Setup pnpm"
+
+- script: |
     pnpm install
+  displayName: 'Installing apps'
+
+- script: |
     pnpm build
-  displayName: 'pnpm install and build'
+  displayName: 'Building apps'
+
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/.output'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/app.zip'
+    replaceExistingArchive: true
+  displayName: Archiving build files
+
+- task: SSH@0
+  inputs:
+    sshEndpoint: 'Ella'
+    runOptions: 'commands'
+    commands: 'cd ~/apps/jkt48showroom/.output && rm -r *'
+    readyTimeout: '20000'
+  continueOnError: true
+  displayName: Deleting old files
+
+- task: CopyFilesOverSSH@0
+  inputs:
+    sshEndpoint: 'Ella'
+    sourceFolder: '$(Build.ArtifactStagingDirectory)'
+    contents: 'app.zip'
+    targetFolder: '~/apps/jkt48showroom/.output'
+    cleanTargetFolder: true
+    cleanHiddenFilesInTarget: true
+    readyTimeout: '20000'
+  displayName: Transfer build files to server
+
+- task: SSH@0
+  inputs:
+    sshEndpoint: 'Ella'
+    runOptions: 'commands'
+    commands: 'cd ~/apps/jkt48showroom/.output && unzip app.zip && pm2 restart 1'
+    readyTimeout: '20000'
+  displayName: Run deployed apps
