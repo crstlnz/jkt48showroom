@@ -27,7 +27,6 @@ export default defineNuxtPlugin(({ hook }) => {
   })
 
   hook('app:mounted', () => {
-    console.log('WEWe')
     refreshCSRF()
   })
 

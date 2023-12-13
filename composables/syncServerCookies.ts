@@ -22,13 +22,13 @@ export default function () {
     }
   }
 
-  function getHeaders(): Headers {
-    const headers = event.headers
+  function getHeaders(): HeadersInit {
+    const headers = useRequestHeaders(['cookie'])
     if (app.ssrContext?.newCookie) {
       const newCookie = app.ssrContext.newCookie
-      const headerCookie = new CookieParser(headers.get('Cookie') || '')
+      const headerCookie = new CookieParser(headers?.cookie || '')
       headerCookie.addCookies(newCookie.toString())
-      headers.set('Cookie', headerCookie.toString())
+      headers.cookie = headerCookie.toString()
     }
     return headers
   }

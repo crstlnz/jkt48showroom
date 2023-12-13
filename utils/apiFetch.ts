@@ -41,12 +41,6 @@ export async function $apiFetch<T>(request: RequestInfo, options?: FetchOptions<
         }
       }
     },
-    onRequestError(ctx) {
-      console.log(ctx.error)
-    },
-    onResponseError(ctx) {
-      console.log(ctx.error)
-    },
   })
   return res._data as T
 }

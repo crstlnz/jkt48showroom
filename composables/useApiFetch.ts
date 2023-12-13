@@ -36,12 +36,6 @@ export function useApiFetch<T>(url: string | (() => string), options: UseFetchOp
         }
       }
     },
-    onRequestError(ctx) {
-      console.log(ctx.error)
-    },
-    onResponseError(ctx) {
-      console.log(ctx.error)
-    },
   }
   // for nice deep defaults, please use unjs/defu
   const params = defu(options, defaults)
