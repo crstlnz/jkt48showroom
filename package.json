@@ -3,8 +3,7 @@
   "type": "module",
   "version": "0.10.0",
   "engines": {
-    "node": "20.x.x",
-    "pnpm": "8.11.x"
+    "node": "20.x.x"
   },
   "scripts": {
     "start": "node .output/server/index.mjs",
