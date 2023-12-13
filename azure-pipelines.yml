@@ -26,11 +26,6 @@ steps:
     pnpm config set store-dir $(pnpm_config_cache)
   displayName: "Setup pnpm"
 
-  env:
-    API: $(API)
-    TZ: $(TZ)
-    NUXT_IMAGE_PROVIDER: $(NUXT_IMAGE_PROVIDER)
-
 - script: |
     pnpm install
   displayName: 'Installing apps'
