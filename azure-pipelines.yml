@@ -54,6 +54,7 @@ steps:
     runOptions: 'commands'
     commands: 'cd ~/apps/jkt48showroom/.output && rm -r *'
     readyTimeout: '20000'
+  continueOnError: true
   displayName: Deleting old files
 
 - task: CopyFilesOverSSH@0
