@@ -35,7 +35,7 @@
     "vuedraggable": "^2.24.3"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^2.2.2",
+    "@antfu/eslint-config": "^2.4.5",
     "@nuxtjs/color-mode": "^3.3.0",
     "@nuxtjs/device": "^3.1.1",
     "@nuxtjs/eslint-config-typescript": "^12.1.0",
@@ -62,7 +62,7 @@
     "nuxt-icon": "^0.5.0",
     "nuxt-security": "^1.0.0-rc.3",
     "sass": "^1.69.4",
-    "typescript": "^5.3.2",
+    "typescript": "^5.3.3",
     "v-wave": "^1.5.1",
     "vue-virtual-scroll-grid": "^1.11.0"
   }

@@ -11,8 +11,8 @@ const filteredMembers = useSessionStorage<ISortMember[]>('sorter-members', [])
 const filterList = useSessionStorage<string[]>('sorter-filterlist', [])
 
 const { group } = useSettings()
-const generation = generateGen()[group]
-const filterGeneration = useLocalStorage<string[]>('filter-generation-sorter', generation.map(i => i.key) ?? [])
+const generation = generateGen()[group as 'jkt48'|'hinatazaka46']
+const filterGeneration = useLocalStorage<string[]>('filter-generation-sorter', generation.map((i: { key: any; }) => i.key) ?? [])
 const filterGraduate = useLocalStorage('filter-graduate-sorter', true)
 const filterActive = useLocalStorage('filter-active-sorter', true)
 const filterAllGeneration = ref(true)
@@ -59,7 +59,7 @@ function toggleAllGeneration() {
     filterGeneration.value = []
   }
   else {
-    filterGeneration.value = generation.map(i => i.key)
+    filterGeneration.value = generation.map((i: { key: any; }) => i.key)
   }
 }
 

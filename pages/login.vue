@@ -40,121 +40,11 @@ useHead({
   ],
 })
 
-const canvas = ref<HTMLCanvasElement | null>()
 
-const { x: mouseX, y: mouseY } = useMouse()
-
-const mouseYPlus = ref(0)
-const mouseXSmooth = ref(0)
-const mouseYSmooth = ref(0)
-const lastY = ref <number | null>(null)
-watch(mouseY, (y) => {
-  if (lastY.value !== null) {
-    mouseYPlus.value += Math.max(0, lastY.value - y)
-  }
-  else {
-    mouseYPlus.value = 0
-  }
-  lastY.value = y
-})
-
-const width = ref(0)
-const height = ref(0)
-
-function lerp(a: number, b: number, t: number): number {
-  return a * (1 - t) + b * t
-}
-
-class Bubble {
-  x: number
-  y: number
-  deep: number
-  speed: number
-  size: number
-  color: string
-  constructor() {
-    this.x = random(0, 100)
-    this.y = random(0, 100)
-    this.deep = random(0, 100)
-    this.speed = random(0.005, 0.01)
-    this.size = random(180, 600) - this.deep / 100 * 2
-    this.color = this.generateRandomColor()
-  }
-
-  generateRandomColor(): string {
-    const colors: string[] = ['#3b82f6', '#22c55e', '#ef4444', '#14b8a6', '#a855f7', '#ec4899', '#f97316', '#eab308']
-    const randomIndex: number = Math.floor(Math.random() * colors.length)
-    return colors[randomIndex]
-  }
-
-  draw(ctx: CanvasRenderingContext2D) {
-    this.y -= this.speed * 2 * this.deep / 100
-    ctx.fillStyle = this.color
-    ctx.globalAlpha = (this.deep / 300)
-    ctx.beginPath()
-    const y = height.value * this.y / 100 - mouseYSmooth.value / height.value * 100 * 2 * this.deep / 100
-    ctx.arc((width.value * this.x / 100) + ((mouseXSmooth.value / window.innerWidth * 100) - 50) * this.deep / 100, y, this.size, 0, 2 * Math.PI)
-    ctx.fill()
-
-    if (y < -this.size) {
-      this.y += 100 + (this.size / height.value * 100) * 2
-    }
-  }
-}
-
-function random(min: number, max: number): number {
-  return Math.random() * (max - min) + min
-}
-
-const w = ref<Window | null>()
-
-useEventListener(w, 'resize', () => {
-  if (canvas.value) {
-    width.value = window.innerWidth * 2
-    height.value = window.innerHeight * 2
-    canvas.value.width = width.value
-    canvas.value.height = height.value
-  }
-})
-
-// const mounted = ref(false)
-// onMounted(() => {
-//   mounted.value = true
-//   mouseXSmooth.value = mouseX.value
-//   mouseYSmooth.value = mouseYPlus.value
-//   w.value = window
-//   if (canvas.value) {
-//     width.value = window.innerWidth * 2
-//     height.value = window.innerHeight * 2
-//     const ctx = canvas.value.getContext('2d')
-//     if (ctx) {
-//       canvas.value.width = width.value
-//       canvas.value.height = height.value
-
-//       const bubbles: Bubble[] = []
-//       for (let i = 0; i < 10; i++) {
-//         bubbles.push(new Bubble())
-//       }
-
-//       function draw(ctx: CanvasRenderingContext2D) {
-//         mouseXSmooth.value = lerp(mouseXSmooth.value, mouseX.value, 0.05)
-//         mouseYSmooth.value = lerp(mouseYSmooth.value, mouseYPlus.value, 0.05)
-//         ctx.clearRect(0, 0, width.value, height.value)
-//         for (const bubble of bubbles) {
-//           bubble.draw(ctx)
-//         }
-//         requestAnimationFrame(() => draw(ctx))
-//       }
-
-//       draw(ctx)
-//     }
-//   }
-// })
 
 const loading = ref(false)
 const submitDisabled = computed(() => {
-  return true
-  // return loading.value
+  return loading.value
   // return loading.value || session.value?.csrf_token == null
 })
 const username = ref('')
@@ -244,12 +134,6 @@ async function signInHandler() {
   <div>
     <SplashScreen>
       <div class="min-h-[100vh] bg-dark-2 backdrop-blur-sm">
-        <!-- <canvas
-      ref="canvas" :class="{
-        'opacity-100': mounted,
-        'opacity-0': !mounted,
-      }" class="fixed inset-0 -z-10 h-full w-full opacity-60 blur-3xl transition-[opacity] duration-1000"
-    /> -->
         <div class="flex items-center justify-center text-center">
           <NuxtLink to="/" class="my-8 text-3xl font-bold text-white md:my-14 lg:text-4xl">
             {{ getTitle(settings.group) }}
@@ -289,9 +173,6 @@ async function signInHandler() {
             <div class="space-y-4">
               <div v-if="errorData?.error" class=" text-red-500">
                 {{ errorData?.error }}
-              </div>
-              <div class=" text-red-500">
-                Login features are currently under construction.
               </div>
               <ButtonText class="relative mt-4 rounded-xl bg-blue-500 p-2.5 text-xl font-bold w-full" :disabled="submitDisabled" @click="checkSubmit">
                 <Icon v-if="loading" name="svg-spinners:ring-resize" size="1.8rem" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />

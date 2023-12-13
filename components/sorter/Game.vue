@@ -4,7 +4,7 @@ defineProps<{
 }>()
 
 const filterList = useSessionStorage<string[]>('sorter-filterlist', [])
-const { start, state, stop, GameState, cardOne, cardTwo, pick, undo, progress } = useMemberSorter()
+const { start, state, stop, GameState, setSelectedMember,cardOne, cardTwo, pick, undo, progress } = useMemberSorter()
 watch(state, (val) => {
   if (val === GameState.FINISHED) navigateTo('/sorter/result')
 })
@@ -31,6 +31,7 @@ watch(state, (val) => {
           key="filter"
           class="mt-8"
           :members="members" @filtered="(members, filterLista) => {
+            setSelectedMember(members)
             start()
           }"
         />
