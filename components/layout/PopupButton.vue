@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 import { Popover, PopoverButton, PopoverOverlay, PopoverPanel } from '@headlessui/vue'
 
-const { class: customClass } = defineProps<{
+const props = defineProps<{
   class?: string
 }>()
+
+const customClass = computed(() => props.class)
 const { isMobile, smallerOrEqual } = useResponsive()
 const isSmall = smallerOrEqual('sm')
 </script>

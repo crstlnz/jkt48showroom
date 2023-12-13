@@ -14,7 +14,7 @@ export async function $apiFetch<T>(request: RequestInfo, options?: FetchOptions<
     ...options,
   }
 
-  const { getHeaders, setCookie } = syncServerCookies()
+  const { getHeaders, setCookie, combineCookie } = syncServerCookies()
 
   const onResponse = options?.onResponse
   const onRequest = options?.onRequest
@@ -34,9 +34,9 @@ export async function $apiFetch<T>(request: RequestInfo, options?: FetchOptions<
       else {
         if (['post', 'delete', 'put'].includes(ctx.options.method?.toLowerCase() || '')) {
           const settings = useSettings()
-          ctx.options.query = {
-            ...ctx.options.query,
-            csrf_token: settings.csrfToken,
+          ctx.options.headers = {
+            ...ctx.options.headers,
+            'X-CSRF-TOKEN': settings.csrfToken,
           }
         }
       }

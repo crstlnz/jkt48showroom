@@ -33,8 +33,15 @@ export default function () {
     return headers
   }
 
+  function combineCookie(cookieString: string | null, cookieString2: string): string {
+    const cookie = new CookieParser(cookieString || '')
+    cookie.addCookies(cookieString2)
+    return cookie.toString()
+  }
+
   return {
     setCookie,
     getHeaders,
+    combineCookie,
   }
 }

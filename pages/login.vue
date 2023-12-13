@@ -40,8 +40,6 @@ useHead({
   ],
 })
 
-
-
 const loading = ref(false)
 const submitDisabled = computed(() => {
   return loading.value
@@ -91,6 +89,7 @@ function checkSubmit() {
 }
 
 const route = useRoute()
+const { refresh } = useCSRF()
 const router = useRouter()
 const redirectURL = computed<string>(() => {
   try {
@@ -114,6 +113,7 @@ async function signInHandler() {
   try {
     await signIn(body)
     session.value = null
+    refresh()
     return await navigateTo(redirectURL.value, { external: false })
   }
   catch (e: any) {

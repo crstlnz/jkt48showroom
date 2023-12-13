@@ -31,7 +31,7 @@ async function logout() {
       message: 'Logout success!',
       type: 'success',
     })
-    cancel()
+    navigateTo('/', { external: true })
     localStorage.clear()
   }
   catch (e) {
