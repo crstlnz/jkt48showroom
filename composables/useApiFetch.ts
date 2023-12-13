@@ -6,7 +6,7 @@ import { useSettings } from '~/store/settings'
 export function useApiFetch<T>(url: string | (() => string), options: UseFetchOptions<T> = {}) {
   const config = useRuntimeConfig()
   if (!config.public.api) throw new Error('Api url not defined!')
-  const { getHeaders, setCookie } = syncServerCookies()
+  const { getHeaders, setCookie, combineCookie } = syncServerCookies()
   const onResponse = options?.onResponse
   const onRequest = options?.onRequest
   const defaults: UseFetchOptions<T> = {
@@ -29,9 +29,9 @@ export function useApiFetch<T>(url: string | (() => string), options: UseFetchOp
       else {
         if (['post', 'delete', 'put'].includes(ctx.options.method?.toLowerCase() || '')) {
           const settings = useSettings()
-          ctx.options.query = {
-            ...ctx.options.query,
-            csrf_token: settings.csrfToken,
+          ctx.options.headers = {
+            ...ctx.options.headers,
+            'X-CSRF-TOKEN': settings.csrfToken,
           }
         }
       }

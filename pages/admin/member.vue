@@ -117,7 +117,7 @@ function onUpdateShowroom(data: Admin.IShowroomMember) {
 const { group } = useSettings()
 const generations = computed(() => {
   const gen = generateGen()
-  return gen[group]
+  return gen[group as 'jkt48' | 'hinatazaka46']
 })
 
 function toggleGen(key: string) {

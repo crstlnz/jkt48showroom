@@ -12,7 +12,7 @@ const { authenticated, user } = useAuth()
 const settings = useSettings()
 const menus = computed(() => {
   return props.menus.filter(i =>
-    (!i.login || authenticated) && (!i.admin || user.value?.is_admin) && (!i.group || i.group === settings.group || i.group === 'all'))
+    (!i.login || authenticated.value) && (!i.admin || user.value?.is_admin) && (!i.group || i.group === settings.group || i.group === 'all'))
 })
 
 const { getIcon } = useAppConfig()

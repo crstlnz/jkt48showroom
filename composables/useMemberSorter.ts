@@ -302,5 +302,9 @@ export default function () {
     state.value = s
   }
 
-  return { start, stop, state, GameState, cardOne, cardTwo, pick, result, undo, reset, progress, setState }
+  function setSelectedMember(data : ISortMember[]){
+    members.value = data
+  }
+
+  return { start, stop, state, GameState, cardOne, cardTwo, pick, result, undo, reset, progress, setState ,setSelectedMember}
 }

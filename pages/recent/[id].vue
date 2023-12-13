@@ -160,7 +160,14 @@ const isXL = greaterOrEqual('xl')
           <MemberProfileBanner :room-id="data.room_id" :member="data.room_info" />
           <div class="mx-3 md:mx-4 flex gap-3 md:gap-4 items-stretch [&>div]:flex-1 max-xl:flex-col">
             <div class="flex flex-col md:flex-row xl:flex-col gap-3 md:gap-4 flex-wrap">
-              <InfoCard class="flex-1" icon-class="bg-red-500/20 text-red-500 dark:bg-red-300/20 dark:text-red-300" icon="material-symbols:calendar-today" :title="`${dayjs(dateStart).locale(locale).format('hh:mm A')} - ${dayjs(dateEnd).locale(locale).format('hh:mm A')}`" :value="dayjs(dateStart).locale(locale).format('dddd, DD MMMM YYYY')" />
+              <InfoCard class="flex-1" icon-class="bg-red-500/20 text-red-500 dark:bg-red-300/20 dark:text-red-300" icon="material-symbols:calendar-today">
+                <template #default>
+                  {{ dayjs(dateStart).locale(locale).format('dddd, DD MMMM YYYY') }}
+                </template>
+                <template #title>
+                  {{ `${dayjs(dateStart).locale(locale).format('hh:mm A')} - ${dayjs(dateEnd).locale(locale).format('hh:mm A')}` }}
+                </template>
+              </InfoCard>
               <InfoCard class="flex-1" icon-class="bg-yellow-500/20 text-yellow-500 dark:bg-yellow-300/20 dark:text-yellow-300" icon="material-symbols:auto-timer" :title="$t('duration')" :value="formatDuration(data.live_info?.duration ?? 0)" />
             </div>
             <div class="bg-container rounded-xl p-3 md:p-4">

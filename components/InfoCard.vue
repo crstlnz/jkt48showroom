@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 defineProps<{
-  title: string | number
-  value: string | number
+  title?: string | number
+  value?: string | number
   iconClass?: string
   icon: string
 }>()
@@ -14,11 +14,18 @@ defineProps<{
     </div>
     <div class="flex-1">
       <div class="text-center">
-        <div class="font-semibold text-sm xl:text-base">
+        <div v-if="value" class="font-semibold text-sm xl:text-base">
           {{ value }}
         </div>
-        <div class="flex gap-1.5 justify-center text-xs xl:text-sm opacity-80">
+        <div  class="font-semibold text-sm xl:text-base">
+          <slot/>
+        </div>
+
+        <div v-if="title" class="flex gap-1.5 justify-center text-xs xl:text-sm opacity-80">
           {{ title }}
+        </div>
+        <div class="flex gap-1.5 justify-center text-xs xl:text-sm opacity-80">
+         <slot name="title"/>
         </div>
       </div>
     </div>

@@ -4,6 +4,7 @@ import { useOnLives } from '~~/store/onLives'
 export default defineNuxtPlugin(({ hook }) => {
   const route = useRoute()
   const { gtag } = useGtag()
+  const { refresh: refreshCSRF } = useCSRF()
   const { authenticated } = useAuth()
   const { fetchFirstDate } = useSettings()
   watch(() => route.fullPath, (path) => {
@@ -23,6 +24,11 @@ export default defineNuxtPlugin(({ hook }) => {
   hook('app:created', () => {
     onLives.tryRefresh()
     fetchFirstDate()
+  })
+
+  hook('app:mounted', () => {
+    console.log('WEWe')
+    refreshCSRF()
   })
 
   onFocus(() => {
