@@ -27,8 +27,10 @@ steps:
   displayName: "Setup pnpm"
 
 - script: |
-    dir
     pnpm install
+  displayName: 'Installing apps'
+
+- script: |
     pnpm build
   displayName: 'Building apps'
 
