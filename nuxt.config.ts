@@ -1,4 +1,5 @@
 const isDev = process.env.NODE_ENV === 'development'
+console.log('API',process.env.API)
 
 export default defineNuxtConfig({
   app: {
@@ -7,7 +8,6 @@ export default defineNuxtConfig({
     pageTransition: { name: 'page', mode: 'out-in' },
   },
   runtimeConfig: {
-    secret: process.env.SECRET ?? '',
     public: {
       isDev,
       api: process.env.API,
