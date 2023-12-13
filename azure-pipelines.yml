@@ -23,8 +23,11 @@ steps:
 - script: |
     corepack enable
     corepack prepare pnpm@latest-8 --activate
-    pnpm config set store-dir $(pnpm_config_cache)
   displayName: "Setup pnpm"
+
+- script: |
+    pnpm config set store-dir $(pnpm_config_cache)
+  displayName: "Setup config store"
 
 - script: |
     pnpm install
