@@ -47,7 +47,7 @@ steps:
     sshEndpoint: 'Ella'
     sourceFolder: '$(Build.ArtifactStagingDirectory)'
     contents: 'app.zip'
-    targetFolder: '~/apps/jkt48showroom/.output/'
+    targetFolder: '~/apps/jkt48showroom/.output'
     cleanTargetFolder: true
     cleanHiddenFilesInTarget: true
     readyTimeout: '20000'
@@ -56,5 +56,5 @@ steps:
   inputs:
     sshEndpoint: 'Ella'
     runOptions: 'commands'
-    commands: 'cd ~apps/jkt48showroom/.output;unzip app.zip;pm2 restart 1'
+    commands: 'cd ~/apps/jkt48showroom/.output;unzip app.zip;pm2 restart 1'
     readyTimeout: '20000'
