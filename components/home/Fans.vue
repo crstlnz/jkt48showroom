@@ -15,9 +15,9 @@ const { userClick } = useSelectedUser()
 </script>
 
 <template>
-  <div class="bg-container space-y-2.5 p-4 shadow-sm md:space-y-3.5 md:p-5">
+  <div class="bg-container space-y-2.5 p-3 shadow-sm md:space-y-3.5 md:p-4">
     <div class="flex items-center justify-between">
-      <h2 class="text-xl font-bold lg:text-2xl">
+      <h2 class="font-bold text-lg xl:text-xl">
         {{ $t("topfans") }}
       </h2>
       <button v-if="(data.length > 4)" class="hover:text-second-2" href="#" type="button" @click="openRankFans">
@@ -26,7 +26,7 @@ const { userClick } = useSelectedUser()
     </div>
     <ul class="columns-1 md:columns-2 lg:columns-3 min-[1700px]:columns-4">
       <li v-for="[i, fans] in data.slice(0, 16).entries()" :key="fans.id" class="max-md:[&:nth-child(n+6)]:hidden max-lg:[&:nth-child(n+9)]:hidden max-[1700px]:[&:nth-child(n+13)]:hidden">
-        <button v-ripple aria-label="Open user detail" class="user-btn mb-3 flex w-full items-center gap-4 rounded-3xl p-2 sm:p-3" @click="(e) => userClick(e, fans.id)">
+        <button v-ripple class="user-btn mb-3 flex w-full items-center gap-4 rounded-3xl p-2 sm:p-3" @click="(e) => userClick(e, fans.id)">
           <span class="w-5 sm:w-6">{{ i + 1 }}</span>
           <div
             :title="fans.name"
@@ -59,7 +59,7 @@ const { userClick } = useSelectedUser()
           <div class="font-semibold">
             {{ index + 1 }}
           </div>
-          <button type="button" class="user-btn" aria-label="Open user detail" @click="(e) => userClick(e, item.id)">
+          <button type="button" class="user-btn" :aria-label="`${item.name} profile`" @click="(e) => userClick(e, item.id)">
             <img
               :key="item.id"
               lazy="false"

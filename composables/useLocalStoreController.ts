@@ -45,7 +45,6 @@ class ExtendedSerializer<T> implements Serializer<DataValue<T> | null> {
 
 /**
  * @param id The id of localstorage.
- * @param fetchData A function for fetching the data.
  * @param opts Custom options of the controller.
  * @param opts.expiredIn Data expired in milliseconds. Set to 0 for no expire.
  * @param opts.fetch A promise or function to get the data for refresh fn
@@ -62,6 +61,7 @@ export default function<T> (
   const allowExpiredData = opts?.allowExpiredData ?? false
   const pending = ref(true)
   const error = ref(false)
+  const isFirstFetch = ref(true)
   const fetchData = opts?.fetch
   const customIsExpired = opts?.isExpired
 
@@ -81,13 +81,18 @@ export default function<T> (
     return new Date().getTime() - (data.value?.created_at ?? 0) > expiredIn
   }
 
-  function tryRefresh(...args: unknown[]) {
+  async function tryRefresh(...args: unknown[]) {
     if (!fetchData) throw new Error('Fetch function required!')
-    if (pending.value || !isExpired()) return
+    if (!isExpired()) {
+      pending.value = false
+      return
+    }
+    if (pending.value && !isFirstFetch.value) return
     refresh(...args)
   }
 
   async function refresh(...args: unknown[]) {
+    isFirstFetch.value = false
     if (!fetchData) throw new Error('Fetch function required!')
     try {
       pending.value = true

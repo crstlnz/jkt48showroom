@@ -11,8 +11,10 @@ export default function useCachedFetch<DataT>(url: string, options?: CachedFetch
   const expireIn = ref(options?.expireIn ?? 3600000)
   const pending = ref(true)
   const error = ref<Error | null>(null)
+  const isFirstFetch = ref(true)
   const data = ref<DataT | null>(null) as Ref<DataT | null>
   const date = ref<number | null>(null)
+  const config = useRuntimeConfig()
   const cache = useLocalStorage<{
     data: DataT
     timestamp: number
@@ -28,6 +30,7 @@ export default function useCachedFetch<DataT>(url: string, options?: CachedFetch
   }
 
   async function fetch(force: boolean = false) {
+    isFirstFetch.value = false
     pending.value = true
     error.value = null
     try {
@@ -38,7 +41,7 @@ export default function useCachedFetch<DataT>(url: string, options?: CachedFetch
         return
       }
       const time = new Date().getTime()
-      const res = await $fetch<DataT>(`${url}?_=${time}`, { params: get(options?.params) })
+      const res = await $apiFetch<DataT>(`${config.public.api}${url}?_=${time}`, { params: get(options?.params) })
       data.value = res
       date.value = time
       cache.value = {
@@ -58,13 +61,14 @@ export default function useCachedFetch<DataT>(url: string, options?: CachedFetch
   })
 
   function refresh() {
+    if (pending.value) return
     fetch(true)
   }
 
-  return { data, pending, error, refresh, date }
-}
-// export default function useCachedFetch<DataT, ErrorT>( url: string | Request | Ref<string | Request> | () => string | Request,
-//     options?: UseFetchOptions<DataT>
-//   ): Promise<AsyncData<DataT, ErrorT>> {
+  function tryRefresh() {
+    if (pending.value) return
+    fetch(false)
+  }
 
-//   }
+  return { data, pending, error, refresh, date, tryRefresh }
+}

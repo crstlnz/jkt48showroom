@@ -2,24 +2,26 @@ import { skipHydrate } from 'pinia'
 import ExpiredSerializer from '~~/library/serializer/expired'
 
 export const useSettings = defineStore('settings', () => {
-  const { status } = useAuth()
+  // const { status } = useAuth()
+  const status = ref(null)
+  const domain = ref('')
+  const csrfToken = ref('')
   const authenticated = computed(() => {
     return status.value === 'authenticated'
   })
 
-  const session = useSessionStorage<{ csrf_token: string; cookie: string } | null>('showroom_session', null, {
+  const session = useSessionStorage<{ csrf_token: string, cookie: string } | null>('showroom_session', null, {
     serializer: new ExpiredSerializer(null, authenticated.value ? 1000 * 60 * 15 : 1000 * 60 * 5),
   })
 
   const subDomain = ref('')
-  // const { data: firstDateString } = await useLazyFetch('/api/showroom/first_data')
 
   // const firstDate = computed(() => firstDateString.value ? new Date(firstDateString.value) : undefined)
   const firstDate = ref()
 
   async function fetchFirstDate() {
     try {
-      firstDate.value = await $fetch('/api/showroom/first_data')
+      firstDate.value = (await $apiFetch<{ date: string }>(`/api/first_data`)).date
     }
     catch (e) {
       console.log(e)
@@ -37,22 +39,17 @@ export const useSettings = defineStore('settings', () => {
     }
   })
 
-  function setDomain(domain: string) {
-    subDomain.value = getSubdomain(domain) ?? ''
+  function setDomain(d: string) {
+    domain.value = d
+    subDomain.value = getSubdomain(d) ?? ''
   }
 
   function getSubdomain(domain: string): string {
     const parts = domain.split('.')
-    if (parts.length > 2) {
-      parts.splice(parts.length - 2)
-      return parts.join('.')
-    }
-    else {
-      return ''
-    }
+    return parts?.[0] || ''
   }
 
-  return { setDomain, group, firstDate, session: skipHydrate(session), fetchFirstDate }
+  return { domain, setDomain, group, csrfToken, firstDate, session: skipHydrate(session), fetchFirstDate }
 })
 
 if (import.meta.hot) {

@@ -14,6 +14,7 @@ const date = $fromNow(
   <div class="flex gap-3 py-2 text-center md:py-3">
     <NuxtLink
       :aria-label="`${recent.member?.name} Live detail`"
+      no-prefetch
       class="relative aspect-square h-[4.5rem] cursor-pointer overflow-hidden rounded-full drop-shadow-sm md:h-[70px]"
       :to="`/member/${recent.member.url}`"
     >
@@ -35,7 +36,7 @@ const date = $fromNow(
 
     <div class="info flex min-w-0 flex-1 flex-col text-left">
       <div class="name flex flex-1 gap-2">
-        <NuxtLink :to="`/member/${recent.member.url}`" class="min-w-0 flex-1">
+        <NuxtLink :to="`/member/${recent.member.url}`" no-prefetch class="min-w-0 flex-1">
           <div
             class="truncate text-sm font-bold md:text-base"
             :title="recent.member?.name"
@@ -81,7 +82,7 @@ const date = $fromNow(
         </li>
       </ul>
       <div class="mt-2 flex justify-end border-t-2 border-t-neutral-200 pt-2 text-sm dark:border-t-zinc-700/50 md:text-base">
-        <NuxtLink :to="`/recent/${recent.data_id}`">
+        <NuxtLink no-prefetch :to="`/recent/${recent.data_id}`">
           Details
         </NuxtLink>
       </div>

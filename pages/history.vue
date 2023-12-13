@@ -1,19 +1,15 @@
 <script lang="ts" setup>
-import { useUser } from '~/store/user'
-import { deepEqual } from '~~/library/utils/index'
-
 definePageMeta({
   middleware: 'auth',
 })
-const { t } = useI18n()
 const title = ref('')
 
 // useHead({ title: computed(() => t(title.value || 'page.title.recent')) })
 useHead({ title: 'History Watch' })
-const { user } = useUser()
+const { user } = useAuth()
 const dayjs = useDayjs()
 const { locale } = useI18n()
-const fetch = await useRecentFetch({ changeRoute: false, mode: 'infinite', initPage: 1, userHistory: user?.id != null })
+const fetch = await useRecentFetch({ changeRoute: false, mode: 'infinite', initPage: 1, userHistory: user.value?.id != null })
 const { data: res, query, pending, error } = fetch.data
 const { changePage, refresh, setFilter, onQueryChange } = fetch
 const filterOpen = ref(false)
@@ -25,7 +21,7 @@ const isLoadDelayed = ref(false) // if next page must be loaded but the filter d
 const el = ref<Window | null>(null)
 const { y, arrivedState } = useScroll(el, { behavior: 'smooth' })
 const isTop = computed(() => arrivedState.top)
-const dataset = useSessionStorage<{ page: number; data: IRecent[] }>('recent-datasetssss', { page: 0, data: [] }, { deep: true })
+const dataset = useSessionStorage<{ page: number, data: IRecent[] }>('history-datasetssss', { page: 0, data: [] }, { deep: true })
 
 const { checkTrigger } = useInfiniteScroll(
   () => {
@@ -241,7 +237,7 @@ const recentHeight = computed(() => {
             class="flex flex-col justify-center px-10 pt-10 text-center"
           >
             <div class="space-y-5">
-              <div class="mx-auto w-4/5 lg:w-[350px]">
+              <div class="mx-auto aspect-video w-4/5 lg:w-[350px]">
                 <img v-if="error" :src="`${$cloudinaryURL}/assets/img/web/security-error.png`" alt="An Error Occured!" class="mx-auto w-full">
                 <img v-else :src="`${$cloudinaryURL}/assets/img/web/empty-box.png`" alt="Empty!" class="mx-auto w-full">
               </div>

@@ -33,14 +33,14 @@ const isNew = computed(() => {
       />
     </NuxtLink>
     <div class="w-full sm:space-y-2">
-      <NuxtLink :to="`recent/${rekor.data_id}`" class="text-sm opacity-50 sm:text-base">
+      <NuxtLink :to="`/recent/${rekor.data_id}`" class="text-sm opacity-50 sm:text-base">
         {{ $t(rekor.key) }}
       </NuxtLink>
       <div class="flex items-center justify-between gap-3">
         <NuxtLink :title="rekor.name" :to="rekor.url" class="text-lg font-bold sm:text-xl">
           {{ rekor.name }}
         </NuxtLink>
-        <NuxtLink :to="`recent/${rekor.data_id}`" class="text-right text-xs opacity-50 sm:text-base">
+        <NuxtLink :to="`/recent/${rekor.data_id}`" class="text-right text-xs opacity-50 sm:text-base">
           <Parser :parse-type="rekor.parser" :value="rekor.value" />
         </NuxtLink>
       </div>

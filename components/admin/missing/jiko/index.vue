@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-const { data, pending: pendingJiko, error: errorJiko, refresh } = await useLazyFetch('/api/admin/showroom/missing_jikosokai')
+const { data, pending: pendingJiko, error: errorJiko } = await useApiFetch<MissingJiko[]>('/api/admin/missing_jikosokai')
 
 const missingJiko = ref<MissingJiko[]>([])
 watch(data, (val) => {
   missingJiko.value = val ?? []
-})
+}, { immediate: true })
 function onUpdate(roomId: number) {
   missingJiko.value = missingJiko.value.filter(i => i.room_id !== roomId)
 }
@@ -25,20 +25,6 @@ function onUpdate(roomId: number) {
     </div>
     <div v-else class="flex flex-col gap-6">
       <AdminMissingJikoForm v-for="member in missingJiko" :key="member.room_id" :member="member" @on-update="onUpdate" />
-      <!-- <div v-for="member in missingJiko" :key="member.room_id" class="bg-container flex gap-3 rounded-xl p-3 lg:p-4">
-        <LazyImage :src="member.img" :alt="`${member.name} picture`" class="aspect-video h-32 overflow-hidden rounded-xl border-2 dark:border-none" />
-        <div class="flex flex-1 flex-col gap-1">
-          <div class="text-lg">
-            {{ member.name }}
-          </div>
-          <div class="flex gap-3">
-            <textarea class="bg-container-2 flex-1 rounded-lg p-3" placeholder="Jikosokai..." />
-            <button class=": w-20 self-start rounded-full bg-blue-500 py-2 text-white">
-              Update
-            </button>
-          </div>
-        </div>
-      </div> -->
     </div>
     <div />
   </div>

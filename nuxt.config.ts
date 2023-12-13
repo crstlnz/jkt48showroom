@@ -1,132 +1,25 @@
 const isDev = process.env.NODE_ENV === 'development'
-// const allowedOrigins = ['https://jkt48-showroom.vercel.app']
-const allowedOrigins = '*'
+
 export default defineNuxtConfig({
-  routeRules: {
-    // '/api/showroom/**': { cache: !isDev ? { maxAge: 3600, staleMaxAge: 360 } : false },
-    '/api/**': {
-      // security: {
-      //   rateLimiter: {
-      //     tokensPerInterval: 120,
-      //     interval: 60000,
-      //   },
-      // },
-    },
-    '/api/showroom/members': { cache: !isDev ? { maxAge: 21600, staleMaxAge: 1800 } : false },
-    '/api/showroom/recent': {
-      cache: !isDev ? { maxAge: 1, staleMaxAge: 0 } : false,
-      // security: {
-      //   rateLimiter: {
-      //     tokensPerInterval: 80,
-      //     interval: 60000,
-      //   },
-      // },
-    },
-    '/api/showroom/recent/**': { cache: !isDev ? { maxAge: 600, staleMaxAge: 10 } : false },
-    '/api/showroom/first_data': { cache: !isDev ? { maxAge: 43800, staleMaxAge: 3600 } : false },
-    '/api/member/birthday': { cache: !isDev ? { maxAge: 3600, staleMaxAge: 0 } : false },
-    '/api/showroom/records': { cache: !isDev ? { maxAge: 1800, staleMaxAge: 0 } : false },
-    '/api/showroom/polling': { cache: false },
-    '/api/showroom/comment': {
-      cache: false,
-      // security: {
-      //   rateLimiter: {
-      //     tokensPerInterval: 30,
-      //     interval: 'minute',
-      //   },
-      // },
-    },
-    '/api/jpn_rates': { cache: !isDev ? { maxAge: 86400, staleMaxAge: 0 } : false },
-    '/img/**': { cache: !isDev ? { maxAge: 86400, staleMaxAge: 3600 } : false },
-    '/svg/**': { cache: !isDev ? { maxAge: 86400, staleMaxAge: 3600 } : false },
-    '/api/auth/callback/credentials': {
-      // security: {
-      //   rateLimiter: {
-      //     tokensPerInterval: 15,
-      //     interval: 'minute',
-      //   },
-      // },
-    },
-  },
   app: {
     rootId: 'app',
     layoutTransition: { name: 'layout', mode: 'out-in' },
     pageTransition: { name: 'page', mode: 'out-in' },
   },
   runtimeConfig: {
-    admin_ids: (process.env.ADMIN_IDS ?? '').trim().split(',').map(i => i.trim()) || [],
+    secret: process.env.SECRET ?? '',
     public: {
       isDev,
+      api: process.env.API,
     },
   },
-  // pwa: {
-  //   registerType: 'autoUpdate',
-  //   manifest: {
-  //     name: 'JKT48 Showroom',
-  //     short_name: 'JKT48 Showroom',
-  //     description: 'Fanmade JKT48 Showroom Log',
-  //     orientation: 'portrait',
-  //     start_url: '/',
-  //     icons: [
-  //       {
-  //         src: 'img/192x192-logo.png',
-  //         sizes: '192x192',
-  //         type: 'image/png',
-  //       },
-  //       {
-  //         src: 'img/512x512-logo.png',
-  //         sizes: '512x512',
-  //         type: 'image/png',
-  //       },
-  //       {
-  //         src: 'img/512x512-masklogo.png',
-  //         sizes: '512x512',
-  //         type: 'image/png',
-  //         purpose: 'maskable',
-  //       },
-  //     ],
-  //   },
-  //   workbox: {
-  //     navigateFallback: undefined,
-  //     globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
-  //   },
-  //   client: {
-  //     installPrompt: true,
-  //     periodicSyncForUpdates: 3600,
-  //   },
-  //   devOptions: {
-  //     enabled: isDev,
-  //     suppressWarnings: true,
-  //     navigateFallbackAllowlist: [/^\/$/],
-  //     type: 'module',
-  //   },
-  // },
   watch: ['~/assets/css/tailwindcss.css'],
-  image: {
-    cloudinary: {
-      baseURL: 'https://res.cloudinary.com/doig4w6cm/image/fetch/',
-    },
-    quality: 80,
-    placeholder: 10,
-    format: ['webp'],
-    screens: {
-      'xs': 320,
-      'sm': 640,
-      'md': 768,
-      'lg': 1024,
-      'xl': 1280,
-      'xxl': 1536,
-      '2xl': 1536,
-    },
-  },
   modules: [
     '@nuxtjs/fontaine',
     'floating-vue/nuxt',
     'nuxt-security',
-    // '@vite-pwa/nuxt',
     'dayjs-nuxt',
     'nuxt-gtag',
-    '@sidebase/nuxt-auth',
     '@nuxtjs/device',
     'nuxt-icon',
     '@nuxtjs/tailwindcss',
@@ -137,20 +30,12 @@ export default defineNuxtConfig({
     '@nuxt/image',
   ],
   security: {
-    headers: false,
-    csrf: false,
-    corsHandler: {
-      origin: allowedOrigins,
-      methods: '*',
-      credentials: true,
+    headers: {
+      crossOriginEmbedderPolicy: false,
+      contentSecurityPolicy: !isDev ? 'base-uri \'none\'; font-src * https: data:; form-action \'self\'; frame-ancestors \'self\'; img-src * data:; object-src \'none\'; script-src-attr \'none\'; style-src \'self\' https: \'unsafe-inline\'; script-src \'self\' https: \'unsafe-inline\' \'strict-dynamic\' \'nonce-{{nonce}}\'; upgrade-insecure-requests' : false,
     },
+    csrf: false,
     xssValidator: false,
-    // rateLimiter: {
-    //   tokensPerInterval: 80,
-    //   interval: 60000,
-    //   throwError: true,
-    //   headers: true,
-    // },
     requestSizeLimiter: {
       maxRequestSizeInBytes: 15000000,
       maxUploadFileRequestInBytes: 30000000,
@@ -181,7 +66,6 @@ export default defineNuxtConfig({
     },
   },
   i18n: {
-    // baseUrl: process.env.BASE_URL,
     strategy: 'no_prefix',
     locales: [
       { code: 'en', iso: 'en-US', file: 'en.yaml', dir: 'ltr', name: 'EN' },
@@ -208,9 +92,29 @@ export default defineNuxtConfig({
       brotli: true,
     },
   },
+  experimental: {
+    componentIslands: true,
+  },
   devtools: {
     timeline: {
       enabled: true,
+    },
+  },
+  image: {
+    cloudinary: {
+      baseURL: 'https://res.cloudinary.com/doig4w6cm/image/fetch/',
+    },
+    quality: 80,
+    placeholder: 10,
+    format: ['webp'],
+    screens: {
+      'xs': 320,
+      'sm': 640,
+      'md': 768,
+      'lg': 1024,
+      'xl': 1280,
+      'xxl': 1536,
+      '2xl': 1536,
     },
   },
 })

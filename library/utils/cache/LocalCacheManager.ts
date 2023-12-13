@@ -43,7 +43,7 @@ class LocalCacheManager {
     const d = this.map.get(key)
     if (
       new Date().getTime() - new Date(d?.date ?? 0).getTime()
-      < (d?.expireIn ?? 0)
+        < (d?.expireIn ?? 0)
     ) { return true }
     return false
   }

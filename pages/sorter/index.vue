@@ -6,7 +6,7 @@ definePageMeta({
 })
 
 const { group } = useSettings()
-const { data, pending, error } = await useLazyFetch('/api/member/list', { params: { group } })
+const { data, pending, error } = await useApiFetch<ISortMember[]>('/api/48/member', { params: { group } })
 </script>
 
 <template>

@@ -5,18 +5,24 @@ import { StageShowroom } from '~~/library/canvas/showroom/stage'
 import ShowroomBackground from '~~/library/canvas/showroom/background'
 import ShowroomForeground from '~~/library/canvas/showroom/foreground'
 import { useSelectedUser } from '~/store/selectedUser'
-import { useUser } from '~/store/user'
 
 const props = defineProps<{
+  dataId: string
   memberImage: string
   date: ILiveDate
   background: string
   screenshot?: Database.IScreenshot
   stageList: IStageList[]
-  users: Map<number, IFansCompact>
+  users: IFansCompact[]
   giftData: IGiftsLogData
 }>()
 const { $avatarURL, $giftUrl } = useNuxtApp()
+const stageList = ref(props.stageList)
+const users = new Map<number, IFansCompact>()
+const filteredUsers = props.users.filter(i => props.stageList[0]?.list?.some(a => a === i.id) || false)
+for (const user of filteredUsers) {
+  users.set(user.id, user)
+}
 const stageTime = ref({
   start: props.date?.start ? new Date(props.date.start).getTime() : null,
   end: props.date?.end ? new Date(props.date.end).getTime() : null,
@@ -34,7 +40,7 @@ const isAnimated = useLocalStorage('enableAnimation', true)
 const foreground = new ShowroomForeground()
 const background = new ShowroomBackground(props.memberImage, showScreenshot.value)
 
-const { user } = useUser()
+const { user } = useAuth()
 
 const { isSupported, orientation, lockOrientation, unlockOrientation } = useScreenOrientation()
 const { isFullscreen, toggle } = useFullscreen(container)
@@ -52,31 +58,49 @@ watch(isAnimated, (val) => {
   }
 })
 
+const stageListFetch = ref(false)
+
 const selectedTime = computed(() => {
   const percent = Number(sliderVal.value) / 1000
   const range = (stageTime?.value?.end ?? 0) - (stageTime?.value?.start ?? 0)
   return (stageTime?.value?.start ?? 0) + range * percent
 })
 
+watch(selectedTime, async () => {
+  if (!stageListFetch.value) {
+    stageListFetch.value = true
+    try {
+      const data = await $apiFetch<IStageListApi>(`/api/recent/${props.dataId}/stagelist`)
+      stageList.value = data.stage_list as IStageList[]
+      for (const user of data.users || []) {
+        users.set(user.id, user)
+      }
+    }
+    catch (e) {
+      stageListFetch.value = false
+    }
+  }
+})
+
 const stageNum = computed(() => {
   const time = selectedTime.value
-  for (const [i, stage] of props.stageList?.entries() ?? []) {
+  for (const [i, stage] of stageList.value?.entries() ?? []) {
     if (new Date(stage.date).getTime() >= time) {
       return i
     }
   }
-  return props.stageList?.length - 1 ?? 0
+  return stageList.value?.length - 1 ?? 0
 })
 
 function getFansRankList(): IUIStageFans[] {
-  if (!props.stageList?.length) return []
-  return props.stageList[stageNum.value].list.map<IUIStageFans>((i) => {
-    const fans = props.users.get(i)
+  if (!stageList.value?.length) return []
+  return stageList.value[stageNum.value].list.map<IUIStageFans>((i) => {
+    const fans = users.get(i)
     return {
       id: i,
       name: fans?.name ?? 'Not Found!',
       avatar: $avatarURL(fans?.avatar_id ?? 1),
-      isCurrentUser: String(user?.id) === String(fans?.id),
+      isCurrentUser: String(user.value?.id) === String(fans?.id),
     }
   })
 }

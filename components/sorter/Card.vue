@@ -39,7 +39,7 @@ const { group } = useSettings()
               {{ member.name }}
             </div>
             <div class="w-full truncate text-left text-sm opacity-50 md:text-base">
-              {{ $parseGeneration(member.generation ?? "") }}
+              {{ parseGeneration(member.generation ?? "") }}
             </div>
           </div>
           <div class="flex w-full flex-wrap justify-end gap-2 md:pb-1">

@@ -17,27 +17,23 @@ export default async function (opts: RecentFetchOpts | null = null, q: RecentsQu
   const config = useAppConfig()
   const defaultQuery: RecentsQuery = config.defaultRecentQuery
   const settings = useSettings()
-
-  // const query = ref<RecentsQuery>(buildQuery())
   let query: Ref<RecentsQuery>
   if (q) {
     query = ref(q)
   }
   else {
-    query = useSessionStorage<RecentsQuery>(opts?.userHistory ? 'history-fetch-query' : 'recent-fetch-query', buildQuery())
+    query = useSessionStorage<RecentsQuery>(opts?.userHistory ? 'history-fetch-query' : `recent-fetch-query`, buildQuery())
     // query = useSessionStorage<RecentsQuery>('recent-fetch-query', { page: opts?.initPage ?? 1 }, { mergeDefaults: opts?.initPage != null })
     if (opts?.initPage != null) {
       query.value.page = opts.initPage
     }
   }
-
-  // if (urlroute.query !== query.value) {
-  //   buildURL(query.value, true)
-  // }
+  const key = opts?.userHistory ? '/api/user/history' : `/api/recent-${query.value?.room_id}`
   const cooldown = ref(false)
   const timeout = ref<NodeJS.Timeout | undefined>(undefined)
 
-  const { data: res, error, pending, refresh } = await useFetch<IApiRecents>(opts?.userHistory ? '/api/user/history' : '/api/showroom/recent', { query, watch: false, deep: false, server: false, lazy: true })
+  const { data: res, error, pending, refresh } = await useApiFetch<IApiRecents>(opts?.userHistory ? '/api/user/history' : '/api/recent', { key, query, watch: false, deep: false, server: false, lazy: true })
+
   const pageData = computed(() => {
     return {
       totalCount: res.value?.total_count ?? 1,
@@ -125,27 +121,6 @@ export default async function (opts: RecentFetchOpts | null = null, q: RecentsQu
     q.group = settings.group as Group
     return q
   }
-
-  // function buildURL(_query: RecentsQuery, replace = false) {
-  //   const q = { ..._query }
-  //   const def = defaultQuery
-  //   for (const key of (Object.keys(q) as (keyof typeof q)[])) {
-  //     if (q[key] === undefined || q[key] === '' || def[key as keyof RecentsQuery] === q[key]) delete q[key]
-  //   }
-
-  //   if (replace) {
-  //     router.replace({
-  //       path: urlroute.path,
-  //       query: { ...q },
-  //     })
-  //   }
-  //   else {
-  //     router.push({
-  //       path: urlroute.path,
-  //       query: { ...q },
-  //     })
-  //   }
-  // }
 
   function setFilter(q: { [key: string]: unknown }) {
     if (pending.value || cooldown.value) return

@@ -17,7 +17,6 @@ const url = computed(() => {
   return props.error.statusCode == 404 ? '/' : props.error.url
 })
 
-console.log(props.error)
 interface ErrorMessage {
   message: string
   key: string

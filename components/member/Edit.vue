@@ -33,32 +33,44 @@ onClickOutside(editDialog, () => {
 })
 
 async function toggleGraduate(value: boolean) {
-  const result = await $fetch('/api/admin/showroom/set_graduate', {
+  await $apiFetch('/api/admin/set_graduate', {
     method: 'POST',
     query: {
       id: (props.member?.member_data as any)?._id,
       value,
     },
+    onResponse(ctx) {
+      if (ctx.response.status === 200) {
+        if (member.value.member_data) {
+          member.value.member_data.isGraduate = value
+        }
+      }
+    },
   }).catch((e) => {
+    addNotif({ message: 'Failed Set Graduate', type: 'danger', duration: 1500 })
     console.log(e)
   })
-
-  if (result?.code === 200) {
-    if (member.value.member_data) {
-      member.value.member_data.isGraduate = value
-    }
-  }
 }
 
 const applyProgress = ref(false)
 
 async function applyMemberData() {
   applyProgress.value = true
-  const result = await $fetch('/api/admin/showroom/set_member_data', {
+  await $apiFetch('/api/admin/set_member_data', {
     method: 'POST',
     query: {
       room_id: props.member.room_id,
       memberDataId: memberDataId.value,
+    },
+    onResponse(ctx) {
+      if (ctx.response.status) {
+        addNotif({ message: 'Success', type: 'success', duration: 1500 })
+        const data = props.stage48members.find(i => (i as any)._id === memberDataId.value) as Database.I48Member & { _id: string } || null
+        if (member.value.member_data) {
+          member.value.member_data = data
+        }
+        emit('onDismiss')
+      }
     },
   }).catch((e) => {
     console.log(e)
@@ -66,14 +78,6 @@ async function applyMemberData() {
   })
 
   applyProgress.value = false
-  if (result?.code === 200) {
-    addNotif({ message: 'Success', type: 'success', duration: 1500 })
-    const data = props.stage48members.find(i => (i as any)._id === memberDataId.value) as Database.I48Member & { _id: string } || null
-    if (member.value.member_data) {
-      member.value.member_data = data
-    }
-    emit('onDismiss')
-  }
 }
 
 const tabState = ref(0)
@@ -100,8 +104,9 @@ const tabList = ref([
             </div>
             <MemberFormImage
               v-if="member?.member_data?._id != null"
-              post-url="/api/admin/showroom/image_upload"
-              :is-potrait="true" :member-data-id="member?.member_data?._id"
+              post-url="/api/admin/member/image"
+              :is-potrait="true"
+              :member-data-id="member?.member_data?._id"
               form-id="image"
               class="aspect-square h-32 shrink-0 overflow-hidden rounded-full border-2 dark:border-dark-2 md:h-36 xl:h-40"
               image-class="h-full w-full object-cover"
@@ -120,7 +125,7 @@ const tabList = ref([
             <MemberFormImage
               v-if="member?.member_data?._id != null"
               form-id="banner"
-              post-url="/api/admin/showroom/banner_upload"
+              post-url="/api/admin/member/banner"
               :member-data-id="member?.member_data?._id"
               class="aspect-[15/5] h-32 shrink-0 overflow-hidden rounded-xl border-2 dark:border-dark-2 md:h-36 xl:h-40"
               image-class="h-full w-full object-cover bg-container-2" :src="member?.member_data?.banner"

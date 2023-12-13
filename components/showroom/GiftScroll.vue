@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 // import { useFuse } from '@vueuse/integrations/useFuse'
 import c from '~~/app.config'
-import sleep from '~/library/utils/sleep'
 import { useSelectedUser } from '~/store/selectedUser'
 
-const props = defineProps<{ gifts: IFansGift[]; pageMode?: boolean; dataId: string; giftList: IGift[] }>()
+const props = defineProps<{ gifts: IFansGift[], pageMode?: boolean, dataId: string, giftList: IGift[] }>()
 const search = ref('')
 
 const giftList = computed<Map<number, IGiftImg>>(() => {
@@ -29,16 +28,12 @@ const bufferSize = computed(() => {
   return height.value
 })
 
-function clearSearch() {
-  search.value = ''
-}
-
 const searchInput = ref()
 const isEnded = ref(false)
 const pending = ref(false)
 const error = ref(false)
 const page = ref(1)
-const { checkTrigger } = useInfiniteScroll(
+useInfiniteScroll(
   () => {
     if (isEnded.value) return
     if (!pending.value) getPage(page.value + 1, search.value)
@@ -52,7 +47,7 @@ async function getPage(p = 1, search = '') {
   page.value = p
   await sleep(500)
   try {
-    const data = await $fetch<IApiGifts>('/api/showroom/recent/gifts', { params: { data_id: props.dataId, page: p, s: search } })
+    const data = await $apiFetch<IApiGifts>(`/api/recent/${props.dataId}/gifts`, { params: { page: p, s: search } })
     if (lastQuery.value !== search) return
     if (!data.gifts.length) {
       isEnded.value = true
@@ -102,7 +97,7 @@ async function getPage(p = 1, search = '') {
   }
 }
 
-const { isPending, start, stop } = useTimeoutFn(() => {
+const { start } = useTimeoutFn(() => {
   if (search.value != null && lastQuery.value !== search.value) {
     giftData.value = []
     lastQuery.value = search.value
@@ -128,19 +123,19 @@ watch(search, () => {
   >
     <template #before>
       <div
-        class="-z-10 rounded-t-xl border-b-2 border-slate-100/60 bg-white/90 p-4 font-bold backdrop-blur-sm dark:border-dark-2/60 dark:bg-dark-1/90 md:p-5"
+        class="-z-10 rounded-t-xl border-b-2 border-slate-100/60 bg-white/90 p-3 font-bold backdrop-blur-sm dark:border-dark-2/60 dark:bg-dark-1/90 md:p-4"
       >
         <div class="flex items-center">
-          <div class="flex-1 text-xl lg:text-2xl">
+          <div class="flex-1 text-lg xl:text-xl">
             {{ $t("fansgift") }}
           </div>
           <div class="pointer-events-none inset-x-0 mx-3 max-sm:absolute">
             <div class="pointer-events-auto float-right flex items-center rounded-2xl bg-slate-100 p-1.5 text-sm ring-blue-500 focus-within:ring-2 dark:bg-dark-2 max-sm:focus-within:w-full max-sm:focus-within:pl-3" :class="{ 'pl-3 max-sm:w-full': search.length !== 0 }">
               <input id="search" ref="searchInput" v-model="search" class="flex-1 truncate bg-transparent outline-none focus-visible:!outline-none max-sm:w-0 sm:ml-3" placeholder="Search...">
-              <button v-if="search.length === 0" class="group flex h-7 w-7 items-center justify-center rounded-xl p-1 sm:hover:bg-blue-500" @click="searchInput?.focus()">
+              <button v-if="search.length === 0" aria-label="Search" class="group flex h-7 w-7 items-center justify-center rounded-xl p-1 sm:hover:bg-blue-500" @click="searchInput?.focus()">
                 <Icon name="uil:search" class="h-full w-full text-slate-800  dark:text-white/50 dark:group-hover:text-white" />
               </button>
-              <button v-else class="group flex h-7 w-7 items-center justify-center rounded-xl p-1 sm:hover:bg-blue-500" @click="search = ''">
+              <button v-else aria-label="Close" class="group flex h-7 w-7 items-center justify-center rounded-xl p-1 sm:hover:bg-blue-500" @click="search = ''">
                 <Icon name="ic:round-close" class="h-full w-full text-neutral-400/80 group-hover:text-black/80 dark:text-slate-100 dark:group-hover:text-white" />
               </button>
             </div>
@@ -152,11 +147,11 @@ watch(search, () => {
     <template #default="{ item, index, active }">
       <DynamicScrollerItem :key="item.id" :item="item" :active="active" :size-dependencies="[item.gifts]" :data-index="index">
         <div class="space-y-2 border-b-2 border-slate-100/60 p-3 dark:border-dark-2/60 md:p-4">
-          <button type="button" class="truncate text-lg font-bold" :title="item.name" @click="(e) => userClick(e, item.id)">
+          <button type="button" class="truncate text-base xl:text-lg font-bold" :title="item.name" @click="(e) => userClick(e, item.id)">
             {{ item.name }}
           </button>
           <div class="flex gap-2.5 md:gap-3.5 items-start">
-            <button type="button" class="user-btn" aria-label="Open user detail" @click="(e) => userClick(e, item.id)">
+            <button type="button" class="user-btn" :aria-label="`${item.name} profile`" @click="(e) => userClick(e, item.id)">
               <img
                 :key="item.id"
                 class="h-[70px] w-[70px] rounded-lg bg-slate-100/90 p-2 hover:bg-slate-200 dark:bg-slate-100/5 hover:dark:bg-slate-300/10 lg:h-20 lg:w-20"
@@ -171,7 +166,7 @@ watch(search, () => {
                     <img :key="`${item.id}${gift.id}`" :src="gift.img" alt="Gift" class="aspect-square">
                     <div
                       v-if="gift.num > 1"
-                      :class="$getNumColor(gift.num)"
+                      :class="getNumColor(gift.num)"
                       class="text-stroke absolute bottom-[-10px] right-0 rounded-full text-right text-sm font-extrabold leading-6"
                     >
                       x{{ gift.num >= 1000 ? `${(gift.num / 1000).toFixed(0)}k` : gift.num }}

@@ -25,7 +25,7 @@ const props = defineProps({
     },
   },
 })
-const emit = defineEmits<{ (e: 'apply', filter: any): void; (e: 'title', title: string): void; (e: 'showDuration', show: boolean): void }>()
+const emit = defineEmits<{ (e: 'apply', filter: any): void, (e: 'title', title: string): void, (e: 'showDuration', show: boolean): void }>()
 const config = useAppConfig()
 const SortList: SortData[] = config.sortList
 

@@ -1,21 +1,19 @@
 <script lang="ts" setup>
 import { Switch, SwitchGroup, SwitchLabel } from '@headlessui/vue'
 import { useFuse } from '@vueuse/integrations/useFuse'
-import { generateGen } from '~~/library/utils/stage48'
 import { useSettings } from '~~/store/settings'
 
 definePageMeta({ middleware: 'admin' })
 
-const config = useAppConfig()
-// const { pending, data } = await useLazyFetch('/api/admin/members?group=all')
-const { data: stage48members, refresh: refreshStage48List, pending } = await useLazyFetch('/api/admin/stage48?group=all')
-const { data: jkt48members, pending: jktPending, data: jktData } = await useLazyFetch('/api/admin/jkt48members')
+const { data: stage48members, pending } = await useApiFetch<Admin.I48Member[]>('/api/admin/stage48')
+const { data: jkt48members } = await useApiFetch<JKT48.Member[]>('/api/admin/jkt48member')
 
 const membersRaw = ref<Admin.I48Member[]>([])
 
 watch(stage48members, (val) => {
   membersRaw.value = val as unknown as Admin.I48Member[]
-})
+}, { immediate: true })
+
 const filterOptions = useSessionStorage<{
   generation: string[]
   graduate: boolean
@@ -143,7 +141,21 @@ function toggleGen(key: string) {
                 <div class="pb-3">
                   <div class="bg-container flex gap-3 rounded-xl p-3">
                     <NuxtLink :to="`/member/${item.url}`" class="h-20 w-20 overflow-hidden rounded-full">
-                      <img :key="item._id" class="h-full w-full object-cover" :src="$fixCloudinary(item.member_data?.img || item.img || config.errorPicture)" alt="Profile picture">
+                      <!-- <img :key="item._id" class="h-full w-full object-cover" :src="$fixCloudinary(item.member_data?.img || item.img || config.errorPicture)" alt="Profile picture"> -->
+                      <NuxtImg
+                        :key="item.room_id"
+                        sizes="80px"
+                        :placeholder="[45, 10, 55, 70]"
+                        :modifiers="{
+                          aspectRatio: 1,
+                          gravity: 'faceCenter',
+                        }"
+                        fit="fill"
+                        format="webp"
+                        :alt="item.room_name"
+                        class="w-full h-full flex-1 object-cover rounded-xl"
+                        :src="item.member_data?.img || item.img"
+                      />
                     </NuxtLink>
                     <div class="flex flex-1 flex-col">
                       <NuxtLink :to="`/member/${item.url}`">

@@ -12,7 +12,7 @@ async function post() {
   isLoading.value = true
   error.value = false
   try {
-    await $fetch(props.url, { method: 'POST' })
+    await $apiFetch(props.url, { method: 'POST' })
     addNotif({
       message: 'Sukses!',
       duration: 1500,

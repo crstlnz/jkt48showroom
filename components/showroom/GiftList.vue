@@ -20,26 +20,26 @@ function getNumColor(num: number) {
 </script>
 
 <template>
-  <div class="bg-container overflow-hidden rounded-xl p-5">
-    <div class="text-xl font-bold lg:text-2xl">
+  <div class="bg-container overflow-hidden rounded-xl p-3 md:p-4">
+    <div class="text-lg font-bold md:text-xl">
       Gift List
     </div>
     <ul v-if="gifts.length" class="grid-gift-list mt-4 gap-3">
       <li v-for="gift in gifts" :key="gift.id">
-        <div class="flex gap-4">
-          <img class="h-12 w-12" :src="gift.img" alt="Gift Icon">
-          <div class="flex-1">
-            <div class="space-x-2">
-              <span class="font-thin">{{ gift.name.split(" ").map(i => i.slice(0, 1).toLocaleUpperCase() + i.slice(1)).join(" ") }}</span>
+        <div class="flex gap-3 md:gap-4 w-full">
+          <img class="h-10 w-10 md:h-12 md:w-12 ml-1" :src="gift.img" alt="Gift Icon">
+          <div class="flex-1 w-0">
+            <div class="flex items-center gap-1.5 w-full">
+              <span class="font-semibold truncate">{{ gift.name.split(" ").map(i => i.slice(0, 1).toLocaleUpperCase() + i.slice(1)).join(" ") }}</span>
               <span :class="getNumColor(gift.num)" class="shrink-0 rounded-md px-1 py-0.5 text-xs font-semibold text-white">x{{ gift.num }}</span>
             </div>
-            <div class="flex items-center space-x-1.5">
-              <span>
+            <div class="flex items-center space-x-1.5 text-sm md:text-base font-light">
+              <span class="flex items-center gap-1">
                 <Icon name="solar:star-fall-bold-duotone" />
-                {{ $n(gift.point) }}{{ gift.point > 1 ? 'pts' : 'pt' }}
+                {{ $n(gift.point) }}{{ gift.point > 1 ? ' pts' : ' pt' }}
               </span>
               <Icon name="radix-icons:dot-filled" />
-              <div class="flex items-center gap-1 text-sm">
+              <div class="flex items-center gap-1">
                 <Icon name="ph:users-fill" />
                 <span> {{ $n(gift.user_count) }}</span>
               </div>

@@ -15,7 +15,6 @@ const editDialog = ref()
 onClickOutside(editDialog, () => {
   emit('onDismiss')
 })
-console.log(props.setlist)
 
 const id = ref(props.setlist?.id ?? '')
 const title = ref(props.setlist?.title ?? '')
@@ -49,7 +48,7 @@ async function save() {
     formData.append('description', description.value)
     // formData.append('commentsBy', commentsBy.value ?? '')
 
-    await $fetch('/api/admin/input/setlist', { method: 'POST', body: formData })
+    await $apiFetch('/api/admin/setlist', { method: 'POST', body: formData })
     pending.value = false
     addNotif({
       type: 'success',

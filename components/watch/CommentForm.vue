@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import { useUser } from '~~/store/user'
 import { useNotifications } from '~~/store/notifications'
-import { useSettings } from '~~/store/settings'
 
 const props = defineProps<{
   liveId?: number
@@ -11,9 +9,9 @@ const props = defineProps<{
 
 const emit = defineEmits<{ (e: 'comment', comment: string): void }>()
 
-const { session } = useSettings()
 const { addNotif } = useNotifications()
-const { authenticated } = useUser()
+const { status } = useAuth()
+const authenticated = computed(() => status.value === 'authenticated')
 const formError = ref(false)
 const comment = ref('')
 
@@ -27,7 +25,7 @@ watch(comment, () => {
 
 const loading = ref(false)
 const validForSubmit = computed(() => {
-  return !loading.value && liveId != null && session?.csrf_token != null && props.isLive
+  return !loading.value && liveId != null && props.isLive
 })
 
 function submit() {
@@ -44,16 +42,15 @@ const { t } = useI18n()
 async function sendComment() {
   loading.value = true
   try {
-    const res = await $fetch('/api/showroom/comment', {
+    const formData = new FormData()
+    formData.set('live_id', String(liveId.value))
+    formData.set('comment', comment.value)
+    formData.set('is_delay', '0')
+    await $apiFetch<Watch.APIComment>('/api/user/comment', {
       method: 'POST',
-      body: {
-        csrf_token: session?.csrf_token,
-        comment: comment.value,
-        is_delay: 0,
-        live_id: liveId.value,
-      },
+      body: formData,
     })
-    if (res?.ok !== 1) throw new Error('Failed!')
+    // if (res?.ok !== 1) throw new Error('Failed!')
     emit('comment', comment.value)
     loading.value = false
     comment.value = ''

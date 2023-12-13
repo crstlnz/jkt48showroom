@@ -54,7 +54,7 @@ class InfiniteScroll extends EventEmitter {
   checkTrigger() {
     const percent
       = (window.scrollY
-        / (document.documentElement.scrollHeight - window.innerHeight))
+      / (document.documentElement.scrollHeight - window.innerHeight))
       * 100
     if (percent > this.trigger) {
       this.state = state.LOADING

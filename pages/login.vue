@@ -1,12 +1,8 @@
 <script lang="ts" setup>
 import { useSettings } from '~~/store/settings'
-import { useUser } from '~/store/user'
-
-// import sessionSerializer from '~~/library/serializer/showroomSession'
 
 definePageMeta({
-  middleware: ['auth', 'showroom-session'],
-  layout: 'empty',
+  layout: false,
   auth: {
     unauthenticatedOnly: true,
     navigateAuthenticatedTo: '/',
@@ -15,7 +11,6 @@ definePageMeta({
 
 const settings = useSettings()
 const { session } = storeToRefs(settings)
-const { signIn } = useUser()
 const i18nHead = useLocaleHead({
   addDirAttribute: true,
   identifierAttribute: 'id',
@@ -122,43 +117,45 @@ useEventListener(w, 'resize', () => {
   }
 })
 
-const mounted = ref(false)
-onMounted(() => {
-  mounted.value = true
-  mouseXSmooth.value = mouseX.value
-  mouseYSmooth.value = mouseYPlus.value
-  w.value = window
-  if (canvas.value) {
-    width.value = window.innerWidth * 2
-    height.value = window.innerHeight * 2
-    const ctx = canvas.value.getContext('2d')
-    if (ctx) {
-      canvas.value.width = width.value
-      canvas.value.height = height.value
+// const mounted = ref(false)
+// onMounted(() => {
+//   mounted.value = true
+//   mouseXSmooth.value = mouseX.value
+//   mouseYSmooth.value = mouseYPlus.value
+//   w.value = window
+//   if (canvas.value) {
+//     width.value = window.innerWidth * 2
+//     height.value = window.innerHeight * 2
+//     const ctx = canvas.value.getContext('2d')
+//     if (ctx) {
+//       canvas.value.width = width.value
+//       canvas.value.height = height.value
 
-      const bubbles: Bubble[] = []
-      for (let i = 0; i < 10; i++) {
-        bubbles.push(new Bubble())
-      }
+//       const bubbles: Bubble[] = []
+//       for (let i = 0; i < 10; i++) {
+//         bubbles.push(new Bubble())
+//       }
 
-      function draw(ctx: CanvasRenderingContext2D) {
-        mouseXSmooth.value = lerp(mouseXSmooth.value, mouseX.value, 0.05)
-        mouseYSmooth.value = lerp(mouseYSmooth.value, mouseYPlus.value, 0.05)
-        ctx.clearRect(0, 0, width.value, height.value)
-        for (const bubble of bubbles) {
-          bubble.draw(ctx)
-        }
-        requestAnimationFrame(() => draw(ctx))
-      }
+//       function draw(ctx: CanvasRenderingContext2D) {
+//         mouseXSmooth.value = lerp(mouseXSmooth.value, mouseX.value, 0.05)
+//         mouseYSmooth.value = lerp(mouseYSmooth.value, mouseYPlus.value, 0.05)
+//         ctx.clearRect(0, 0, width.value, height.value)
+//         for (const bubble of bubbles) {
+//           bubble.draw(ctx)
+//         }
+//         requestAnimationFrame(() => draw(ctx))
+//       }
 
-      draw(ctx)
-    }
-  }
-})
+//       draw(ctx)
+//     }
+//   }
+// })
 
 const loading = ref(false)
 const submitDisabled = computed(() => {
-  return loading.value || session.value?.csrf_token == null
+  return true
+  // return loading.value
+  // return loading.value || session.value?.csrf_token == null
 })
 const username = ref('')
 const password = ref('')
@@ -166,6 +163,8 @@ const captcha = ref('')
 const usernameError = ref('')
 const passwordError = ref('')
 const captchaError = ref('')
+
+const { checkAuth, signIn } = useAuth()
 
 watch(username, () => {
   if (usernameError.value) usernameError.value = ''
@@ -201,25 +200,43 @@ function checkSubmit() {
   signInHandler()
 }
 
+const route = useRoute()
+const router = useRouter()
+const redirectURL = computed<string>(() => {
+  try {
+    const url = atob(decodeURI(route.query.r as string))
+    return url || (router?.options?.history?.state?.back as string) || '/'
+  }
+  catch (e) {
+    return (router?.options?.history?.state?.back as string) || '/'
+  }
+})
+
 async function signInHandler() {
   loading.value = true
-  const opts = { password: password.value, username: username.value, sr_csrf: session.value?.csrf_token, cookie: session.value?.cookie } as any
+  const opts = { password: password.value, account_id: username.value } as any
   if (captcha.value !== '') opts.captcha_word = captcha.value
-  const { error, url } = (await signIn('credentials', { ...opts, redirect: false })) as any
-  if (error) {
-    loading.value = false
-    console.log(error)
-    try {
-      errorData.value = JSON.parse(error)
-    }
-    catch (e) {
-      console.log(e)
-    }
+  // const { error, url } = (await signIn('credentials', { ...opts, redirect: false })) as any
+  const body = new URLSearchParams()
+  for (const key of Object.keys(opts)) {
+    body.append(key, opts[key])
   }
-  else {
+  try {
+    await signIn(body)
     session.value = null
-    return await navigateTo(url, { external: true })
+    return await navigateTo(redirectURL.value, { external: false })
   }
+  catch (e: any) {
+    if (e.data?.error) {
+      errorData.value = e.data
+    }
+    else {
+      errorData.value = {
+        error: 'An error occured!',
+      }
+    }
+  }
+  loading.value = false
 }
 </script>
 
@@ -244,14 +261,14 @@ async function signInHandler() {
             <span>Login to Showroom</span>
           </div>
           <div />
-          <div class="mt-8 flex flex-col gap-8 md:mt-10">
-            <div class="relative rounded-xl ring-blue-500 focus-within:ring-2" :class="{ 'ring-1 ring-red-500': usernameError, 'cursor-not-allowed opacity-50': loading }">
+          <div class="mt-8 flex flex-col gap-4 md:mt-10">
+            <div class="mb-5 relative rounded-xl ring-blue-500 focus-within:ring-2" :class="{ 'ring-1 ring-red-500': usernameError, 'cursor-not-allowed opacity-50': loading }">
               <input v-model="username" class="w-full rounded-xl bg-dark-3 px-3.5 py-2.5 outline-none focus:!border-none disabled:pointer-events-none" placeholder="Username" :disabled="loading" @keyup.enter="checkSubmit">
               <div v-if="usernameError" class="absolute top-[calc(100%_+_5px)] text-sm text-red-500">
                 {{ usernameError }}
               </div>
             </div>
-            <div class="relative rounded-xl ring-blue-500 focus-within:ring-2" :class="{ 'ring-1 ring-red-500': passwordError, 'cursor-not-allowed opacity-50': loading }">
+            <div class="mb-5 relative rounded-xl ring-blue-500 focus-within:ring-2" :class="{ 'ring-1 ring-red-500': passwordError, 'cursor-not-allowed opacity-50': loading }">
               <input v-model="password" class="w-full rounded-xl bg-dark-3 px-3.5 py-2.5 outline-none focus:!border-none disabled:pointer-events-none" placeholder="Password" type="password" :disabled="loading" @keyup.enter="checkSubmit">
               <div v-if="passwordError" class="absolute top-[calc(100%_+_5px)] text-sm text-red-500">
                 {{ passwordError }}
@@ -269,13 +286,18 @@ async function signInHandler() {
                 </div>
               </div>
             </div>
-            <div v-if="errorData?.error" class="mt-3 text-red-500">
-              {{ errorData?.error }}
+            <div class="space-y-4">
+              <div v-if="errorData?.error" class=" text-red-500">
+                {{ errorData?.error }}
+              </div>
+              <div class=" text-red-500">
+                Login features are currently under construction.
+              </div>
+              <ButtonText class="relative mt-4 rounded-xl bg-blue-500 p-2.5 text-xl font-bold w-full" :disabled="submitDisabled" @click="checkSubmit">
+                <Icon v-if="loading" name="svg-spinners:ring-resize" size="1.8rem" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
+                <span :class="{ 'opacity-0': loading }">Login</span>
+              </ButtonText>
             </div>
-            <ButtonText class="relative mt-5 rounded-xl bg-blue-500 p-2.5 text-xl font-bold" :disabled="submitDisabled" @click="checkSubmit">
-              <Icon v-if="loading" name="svg-spinners:ring-resize" size="1.8rem" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
-              <span :class="{ 'opacity-0': loading }">Login</span>
-            </ButtonText>
             <NuxtLink to="https://twitter.com/crstlnz" target="_blank" class="mt-4 opacity-50">
               @crstlnz
             </NuxtLink>

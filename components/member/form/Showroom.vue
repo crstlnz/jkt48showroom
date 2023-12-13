@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { generation, group } from '@/library/utils/stage48'
-import { getForm } from '~~/library/utils/form'
 import { useNotifications } from '~~/store/notifications'
 
 const props = defineProps<{
@@ -102,7 +100,7 @@ async function apply() {
 
   try {
     isLoading.value = true
-    await $fetch('/api/admin/showroom/modify_showroom', { method: 'POST', query: q })
+    await $apiFetch('/api/admin/edit_showroom', { method: 'POST', query: q })
     addNotif({
       type: 'success',
       title: 'Success',

@@ -3,8 +3,6 @@ import type { Serializer } from '@vueuse/core'
 import { useEventListener } from '@vueuse/core'
 import { useSettings } from '~~/store/settings'
 import JSONSerializer from '~~/library/serializer/json'
-import { getDateRange } from '~~/library/utils/index'
-import sleep from '~~/library/utils/sleep'
 
 const props = defineProps<{
   roomId?: number
@@ -63,13 +61,14 @@ const cacheKey = computed(() => {
 
 const localData = computed(() => useLocalStorage<IShowroomStats | null>(`stats-${cacheKey.value}`, null, { serializer: new JSONSerializer(null) }))
 const data = computed(() => localData.value.value)
-
+const config = useRuntimeConfig()
 async function fetch() {
   if (error.value === true) error.value = false
   if (pending.value === false) pending.value = true
   try {
-    const url = props.roomId ? `/api/showroom/stats?type=${type.value || defaultStat}&room_id=${props.roomId}` : `/api/showroom/stats?type=${type.value || defaultStat}&group=${settings.group}`
-    localData.value.value = await $fetch(url)
+    const baseAPI = config.public.api
+    const url = props.roomId ? `${baseAPI}/api/stats?type=${type.value || defaultStat}&room_id=${props.roomId}` : `${baseAPI}/api/stats?type=${type.value || defaultStat}&group=${settings.group}`
+    localData.value.value = await $apiFetch(url)
   }
   catch (e) {
     if (error.value === false) error.value = true
@@ -202,7 +201,7 @@ function setButton(key: string) {
             </div>
             <Parser :key="data?.type ?? 'data'" :parse-type="stat.parseType" :value="stat.value" class="truncate text-xl font-bold" />
           </div>
-          <NuxtLink
+          <div
             v-if="stat.img"
             class="group h-16 w-16 overflow-hidden rounded-full md:h-20 md:w-20"
             :title="stat.img.title"
@@ -221,7 +220,7 @@ function setButton(key: string) {
               :placeholder="[10, 10, 75, 5]"
               format="webp"
             />
-          </NuxtLink>
+          </div>
           <div v-else class="h-16 w-16 md:h-20 md:w-20" />
         </div>
       </div>

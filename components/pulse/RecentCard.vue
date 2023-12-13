@@ -1,14 +1,12 @@
 <template>
   <div class="flex animate-pulse gap-3 py-2 text-center md:py-3">
-    <NuxtLink
-      aria-label="View profile"
+    <div
       class="relative aspect-square h-[4.5rem] cursor-pointer overflow-hidden rounded-full drop-shadow-sm md:h-[70px]"
-      to="/"
     >
       <div
         class="pulse-color h-full w-full"
       />
-    </NuxtLink>
+    </div>
 
     <div class="info flex min-w-0 flex-1 flex-col text-left">
       <div class="name flex flex-1 gap-2">

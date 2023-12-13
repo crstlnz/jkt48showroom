@@ -22,7 +22,7 @@ const hasChanges = computed(() => {
 async function update() {
   try {
     isLoading.value = true
-    await $fetch('/api/admin/showroom/update_jiko', {
+    await $apiFetch('/api/admin/member/jikosokai', {
       method: 'POST',
       query: {
         _id: props.member.member_id,

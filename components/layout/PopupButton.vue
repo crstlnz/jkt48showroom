@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Popover, PopoverButton, PopoverOverlay, PopoverPanel } from '@headlessui/vue'
 
-defineProps<{
+const { class: customClass } = defineProps<{
   class?: string
 }>()
 const { isMobile, smallerOrEqual } = useResponsive()
@@ -10,7 +10,7 @@ const isSmall = smallerOrEqual('sm')
 
 <template>
   <Popover v-slot="{ close, open }" class="relative h-10 w-10">
-    <PopoverButton aria-label="Filter" :class="class">
+    <PopoverButton aria-label="Filter" :class="customClass">
       <slot :close="close" />
     </PopoverButton>
     <Teleport to="body" :disabled="!isMobile">

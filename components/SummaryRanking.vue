@@ -9,7 +9,7 @@ const roomId = computed(() => {
   return props.roomId || null
 })
 
-const { data: rankings, pending: rankingPending, refresh: refreshRanking, error: rankingError } = await useLazyFetch('/api/showroom/user_ranking', { params: { room_id: roomId }, immediate: true, server: false })
+const { data: rankings, pending: rankingPending, refresh: refreshRanking, error: rankingError } = await useApiFetch<ShowroomAPI.SummaryRanking>('/api/showroom/summary_ranking', { params: { room_id: roomId }, immediate: true, server: false })
 
 watch(() => props.roomId, (roomId) => {
   if (roomId && rankingPending.value) refreshRanking()
@@ -17,7 +17,7 @@ watch(() => props.roomId, (roomId) => {
 </script>
 
 <template>
-<div class="bg-container flex flex-col gap-4 rounded-xl p-4">
+  <div class="bg-container flex flex-col gap-4 rounded-xl p-4">
     <div class="flex items-center gap-2 text-2xl">
       <Icon name="solar:ranking-bold-duotone" class="text-yellow-500" />
       <span>Summary Ranking</span>

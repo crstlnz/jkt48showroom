@@ -1,15 +1,26 @@
 <script lang="ts" setup>
-import { useUser } from '~/store/user'
+const { user, status } = useAuth()
+const hiddenUsername = useCookie('_h_usrnme', {
+  default: () => true,
+  maxAge: 3600 * 24 * 30,
+  path: '/',
+})
 
-defineProps<{
-  compact?: boolean
-}>()
-
-const { user, status } = useUser()
+function toggleUsername(e: Event) {
+  e.stopPropagation()
+  hiddenUsername.value = !hiddenUsername.value
+}
 </script>
 
 <template>
-  <NuxtLink v-if="status === 'unauthenticated' || status === 'loading'" to="/login" aria-label="Login" class="my-3 flex items-center gap-3 rounded-full hover:bg-hover" :class="{ 'p-3': !compact, 'mb-5': compact }">
+  <div v-if="status === 'loading'" class="my-3 animate-pulse flex items-center gap-3 rounded-full hover:bg-hover p-3">
+    <div class="h-10 w-10 rounded-full pulse-color" />
+    <div class="mr-3 flex flex-1 flex-col max-2xl:hidden">
+      <div class="text-base font-semibold pulse-color rounded-md w-[45%] h-4 my-1" />
+      <div class="text-base font-semibold pulse-color rounded-md w-full h-4 my-1" />
+    </div>
+  </div>
+  <NuxtLink v-else-if="status === 'unauthenticated'" to="/login" aria-label="Login" class="my-3 flex items-center gap-3 rounded-full hover:bg-hover p-3">
     <div class="h-10 w-10">
       <Icon name="ic:baseline-person" size="1.5em" class="h-full w-full rounded-full bg-slate-400 p-2 text-white dark:bg-dark-3 dark:text-slate-500/50" />
     </div>
@@ -22,7 +33,7 @@ const { user, status } = useUser()
       </div>
     </div>
   </NuxtLink>
-  <div v-else class="my-5">
+  <div v-else class="my-3">
     <ToolTip class="w-full rounded-full" :offset="5">
       <template #tooltip>
         <div class="relative min-w-[250px] py-3">
@@ -38,9 +49,9 @@ const { user, status } = useUser()
       </template>
       <div class="flex items-center gap-3 rounded-full p-3 hover:bg-hover">
         <NuxtImg
-          v-if="user?.img"
+          v-if="user?.image"
           class="h-12 w-12 overflow-hidden rounded-full bg-slate-400 text-white dark:bg-dark-1 dark:text-slate-500/50"
-          :src="user?.img"
+          :src="user?.image"
           alt="User profile picture"
           fit="fill"
           :modifiers="{
@@ -53,15 +64,17 @@ const { user, status } = useUser()
         />
         <Icon v-else name="ic:baseline-person" size="1.5em" class="h-10 w-10 rounded-full bg-slate-400 p-2 text-white dark:bg-dark-1 dark:text-slate-500/50" />
         <div class="mr-3 flex flex-1 flex-col items-start max-2xl:hidden">
-          <div class="text-base font-semibold">
+          <div class="text-base font-semibold leading-5">
             {{ user?.name }}
           </div>
-          <div v-if="user?.account_id" class="text-left font-light">
-            {{ user?.account_id }}
+          <div v-if="user?.account_id" class="text-left font-light leading-5 text-sm">
+            <div v-if="!hiddenUsername" @click="toggleUsername">
+              {{ user?.account_id }}
+            </div>
+            <div v-else class="flex items-center gap-1 align-middle" @click="toggleUsername">
+              <span>********</span><Icon name="formkit:hidden" />
+            </div>
           </div>
-          <!-- <div v-else class="text-left font-light">
-            #{{ user. }}
-          </div> -->
         </div>
       </div>
     </ToolTip>

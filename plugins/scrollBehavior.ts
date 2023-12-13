@@ -13,10 +13,10 @@ export default defineNuxtPlugin((nuxtApp) => {
     let position: ScrollPosition = savedPosition || undefined
     if (
       !position
-        && from
-        && to
-        && to.meta.scrollToTop !== false
-        && _isDifferentRoute(from, to)
+      && from
+      && to
+      && to.meta.scrollToTop !== false
+      && _isDifferentRoute(from, to)
     ) {
       position = { left: 0, top: 0 }
     }

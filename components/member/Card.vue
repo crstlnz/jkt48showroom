@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { LazyImage } from '#components'
-
 defineProps<{
   member: IMember
   isLive: boolean

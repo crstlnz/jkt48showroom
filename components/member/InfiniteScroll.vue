@@ -9,11 +9,11 @@ const fetch = await useRecentFetch({ changeRoute: false, mode: 'infinite' }, {
   order: -1,
   room_id: props.roomId,
 })
-const { data: res, query, pending, error } = fetch.data
-const { changePage, refresh, setFilter, onQueryChange } = fetch
+const { data: res, pending, error } = fetch.data
+const { changePage } = fetch
 const isEnded = ref(false)
 const dataset = ref<IRecent[]>([])
-const { checkTrigger } = useInfiniteScroll(
+useInfiniteScroll(
   async () => {
     if (isEnded.value) return
     if (!pending.value) changePage((res.value?.page ?? 1) + 1)
@@ -55,17 +55,16 @@ const isXL = greaterOrEqual('xl')
 const isLarge = greaterOrEqual('lg')
 const isMedium = greaterOrEqual('md')
 const isSmall = greaterOrEqual('sm')
-const { height } = useWindowSize()
 
 const recentHeight = computed(() => {
-  if (isXL.value) return 230
-  if (isLarge.value) return 214
-  if (isMedium.value) return 198
-  if (isSmall.value) return 168
-  return 146
+  if (isXL.value) return 226
+  if (isLarge.value) return 206
+  if (isMedium.value) return 190
+  if (isSmall.value) return 160
+  return 142
 })
 
-watch(recentHeight, (val) => {
+watch(recentHeight, () => {
   // console.log(val)
 }, { immediate: true })
 
@@ -109,7 +108,7 @@ watch(recentHeight, (val) => {
         <template #default="{ item, index, active }">
           <DynamicScrollerItem :item="item" :active="active" :data-index="index">
             <div class="pb-3 md:pb-4">
-              <MemberRecentCard :recent="item" />
+              <MemberRecentCard :key="item.room_id" :recent="item" />
             </div>
           </DynamicScrollerItem>
         </template>

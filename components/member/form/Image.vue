@@ -36,10 +36,10 @@ async function save(e: Event) {
   e.stopPropagation()
   const formData = new FormData()
   formData.append('id', props.memberDataId)
-  formData.append('banner', formImage.value?.inputImage.files[0])
+  formData.append(props.formId, formImage.value?.inputImage.files[0])
   try {
     isUploading.value = true
-    const result = (await $fetch(props.postUrl, {
+    const result = (await $apiFetch(props.postUrl, {
       body: formData,
       method: 'post',
     })) as any

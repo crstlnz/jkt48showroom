@@ -1,7 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url("https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600;700&display=swap");
+// @import url("https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600;700&display=swap");
 
 * {
   backface-visibility: hidden;
@@ -12,7 +12,7 @@
 }
 
 * {
-  font-family: Signika, "Noto Serif JP", sans-serif;
+  font-family: 'DM Sans', sans-serif, "Noto Serif JP";
 }
 
 input:-webkit-autofill,
@@ -322,3 +322,25 @@ a {
 .bg-card {
   background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
 }
+
+:root{
+  --tooltipColor : #3f3f3f;
+}
+.dark {
+  --tooltipColor : #0c0d0f;
+}
+
+.v-popper--theme-tooltip {
+  .v-popper__inner {
+    background: var(--tooltipColor) !important;
+  }
+
+  .v-popper__arrow-outer{
+    border-color : var(--tooltipColor) !important;
+  }
+
+  .v-popper__arrow-inner {
+    visibility: visible;
+    border-color: var(--tooltipColor) !important;
+  }
+} 

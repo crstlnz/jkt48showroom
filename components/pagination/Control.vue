@@ -64,7 +64,7 @@ function prev() {
 }
 
 function changePage(val: number) {
-  if (isNaN(val)) return
+  if (Number.isNaN(val)) return
   if (val < 1 || val > props.total) return
   emit('pageChange', val)
 }

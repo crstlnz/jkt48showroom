@@ -1,19 +1,18 @@
 <script lang="ts" setup>
 import c from '~~/app.config'
-import { useUser } from '~/store/user'
 import { useNotifications } from '~/store/notifications'
 import { useSettings } from '~~/store/settings'
 
 const route = useRoute()
 const settings = useSettings()
 const { getTitle } = useAppConfig()
-const { data, error, pending } = await useLazyFetch<API.IRecentDetail>(`/api/showroom/recent/${route.params.id}`)
-const { data: likeData, error: likeError, pending: likePending } = await useLazyFetch('/api/user/like', { query: { id: route.params.id } })
+const { data, error, pending } = await useApiFetch<API.IRecentDetail>(`/api/recent/${route.params.id}`)
+const { data: likeData } = await useApiFetch<Database.IsLike>('/api/user/like', { query: { data_id: route.params.id } })
 const liked = ref(false)
 
 watch(likeData, (val) => {
   liked.value = val?.is_liked || false
-})
+}, { immediate: true })
 
 const users = computed<Map<number, IFansCompact>>(() => {
   const users = new Map<number, IFansCompact>()
@@ -81,18 +80,18 @@ const calculatedGift = computed<IFansGift[]>(() => {
   }
 })
 
-const { status, user } = useUser()
+const { status, user } = useAuth()
 const { addNotif } = useNotifications()
 function setLike() {
-  if (status === 'unauthenticated') {
+  if (status.value === 'unauthenticated') {
     navigateTo('/login')
   }
   else {
     if (!data.value) return
-    $fetch('/api/user/like', {
+    $apiFetch('/api/user/like', {
       method: liked.value ? 'DELETE' : 'PUT',
-      body: {
-        user_id: user?.id,
+      query: {
+        user_id: user.value?.id,
         type: 2,
         liked_id: data.value.data_id,
       },
@@ -107,13 +106,21 @@ function setLike() {
 const dayjs = useDayjs()
 const { locale, t } = useI18n()
 
+const dateStart = computed(() => {
+  return data.value?.live_info?.date?.start || data.value?.created_at || '0'
+})
+
+const dateEnd = computed(() => {
+  return data.value?.live_info?.date?.end || data.value?.created_at || '0'
+})
+
 const date = computed(() => {
-  return dayjs(data.value?.live_info?.date?.start).locale(locale.value).format('DD MMMM YYYY')
+  return dayjs(dateStart.value).locale(locale.value).format('DD MMMM YYYY')
 })
 
 const title = computed(() => {
   const t = (!pending.value && (data.value || !error.value)) ? `${data.value?.room_info?.fullname ?? data.value?.room_info?.nickname ?? data.value?.room_info?.name}` : getTitle(settings.group)
-  return [t.split('-')[0], date.value].join(' - ')
+  return t.split('-')[0]
 })
 
 const { $fixCloudinary } = useNuxtApp()
@@ -121,19 +128,20 @@ const description = computed(() => {
   return t('recent_detail_description', { name: data.value?.room_info.nickname || data.value?.room_info.fullname || data.value?.room_info?.name, date: date.value })
 })
 
+const titleSeo = computed(() => `Live ${title.value} - ${dayjs(data.value?.live_info?.date?.start || data.value?.created_at).format('DD MMM YYYY')}`)
 useSeoMeta({
-  ogTitle: () => `Live ${title.value}`,
+  title: () => titleSeo.value,
+  ogTitle: () => titleSeo.value,
   description,
   ogImage: () => data.value?.room_info?.img || '',
   ogDescription: description,
   twitterDescription: description,
-  twitterTitle: () => `Live ${title.value}`,
+  twitterTitle: () => titleSeo.value,
   twitterImage: () => $fixCloudinary(data.value?.room_info?.img_alt || data.value?.room_info?.img || ''),
   twitterCard: 'summary',
 })
-
 useHead({
-  title: () => `Live ${title.value}`,
+  title: () => titleSeo.value,
 })
 
 const { greaterOrEqual } = useResponsive()
@@ -146,82 +154,64 @@ const isXL = greaterOrEqual('xl')
       <Icon name="eos-icons:loading" size="3rem" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 " />
     </div>
     <Error v-else-if="error || !data" :message="error ? (error.statusCode === 404 ? $t('error.pagenotfound') : $t('error.unknown')) : $t('error.pagenotfound')" :img-src="!data || error?.statusCode === 404 ? '/svg/404.svg' : '/svg/error.svg'" />
-    <LayoutRow v-else :title="title">
+    <LayoutRow v-else :title="title" :sub-title="`Showroom Live - ${dayjs(data.live_info.date.start).format('DD MMMM YYYY')}`">
       <template #default>
         <div class="flex flex-col gap-3 md:gap-4">
           <MemberProfileBanner :room-id="data.room_id" :member="data.room_info" />
-          <div class="flex flex-1 flex-col mx-3 md:mx-4">
-            <div
-              class="flex flex-1 flex-wrap items-start justify-center gap-4 [&>*]:min-w-[230px] [&>div]:flex-[100%] lg:[&>div]:flex-[calc(50%_-_1rem)]"
-            >
-              <ShowroomStat>
-                <template #title>
-                  <Icon name="ph:timer-fill" />{{ $t("date.start") }}
-                </template>
-                <template #value>
-                  <Parser parse-type="date" :value="new Date(data.live_info.date.start).getTime()" custom-format="DD MMMM YYYY hh:mm A" />
-                </template>
-              </ShowroomStat>
-
-              <ShowroomStat>
-                <template #title>
-                  <Icon name="ph:timer-fill" />{{ $t("date.end") }}
-                </template>
-                <template #value>
-                  <Parser parse-type="date" :value="new Date(data.live_info.date.end).getTime()" custom-format="DD MMMM YYYY hh:mm A" />
-                </template>
-              </ShowroomStat>
-
-              <ShowroomStat>
-                <template #title>
-                  <Icon name="ph:timer-fill" />{{ $t("duration") }}
-                </template>
-                <template #value>
-                  <Parser parse-type="duration" :value="data.live_info?.duration ?? 0" class="lowercase" />
-                </template>
-              </ShowroomStat>
-
-              <ShowroomStat v-if="data.live_info?.viewers">
-                <template #title>
-                  <Icon :name="data.live_info?.viewers?.is_excitement ? 'ic:round-star' : 'ph:users-fill'" /> {{ data.live_info?.viewers?.is_excitement ? $t("excitement_points") : $t("viewer") }}
-                </template>
-                <template #value>
-                  {{ $n(data.live_info?.viewers?.num ?? 0) }}
-                  <span v-if="data.live_info?.viewers?.active ?? 0" v-tooltip="$t('tooltip.activeuser')" class="inline-flex items-center gap-0.5">
-                    ( {{ $n(data.live_info?.viewers?.active ?? 0) }}<Icon name="ph:info-duotone" /> )
-                  </span>
-                </template>
-              </ShowroomStat>
-
-              <ShowroomStat>
-                <template #title>
-                  <Icon name="bx:bxs-gift" />{{ $t("totalgift") }}
-                </template>
-                <template #value>
-                  {{ $currency(data.total_point ?? 0) }}
-                </template>
-              </ShowroomStat>
-
-              <ShowroomStat v-if="data.live_info?.comments">
-                <template #title>
-                  <Icon name="ph:chat-circle-dots-fill" />{{ $t("totalcomments") }}
-                </template>
-                <template #value>
-                  <div class="flex items-center justify-center gap-2">
-                    <span :title="`${data.live_info.comments.num} ${$t('totalcomments')}`">
-                      {{ $n(data.live_info?.comments.num) }}
-                    </span>
-                    <span v-tooltip="`${$t('tooltip.usercomment', { msg: $n(data.live_info.comments.users) })}`" class="inline-flex items-center justify-center gap-0.5">
-                      ( {{ $n(data.live_info.comments.users) }}
-                      <Icon title="Users" name="carbon:user-avatar-filled" class="h-6" /> )
-                    </span>
-                  </div>
-                </template>
-              </ShowroomStat>
+          <div class="mx-3 md:mx-4 flex gap-3 md:gap-4 items-stretch [&>div]:flex-1 max-xl:flex-col">
+            <div class="flex flex-col md:flex-row xl:flex-col gap-3 md:gap-4 flex-wrap">
+              <InfoCard class="flex-1" icon-class="bg-red-500/20 text-red-500 dark:bg-red-300/20 dark:text-red-300" icon="material-symbols:calendar-today" :title="`${dayjs(dateStart).locale(locale).format('hh:mm A')} - ${dayjs(dateEnd).locale(locale).format('hh:mm A')}`" :value="dayjs(dateStart).locale(locale).format('dddd, DD MMMM YYYY')" />
+              <InfoCard class="flex-1" icon-class="bg-yellow-500/20 text-yellow-500 dark:bg-yellow-300/20 dark:text-yellow-300" icon="material-symbols:auto-timer" :title="$t('duration')" :value="formatDuration(data.live_info?.duration ?? 0)" />
+            </div>
+            <div class="bg-container rounded-xl p-3 md:p-4">
+              <div class="font-bold text-lg xl:text-xl mb-1">
+                Detail
+              </div>
+              <table class="table-auto [&_td]:py-1 [&_td]:xl:py-1.5 text-sm xl:text-base [&_td:first-child]:min-w-[150px] [&_td:first-child]:xl:min-w-[200px] [&_td:first-child]:opacity-80 font-semibold dark:[&_td:first-child]:opacity-60">
+                <tr>
+                  <td>
+                    Gift
+                  </td>
+                  <td>
+                    {{ $currency(data.total_point ?? 0) }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    {{ data.live_info.viewers?.is_excitement ? 'Excitement Point' : 'Viewer' }}
+                  </td>
+                  <td v-if="data.live_info?.viewers?.num">
+                    {{ $n(data.live_info?.viewers?.num ?? 0) }}
+                  </td>
+                  <td v-else>
+                    {{ $t('data.nodata') }}
+                  </td>
+                </tr>
+                <tr v-if="data.live_info?.viewers?.active">
+                  <td>
+                    {{ data.live_info.viewers?.is_excitement ? 'Viewer' : 'Active Viewer' }}
+                  </td>
+                  <td>
+                    {{ $n(data.live_info?.viewers?.active ?? 0) }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Comments
+                  </td>
+                  <td v-if="data?.live_info?.comments?.num">
+                    {{ $n(data?.live_info?.comments?.num || 0) }}  <span v-if="data?.live_info?.comments?.users" class="text-sm opacity-80 dark:opacity-60">by {{ $n(data?.live_info?.comments?.users || 0) }} users</span>
+                  </td>
+                  <td v-else>
+                    {{ $t('data.nodata') }}
+                  </td>
+                </tr>
+              </table>
             </div>
           </div>
-          <HomeFans v-if="data.fans?.length" :data="data.fans" class="rounded-xl mx-3 md:mx-4" />
+          <GiftInfo :gifts="data.live_info.gift.list" />
           <ShowroomGiftList :gifts="data.live_info.gift.list" class="mx-3 md:mx-4" />
+          <HomeFans v-if="data.fans?.length" :data="data.fans" class="rounded-xl mx-3 md:mx-4" />
 
           <div
             class="pulse-color col-span-2 aspect-[16/13] flex-1 overflow-hidden shadow-sm sm:mx-3 md:mx-4 sm:rounded-xl md:aspect-[16/10] lg:w-auto 2xl:aspect-[16/9]"
@@ -230,19 +220,25 @@ const isXL = greaterOrEqual('xl')
               <template #fallback>
                 <div class="w-full h-full bg-container animate-pulse" />
               </template>
-              <ShowroomView
-                :member-image="data.room_info?.img"
-                :date="data.live_info?.date"
-                :background="
-                  data.live_info?.background_image
-                    ?? 'https://image.showroom-cdn.com/showroom-prod/assets/img/room/background/default.png'
-                "
-                :screenshot="data.live_info?.screenshot"
-                :live-info="data.live_info"
-                :stage-list="data.live_info.stage_list"
-                :users="users"
-                :gift-data="data.live_info.gift"
-              />
+              <Suspense>
+                <template #fallback>
+                  <div class="w-full h-full bg-container animate-pulse" />
+                </template>
+                <LazyShowroomView
+                  :data-id="data.data_id"
+                  :member-image="data.room_info?.img"
+                  :date="data.live_info?.date"
+                  :background="
+                    data.live_info?.background_image
+                      ?? 'https://image.showroom-cdn.com/showroom-prod/assets/img/room/background/default.png'
+                  "
+                  :screenshot="data.live_info?.screenshot"
+                  :live-info="data.live_info"
+                  :stage-list="data.live_info.stage_list"
+                  :users="data?.users || []"
+                  :gift-data="data.live_info.gift"
+                />
+              </Suspense>
             </ClientOnly>
             <div v-else class="flex h-full w-full items-center justify-center bg-zinc-600 text-3xl font-bold text-white">
               No data
@@ -268,8 +264,8 @@ const isXL = greaterOrEqual('xl')
       </template>
 
       <template #actionSection>
-        <button type="button" aria-label="Like" @click="setLike">
-          <Icon name="ic:round-favorite" class="rounded-full p-1.5 pt-2.5 hover:bg-hover" :class="liked ? 'text-red-400' : 'text-slate-500'" size="2.8rem" />
+        <button v-ripple type="button" aria-label="Like" class="h-10 w-10 rounded-full" @click="setLike">
+          <Icon :name="liked ? 'heroicons:bookmark-20-solid' : 'heroicons:bookmark'" class="rounded-full hover:bg-hover w-full h-full p-2" :class="liked ? 'text-blue-500 dark:text-blue-400' : 'text-slate-500 bg:text-slate-400'" />
         </button>
       </template>
     </LayoutRow>

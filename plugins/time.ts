@@ -1,7 +1,6 @@
 import type { MaybeRef } from '@vueuse/core'
 import { get } from '@vueuse/core'
 
-// import moment from '~~/library/utils/moment'
 import dayjs from 'dayjs'
 import 'dayjs/locale/id'
 import timeFormat from '~~/library/plugins/timeFormat'

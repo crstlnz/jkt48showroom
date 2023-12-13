@@ -8,10 +8,10 @@ export const useMembers = defineStore('members', () => {
   async function load() {
     try {
       loading.value = true
-      const data = await $fetch('/api/showroom/members', { query: { group: settings.group } })
+      const data = await $apiFetch('/api/member', { query: { group: settings.group } })
       error.value = false
       loading.value = false
-      members.value = data
+      members.value = data as any
     }
     catch (e) {
       loading.value = false

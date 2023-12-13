@@ -28,6 +28,7 @@ viewer: Penonton
 excitement_points: Excitement Points
 totalgift: Jumlah hadiah
 totalpaidgift: Jumlah hadiah berbayar
+totalfreegift: Jumlah hadiah gratis
 totalcomments: Komentar
 comment: Komentar
 duration: Durasi
@@ -79,6 +80,7 @@ srview:
     animation: Animasi
 search: Cari
 date:
+  to: sampai
   start: Mulai
   end: Selesai
   started: Mulai dari {date}
@@ -173,3 +175,16 @@ total_member: Jumlah member
 recent_theater: Theater terakhir
 recent_detail_description: Lihat rekap gift dan fans ranking live Showroom {name} pada tanggal {date}
 member_profile_description: Profile lengkap {name} {group} dan semua rekap live showroom
+reorder:
+  failed: Gagal mengurutkan ke atas!
+  success: '{name} diurutkan ke atas!'
+follow:
+  title: Follow
+  failed: Gagal mengikuti!
+  following: 'Anda telah mengikuti {name}!'
+  unfollow: 'Anda telah berhenti mengikuti {name}!'
+follower: Pengikut
+room_level: Room level
+watch_count: Menonton
+watch_count_info: Kamu telah menonton member ini sebanyak {count} kali
+times: kali

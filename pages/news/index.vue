@@ -2,7 +2,7 @@
 const route = useRoute()
 const router = useRouter()
 const page = ref(Number(route.query.page) || 1)
-const { data, pending, error } = await useLazyFetch('/api/jkt48/news', { params: { page } })
+const { data, pending, error } = await useApiFetch<IApiNews>('/api/news', { params: { page } })
 const dayjs = useDayjs()
 const { locale } = useI18n()
 function changePage(p: number) {
@@ -17,7 +17,6 @@ watch(page, (p) => {
 })
 
 const { greaterOrEqual } = useResponsive()
-const isMd = greaterOrEqual('md')
 const isXl = greaterOrEqual('xl')
 const maxDots = computed(() => {
   return isXl.value ? 9 : 7
@@ -53,18 +52,20 @@ const maxDots = computed(() => {
         </div>
       </div>
 
-      <div class="float-right m-3 w-[400px] max-w-[95vw] self-end md:m-4">
-        <PulsePaginationControl v-if="pending || !data" :max-dots="maxDots" />
-        <PaginationControl
-          v-else-if="!error"
-          key="pagination"
-          class="justify-center sm:!left-auto"
-          :page="data.page"
-          :max-dots="maxDots"
-          :total="Math.ceil(data.total_count / data.perpage)"
-          @page-change="(page : number) => changePage(page)"
-        />
-      </div>
+      <ClientOnly>
+        <div v-if="!error" class="float-right m-3 w-[400px] max-w-[95vw] self-end md:m-4">
+          <PulsePaginationControl v-if="pending || !data" :max-dots="maxDots" />
+          <PaginationControl
+            v-else-if="!error"
+            key="pagination"
+            class="justify-center sm:!left-auto"
+            :page="data.page"
+            :max-dots="maxDots"
+            :total="Math.ceil(data.total_count / data.perpage)"
+            @page-change="(page : number) => changePage(page)"
+          />
+        </div>
+      </ClientOnly>
     </template>
     <template #sidebar>
       <HomeRecents class="mt-3 md:mt-4" />

@@ -1,12 +1,52 @@
 <script lang="ts" setup>
 import { getSign } from 'horoscope'
+import { useNotifications } from '~/store/notifications'
 
 const route = useRoute()
-
-const { data, pending, error } = await useLazyFetch('/api/showroom/profile', { params: { room_url_key: route.params.id } })
-watch(data, (val) => {
-  if (!val) throw createError({ statusMessage: 'Page not found!', statusCode: 404 })
+const { addNotif } = useNotifications()
+const { data, pending, error } = await useApiFetch<IMemberProfileAPI>(`/api/member/${route.params.id}`)
+const { status } = useAuth()
+const isFollow = ref(false)
+const { data: profile, refresh } = await useApiFetch<IMiniRoomProfile>(`/api/profile`, {
+  query: {
+    room_id: data.value?.room_id,
+  },
+  server: false,
+  immediate: false,
 })
+const { t } = useI18n()
+
+async function follow() {
+  try {
+    const form = new FormData()
+    form.set('room_id', String(data.value?.room_id))
+    form.set('flag', String(isFollow.value ? 0 : 1))
+    await $apiFetch('/api/user/follow', {
+      method: 'POST',
+      body: form,
+    })
+    isFollow.value = !isFollow.value
+    addNotif({
+      type: 'success',
+      message: t(isFollow ? 'follow.following' : 'follow.unfollow', { name: data.value?.name }),
+      duration: 1500,
+    })
+  }
+  catch (e) {
+    console.log(e)
+    addNotif({
+      type: 'danger',
+      message: t('follow.failed'),
+      duration: 1500,
+    })
+  }
+}
+
+watch(data, async () => {
+  if (process.client) {
+    refresh()
+  }
+}, { immediate: true })
 
 const member = computed(() => {
   return data.value
@@ -22,7 +62,6 @@ const birth = computed(() => {
     : null
 })
 
-const { t } = useI18n()
 const { greaterOrEqual } = useResponsive()
 const isXL = greaterOrEqual('xl')
 const { $fixCloudinary } = useNuxtApp()
@@ -42,9 +81,6 @@ useSeoMeta({
 useHead({
   title: () => data.value?.fullname || member.value?.name || 'Member Profile',
 })
-
-const dayjs = useDayjs()
-const { locale } = useI18n()
 </script>
 
 <template>
@@ -61,50 +97,103 @@ const { locale } = useI18n()
             <span>{{ $t("data.nodata") }}</span>
           </div>
           <div v-else class="flex flex-col gap-3 md:gap-4">
-            <MemberProfileBanner :room-id="member.room_id" :member="member as Database.IMemberBasicData" />
-            <div v-if="birth || member.bloodType || member.height" class="flex flex-wrap gap-3 px-3 md:px-4 [&>div]:flex-[40%] xl:[&>div]:flex-[20%]">
-              <div v-if="birth" class="bg-container flex flex-col gap-1 rounded-xl px-4 py-3 md:gap-2">
-                <div class="flex items-center gap-2">
-                  <Icon name="twemoji:birthday-cake" size="1.2rem" />
-                  <span class="text-sm font-semibold">{{ $t("birthdate") }}</span>
-                </div>
-                <div>
-                  {{ $d(birth.date, 'birthdate') }}
-                </div>
-              </div>
-              <div v-if="birth" class="bg-container flex flex-col gap-1 rounded-xl px-4 py-3 md:gap-2">
-                <div class="flex items-center gap-2">
-                  <Icon :name="`emojione:${birth.horoscope.toLowerCase()}`" size="1.2rem" />
-                  <span class="text-sm font-semibold">{{ $t("horoscope.title") }}</span>
-                </div>
-                <div>
-                  {{ $t(`horoscope.${birth.horoscope.toLowerCase()}`) }}
-                </div>
-              </div>
-              <div v-if="member.bloodType" class="bg-container flex flex-col gap-1 rounded-xl px-4 py-3 md:gap-2">
-                <div class="flex items-center gap-2 ">
-                  <div class="relative">
-                    <Icon name="ic:sharp-bloodtype" size="1.2rem" class="text-red-500" />
-                    <div class="absolute left-1/2 top-1/2 -z-10 h-2 w-2 -translate-x-1/2 bg-white" />
+            <MemberProfileBanner :member="member as Database.IMemberBasicData" :room-id="member.room_id" />
+            <div class="mx-3 md:mx-4 flex flex-col gap-3 md:gap-4">
+              <div class="flex-1 flex gap-3 bg-container rounded-xl p-3 md:p-4 text-center py-4">
+                <div class="flex flex-1 flex-col gap-0.5 md:gap-1.5">
+                  <div class="text-xs md:text-sm">
+                    {{ $t("watch_count") }}
                   </div>
-                  <span class="text-sm font-semibold">{{ $t("bloodtype") }}</span>
+                  <div v-tooltip="$t('watch_count_info', { count: profile?.visit_count || 0 })" class="flex justify-center items-center gap-1.5 text-base md:text-lg font-semibold">
+                    <Icon name="material-symbols:auto-read-play" class="text-red-500" />
+                    <span> {{ $n(profile?.visit_count || 0) }} {{ $t("times") }}</span>
+                  </div>
                 </div>
-                <div>
-                  {{ member.bloodType }}
+                <div class="flex flex-1 flex-col gap-0.5 md:gap-1.5">
+                  <div class="text-xs md:text-sm">
+                    {{ $t("follower") }}
+                  </div>
+                  <div class="flex justify-center items-center gap-1.5 text-base md:text-lg font-semibold">
+                    <Icon name="heroicons:user-plus-solid" class="text-pink-400" />
+                    <span> {{ $n(profile?.follower || 0) }}</span>
+                  </div>
+                </div>
+                <div class="flex flex-1 flex-col gap-0.5 md:gap-1.5">
+                  <div class="text-xs md:text-sm">
+                    {{ $t("room_level") }}
+                  </div>
+                  <div class="flex justify-center items-center gap-1.5 text-base md:text-lg font-semibold">
+                    <Icon name="icon-park-solid:ranking-list" class="text-blue-500" />
+                    <span> {{ $n(profile?.room_level || 0) }}</span>
+                  </div>
                 </div>
               </div>
-              <div v-if="member.height" class="bg-container flex flex-col gap-1 rounded-xl px-4 py-3 md:gap-2">
-                <div class="flex items-center gap-2">
-                  <Icon name="solar:ruler-pen-bold" size="1.2rem" class="text-yellow-500" />
-                  <span class="text-sm font-semibold">{{ $t("height") }}</span>
+              <div class="flex flex-col-reverse xl:flex-row gap-3 md:gap-4">
+                <div class="flex flex-col bg-container rounded-xl p-3 md:p-4 flex-1">
+                  <div class="flex items-center gap-2 pb-3 text-lg font-semibold">
+                    <Icon name="solar:clipboard-list-bold-duotone" class="text-yellow-500" size="1.8rem" />
+                    <span>{{ $t("description") }} & {{ $t("socialmedia") }}</span>
+                  </div>
+                  <ClientOnly>
+                    <template #fallback>
+                      <div v-for="num in 7" :key="num" class="flex-1 h-5 w-[30%] bg-container-2 mb-2 rounded-xl animate-pulse" />
+                    </template>
+                    <div class="flex-1 preformat text-sm md:text-base">
+                      {{ member.description || $t("nodescription") }}
+                    </div>
+                  </ClientOnly>
+                  <div v-if="member.socials?.length" class="mt-7 flex flex-wrap gap-4">
+                    <a v-for="social in member.socials" :key="social.url" class="flex items-center gap-1.5 text-blue-500 hover:text-blue-300" target="_blank" :href="social.url">
+                      <Icon v-if="$getLinkIconName(social.url)" :name="$getLinkIconName(social.url) || ''" />
+                      <span>{{ social.title }}</span>
+                    </a>
+                  </div>
                 </div>
-                <div>
-                  {{ member.height }}
+                <div v-if="birth || member.bloodType || member.height" class="flex xl:flex-col flex-wrap bg-container rounded-xl p-1 min-w-[300px]">
+                  <div v-if="birth" class="flex flex-col gap-1 px-4 py-3 md:gap-2 max-xl:flex-[40%]">
+                    <div class="flex items-center gap-1.5 text-xs md:text-sm">
+                      <Icon name="twemoji:birthday-cake" />
+                      <span>{{ $t("birthdate") }}</span>
+                    </div>
+                    <div class="text-sm md:text-base font-semibold">
+                      {{ $d(birth.date, 'birthdate') }}
+                    </div>
+                  </div>
+                  <div v-if="birth" class="flex flex-col gap-1 px-4 py-3 md:gap-2 max-xl:flex-[40%]">
+                    <div class="flex items-center gap-1.5 text-xs md:text-sm">
+                      <Icon :name="`emojione:${birth.horoscope.toLowerCase()}`" />
+                      <span>{{ $t("horoscope.title") }}</span>
+                    </div>
+                    <div class="text-sm md:text-base font-semibold">
+                      {{ $t(`horoscope.${birth.horoscope.toLowerCase()}`) }}
+                    </div>
+                  </div>
+                  <div v-if="member.bloodType" class="flex flex-col gap-1 px-4 py-3 md:gap-2 max-xl:flex-[40%]">
+                    <div class="flex items-center gap-1.5 text-xs md:text-sm ">
+                      <div class="relative">
+                        <Icon name="ic:sharp-bloodtype" class="text-red-500" />
+                        <div class="absolute left-1/2 top-1/2 -z-10 h-2 w-2 -translate-x-1/2 bg-white" />
+                      </div>
+                      <span>{{ $t("bloodtype") }}</span>
+                    </div>
+                    <div class="text-sm md:text-base font-semibold">
+                      {{ member.bloodType }}
+                    </div>
+                  </div>
+                  <div v-if="member.height" class="flex flex-col gap-1 px-4 py-3 md:gap-2 max-xl:flex-[40%]">
+                    <div class="flex items-center gap-1.5 text-xs md:text-sm">
+                      <Icon name="solar:ruler-pen-bold" class="text-yellow-500" />
+                      <span>{{ $t("height") }}</span>
+                    </div>
+                    <div class="text-sm md:text-base font-semibold">
+                      {{ member.height }}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
             <div v-if="member.jikosokai" class="bg-container mx-3 flex flex-col gap-2 rounded-xl p-4 md:mx-4">
-              <div class="flex items-center gap-2 text-lg font-semibold">
+              <div class="flex items-center gap-2 text-lg xl:text-xl font-semibold">
                 <Icon name="carbon:phrase-sentiment" class="text-pink-500" size="1.8rem" />
                 <span>Jikoshoukai</span>
               </div>
@@ -112,71 +201,76 @@ const { locale } = useI18n()
                 {{ member.jikosokai }}
               </div>
             </div>
-            <div class="preformat bg-container mx-3 rounded-xl p-4 md:mx-4">
-              <div class="flex items-center gap-2 pb-3 text-lg font-semibold">
-                <Icon name="solar:clipboard-list-bold-duotone" class="text-yellow-500" size="1.8rem" />
-                <span>{{ $t("description") }} & {{ $t("socialmedia") }}</span>
-              </div>
-              <div class="text-sm md:text-base">
-                {{ member.description || $t("nodescription") }}
-              </div>
-              <div v-if="member.socials?.length" class="mt-7 flex flex-wrap gap-4">
-                <a v-for="social in member.socials" :key="social.url" class="flex items-center gap-1.5 text-blue-500 hover:text-blue-300" target="_blank" :href="social.url">
-                  <Icon v-if="$getLinkIconName(social.url)" :name="$getLinkIconName(social.url) || ''" />
-                  <span>{{ social.title }}</span>
-                </a>
-              </div>
-            </div>
+
             <div class="flex flex-col gap-3 md:gap-4">
-              <div v-if="member.recentTheater?.length" class="px-3 md:px-4">
+              <div v-if="member.upcomingTheater?.length" class="p-3 md:p-4 bg-container rounded-xl mx-3 md:mx-4">
                 <div class="flex gap-1 mb-1">
-                  <Icon name="icon-park-twotone:theater" class="self-center text-xl sm:text-2xl" />
-                  <h2 class="text-xl font-bold leading-10 sm:text-2xl">
+                  <Icon name="icon-park-twotone:theater" class="self-center text-lg xl:text-xl" />
+                  <h2 class="text-lg xl:text-xl font-bold leading-10">
                     {{ $t(`recent_theater`) }}
                   </h2>
                 </div>
-                <div v-for="theater in member.recentTheater" :key="theater.url" class="p-3 flex gap-3 items-center group hover:bg-dark/5 dark:hover:bg-white/5">
-                  <div class="bg-black/5 dark:bg-white/5 px-2 rounded-md text-sm md:text-base">
-                    {{ dayjs(theater.date).locale(locale).format("DD MMM\nHH:mm") }}
-                  </div>
-                  <NuxtLink :to="`/theater/${theater.id}`" class="text-base md:text-lg font-bold flex-1">
-                    {{ theater.name }}
-                  </NuxtLink>
-                  <NuxtLink :to="theater.url" target="_blank" class="invisible group-hover:visible max-md:hidden bg-blue-500 rounded-md px-3">
-                    Official Web
-                  </NuxtLink>
+                <div class="py-2 grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] xl:grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-3 md:gap-4">
+                  <TheaterCard v-for="theater in member.upcomingTheater" :key="theater.url" :theater="theater" />
+                </div>
+              </div>
+              <div v-if="member.recentTheater?.length" class="p-3 md:p-4 bg-container rounded-xl mx-3 md:mx-4">
+                <div class="flex gap-1 mb-1">
+                  <Icon name="icon-park-twotone:theater" class="self-center text-lg xl:text-xl" />
+                  <h2 class="text-lg xl:text-xl font-bold leading-10">
+                    {{ $t(`recent_theater`) }}
+                  </h2>
+                </div>
+                <div class="py-2 grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] xl:grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-3 md:gap-4">
+                  <TheaterCard v-for="theater in member.recentTheater.slice(0, 4)" :key="theater.url" :theater="theater" />
                 </div>
               </div>
               <HomeStats v-if="member?.room_id" :room-id="member?.room_id" />
-              <div v-if="!isXL" class="px-3 md:px-4">
-                <div v-if=" !member?.room_id" class="bg-container flex aspect-video w-full flex-col items-center justify-center rounded-xl p-4 xl:mt-5">
-                  <div class="flex items-center gap-2 self-start text-2xl">
-                    <Icon name="solar:ranking-bold-duotone" class="text-yellow-500" />
-                    <span>Summary Ranking</span>
+              <ClientOnly>
+                <div v-if="!isXL" class="px-3 md:px-4">
+                  <div v-if=" !member?.room_id" class="bg-container flex aspect-video w-full flex-col items-center justify-center rounded-xl p-4 xl:mt-5">
+                    <div class="flex items-center gap-2 self-start text-2xl">
+                      <Icon name="solar:ranking-bold-duotone" class="text-yellow-500" />
+                      <span>Summary Ranking</span>
+                    </div>
+                    <img class="mx-auto aspect-square w-72 max-w-[80%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`">
+                    <span>{{ $t("data.nodata") }}</span>
                   </div>
-                  <img class="mx-auto aspect-square w-72 max-w-[80%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`">
-                  <span>{{ $t("data.nodata") }}</span>
+                  <SummaryRanking v-else :room-id="member?.room_id" class="xl:mt-5" />
                 </div>
-                <SummaryRanking v-else :room-id="member?.room_id" class="xl:mt-5" />
-              </div>
+              </ClientOnly>
               <MemberInfiniteScroll v-if="member?.room_id" :room-id="member?.room_id" />
             </div>
           </div>
         </div>
       </template>
-      <template #sidebar>
-        <HomeLiveNowSide v-if="isXL" class="xl:mt-5" />
-        <div v-if="isXL">
-          <div v-if="!member?.room_id" class="bg-container flex aspect-video w-full flex-col items-center justify-center rounded-xl p-4">
-            <div class="flex items-center gap-2 self-start text-2xl">
-              <Icon name="solar:ranking-bold-duotone" class="text-yellow-500" />
-              <span>Summary Ranking</span>
-            </div>
-            <img class="mx-auto aspect-square w-72 max-w-[80%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`">
-            <span>{{ $t("data.nodata") }}</span>
+      <template #actionSection>
+        <div v-if="status === 'authenticated'" class="flex gap-1.5 text-xl md:text-base items-center max-md:h-8 max-md:w-8 md:py-1 md:px-3 justify-center rounded-full" :class="{ 'bg-pink-400': isFollow, 'bg-gray-200 hover:bg-gray-300 dark:bg-gray-400 dark:hover:bg-gray-500': !isFollow }" @click="follow">
+          <Icon :name="isFollow ? 'heroicons:user-minus-20-solid' : 'heroicons:user-plus-20-solid'" />
+          <div class="hidden md:block">
+            {{ isFollow ? 'Unfollow' : 'Follow' }}
           </div>
-          <SummaryRanking v-else :room-id="member?.room_id" />
         </div>
+      </template>
+      <template #sidebar>
+        <ClientOnly>
+          <template #fallback>
+            <div class="bg-container w-full aspect-[4/5] rounded-xl animate-pulse xl:mt-4" />
+            <div class="bg-container w-full aspect-[4/12] rounded-xl animate-pulse" />
+          </template>
+          <HomeLiveNowSide v-if="isXL" class="xl:mt-5" />
+          <div v-if="isXL">
+            <div v-if="!member?.room_id" class="bg-container flex aspect-video w-full flex-col items-center justify-center rounded-xl p-4">
+              <div class="flex items-center gap-2 self-start text-2xl">
+                <Icon name="solar:ranking-bold-duotone" class="text-yellow-500" />
+                <span>Summary Ranking</span>
+              </div>
+              <img class="mx-auto aspect-square w-72 max-w-[80%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`">
+              <span>{{ $t("data.nodata") }}</span>
+            </div>
+            <SummaryRanking v-else :room-id="member?.room_id" />
+          </div>
+        </ClientOnly>
       </template>
     </LayoutRow>
   </div>

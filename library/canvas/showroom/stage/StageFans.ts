@@ -1,7 +1,5 @@
-import CanvasUtil from '../canvasUtil'
 import stagePositions from './StagePosition'
 import type { StageShowroom } from '.'
-import calculationTime from '~~/library/utils/calculationTime'
 
 export class FansAvatar {
   id: number | undefined
@@ -108,7 +106,7 @@ export class FansAvatar {
     name: string,
     ctx: CanvasRenderingContext2D,
     size: number,
-  ): { width: number; height: number; name: string } {
+  ): { width: number, height: number, name: string } {
     const padding = size * FansAvatar.namePadding
     const maxBoxW = size + padding // maximal username box width
     let boxW = maxBoxW // dynamic based on name

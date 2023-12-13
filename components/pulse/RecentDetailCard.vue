@@ -39,10 +39,10 @@
 
     <div class="mt-2 flex justify-between md:mt-2.5">
       <div
-        class="h-5 w-28 max-w-[60%] animate-pulse overflow-hidden rounded-xl bg-slate-200 dark:bg-dark-3/50 sm:h-6 md:h-7 md:w-32 lg:w-36"
+        class="max-w-[60%] animate-pulse overflow-hidden rounded-xl bg-slate-200 dark:bg-dark-3/50 h-4 sm:h-5 xl:h-6 w-[35%]"
       />
       <div
-        class="h-5 w-12 max-w-[40%] animate-pulse overflow-hidden rounded-xl bg-slate-200 dark:bg-dark-3/50 sm:h-6 md:h-7 md:w-14 lg:w-16"
+        class="w-14 max-w-[40%] animate-pulse overflow-hidden rounded-xl bg-slate-200 dark:bg-dark-3/50 h-4 sm:h-5 xl:h-6 md:w-16 lg:w-20"
       />
     </div>
   </div>

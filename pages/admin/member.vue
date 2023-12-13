@@ -1,15 +1,13 @@
 <script lang="ts" setup>
 import { Switch, SwitchGroup, SwitchLabel } from '@headlessui/vue'
 import { useFuse } from '@vueuse/integrations/useFuse'
-import { generateGen } from '~~/library/utils/stage48'
 import { useSettings } from '~~/store/settings'
 
 definePageMeta({ middleware: 'admin' })
 
-const config = useAppConfig()
-const { pending, data } = await useLazyFetch('/api/admin/members?group=all')
-const { data: jkt48members, pending: jktPending, data: jktData } = await useLazyFetch('/api/admin/jkt48members')
-const { data: stage48members, refresh: refreshStage48List } = await useLazyFetch('/api/admin/stage48?group=all')
+const { pending, data } = await useApiFetch<Admin.IShowroomMember[]>('/api/admin/member')
+const { data: jkt48members } = await useApiFetch<Admin.I48Member[]>('/api/admin/jkt48member')
+const { data: stage48members, refresh: refreshStage48List } = await useApiFetch<JKT48.Member[]>('/api/admin/stage48?group=all')
 
 const membersRaw = ref<Admin.IShowroomMember[]>([])
 
@@ -168,7 +166,21 @@ function toggleGen(key: string) {
                 <div class="pb-3">
                   <div class="bg-container flex gap-3 rounded-xl p-3">
                     <NuxtLink :to="`/member/${item.url}`" class="h-20 w-20 overflow-hidden rounded-full">
-                      <img :key="item.room_id" class="h-full w-full object-cover" :src="$fixCloudinary(item.member_data?.img || item.img || config.errorPicture)" alt="Profile picture">
+                      <!-- <img :key="item.room_id" class="h-full w-full object-cover" :src="item.member_data?.img || item.img || config.errorPicture" alt="Profile picture"> -->
+                      <NuxtImg
+                        :key="item.room_id"
+                        sizes="80px"
+                        :placeholder="[45, 10, 55, 70]"
+                        :modifiers="{
+                          aspectRatio: 1,
+                          gravity: 'faceCenter',
+                        }"
+                        fit="fill"
+                        format="webp"
+                        :alt="item.room_name"
+                        class="w-full h-full flex-1 object-cover rounded-xl"
+                        :src="item.member_data?.img || item.img"
+                      />
                     </NuxtLink>
                     <div class="flex flex-1 flex-col">
                       <NuxtLink :to="`/member/${item.url}`">

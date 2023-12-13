@@ -93,7 +93,7 @@ async function fetchScreenshot() {
   if (!isAlreadyFetch.value) {
     isAlreadyFetch.value = true
     try {
-      const data = await $fetch('/api/showroom/screenshots', { params: { data_id: props.recent.data_id } })
+      const data = await $apiFetch<Database.IScreenshot>(`/api/screenshots/${props.recent.data_id}`)
       screenshots.value = data.list.map((id) => {
         return `${cloudinaryURL}/${data.folder}/${id}.${data.format}`
       })
@@ -174,7 +174,7 @@ onMounted(() => {
       </div>
     </div>
 
-    <div class="mt-2 flex justify-between gap-5 text-sm sm:text-base md:mt-2.5 md:text-lg">
+    <div class="mt-2 flex justify-between gap-5 text-xs sm:text-sm md:mt-2.5 xl:text-base">
       <div class="group flex w-0 flex-1 cursor-pointer items-center gap-1.5">
         <Icon name="ph:clock-bold" />
         <div v-if="showDetailedDate">

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const { data, error, pending, refresh } = await useLazyFetch('/api/admin/setlist')
+const { data, error, pending, refresh } = await useApiFetch<JKT48.Setlist[]>('/api/admin/setlist')
 const config = useAppConfig()
 const showForm = ref(false)
 

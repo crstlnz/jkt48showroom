@@ -2,7 +2,7 @@
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
 import Hls, { Events } from 'hls.js/dist/hls.min.js'
 
-const props = defineProps<{ sources: ShowroomAPI.StreamingURL[]; poster: string }>()
+const props = defineProps<{ sources: ShowroomAPI.StreamingURL[], poster: string }>()
 const emit = defineEmits<{ (e: 'fullsceen', isFullscreen: boolean): void }>()
 useHead({
   link: [{ href: 'https://vjs.zencdn.net/8.0.4/video-js.css', rel: 'stylesheet' }],

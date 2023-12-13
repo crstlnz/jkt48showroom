@@ -3,6 +3,7 @@ withDefaults(defineProps<{
   title?: string
   iconClass?: string
   more?: string
+  moreScreenReaderOnly?: string
   moreText?: string
   moreLabel?: string
   moreExtLink?: boolean
@@ -15,10 +16,10 @@ withDefaults(defineProps<{
 </script>
 
 <template>
-  <div class="bg-container space-y-2 rounded-xl p-4 shadow-sm md:p-5">
+  <div class="bg-container space-y-2 rounded-xl p-3 shadow-sm md:p-4">
     <div class="flex items-center gap-2">
       <div class="inline-block h-5 w-1 rounded-l-sm" :class="iconClass" />
-      <h3 class="flex-1 text-xl font-bold lg:text-2xl">
+      <h3 class="flex-1 font-bold text-lg xl:text-xl">
         {{ title }}
       </h3>
       <NuxtLink
@@ -28,7 +29,7 @@ withDefaults(defineProps<{
         :class="moreClass"
         :aria-label="moreLabel"
       >
-        {{ moreText ? moreText : "More" }}
+        {{ moreText ? moreText : "More" }} <span v-if="moreScreenReaderOnly" class="sr-only">{{ moreScreenReaderOnly }} </span>
       </NuxtLink>
       <a
         v-else-if="more"

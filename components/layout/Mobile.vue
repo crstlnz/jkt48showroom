@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { useScrollLock } from '@vueuse/core'
-import { useUser } from '~/store/user'
 import { useSettings } from '~/store/settings'
 
 const props = defineProps<{
@@ -15,16 +14,16 @@ watch(() => route.path, () => {
   isOpen.value = false
 })
 
-const { authenticated, user, status } = useUser()
+const { authenticated, user } = useAuth()
 const settings = useSettings()
 const menus = computed(() => {
   return props.menus.filter(i =>
-    i.mobile && (!i.login || authenticated) && (!i.admin || user?.isAdmin) && (!i.group || i.group === settings.group || i.group === 'all'))
+    i.mobile && (!i.login || authenticated) && (!i.admin || user.value?.is_admin) && (!i.group || i.group === settings.group || i.group === 'all'))
 })
 
 const hiddenMenus = computed(() => {
   return props.menus.filter(i =>
-    !i.mobile && (!i.login || authenticated) && (!i.admin || user?.isAdmin) && (!i.group || i.group === settings.group || i.group === 'all'))
+    !i.mobile && (!i.login || authenticated) && (!i.admin || user.value?.is_admin) && (!i.group || i.group === settings.group || i.group === 'all'))
 })
 
 const el = ref<HTMLElement | null>()
@@ -52,7 +51,7 @@ function closeMenu() {
         <div v-for="menu in menus" :key="menu.title" class="relative flex min-w-0 flex-1 flex-col items-center">
           <NuxtLink v-ripple :to="menu.url" class="relative top-1/2 h-20 w-20 shrink-0 -translate-y-1/2 cursor-pointer rounded-full" :aria-label="menu.title">
             <div class="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center">
-              <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full p-1.5" :class="{ 'bg-hover': route.path === menu.url }">
+              <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full p-1" :class="{ 'bg-hover': route.path === menu.url }">
                 <Icon :name="route.path !== menu.url ? menu.icon : menu.activeIcon" class="h-full w-full" />
               </div>
               <div class="shrink-0 text-xs">
@@ -103,9 +102,9 @@ function closeMenu() {
           </NuxtLink>
           <div v-else class="my-5 flex items-center gap-3 rounded-full">
             <NuxtImg
-              v-if="user?.img"
+              v-if="user?.image"
               class="h-12 w-12 overflow-hidden rounded-full bg-slate-400 p-2 text-white dark:bg-dark-1 dark:text-slate-500/50"
-              :src="user?.img"
+              :src="user?.image"
               alt="User profile picture"
               fit="fill"
               :modifiers="{

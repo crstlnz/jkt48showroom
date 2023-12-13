@@ -3,7 +3,6 @@ import { Switch, SwitchGroup, SwitchLabel } from '@headlessui/vue'
 import { useFuse } from '@vueuse/integrations/useFuse'
 
 import { useSettings } from '~~/store/settings'
-import { generateGen, parseGeneration } from '~~/library/utils/stage48'
 
 // import { useMembers } from '~~/store/members'
 
@@ -12,7 +11,7 @@ const { t: $t } = useI18n()
 
 // const { members: raw, pending, error } = storeToRefs(memberState)
 const settings = useSettings()
-const { data: raw, pending, error } = await useLazyFetch('/api/showroom/members', { query: { group: settings.group }, key: `member-${settings.group}` })
+const { data: raw, pending, error } = await useApiFetch<IMember[]>('/api/member', { query: { group: settings.group }, key: `member-${settings.group}` })
 const route = useRoute()
 const router = useRouter()
 let filterOptions: Ref< {
@@ -23,9 +22,44 @@ let filterOptions: Ref< {
 let search: Ref<string>
 if (route.query?.s) {
   search = ref(String(route.query?.s || ''))
+  filterOptions = ref<{
+    generation: string[]
+    graduate: boolean
+    active: boolean
+  }>({
+    generation: [],
+    graduate: true,
+    active: true,
+  })
 }
 else {
   search = useSessionStorage('member-page-search', '', { mergeDefaults: true })
+  if (route.query?.gen) {
+    filterOptions = ref<{
+      generation: string[]
+      graduate: boolean
+      active: boolean
+    }>({
+      generation: [String(route.query.gen)],
+      graduate: false,
+      active: true,
+    })
+  }
+  else {
+    filterOptions = useCookie<{
+      generation: string[]
+      graduate: boolean
+      active: boolean
+    }>('filterOption', {
+      default: () => {
+        return {
+          generation: [],
+          graduate: false,
+          active: true,
+        }
+      },
+    })
+  }
 }
 
 watch(search, () => {
@@ -33,33 +67,6 @@ watch(search, () => {
     router.replace({ query: {} })
   }
 })
-
-if (route.query?.gen) {
-  filterOptions = ref<{
-    generation: string[]
-    graduate: boolean
-    active: boolean
-  }>({
-    generation: [String(route.query.gen)],
-    graduate: false,
-    active: true,
-  })
-}
-else {
-  filterOptions = useCookie<{
-    generation: string[]
-    graduate: boolean
-    active: boolean
-  }>('filterOption', {
-    default: () => {
-      return {
-        generation: [],
-        graduate: false,
-        active: true,
-      }
-    },
-  })
-}
 
 const { group } = useSettings()
 const generations = computed(() => {

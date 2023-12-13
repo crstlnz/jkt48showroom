@@ -46,7 +46,7 @@ defineExpose({
 
 <template>
   <div class="relative max-w-full rounded-md outline-2 outline-black/10" :class="inputClass" @click="selectImage">
-    <LazyImage v-if="modelValue" :src="isPotrait ? $fixCloudinary(modelValue) : modelValue" :class="imageClass" :alt="alt ?? 'Image Form'" class="bg-container-2 h-full w-full object-cover" />
+    <LazyImage v-if="modelValue" :src="modelValue" :class="imageClass" :alt="alt ?? 'Image Form'" class="bg-container-2 h-full w-full object-cover" />
     <div v-else :class="imageClass" :alt="alt ?? 'Image Form'" />
     <div class="absolute inset-0 flex cursor-pointer items-center justify-center bg-black/30 opacity-0 transition-opacity duration-300 hover:opacity-100">
       <Icon name="material-symbols:edit-rounded" size="1.6rem" class="text-white" />

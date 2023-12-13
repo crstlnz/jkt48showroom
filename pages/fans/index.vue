@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 definePageMeta({ middleware: 'admin' })
 
-const { data, pending, error } = await useLazyFetch('/api/admin/fans_list')
-const { data: jpn_rate } = await useLazyFetch('/api/jpn_rates')
+const { data, pending, error } = await useApiFetch<{ jpy_rates: number, fans: Database.IShowroomFans[] }>('/api/admin/fans_list')
 </script>
 
 <template>
@@ -20,7 +19,7 @@ const { data: jpn_rate } = await useLazyFetch('/api/jpn_rates')
         <span>{{ $t("data.nodata") }}</span>
       </div>
       <div v-else class="flex flex-col gap-3">
-        <div v-for="fans in data" :key="fans.user_id" class="bg-container flex gap-5 rounded-xl p-5">
+        <div v-for="fans in data.fans" :key="fans.user_id" class="bg-container flex gap-5 rounded-xl p-5">
           <div class="h-20 w-20 rounded-full">
             <img :src="$avatarURL(fans.avatar_id)" class="h-full w-full object-cover">
           </div>

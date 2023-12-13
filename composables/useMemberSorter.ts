@@ -1,4 +1,3 @@
-import { shuffleArray } from '~~/library/utils'
 import { useNotifications } from '~~/store/notifications'
 
 enum GameState {
@@ -89,7 +88,7 @@ export default function () {
   })
 
   function pick(type: PickType) {
-    const compareData: { one: string | string[] | null; two: string | string[] | null } = {
+    const compareData: { one: string | string[] | null, two: string | string[] | null } = {
       one: null,
       two: null,
     }

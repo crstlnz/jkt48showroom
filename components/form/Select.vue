@@ -4,7 +4,7 @@ withDefaults(defineProps<{
   label?: string
   modelValue: any
   inputClass?: string
-  data: { title: string; value: string }[]
+  data: { title: string, value: string }[]
 }>(), {
   inputClass: '',
 })

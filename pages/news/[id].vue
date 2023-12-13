@@ -1,12 +1,38 @@
 <script lang="ts" setup>
 const route = useRoute()
-const { data, pending, error } = await useLazyFetch(`/api/jkt48/news/${route.params.id}`)
+const { data, pending, error } = await useApiFetch<JKT48.News>(`/api/news/${route.params.id}`)
 const dayjs = useDayjs()
 const { locale } = useI18n()
+
+const description = computed(() => {
+  const regex = /&[^;]+;/g
+  let str = (data.value?.content?.replace(/(<([^>]+)>)/ig, '') || '').replace(regex, '')
+  if (str.split(' ').length > 25) {
+    str = `${str.split(' ').slice(0, 25).join(' ')}...`
+  }
+  return str
+})
+
+const title = computed(() => data.value?.title || 'News')
+
+useSeoMeta({
+  title,
+  ogTitle: title,
+  twitterTitle: title,
+  description,
+  twitterDescription: description,
+  ogDescription: description,
+})
+
+useHead({
+  title,
+})
 </script>
 
 <template>
   <div>
+    {{ error }}
+
     <div v-if="pending" class="relative min-h-[100vh] w-full">
       <Icon name="eos-icons:loading" size="3rem" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 " />
     </div>
@@ -29,8 +55,11 @@ const { locale } = useI18n()
             />
             <span class="text-sm"> {{ dayjs(data?.date).locale(locale).format("DD MMMM YYYY") }}</span>
           </div>
-          <div id="content" class="overflow-x-auto pb-20" v-html="data?.content" />
+          <div id="content" class="overflow-x-auto pb-20 !font-serif" v-html="data?.content" />
         </div>
+      </template>
+      <template #sidebar>
+        <HomeRecents class="mt-3 md:mt-4" />
       </template>
     </LayoutRow>
   </div>
@@ -40,7 +69,7 @@ const { locale } = useI18n()
 #content {
   a {
     span {
-      color :rgb(235, 54, 54) !important;
+      color :rgb(235, 54, 54)
     }
   }
 }
@@ -48,7 +77,7 @@ const { locale } = useI18n()
 .dark {
   #content {
     div, span {
-      color : rgb(205, 205, 205) !important;
+      color : rgb(205, 205, 205);
     }
   }
 }

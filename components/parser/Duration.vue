@@ -11,10 +11,10 @@ const props = withDefaults(defineProps<{
 }>(), {
   year: false,
   month: false,
-  day: false,
+  day: true,
   hour: true,
   minute: true,
-  second: false,
+  second: true,
 })
 
 const { t } = useI18n()
@@ -25,12 +25,12 @@ const date = computed(() => {
     if (Number.isNaN(ms)) throw new Error('Not a number!')
     const duration = dayjs.duration(ms)
     const str = []
-    const year = duration.get('year')
-    const month = duration.get('month')
-    const day = duration.get('day')
-    const hour = duration.get('hour')
-    const minute = duration.get('minute')
-    const second = duration.get('seconds')
+    const year = duration.years()
+    const month = duration.months()
+    const day = duration.days()
+    const hour = duration.hours()
+    const minute = duration.minutes()
+    const second = duration.seconds()
     if (year && props.year) str.push(`${year || ''} ${t('year', year)}`)
     if (month && props.month) str.push(`${month || ''} ${t('month', month)}`)
     if (day && props.day) str.push(`${day || ''} ${t('day', day)}`)

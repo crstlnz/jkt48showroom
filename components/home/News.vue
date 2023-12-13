@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-const { data, pending, error, refresh, date } = useCachedFetch<IApiNews>('/api/jkt48/news', { expireIn: 600000 })
+const { data, pending, error, refresh, date } = useCachedFetch<IApiNews>('/api/news', { expireIn: 600000 })
 const newsFilter = computed(() => data.value?.news.slice(0, 5) ?? [])
 const dayjs = useDayjs()
 const { locale } = useI18n()
 </script>
 
 <template>
-  <HomeContainer :title="$t('news')" icon-class="bg-blue-500" more="/news" more-label="More news" class="relative" :more-text="$t('more')">
-    <div class="pt-1 relative">
+  <HomeContainer :title="$t('news')" icon-class="bg-blue-500" more="/news" more-screen-reader-only="News" class="relative" :more-text="$t('more')">
+    <div class="pt-1 pb-1.5 relative">
       <div v-if="error" class="flex flex-col items-center pb-4">
         <img :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" alt="" class="p-5">
         {{ $t("error.unknown") }}
@@ -47,7 +47,7 @@ const { locale } = useI18n()
         {{ $t("data.nodata") }}
       </div>
     </div>
-    <button v-if="date && !pending" type="button" class="absolute right-0 bottom-0 text-xs font-light float-right px-3 pt-1 pb-3 truncate" @click="refresh">
+    <button v-if="date && !pending" type="button" class="absolute right-0 bottom-0 text-xs font-light float-right px-3 pb-3 truncate" @click="refresh">
       {{ dayjs(date).locale(locale).fromNow() }}
       <Icon name="ic:outline-refresh" />
     </button>

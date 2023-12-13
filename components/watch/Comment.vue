@@ -1,59 +1,12 @@
 <script lang="ts" setup>
-// import useShowroomWatcher from '~~/composables/useShowroomWatcher'
-
-// const props = defineProps<{ data?: Watch.WatchData | null | undefined; isLive: boolean }>()
-defineProps<{ comments: Watch.Comment[]; delayedComments: Watch.Comment[]; data?: Watch.WatchData | null | undefined; isLive: boolean }>()
-// const emit = defineEmits<{ (e: 'gift', gift: ShowroomAPI.GiftLogItem): void; (e: 'finish'): void; (e: 'start'): void ; (e: 'telops', telops: Watch.Telops | null): void }>()
-const emit = defineEmits<{ (e: 'createComment', comment: string): void; (e: 'appendDelayedComments'): void; (e: 'setAutoAppend', value: boolean): void }>()
+defineProps<{ comments: Watch.Comment[], delayedComments: Watch.Comment[], data?: Watch.WatchData | null | undefined, isLive: boolean }>()
+const emit = defineEmits<{ (e: 'createComment', comment: string): void, (e: 'appendDelayedComments'): void, (e: 'setAutoAppend', value: boolean): void }>()
 const pageMode = false
 const dynamicScroller = ref<ComponentPublicInstance<HTMLElement> | null>(null)
 
 const lastScroll = ref(0)
 
 const showNewCommentButton = ref(true)
-
-// onTelops((telops) => {
-//   emit('telops', telops)
-// })
-
-// onGift((gift) => {
-//   emit('gift', gift)
-// })
-
-// create comment from current user to ensure user comments are displayed (not rely on socket)
-// function createComment(comment: string) {
-//   const user = props.data?.user
-//   if (user) {
-//     const created_at = Math.floor(new Date().getTime() / 1000)
-//     appendComment({
-//       id: `${user.id}${created_at}`,
-//       avatar_id: user.avatar_id,
-//       name: user.name || '',
-//       user_id: user.id,
-//       comment,
-//       created_at,
-//     })
-//   }
-// }
-
-// function appendComment(comment: Watch.Comment) {
-//   if (autoAppend.value) {
-//     comments.value.unshift(comment)
-//   }
-//   else {
-//     delayedComments.value.push(comment)
-//   }
-// }
-
-// onLiveState((isLive) => {
-//   if (isLive) {
-//     comments.value = []
-//     emit('start')
-//   }
-//   else {
-//     emit('finish')
-//   }
-// })
 
 useEventListener(dynamicScroller, 'scroll', (evt) => {
   if (!evt.isTrusted) return
@@ -65,7 +18,6 @@ useEventListener(dynamicScroller, 'scroll', (evt) => {
   }
   else {
     emit('setAutoAppend', false)
-    // autoAppend.value = false
   }
   lastScroll.value = scrollPos
 })

@@ -99,6 +99,10 @@
     @apply grid grid-cols-[repeat(auto-fill,minmax(210px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(240px,1fr))] lg:grid-cols-[repeat(auto-fill,minmax(270px,1fr))] xl:grid-cols-[repeat(auto-fill,minmax(300px,1fr))];
   }
 
+  .grid-follow-list {
+    @apply grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(320px,1fr))] lg:grid-cols-[repeat(auto-fill,minmax(380px,1fr))] xl:grid-cols-[repeat(auto-fill,minmax(450px,1fr))];
+  }
+
   .grid-live-now {
     @apply grid grid-cols-[repeat(auto-fill,minmax(130px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(150px,1fr))] lg:grid-cols-[repeat(auto-fill,minmax(180px,1fr))] xl:grid-cols-[repeat(auto-fill,minmax(210px,1fr))];
   }

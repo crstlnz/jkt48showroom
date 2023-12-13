@@ -5,7 +5,11 @@ declare namespace Database {
     liked_id: string
   }
 
-  interface LikeDetail {
+  interface IsLike {
+    is_liked: boolean
+  }
+
+  interface LikeList {
     room: Database.IShowroomMember[]
     live: Database.IRecent[]
   }
@@ -231,7 +235,6 @@ declare namespace Database {
 
   interface IGiftsLogData {
     log: IUserGiftList[]
-    next_page: boolean
     list: IGift[]
     free: FreeGift[]
   }
@@ -300,7 +303,7 @@ declare namespace Database {
     is_graduate: boolean
     banner: string
     jikosokai: string
-    generation: string
+    generation?: string
     group: string
   }
 
@@ -312,7 +315,7 @@ declare namespace Database {
     jpn_rate?: number
     room_id: number
     total_point: number
-    users: IFansCompact[]
+    users: Map<number, IFansCompact>
     created_at: string
   }
 

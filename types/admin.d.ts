@@ -1,4 +1,4 @@
-namespace Admin {
+declare namespace Admin {
   type I48Member = Database.I48Member & { _id: string | null }
   type IShowroomMember = Omit<Database.IShowroomMember, 'member_data'> & {
     _id: string

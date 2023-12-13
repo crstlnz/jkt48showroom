@@ -1,7 +1,9 @@
 <script lang="ts" setup>
-const { data, pending, error, date, refresh } = useCachedFetch<JKT48.Schedule[]>('/api/jkt48/next_schedule', { expireIn: 600000 })
+import { NuxtLink } from '#components'
+
+const { data, pending, error, date, refresh } = useCachedFetch<JKT48.Schedule[]>('/api/next_schedule', { expireIn: 600000 })
 const dayjs = useDayjs()
-const groupedSchedule = computed<{ today: boolean; date: string; events: JKT48.Schedule[] }[]>(() => {
+const groupedSchedule = computed<{ today: boolean, date: string, events: JKT48.Schedule[] }[]>(() => {
   if (!data.value) return []
   const dateGroup = new Map<string, JKT48.Schedule[]>()
   for (const schedule of data.value) {
@@ -32,13 +34,6 @@ const { locale } = useI18n()
       <h3 class="flex-1 text-xl font-bold lg:text-2xl">
         {{ $t('schedule') }}
       </h3>
-      <!-- <NuxtLink
-        class="text-xs hover:text-second-2 lg:text-sm"
-        to="/schedule"
-        aria-label="More"
-      >
-        {{ $t("more") }}
-      </NuxtLink> -->
     </div>
     <div v-if="pending" class="aspect-[4/2] flex items-center justify-center mb-5">
       <Icon name="svg-spinners:ring-resize" size="2rem" />
@@ -46,6 +41,10 @@ const { locale } = useI18n()
     <div v-else-if="error && !data" class="aspect-[4/2] flex items-center justify-center mb-7 pt-5 flex-col gap-5">
       <img :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" class="w-[220px] max-w-[80%]">
       <div>{{ $t("error.unknown") }}</div>
+    </div>
+    <div v-else-if="!data?.length" class="flex flex-col items-center pb-4">
+      <img :src="`${$cloudinaryURL}/assets/img/web/empty-box.png`" alt="" class="w-52 h-40 mb-2 object-contain">
+      {{ $t("data.nodata") }}
     </div>
     <table v-else class="w-full border-t-2 border-black/5 dark:border-white/5 [&_*]:border-black/10 dark:[&_*]:border-white/10">
       <tr v-for="(schedule, index) in groupedSchedule" :key="schedule.date" class="text-sm" :class="{ 'border-b-2': index !== groupedSchedule.length - 1 }">
@@ -63,7 +62,7 @@ const { locale } = useI18n()
           </div>
         </td>
         <td class="w-full p-3">
-          <NuxtLink v-for="event in schedule.events" :key="event.id" :to="event.url.startsWith('/theater/schedule/id/') ? `/theater/${$getTheaterId(event.url)}` ?? undefined : undefined" class="flex gap-2">
+          <component :is="event.url.startsWith('/theater/schedule/id/') ? NuxtLink : 'div'" v-for="event in schedule.events" :key="event.id" :to="event.url.startsWith('/theater/schedule/id/') ? `/theater/${$getTheaterId(event.url)}` ?? undefined : undefined" class="flex gap-2">
             <NuxtImg
               class="aspect-[56/19] h-4 self-center"
               :src="`https://jkt48.com${event.label}`"
@@ -76,11 +75,11 @@ const { locale } = useI18n()
             />
 
             <span>{{ event.title }}</span>
-          </NuxtLink>
+          </component>
         </td>
       </tr>
     </table>
-    <button v-if="date && !pending" type="button" class="text-xs font-light float-right px-3 pt-1 pb-3 truncate" @click="refresh">
+    <button v-if="date && !pending" type="button" class="text-xs font-light float-right px-3 pt-1.5 pb-3 truncate" @click="refresh">
       {{ dayjs(date).locale(locale).fromNow() }}
       <Icon name="ic:outline-refresh" />
     </button>

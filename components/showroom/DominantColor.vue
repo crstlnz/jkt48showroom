@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { convertRGBtoHex, flattenAndSoftenColor, getDominantColorClient } from '~/library/utils'
-
 const props = defineProps<{ src: string }>()
 const canvasElement = ref<HTMLCanvasElement>()
 onMounted(async () => {

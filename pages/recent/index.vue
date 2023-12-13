@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { deepEqual } from '~~/library/utils/index'
-
 const { t } = useI18n()
 const title = ref('')
 
@@ -17,7 +15,7 @@ const isLoadDelayed = ref(false) // if next page must be loaded but the filter d
 const el = ref<Window | null>(null)
 const { y, arrivedState } = useScroll(el, { behavior: 'smooth' })
 const isTop = computed(() => arrivedState.top)
-const dataset = useSessionStorage<{ page: number; data: IRecent[] }>('recent-datasetssss', { page: 0, data: [] }, { deep: true })
+const dataset = useSessionStorage<{ page: number, data: IRecent[] }>('recent-datasetssss', { page: 0, data: [] }, { deep: true })
 
 const { checkTrigger } = useInfiniteScroll(
   () => {
@@ -120,11 +118,11 @@ const isMedium = greaterOrEqual('md')
 const isSmall = greaterOrEqual('sm')
 
 const recentHeight = computed(() => {
-  if (isXL.value) return 230
-  if (isLarge.value) return 214
-  if (isMedium.value) return 198
-  if (isSmall.value) return 168
-  return 146
+  if (isXL.value) return 226
+  if (isLarge.value) return 206
+  if (isMedium.value) return 190
+  if (isSmall.value) return 160
+  return 142
 })
 </script>
 
@@ -234,8 +232,8 @@ const recentHeight = computed(() => {
           >
             <div class="space-y-5">
               <div class="mx-auto w-4/5 lg:w-[350px]">
-                <img v-if="error" :src="`${$cloudinaryURL}/assets/img/web/security-error.png`" alt="An Error Occured!" class="mx-auto w-full">
-                <img v-else :src="`${$cloudinaryURL}/assets/img/web/empty-box.png`" alt="Empty!" class="mx-auto w-full">
+                <img v-if="error" :src="`${$cloudinaryURL}/assets/img/web/security-error.png`" alt="An Error Occured!" class="mx-auto w-full aspect-[5/4] object-contain">
+                <img v-else :src="`${$cloudinaryURL}/assets/img/web/empty-box.png`" alt="Empty!" class="mx-auto w-full aspect-[5/4] object-contain">
               </div>
               <div v-if="error">
                 <h2 class="mb-1 text-xl lg:text-3xl">

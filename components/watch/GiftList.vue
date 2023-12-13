@@ -30,7 +30,10 @@ defineProps<{
       </div>
     </div>
     <div v-else>
-      <!-- kosong -->
+      <div class="pb-5 pt-2 text-center">
+        <img class="mx-auto aspect-[5/4] w-72 max-w-[75%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`">
+        <span>{{ $t("data.nodata") }}</span>
+      </div>
     </div>
     <!-- <div v-else-if="pending" class="flex items-center justify-center py-10">
       <Icon name="svg-spinners:ring-resize" size="2rem" />

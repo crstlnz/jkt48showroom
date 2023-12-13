@@ -1,5 +1,4 @@
 import CanvasUtil from '../canvasUtil'
-import stagePositions from '../stage/StagePosition'
 import PodiumGift from './PodiumGifts'
 import ScreenshotManager from './Screenshots'
 

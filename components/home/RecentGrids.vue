@@ -2,11 +2,11 @@
 import { useSettings } from '~/store/settings'
 
 const settings = useSettings()
-const { data, pending, refresh } = await useFetch('/api/showroom/recent', {
-  query: {
+const { data, pending, tryRefresh } = useCachedFetch<IApiRecents>('/api/recent', {
+  params: {
     group: settings.group,
   },
-  server: false,
+  expireIn: 600000,
 })
 
 const { onFocus } = useUserFocus({
@@ -15,7 +15,7 @@ const { onFocus } = useUserFocus({
 })
 
 onFocus(() => {
-  refresh()
+  tryRefresh()
 })
 const { locale } = useI18n()
 const dayjs = useDayjs()
@@ -78,7 +78,7 @@ const dayjs = useDayjs()
               </li>
             </ul>
           </div>
-          <NuxtLink :to="`recent/${recent.data_id}`" class="text-right">
+          <NuxtLink no-prefetch :to="`/recent/${recent.data_id}`" class="text-right">
             Details
           </NuxtLink>
         </div>

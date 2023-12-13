@@ -2,13 +2,13 @@
 import { useSettings } from '~~/store/settings'
 
 const { group } = useSettings()
-const { data, pending, error } = await useLazyFetch('/api/showroom/records', { params: { group } })
+const { data, pending, error } = await useApiFetch<ShowroomRecord[]>('/api/records', { params: { group } })
 </script>
 
 <template>
   <div class="bg-container space-y-2 rounded-xl p-3 md:p-4">
-    <div class="flex items-center gap-2 text-2xl font-bold">
-      <Icon name="ph:medal-duotone" size="1.5rem" class="text-yellow-500" />
+    <div class="flex items-center gap-2 font-bold text-lg xl:text-xl">
+      <Icon name="ph:medal-duotone" size="1.25rem" class="text-yellow-500" />
       <span>{{ $t('mostrecords') }}</span>
     </div>
     <div v-if="error" class="flex aspect-[6/5] flex-col items-center justify-center gap-5">

@@ -60,25 +60,6 @@ const data = computed(() => {
           </div>
         </div>
       </div>
-      <!-- <div v-if="data?.gift_log?.length" class="roundedscrollbar h-0 flex-1 max-lg:overflow-y-scroll">
-                <div class="grid grid-cols-[repeat(auto-fill,minmax(50px,1fr))] gap-3 lg:grid-cols-[repeat(auto-fill,minmax(60px,1fr))]">
-                  <div v-for="gift in sortedGift" :key="gift.id" class="relative max-h-[40px] max-w-[40px] lg:max-h-[50px] lg:max-w-[50px]" :title="$currency(gift.point)">
-                    <img :src="gift.image" alt="Gift" class="aspect-square">
-                    <div
-                      v-if="gift.num > 1"
-                      :class="$getNumColor(gift.num)"
-                      class="text-stroke absolute bottom-[-7px] right-[-4px] rounded-full text-sm font-extrabold leading-6 lg:text-base"
-                    >
-                      x{{ gift.num >= 1000 ? `${(gift.num / 1000).toFixed(0)}k` : gift.num }}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div v-else class="h-0 flex-1 overflow-y-auto">
-                <div class="flex flex-col items-center justify-center">
-                  <img class="h-32" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`">
-                </div>
-              </div> -->
     </div>
   </div>
 </template>

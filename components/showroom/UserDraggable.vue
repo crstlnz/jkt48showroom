@@ -22,7 +22,7 @@ function setPosition(x: number, y: number) {
 }
 defineExpose({ setPosition })
 
-const { data: userData, pending, error, refresh } = await useLazyFetch(() => `/api/showroom/user/profile?user_id=${userId.value}`, { immediate: false })
+const { data: userData, pending, error, refresh } = await useApiFetch<ShowroomAPI.UserProfile>(() => `/api/showroom/user/profile?user_id=${userId.value}`, { lazy: true, server: false, immediate: false })
 
 watch(position, (v) => {
   if (v) {
@@ -31,7 +31,9 @@ watch(position, (v) => {
 })
 
 watch(userId, () => {
-  refresh()
+  if (process.client) {
+    refresh()
+  }
 })
 
 const isDrag = ref(false)

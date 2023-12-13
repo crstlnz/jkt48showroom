@@ -93,12 +93,10 @@ export default function (data: Ref<Watch.WatchData | null>) {
   }
 
   function destroySocket() {
-    if (socket) socket.close(3030, 'Manual Stop')
+    if (socket) {
+      socket.close(3030, 'Manual Stop')
+    }
   }
-
-  // onMounted(() => {
-  //   createSocket()
-  // })
 
   onBeforeUnmount(() => {
     destroySocket()

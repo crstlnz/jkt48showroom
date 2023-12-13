@@ -139,8 +139,9 @@ interface IApiRecents {
   total_count: number
 }
 
+type HistoryType = 'top100' | 'top50' | 'top13' | 'gifter'
 interface IHistoryRecents {
-  recents: (IRecent & { type: HistoryType; user?: Database.UserData & { giftSpent: number } })[]
+  recents: (IRecent & { type: HistoryType, user?: Database.UserData & { giftSpent: number } })[]
   page: number
   perpage: number
   total_count: number
@@ -342,6 +343,58 @@ interface ISortMember {
   img: string
   generation?: string
   is_graduate: boolean
+}
+
+interface IMemberBirthDay {
+  name: string
+  birthdate: string
+  img: string
+  room_id?: string
+  url_key?: string
+}
+interface BirthdayData {
+  [x: string]: any
+  data: IMemberBirthDay[]
+  date: Date
+}
+
+interface IStageListApi {
+  stage_list: Database.IStage[]
+  users: Database.IFansCompact[]
+}
+
+interface IMiniRoomProfile {
+  follower: number
+  is_follow: boolean
+  visit_count: number
+  room_level: number
+}
+
+interface ITheaterAPI extends Database.ITheater {
+  poster?: string
+}
+
+interface IMemberProfileAPI extends IMemberBasicData {
+  name: string
+  nickname?: string
+  fullname: string
+  description: string
+  img: string
+  img_alt: string
+  banner: string
+  group: string
+  url: string
+  room_id: number
+  jikosokai?: string
+  is_graduate: boolean
+  is_group: boolean
+  socials: SocialNetwork[]
+  generation?: string
+  birthdate?: Date
+  bloodType?: string
+  height?: string
+  recentTheater?: ITheaterAPI[]
+  upcomingTheater?: ITheaterAPI[]
 }
 
 declare module 'vue-virtual-scroller'

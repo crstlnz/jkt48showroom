@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { FormImage } from '#components'
-import { useNotifications } from '~~/store/notifications'
 
 const props = defineProps<{
   formId: string
@@ -12,56 +11,13 @@ const props = defineProps<{
   isPotrait?: boolean
 }>()
 
-const emit = defineEmits<{
+defineEmits<{
   (e: 'uploaded', url: string): void
 }>()
-
-const { addNotif } = useNotifications()
 
 const imageUrl = ref(props.src)
 
 const formImage = ref<typeof FormImage | null>(null)
-function selectImage() {
-  if (formImage.value) {
-    formImage.value.selectImage()
-  }
-}
-const isChanged = computed(() => {
-  return imageUrl.value !== props.src
-})
-
-const isUploading = ref(false)
-// async function save(e: Event) {
-//   e.stopPropagation()
-//   const formData = new FormData()
-//   formData.append('banner', formImage.value?.inputImage.files[0])
-//   try {
-//     isUploading.value = true
-//     const result = (await $fetch(props.postUrl, {
-//       body: formData,
-//       method: 'post',
-//     })) as any
-
-//     imageUrl.value = result.url
-//     emit('uploaded', result.url)
-//     addNotif({
-//       type: 'success',
-//       title: 'Success',
-//       duration: 1500,
-//       message: `Data berhasil ditambah : ${result.url}`,
-//     })
-//     isUploading.value = false
-//   }
-//   catch (e: any) {
-//     isUploading.value = false
-//     addNotif({
-//       type: 'danger',
-//       title: 'Error',
-//       duration: 1500,
-//       message: e.message,
-//     })
-//   }
-// }
 
 const isDragEnter = ref(false)
 

@@ -2,7 +2,6 @@
 import { useSettings } from '~~/store/settings'
 
 const settings = useSettings()
-const { getIcon } = useAppConfig()
 
 const { getTitle, getFavicon } = useAppConfig()
 const title = getTitle(settings.group)
@@ -64,12 +63,20 @@ const menus: MenuItem[] = [
     activeIcon: 'heroicons:user-group-solid',
   },
   {
-    title: 'Favorites',
-    url: '/user/favorites',
+    title: 'Follow',
+    url: '/user/follow',
     login: true,
-    mobile: true,
+    mobile: false,
     icon: 'ic:round-favorite-border',
     activeIcon: 'ic:round-favorite',
+  },
+  {
+    title: 'Bookmark',
+    url: '/user/bookmark',
+    login: true,
+    mobile: true,
+    icon: 'heroicons:bookmark',
+    activeIcon: 'heroicons:bookmark-20-solid',
   },
   {
     title: 'Oshi Sorter',
@@ -111,9 +118,8 @@ const DesktopLayout = resolveComponent('LayoutDesktop')
 </script>
 
 <template>
-  <main class="relative mx-auto flex max-w-[1630px]">
+  <main class="flex mx-auto max-w-[1630px]">
     <Component :is="!isMobile ? DesktopLayout : MobileLayout" :menus="menus" @toggle-dark="toggleDark()">
-      <!-- <Component :is="!isMobile ? (isSmall ? MobileLayout : DesktopLayout) : MobileLayout" :menus="menus" @toggle-dark="toggleDark()"> -->
       <slot />
     </Component>
   </main>

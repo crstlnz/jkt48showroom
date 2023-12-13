@@ -2,7 +2,7 @@
 import { useSettings } from '~~/store/settings'
 
 const settings = useSettings()
-const { data, pending, refresh, error, date } = useCachedFetch<IApiRecents>('/api/showroom/recent', {
+const { data, pending, refresh, tryRefresh, date } = useCachedFetch<IApiRecents>('/api/recent', {
   params: {
     group: settings.group,
   },
@@ -15,7 +15,7 @@ const { onFocus } = useUserFocus({
 })
 
 onFocus(() => {
-  refresh()
+  tryRefresh()
 })
 
 const dayjs = useDayjs()
@@ -23,7 +23,7 @@ const { locale } = useI18n()
 </script>
 
 <template>
-  <HomeContainer :title="$t('page.title.recent')" icon-class="bg-blue-500" more="/recent" more-label="More recents data" class="relative" :more-text="$t('more')">
+  <HomeContainer :title="$t('page.title.recent')" icon-class="bg-blue-500" more="/recent" more-screen-reader-only="Recent Data" class="relative" :more-text="$t('more')">
     <div v-if="(pending && !data)" class="divide-y-2 divide-neutral-200 overflow-hidden dark:divide-zinc-700/50 pb-2">
       <PulseRecentCard v-for="key in 8" :key="key" />
     </div>

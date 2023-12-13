@@ -21,34 +21,35 @@ onClickOutside(editDialog, () => {
 })
 
 async function toggleGraduate(value: boolean) {
-  const result = await $fetch('/api/admin/showroom/set_graduate', {
+  await $apiFetch('/api/admin/set_graduate', {
     method: 'POST',
     query: {
       id: stage48member.value._id,
       value,
     },
+    onResponse(ctx) {
+      if (ctx.response.status === 200) {
+        stage48member.value.isGraduate = value
+      }
+    },
   }).catch((e) => {
     console.log(e)
   })
-
-  if (result?.code === 200) {
-    stage48member.value.isGraduate = value
-  }
 }
 
-const applyProgress = ref(false)
+// const applyProgress = ref(false)
 
-const tabState = ref(0)
-const tabList = ref([
-  {
-    title: 'Showroom',
-    key: 0,
-  },
-  {
-    title: 'Member Data',
-    key: 1,
-  },
-])
+// const tabState = ref(0)
+// const tabList = ref([
+//   {
+//     title: 'Showroom',
+//     key: 0,
+//   },
+//   {
+//     title: 'Member Data',
+//     key: 1,
+//   },
+// ])
 </script>
 
 <template>
@@ -58,7 +59,7 @@ const tabList = ref([
         <div class="flex flex-col gap-1.5">
           <div class="flex items-center gap-6 overflow-x-auto">
             <MemberFormImage
-              post-url="/api/admin/showroom/image_upload"
+              post-url="/api/admin/member/image"
               :is-potrait="true"
               :member-data-id="stage48member._id ?? '0'"
               form-id="image"
@@ -71,7 +72,7 @@ const tabList = ref([
             />
             <MemberFormImage
               form-id="banner"
-              post-url="/api/admin/showroom/banner_upload"
+              post-url="/api/admin/member/banner"
               :member-data-id="stage48member?._id ?? '0'"
               class="aspect-[15/5] h-32 shrink-0 overflow-hidden rounded-xl border-2 dark:border-dark-2 md:h-36 xl:h-40"
               image-class="h-full w-full object-cover bg-container-2" :src="stage48member?.banner"

@@ -2,7 +2,7 @@
 const route = useRoute()
 const router = useRouter()
 const page = ref(Number(route.query.page) || 1)
-const { data, pending, error } = await useLazyFetch('/api/jkt48/news', { params: { page }, key: 'jkt48news', cache: 'only-if-cached' })
+const { data, pending, error } = await useApiFetch<IApiNews>('/api/news', { params: { page }, key: 'jkt48news', cache: 'only-if-cached' })
 const dayjs = useDayjs()
 const { locale } = useI18n()
 function changePage(p: number) {

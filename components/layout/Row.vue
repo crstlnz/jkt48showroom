@@ -27,16 +27,7 @@ function back() {
   }
 }
 const navBar = ref()
-const { height: navHeight } = useElementSize(navBar)
-const { greaterOrEqual, isMobile } = useResponsive()
-const isXL = greaterOrEqual('xl')
-const paddingTop = computed(() => {
-  if (isXL.value) {
-    return 0
-  }
-  return navHeight.value
-})
-
+const { isMobile } = useResponsive()
 const lastScroll = ref(0)
 const navShow = ref(true)
 const doc = ref()
@@ -58,22 +49,13 @@ onMounted(() => {
 <template>
   <div class="flex min-h-full w-full gap-3 max-xl:flex-col">
     <div ref="container" class="min-xl:min-h-[100vh] relative min-w-0 flex-1 dark:border-zinc-700 xl:border-r xl:pb-20">
-      <div ref="navBar" :class="{ '-translate-y-full': !navShow }" :style="{ left: `0px`, right: 0, top: 0 }" class="disable-highlight sticky z-nav flex h-16 cursor-pointer items-center gap-3 px-4 text-2xl transition-[transform] duration-500 xl:sticky">
+      <div ref="navBar" :class="{ '-translate-y-full': !navShow }" :style="{ left: `0px`, right: 0, top: 0 }" class="disable-highlight sticky z-nav h-14 md:h-16 cursor-pointer xl:sticky transition-[transform] duration-500">
         <div class="bg-navbar absolute inset-0 backdrop-blur-md" />
-        <button v-if="showBack" v-ripple type="button" aria-label="Back" class="relative h-10 w-10 rounded-full transition-[background-color] hover:bg-hover" @click="back">
-          <Icon name="material-symbols:arrow-back-rounded" class="absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2" />
-        </button>
-        <div class="z-nav flex w-0 flex-1 cursor-pointer flex-col justify-center self-stretch" @click="scrollTop">
-          <div class="truncate font-semibold md:ml-2 xl:ml-3">
-            {{ title ?? 'Missing Title' }}
-          </div>
-          <div v-if="subTitle" class="truncate text-base font-light">
-            {{ subTitle }}
-          </div>
-        </div>
-        <div class="z-nav flex shrink-0 items-center">
-          <slot name="actionSection" />
-        </div>
+        <LayoutRowTitle :show-back="showBack" :title="title" :sub-title="subTitle" class="z-10" @back="back" @scroll-top="scrollTop">
+          <template #actionSection>
+            <slot name="actionSection" />
+          </template>
+        </LayoutRowTitle>
       </div>
       <slot />
     </div>

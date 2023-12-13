@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { generateGen, parseGeneration } from '~~/library/utils/stage48'
 import { useSettings } from '~~/store/settings'
 
 const props = defineProps<{

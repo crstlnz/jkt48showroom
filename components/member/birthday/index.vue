@@ -2,7 +2,7 @@
 import { useSettings } from '~~/store/settings'
 
 const { group } = useSettings()
-const { data, pending, error } = await useLazyFetch('/api/member/birthday', { params: { group } })
+const { data, pending, error } = await useApiFetch<IMemberBirthDay[]>('/api/birthday', { params: { group } })
 const sortedBirthdays = computed(() => {
   if (!data.value) return null
   return data.value.sort((a, b) => new Date(a.birthdate).getDate() - new Date(b.birthdate).getDate())
@@ -11,8 +11,8 @@ const sortedBirthdays = computed(() => {
 
 <template>
   <div class="bg-container rounded-xl p-3 md:p-4">
-    <div class="flex items-center gap-2 text-xl font-bold sm:text-2xl">
-      <Icon name="twemoji:birthday-cake" size="1.5rem" />
+    <div class="flex items-center gap-2 font-bold text-lg xl:text-xl">
+      <Icon name="twemoji:birthday-cake" size="1.25rem" />
       <span>{{ $t('birthday.thismonth') }}</span>
     </div>
     <div v-if="error" class="flex flex-col items-center justify-center gap-5 py-8">
@@ -26,7 +26,7 @@ const sortedBirthdays = computed(() => {
       <img class="mx-auto w-72 max-w-[80%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`">
       <span>{{ $t("birthday.empty") }}</span>
     </div>
-    <div v-else class="grid grid-cols-[repeat(auto-fill,minmax(100px,1fr))] py-4 md:grid-cols-[repeat(auto-fill,minmax(180px,1fr))] md:py-6">
+    <div v-else class="grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] py-3 md:grid-cols-[repeat(auto-fill,minmax(140px,1fr))] md:py-4 gap-3 md:gap-4">
       <MemberBirthdayCard v-for="member in sortedBirthdays" :key="member.room_id || member.name" :member="member" />
     </div>
   </div>

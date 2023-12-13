@@ -27,7 +27,7 @@ const onLives = useOnLives()
 </script>
 
 <template>
-  <div class="memberList px-4">
+  <div class="memberList px-3 md:px-4 min-h-[100vh]">
     <div v-if="error">
       <Error message="Something error :(" :img-src="`${$cloudinaryURL}/assets/svg/web/error.svg`" />
     </div>
@@ -38,7 +38,7 @@ const onLives = useOnLives()
       <div
         v-for="i in 12"
         :key="i"
-        class="item pulse-color-2"
+        class="item pulse-color animate-pulse"
       />
     </div>
     <div v-else-if="!members?.length">
@@ -51,11 +51,10 @@ const onLives = useOnLives()
           <MemberCard
             v-for="member in members" :key="member.room_id"
             :data-id="member.name"
-            class="shadow-sm aspect-[637/784]"
+            class="shadow-sm aspect"
             :member="member"
             :is-live="onLives.isLive(member.room_id)"
           />
-          <!-- <div v-for="member in members" :key="member.room_id" class="bg-container rounded-2xl gap-4 aspect-[637/784] animate-pulse" /> -->
         </div>
       </template>
       <Grid
@@ -73,7 +72,7 @@ const onLives = useOnLives()
           <MemberCard
             :style="style"
             :data-id="item.name"
-            class="shadow-sm"
+            class="shadow-sm aspect"
             :member="item"
             :is-live="onLives.isLive(item.room_id)"
           />
@@ -88,6 +87,9 @@ const onLives = useOnLives()
 
 <style lang="scss">
 .memberList{
+  .aspect {
+    @apply aspect-[10/14] md:aspect-[13/16]
+  }
   .item {
     @apply aspect-[10/14] md:aspect-[13/16] rounded-xl animate-pulse shadow-sm;
   }
