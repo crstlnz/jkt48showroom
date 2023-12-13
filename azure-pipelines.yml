@@ -30,4 +30,21 @@ steps:
     dir
     pnpm install
     pnpm build
-  displayName: 'pnpm install and build'
+  displayName: 'Building apps'
+
+- task: CopyFilesOverSSH@0
+  inputs:
+    sshEndpoint: 'Ella'
+    sourceFolder: '.output'
+    contents: '**'
+    targetFolder: '~/apps/jkt48showroom/.output/'
+    cleanTargetFolder: true
+    cleanHiddenFilesInTarget: true
+    readyTimeout: '20000'
+
+- task: SSH@0
+  inputs:
+    sshEndpoint: 'Ella'
+    runOptions: 'commands'
+    commands: 'pm2 restart 1'
+    readyTimeout: '20000'
