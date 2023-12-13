@@ -34,11 +34,19 @@ steps:
     pnpm build
   displayName: 'Building apps'
 
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(Build.BinariesDirectory)/.output'
+    includeRootFolder: true
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/app.zip'
+    replaceExistingArchive: true
+
 - task: CopyFilesOverSSH@0
   inputs:
     sshEndpoint: 'Ella'
-    sourceFolder: '.output'
-    contents: '**'
+    sourceFolder: '$(Build.ArtifactStagingDirectory)'
+    contents: 'app.zip'
     targetFolder: '~/apps/jkt48showroom/.output/'
     cleanTargetFolder: true
     cleanHiddenFilesInTarget: true
@@ -48,5 +56,5 @@ steps:
   inputs:
     sshEndpoint: 'Ella'
     runOptions: 'commands'
-    commands: 'pm2 restart 1'
+    commands: 'cd ~apps/jkt48showroom/.output;unzip app.zip;pm2 restart 1'
     readyTimeout: '20000'
