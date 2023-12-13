@@ -1,0 +1,36 @@
+# Node.js
+# Build a general Node.js project with npm.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  pnpm_config_cache: $(Pipeline.Workspace)/.pnpm-store
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '10.x'
+  displayName: 'Install Node.js'
+
+- task: Cache@2
+  inputs:
+    key: 'pnpm | "$(Agent.OS)" | pnpm-lock.yaml'
+    path: $(pnpm_config_cache)
+  displayName: Cache pnpm
+
+- script: |
+    corepack enable
+    corepack prepare pnpm@latest-8 --activate
+    pnpm config set store-dir $(pnpm_config_cache)
+  displayName: "Setup pnpm"
+
+- script: |
+    pnpm install
+    pnpm build
+  displayName: 'pnpm install and build'
