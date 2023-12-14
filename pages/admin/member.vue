@@ -43,7 +43,9 @@ const filterOptions = useSessionStorage<{
   active: true,
 })
 
-const search = useSessionStorage('admin-memberList', '')
+const search = useCookie('admin-searchmember', {
+  default: () => '',
+})
 
 const el = ref<HTMLElement | null>(null)
 // const isLocked = useScrollLock(el)

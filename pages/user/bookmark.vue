@@ -4,7 +4,7 @@ const { data, pending, error } = await useApiFetch<Database.LikeList>('/api/user
 </script>
 
 <template>
-  <LayoutRow :title="$t('favorites')" :mobile-side="false">
+  <LayoutRow :title="$t('bookmark')" :mobile-side="false">
     <template #default>
       <div v-if="pending" class="space-y-3 px-3 md:space-y-4 md:px-4">
         <PulseRecentDetailCard />

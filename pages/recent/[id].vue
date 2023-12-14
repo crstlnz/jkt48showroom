@@ -175,44 +175,46 @@ const isXL = greaterOrEqual('xl')
                 Detail
               </div>
               <table class="table-auto [&_td]:py-1 [&_td]:xl:py-1.5 text-sm xl:text-base [&_td:first-child]:min-w-[150px] [&_td:first-child]:xl:min-w-[200px] [&_td:first-child]:opacity-80 font-semibold dark:[&_td:first-child]:opacity-60">
-                <tr>
-                  <td>
-                    Gift
-                  </td>
-                  <td>
-                    {{ $currency(data.total_point ?? 0) }}
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    {{ data.live_info.viewers?.is_excitement ? 'Excitement Point' : 'Viewer' }}
-                  </td>
-                  <td v-if="data.live_info?.viewers?.num">
-                    {{ $n(data.live_info?.viewers?.num ?? 0) }}
-                  </td>
-                  <td v-else>
-                    {{ $t('data.nodata') }}
-                  </td>
-                </tr>
-                <tr v-if="data.live_info?.viewers?.active">
-                  <td>
-                    {{ data.live_info.viewers?.is_excitement ? 'Viewer' : 'Active Viewer' }}
-                  </td>
-                  <td>
-                    {{ $n(data.live_info?.viewers?.active ?? 0) }}
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    Comments
-                  </td>
-                  <td v-if="data?.live_info?.comments?.num">
-                    {{ $n(data?.live_info?.comments?.num || 0) }}  <span v-if="data?.live_info?.comments?.users" class="text-sm opacity-80 dark:opacity-60">by {{ $n(data?.live_info?.comments?.users || 0) }} users</span>
-                  </td>
-                  <td v-else>
-                    {{ $t('data.nodata') }}
-                  </td>
-                </tr>
+                <tbody>
+                  <tr>
+                    <td>
+                      Gift
+                    </td>
+                    <td>
+                      {{ $currency(data.total_point ?? 0) }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      {{ data.live_info.viewers?.is_excitement ? 'Excitement Point' : 'Viewer' }}
+                    </td>
+                    <td v-if="data.live_info?.viewers?.num">
+                      {{ $n(data.live_info?.viewers?.num ?? 0) }}
+                    </td>
+                    <td v-else>
+                      {{ $t('data.nodata') }}
+                    </td>
+                  </tr>
+                  <tr v-if="data.live_info?.viewers?.active">
+                    <td>
+                      {{ data.live_info.viewers?.is_excitement ? 'Viewer' : 'Active Viewer' }}
+                    </td>
+                    <td>
+                      {{ $n(data.live_info?.viewers?.active ?? 0) }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      Comments
+                    </td>
+                    <td v-if="data?.live_info?.comments?.num">
+                      {{ $n(data?.live_info?.comments?.num || 0) }}  <span v-if="data?.live_info?.comments?.users" class="text-sm opacity-80 dark:opacity-60">by {{ $n(data?.live_info?.comments?.users || 0) }} users</span>
+                    </td>
+                    <td v-else>
+                      {{ $t('data.nodata') }}
+                    </td>
+                  </tr>
+                </tbody>
               </table>
             </div>
           </div>

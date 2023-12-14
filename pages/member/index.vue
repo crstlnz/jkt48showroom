@@ -4,12 +4,8 @@ import { useFuse } from '@vueuse/integrations/useFuse'
 
 import { useSettings } from '~~/store/settings'
 
-// import { useMembers } from '~~/store/members'
-
 const { t: $t } = useI18n()
-// const memberState = useMembers()
 
-// const { members: raw, pending, error } = storeToRefs(memberState)
 const settings = useSettings()
 const { data: raw, pending, error } = await useApiFetch<IMember[]>('/api/member', { query: { group: settings.group }, key: `member-${settings.group}` })
 const route = useRoute()
@@ -41,7 +37,7 @@ else {
       active: boolean
     }>({
       generation: [String(route.query.gen)],
-      graduate: false,
+      graduate: true,
       active: true,
     })
   }

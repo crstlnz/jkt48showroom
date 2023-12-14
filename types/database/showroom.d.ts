@@ -37,7 +37,7 @@ declare namespace Database {
     stage48: string
     banner: string
     jikosokai?: string
-    jkt48id?: string
+    jkt48id?: string[]
     socials: SocialNetwork[]
     generation?: string
     birthdate?: Date

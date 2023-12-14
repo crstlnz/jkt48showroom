@@ -29,21 +29,23 @@ export default defineNuxtConfig({
     '@nuxt/image',
   ],
   security: {
-    nonce: true,
+    nonce: !isDev,
     headers: {
       crossOriginEmbedderPolicy: false,
-      contentSecurityPolicy: {
-        'base-uri': ['\'none\''],
-        'font-src': ['*', 'https:', 'data:'],
-        'form-action': ['\'self\''],
-        'frame-ancestors': ['\'self\''],
-        'img-src': ['*', 'data:'],
-        'object-src': ['\'none\''],
-        'script-src-attr': ['\'none\''],
-        'style-src': ['\'self\'', 'https:', '\'unsafe-inline\''],
-        'script-src': ['\'self\'', 'https:', '\'unsafe-inline\'', '\'strict-dynamic\'', '\'nonce-{{nonce}}\''],
-        'upgrade-insecure-requests': false,
-      },
+      contentSecurityPolicy: !isDev
+        ? {
+            'base-uri': ['\'none\''],
+            'font-src': ['*', 'https:', 'data:'],
+            'form-action': ['\'self\''],
+            'frame-ancestors': ['\'self\''],
+            'img-src': ['*', 'data:'],
+            'object-src': ['\'none\''],
+            'script-src-attr': ['\'none\''],
+            'style-src': ['\'self\'', 'https:', '\'unsafe-inline\''],
+            'script-src': ['\'self\'', 'https:', '\'unsafe-inline\'', '\'strict-dynamic\'', '\'nonce-{{nonce}}\''],
+            'upgrade-insecure-requests': false,
+          }
+        : false,
     },
     csrf: false,
     xssValidator: false,
@@ -64,7 +66,7 @@ export default defineNuxtConfig({
       isDev,
     },
   },
-  css: ['~/assets/css/fonts.css', '~/assets/css/style.scss', '~/assets/css/transition.scss'],
+  css: ['~/assets/css/style.scss', '~/assets/css/transition.scss'],
   colorMode: {
     preference: 'dark',
     fallback: 'light',

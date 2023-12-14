@@ -9,8 +9,8 @@ const { locale } = useI18n()
 
 <template>
   <NuxtLink :title="theater.name" :to="`/theater/${theater.id}`" class="group flex flex-col relative aspect-[3/4] rounded-xl overflow-hidden">
-    <div class="bg-blue-400 dark:bg-red-500 px-2 rounded-md text-xs md:text-sm text-center absolute left-2 top-2 font-semibold">
-      {{ dayjs(theater.date).locale(locale).format("DD MMM") }}
+    <div class="bg-blue-400 dark:bg-red-500 px-2 py-0.5 rounded-md text-xs md:text-sm text-center absolute left-2 top-2 font-semibold">
+      {{ dayjs(theater.date).locale(locale).format("DD MMM YYYY") }}
     </div>
     <div class="flex-1">
       <NuxtImg

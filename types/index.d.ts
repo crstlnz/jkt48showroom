@@ -385,6 +385,7 @@ interface IMemberProfileAPI extends IMemberBasicData {
   group: string
   url: string
   room_id: number
+  showroom_exists: boolean
   jikosokai?: string
   is_graduate: boolean
   is_group: boolean

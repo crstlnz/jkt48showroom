@@ -46,7 +46,7 @@ async function logout() {
 <template>
   <div class="flex min-h-[100vh] items-center justify-center">
     <div class="bg-container flex w-[320px] flex-col gap-3 rounded-xl p-8">
-      <img class="h-24 w-24 self-center rounded-full p-2" :src="user?.image ?? ''" alt="Profile Picture">
+      <img class="h-24 w-24 self-center rounded-full p-2 bg-container overflow-hidden" :src="user?.image ?? $errorPicture" alt="Profile Picture">
       <div class="text-lg font-semibold">
         {{ $t('logoutfrom') }} {{ user?.name }}?
       </div>

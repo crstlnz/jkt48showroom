@@ -43,7 +43,7 @@ const dayjs = useDayjs()
       class="grid grid-cols-1 grid-rows-1 gap-4 sm:grid-cols-2 xl:grid-cols-3"
     >
       <div v-for="recent in data.recents.slice(0, 6)" :key="recent.data_id" class="bg-container flex gap-3 rounded-xl p-3 md:p-4">
-        <div>
+        <NuxtLink :to="`/member/${recent.member.url}`">
           <NuxtImg
             provider="cloudinary"
             :src="recent.member.img_alt ?? recent.member.img"
@@ -53,7 +53,7 @@ const dayjs = useDayjs()
             format="webp"
             class="aspect-[96/135] w-24 rounded-xl object-cover 2xl:w-28"
           />
-        </div>
+        </NuxtLink>
         <div class="flex flex-1 flex-col">
           <div class="flex-1">
             <div class="text-lg">

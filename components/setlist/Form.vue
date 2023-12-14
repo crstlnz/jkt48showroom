@@ -68,7 +68,7 @@ async function save() {
 </script>
 
 <template>
-  <div class="fixed inset-0 z-aboveNav bg-black/50">
+  <div class="fixed inset-0 z-aboveNav bg-black/50 overscroll-contain">
     <div ref="editDialog" class=" bg-container absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xl px-2">
       <div class="roundedscrollbar my-6 max-h-[90vh] w-[850px] max-w-[90vw] overflow-y-auto overscroll-none px-3 md:px-5 lg:px-8">
         <h3 class="text-2xl">

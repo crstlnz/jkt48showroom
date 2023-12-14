@@ -97,18 +97,11 @@ useHead({
                   <td>{{ $t("total_member") }}</td>
                   <td>{{ theater.members?.length || '-' }}</td>
                 </tr>
-                <!-- <tr>
-                <td>Total Lagu</td>
-                <td>12 Lagu</td>
-              </tr> -->
+
                 <tr>
                   <td>{{ $t("sort.date") }}</td>
                   <td>{{ dayjs(theater.date).format("DD MMMM YYYY - HH:mm") }}</td>
                 </tr>
-              <!-- <tr>
-                <td>Seitansai</td>
-                <td>{{ theater.members?.slice(0, 3).map(i => i.name).join(", ") }}</td>
-              </tr> -->
               </table>
             </div>
           </div>
@@ -118,7 +111,7 @@ useHead({
             <span>Daftar Member</span>
           </div>
           <div v-if="theater.members?.length" class="grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] gap-4 md:grid-cols-[repeat(auto-fill,minmax(130px,1fr))] md:gap-5">
-            <NuxtLink v-for="member in theater.members" :key="member.id" :to="`/member/${member.url_key}`" class="flex flex-col space-y-2">
+            <NuxtLink v-for="member in theater.members" :key="member.id" :to="member.url_key ? `/member/${member.url_key}` : undefined" class="flex flex-col space-y-2">
               <NuxtImg
                 class="bg-container block aspect-[8/10] h-full w-full overflow-hidden rounded-xl object-cover"
                 :src="member.img ?? pic"

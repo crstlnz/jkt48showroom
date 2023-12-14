@@ -82,8 +82,11 @@ function generateForm() {
     {
       title: 'JKT48 ID',
       id: 'jkt48id',
-      component: 'select',
+      component: 'selectmultiple',
       data: props.memberData?.jkt48id,
+      get parseArray() {
+        return JSON.stringify(this.data)
+      },
       options: (props.jkt48members ?? []).map((i) => {
         return {
           title: i.name,
@@ -123,14 +126,27 @@ const hasChanges = computed(() => {
 const isLoading = ref(false)
 async function apply() {
   const q = {} as any
+  const formData = new FormData()
   q._id = props.memberData._id
+  formData.append('_id', String(props.memberData._id))
   for (const form of formMemberData.value) {
-    q[form.id] = form.data
+    if (Array.isArray(form.data)) {
+      q[form.id] = form.data
+      for (const item of form.data) {
+        formData.append(`${form.id}[]`, String(item))
+      }
+    }
+    else {
+      q[form.id] = form.data
+      if (form.data) {
+        formData.append(form.id, String(form.data))
+      }
+    }
   }
 
   try {
     isLoading.value = true
-    await $apiFetch('/api/admin/edit_memberdata', { method: 'POST', query: q })
+    await $apiFetch('/api/admin/edit_memberdata', { method: 'POST', body: formData })
     addNotif({
       type: 'success',
       title: 'Success',

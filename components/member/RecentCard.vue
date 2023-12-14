@@ -19,7 +19,6 @@ const { locale } = useI18n()
 const finishLoading = ref(false)
 const showLoading = ref(true)
 const thumbnail = ref()
-// const isHoveredRaw = useElementHover(thumbnail)
 const { isOutside } = useMouseInElement(thumbnail)
 const isAlreadyFetch = ref(false)
 const screenshots = ref<string[]>([])
@@ -37,11 +36,6 @@ const { start, stop } = useTimeoutFn(async () => {
 
 const scrolled = ref(false)
 
-// function listenScroll() {
-//   scrolled.value = true
-//   doc.value?.removeEventListener('scroll', listenScroll)
-// }
-
 const isHovered = computed(() => {
   return !isOutside.value
 })
@@ -53,7 +47,6 @@ watch(isHovered, (hover) => {
   if (delayShowSS.value) clearTimeout(delayShowSS.value)
   if (hover) {
     scrolled.value = false
-    // doc.value?.addEventListener('scroll', listenScroll)
     delayShowSS.value = setTimeout(() => {
       if (isAlreadyFetch.value) {
         startScreenshotSlide()
@@ -64,7 +57,6 @@ watch(isHovered, (hover) => {
     }, 300)
   }
   else {
-    // doc.value?.removeEventListener('scroll', listenScroll)
     ssIndex.value = null
     stopScreenshotSlide()
   }
@@ -150,7 +142,7 @@ onMounted(() => {
       <div class="flex min-w-0 flex-1 flex-col space-y-0.5 sm:space-y-1 md:space-y-2">
         <div class="truncate">
           <NuxtLink :to="`/member/${recent.member.url}`" :aria-label="`Open ${recent.member.name} profile`" class="text-base font-bold md:text-lg lg:text-xl">
-            {{ recent.member?.nickname || recent.member?.name }}
+            {{ (recent.member?.nickname || recent.member?.name)?.split("-")?.[0] }}
           </NuxtLink>
         </div>
         <ul class="space-y-1 text-xs md:text-sm lg:text-base [&>li]:flex [&>li]:gap-2">
@@ -168,7 +160,7 @@ onMounted(() => {
           </li>
           <li class="flex items-center">
             <Icon name="ph:clock-countdown-bold" class="h-4 p-[3px] w-auto rounded-full bg-red-500 md:p-1 text-white lg:h-6" />
-            <Parser parse-type="duration" :value="recent.live_info.duration" class="inline-block align-baseline" />
+            <Parser parse-type="duration" :value="recent.live_info.duration" :second="false" class="inline-block align-baseline" />
           </li>
         </ul>
       </div>
