@@ -1,17 +1,15 @@
 <script lang="ts" setup>
 import { Switch, SwitchGroup, SwitchLabel } from '@headlessui/vue'
 import { useFuse } from '@vueuse/integrations/useFuse'
-import { useSettings } from '~~/store/settings'
 
-definePageMeta({ middleware: 'admin' })
+const { data, pending, error } = await useApiFetch<Admin.ApiMissingJKT48ID>('/api/admin/missing_jkt48id')
 
-const { data: stage48members, pending } = await useApiFetch<Admin.I48Member[]>('/api/admin/stage48')
-const { data: jkt48members } = await useApiFetch<JKT48.Member[]>('/api/admin/jkt48member')
+const missingMembers = ref<Admin.MissingJKT48ID[]>([])
 
-const membersRaw = ref<Admin.I48Member[]>([])
-
-watch(stage48members, (val) => {
-  membersRaw.value = val as unknown as Admin.I48Member[]
+watch(data, (d) => {
+  if (d?.members) {
+    missingMembers.value = d.members
+  }
 }, { immediate: true })
 
 const filterOptions = useSessionStorage<{
@@ -24,17 +22,10 @@ const filterOptions = useSessionStorage<{
   active: true,
 })
 
-const search = useSessionStorage('admin-memberListStage48', '')
-
-const el = ref<HTMLElement | null>(null)
-const editMember = ref<Admin.I48Member>()
-
-onMounted(() => {
-  el.value = document.body
-})
+const search = useSessionStorage('admin-missingsearchjkt48id', '')
 
 const dataFiltered = computed(() => {
-  let members: Admin.I48Member[] = (membersRaw.value ?? [])
+  let members: Admin.MissingJKT48ID[] = (missingMembers.value ?? [])
   if (filterOptions.value.generation?.length) {
     members = members.filter(i => filterOptions.value.generation.includes(i.generation ?? ''))
   }
@@ -71,30 +62,15 @@ const members = computed(() => {
   return search.value === '' ? dataFiltered.value : results.value.map(i => i.item)
 })
 
-const editDialog = ref()
-onClickOutside(editDialog, () => {
-  editMember.value = undefined
-})
-
-function onDismiss() {
-  editMember.value = undefined
-}
-
-function onUpdate(data: Admin.I48Member) {
-  // editMember.value = data
-  const keys = Array.from(Object.keys(data)).filter(i => i !== 'undefined')
-  if (editMember.value) {
-    for (const key of keys) {
-      (editMember.value as any)[key] = (data as any)[key]
-    }
-  }
-}
-
-const { group } = useSettings()
 const generations = computed(() => {
   const gen = generateGen()
-  return gen[group]
+  return gen.jkt48
 })
+
+function remove(id: string) {
+  console.log(id)
+  missingMembers.value = missingMembers.value.filter(i => i._id !== id)
+}
 
 function toggleGen(key: string) {
   if (filterOptions.value.generation.includes(key)) {
@@ -104,19 +80,15 @@ function toggleGen(key: string) {
     filterOptions.value.generation.push(key)
   }
 }
+
+const editMember = ref<Admin.MissingJKT48ID | null>()
 </script>
 
 <template>
-  <LayoutSingleRow title="Member" :enable-search="true" :search="search" @search="(v) => search = v">
+  <LayoutSingleRow title="Missing JKT48 ID" :enable-search="true" :search="search" @search="(v) => search = v">
     <template #default>
       <Transition name="fade">
-        <AdminStage48Edit
-          v-if="editMember"
-          :stage48member="editMember"
-          :jkt48members="jkt48members ?? []"
-          @on-update-member="onUpdate"
-          @on-dismiss="onDismiss"
-        />
+        <AdminMissingJkt48idForm v-if="editMember" :member="editMember" :jkt48members="data?.jkt48members || []" @dismiss="editMember = null" @update-member="(id) => remove(id)" />
       </Transition>
       <div class="space-y-5 px-3 md:px-4">
         <div v-if="pending" class="flex flex-col">
@@ -126,65 +98,24 @@ function toggleGen(key: string) {
           <ClientOnly>
             <template #fallback>
               <div class="flex flex-col">
-                <div v-for="num in 10" :key="num" class="pulse-color mb-3 h-[116px] animate-pulse rounded-xl" />
+                <div v-for="num in 10" :key="num" class="pulse-color mb-3 h-[128px] animate-pulse rounded-xl" />
               </div>
             </template>
-            <DynamicScroller
+            <RecycleScroller
               key="loaded"
+              v-slot="{ item }"
               :prerender="10"
-              :min-item-size="104"
+              :item-size="140"
               :items="members"
               key-field="_id"
               page-mode
             >
-              <template #default="{ item, index, active }">
-                <DynamicScrollerItem :item="item" :active="active" :data-index="index">
-                  <div class="pb-3">
-                    <div class="bg-container flex gap-3 rounded-xl p-3">
-                      <NuxtLink :to="`/member/${item.url}`" class="h-20 w-20 overflow-hidden rounded-full">
-                        <!-- <img :key="item._id" class="h-full w-full object-cover" :src="$fixCloudinary(item.member_data?.img || item.img || config.errorPicture)" alt="Profile picture"> -->
-                        <NuxtImg
-                          :key="item.room_id"
-                          sizes="80px"
-                          :placeholder="[45, 10, 55, 70]"
-                          :modifiers="{
-                            aspectRatio: 1,
-                            gravity: 'faceCenter',
-                          }"
-                          fit="fill"
-                          format="webp"
-                          :alt="item.room_name"
-                          class="w-full h-full flex-1 object-cover rounded-xl"
-                          :src="item.member_data?.img || item.img"
-                        />
-                      </NuxtLink>
-                      <div class="flex flex-1 flex-col">
-                        <NuxtLink :to="`/member/${item.url}`">
-                          {{ item.name }}
-                        </NuxtLink>
-
-                        <div class="flex flex-1 justify-between">
-                          <div class="text-base" :class="item.is_group ? 'text-blue-500' : (item?.isGraduate ? 'text-red-500' : 'text-green-500')">
-                            {{ item.is_group ? "Official" : (item?.isGraduate ? "Graduated" : "Active") }}
-                          </div>
-                        </div>
-                        <div class="space-x-4 self-end text-base text-slate-700 dark:text-slate-400">
-                          <NuxtLink :to="$liveURL(item.url)" target="_blank">
-                            <Icon name="ic:round-videocam" size="1.6rem" />
-                          </NuxtLink>
-                          <NuxtLink :to="$profileURL(item.room_id)" target="_blank">
-                            <Icon name="ic:round-person" size="1.6rem" />
-                          </NuxtLink>
-                          <button type="button" @click="editMember = item">
-                            <Icon name="material-symbols:edit-rounded" size="1.6rem" />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </DynamicScrollerItem>
-              </template>
-            </DynamicScroller>
+              <div class="mb-3 w-full px-3 md:x-4">
+                <button type="button" class="w-full focus-within:outline-none group rounded-xl" @click="editMember = item">
+                  <AdminMissingJkt48id :key="item._id" :member="item" class="group-focus-within:bg-container-2" />
+                </button>
+              </div>
+            </RecycleScroller>
           </ClientOnly>
         </div>
       </div>
@@ -252,4 +183,18 @@ function toggleGen(key: string) {
       </div>
     </template>
   </LayoutSingleRow>
+  <!-- <LayoutSingleRow title="Missing JKT48 ID">
+    <div v-if="pending" class="flex justify-center items-center aspect-video">
+      <Icon name="svg-spinners:ring-resize" size="2rem" />
+    </div>
+    <div v-else-if="error " class="flex justify-center aspect-video">
+      <Error message="Error pak!" img-src="/svg/error.svg" url="/admin" />
+    </div>
+    <div v-else-if="!data || !data?.members?.length" class="flex justify-center aspect-video">
+      <Error message="Tidak ada yang missing :)" img-src="/svg/no_data.svg" url="/admin" />
+    </div>
+    <div v-else class="space-y-3 md:space-y-4">
+      <AdminMissingJkt48id v-for="member in missingMembers" :key="member._id" :member="member" :jkt48members="data.jkt48members" @added="remove(member._id)" />
+    </div>
+  </LayoutSingleRow> -->
 </template>

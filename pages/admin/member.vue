@@ -138,6 +138,7 @@ function toggleGen(key: string) {
       <Transition name="fade">
         <MemberEdit
           v-if="editMember"
+          :pending="false"
           :member="editMember"
           :stage48members="(stage48members as any) ?? []"
           :jkt48members="(jkt48members as any) ?? []"

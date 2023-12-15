@@ -15,20 +15,22 @@ function beforeLeave(el: Element) {
     s.style.width = `${rect.width}px`
   }
 }
+
+const { isMobile } = useDevice()
 </script>
 
 <template>
   <Teleport to="body">
-    <div class="pointer-events-none fixed inset-0 z-notification md:m-8">
+    <div class="pointer-events-none fixed inset-0 z-notification my-3 mx-5" :class="{ 'mb-[60px]': isMobile }">
       <TransitionGroup
         ref="containerNotif"
         tag="div"
-        class="relative flex h-full w-full flex-col items-end justify-end gap-4 p-4 sm:items-start md:flex-col-reverse"
+        class="relative flex h-full w-full flex-col items-end justify-end gap-3 p-4 sm:items-start"
         name="list"
         @before-leave="beforeLeave"
         @after-leave="showNotif()"
       >
-        <div v-for="notif in notifs" :key="notif.id" class="z-10 mx-auto md:mr-0 md:min-w-[350px] md:max-w-[450px] lg:min-w-[450px] lg:max-w-[650px]">
+        <div v-for="notif in notifs" :key="notif.id" class="z-10 mx-auto md:mr-0 max-md:w-full md:min-w-[350px] md:max-w-[450px] lg:min-w-[350px] lg:max-w-[600px]">
           <NotifBase
             v-if="notif.type === 'success'"
             color="bg-green-500"

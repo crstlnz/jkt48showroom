@@ -19,7 +19,7 @@ const mustLoading = ref(false)
   <div v-else-if="next?.length" class="">
     <MemberNextLive v-for="live in next" :key="live.room_id" :data="live" />
   </div>
-  <div v-else class="overflow-hidden bg-white dark:bg-dark-1">
+  <div v-else class="overflow-hidden pt-6">
     <div
       class="flex aspect-square flex-col items-center justify-center space-y-6 text-center md:space-y-8 xl:space-y-10"
     >

@@ -3,10 +3,7 @@ import { useSettings } from '~~/store/settings'
 
 definePageMeta({
   layout: false,
-  auth: {
-    unauthenticatedOnly: true,
-    navigateAuthenticatedTo: '/',
-  },
+  middleware: 'unauthenticated',
 })
 
 const settings = useSettings()

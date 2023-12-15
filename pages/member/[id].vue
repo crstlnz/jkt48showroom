@@ -8,13 +8,6 @@ const { data, pending, error } = await useApiFetch<IMemberProfileAPI>(`/api/memb
 const { status } = useAuth()
 const isFollow = ref(false)
 const profile = ref<IMiniRoomProfile | null>()
-// const { data: profile, refresh } = await useApiFetch<IMiniRoomProfile>(`/api/profile`, {
-//   query: {
-//     room_id: data.value?.room_id,
-//   },
-//   server: false,
-//   immediate: false,
-// })
 
 const isShowroomExists = computed(() => {
   return data?.value?.showroom_exists ?? true
@@ -121,7 +114,7 @@ useHead({
                 <div v-tooltip="authenticated ? $t('watch_count_info', { count: profile?.visit_count || 0 }) : undefined" class="flex justify-center items-center gap-1.5 text-base md:text-lg font-semibold">
                   <Icon name="material-symbols:auto-read-play" class="text-red-500" />
                   <span v-if="authenticated"> {{ $n(profile?.visit_count || 0) }} {{ $t("times") }}</span>
-                  <span v-else> Please login</span>
+                  <span v-else> {{ $t('pleaselogin') }}</span>
                 </div>
               </div>
               <div class="flex flex-1 flex-col gap-0.5 md:gap-1.5">

@@ -49,13 +49,14 @@ const isLive = computed(() => {
           </NuxtLink>
         </div>
         <div class="flex min-w-0 self-start flex-1 items-start justify-end pt-2 md:pt-3 flex-col">
-          <div class="text-xl sm:text-2xl font-semibold md:text-3xl flex gap-3 md:gap-4 self-stretch">
-            <div class="flex-1">
+          <div class="font-semibold flex gap-3 md:gap-4 self-stretch">
+            <div class="flex-1 text-xl sm:text-2xl md:text-3xl">
               {{ (member.nickname || member.name)?.split("-")?.[0] }}
             </div>
-            <NuxtLink target="_blank" :to="$liveURL(member.url)" class="rounded-full bg-blue-500 px-2.5 py-1 md:px-4 md:py-1.5 text-xs sm:text-sm text-white self-center">
+            <NuxtLink target="_blank" :to="$liveURL(member.url)" class="rounded-full bg-blue-500 px-2.5 h-6 leading-6 md:leading-9 md:h-9 md:px-4 text-xs sm:text-sm text-white self-center">
               Showroom
             </NuxtLink>
+            <AdminEditMemberButton :room-id="roomId" class="h-7 md:h-9" />
           </div>
           <div class="flex gap-2 text-xs md:text-sm">
             <div

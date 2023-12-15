@@ -3,20 +3,6 @@
 @tailwind utilities;
 
 @layer base {
-  /* .background {
-    @apply bg-white dark:bg-dark-2;
-  }
-  .bg-background {
-    @apply bg-white dark:bg-dark-2;
-  }
-  .bg-container {
-    @apply bg-slate-100 dark:bg-dark-1;
-  }
-
-  .bg-container-2 {
-    @apply bg-slate-200 dark:bg-dark-3;
-  } */
-
   .background {
     @apply bg-slate-100 dark:bg-dark-2;
   }

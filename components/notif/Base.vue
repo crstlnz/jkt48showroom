@@ -54,20 +54,19 @@ onMounted(() => {
 </script>
 
 <template>
-  <div ref="container" class="pointer-events-auto rounded-sm bg-slate-50 shadow-md dark:bg-dark-3 ">
-    <div class="flex items-stretch justify-between gap-3 overflow-hidden pr-4 lg:gap-4">
-      <span class="w-1.5" :class="color" />
+  <div ref="container" class=" pointer-events-auto rounded-xl overflow-hidden drop-shadow-xl bg-background border-white/10 border">
+    <div class="flex items-stretch justify-between gap-3 pl-4 pr-4 lg:gap-4">
       <Icon :name="icon" class="h-6 w-6 self-center rounded-full p-1.5 text-white md:h-7 md:w-7 lg:h-8 lg:w-8" :class="color" />
-      <div class="flex min-w-0 flex-1 flex-col py-2 sm:py-3 md:py-4 lg:py-5">
-        <div class="text-base font-bold md:text-lg">
+      <div class="flex min-w-0 flex-1 flex-col py-1.5 sm:py-2 md:py-2.5 lg:py-3">
+        <div class="text-sm font-bold md:text-base !leading-5">
           {{ notif.title ?? defaultTitle ?? "Notification" }}
         </div>
-        <div :title="notif.message" class="line-clamp-2 min-h-0 w-full text-sm text-slate-700 dark:text-slate-300 md:text-base">
+        <div :title="notif.message" class="truncate !leading-4 min-h-0 w-full text-xs md:text-sm text-slate-700 dark:text-slate-300">
           {{ notif.message }}
         </div>
       </div>
       <button aria-label="Close notif" type="button" class="self-center" @click="() => $emit('close')">
-        <Icon name="ic:round-close" class="h-5 w-5 self-center md:h-6 md:w-6 lg:h-7 lg:w-7" />
+        <Icon name="ic:round-close" class="h-5 w-5 self-center lg:h-6 lg:w-6" />
       </button>
     </div>
     <div v-if="notif.duration != null && notif.remainingTime != null" :class="color" :style="{ width: `${(notif.remainingTime / notif.duration) * 100}%` }" class="h-1 w-[50%] border-slate-100 opacity-60 transition-[width] duration-300 ease-out" />

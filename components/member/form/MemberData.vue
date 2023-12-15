@@ -80,13 +80,29 @@ function generateForm() {
     //   },
     // },
     {
+      title: 'Nicknames',
+      id: 'nicknames',
+      component: 'arraystring',
+      data: props.memberData?.nicknames || [],
+      check: (data: any): boolean => {
+        const pData = props.memberData?.nicknames || []
+        if (data.length !== pData.length) {
+          return false
+        }
+
+        for (const [i, d] of data.entries()) {
+          if (pData[i] !== d) {
+            return false
+          }
+        }
+        return true
+      },
+    },
+    {
       title: 'JKT48 ID',
       id: 'jkt48id',
       component: 'selectmultiple',
       data: props.memberData?.jkt48id,
-      get parseArray() {
-        return JSON.stringify(this.data)
-      },
       options: (props.jkt48members ?? []).map((i) => {
         return {
           title: i.name,
@@ -94,7 +110,17 @@ function generateForm() {
         }
       }),
       check: (data: any): boolean => {
-        return props.memberData.jkt48id === data
+        const pData = props.memberData?.jkt48id || []
+        if (data.length !== pData.length) {
+          return false
+        }
+
+        for (const [i, d] of data.entries()) {
+          if (pData[i] !== d) {
+            return false
+          }
+        }
+        return true
       },
     },
     {

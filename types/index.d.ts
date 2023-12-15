@@ -405,5 +405,5 @@ declare module 'hls.js/dist/hls.min.js'
 declare module 'vue-gtag-next'
 declare module 'cloudinary'
 declare module 'horoscope'
-
+declare module 'vue-dndrop';
 // declare function useNuxtApp(): NuxtApp & { $device: any }

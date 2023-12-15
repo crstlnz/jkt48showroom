@@ -14,9 +14,10 @@ const props = withDefaults(
     enableSearch: false,
   },
 )
-
 const emit = defineEmits<{ (e: 'search', query: string): void, (e: 'scrollTop'): void, (e: 'back'): void }>()
+
 const search = ref(props.search)
+
 const searchInput = ref<HTMLElement>()
 const { start } = useTimeoutFn(() => {
   emit('search', search.value)

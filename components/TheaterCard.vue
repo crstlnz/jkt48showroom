@@ -20,7 +20,7 @@ const { locale } = useI18n()
         format="webp"
         :alt="theater.name"
         class="w-full h-full flex-1 object-cover"
-        :src="theater?.poster"
+        :src="theater?.poster || $errorPicture"
       />
     </div>
     <div class="flex items-start gap-2 w-full absolute bottom-0 bg-slate-950">

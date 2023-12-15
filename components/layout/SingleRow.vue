@@ -10,6 +10,7 @@ withDefaults(defineProps<{
 })
 
 defineEmits<{ (e: 'search', query: string): void }>()
+
 const route = useRoute()
 const router = useRouter()
 const showBack = computed(() => {

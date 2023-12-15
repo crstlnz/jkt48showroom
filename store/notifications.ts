@@ -1,8 +1,8 @@
 export const useNotifications = defineStore('notifications', () => {
   const notifData = ref<NotifData[]>([])
   const currentNotif = ref<NotifData[]>([])
-  const defaultDuration = 10000
-  const maxShowingNotif = 3
+  const defaultDuration = 6500
+  const maxShowingNotif = 5
   const id = ref(0)
   function addNotif(notif: Omit<NotifData, 'id' | 'remainingTime'>) {
     const dur = notif.duration ?? defaultDuration

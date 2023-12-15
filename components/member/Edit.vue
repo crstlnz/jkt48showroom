@@ -2,30 +2,33 @@
 import { useNotifications } from '~~/store/notifications'
 import { LazyImage } from '#components'
 
-const props = defineProps<{
-  member: Admin.IShowroomMember
-  stage48members: Database.I48Member[]
-  jkt48members: JKT48.Member[]
-}>()
+const props = withDefaults(defineProps<{
+  member?: Admin.IShowroomMember
+  stage48members?: Database.I48Member[]
+  jkt48members?: JKT48.Member[]
+  pending?: boolean
+}>(), {
+  pending: () => false,
+})
 const emit = defineEmits<{
   (e: 'onDismiss'): void
   (e: 'onUpdateShowroom', data: Admin.IShowroomMember): void
   (e: 'onUpdateMember', data: Admin.I48Member): void
 }>()
 const { addNotif } = useNotifications()
-const member = ref<Admin.IShowroomMember>(props.member)
-const stage48members = ref(props.stage48members.filter(i => i.group === member.value.group))
+const member = ref<Admin.IShowroomMember | undefined>(props.member)
+const stage48members = ref(props.stage48members?.filter(i => i.group === member.value?.group))
 const editDialog = ref()
 const config = useAppConfig()
-const memberDataId = ref((member.value.member_data as any)?._id)
+const memberDataId = ref((member.value?.member_data as any)?._id)
 
 watch(() => props.member, (m) => {
-  memberDataId.value = m.member_data?._id
+  memberDataId.value = m?.member_data?._id
   member.value = m
 })
 
 watch(() => props.stage48members, (val) => {
-  stage48members.value = val.filter(i => i.group === member.value.group)
+  stage48members.value = val?.filter(i => i.group === member.value?.group)
 })
 
 onClickOutside(editDialog, () => {
@@ -41,7 +44,7 @@ async function toggleGraduate(value: boolean) {
     },
     onResponse(ctx) {
       if (ctx.response.status === 200) {
-        if (member.value.member_data) {
+        if (member.value?.member_data) {
           member.value.member_data.isGraduate = value
         }
       }
@@ -59,14 +62,14 @@ async function applyMemberData() {
   await $apiFetch('/api/admin/set_member_data', {
     method: 'POST',
     query: {
-      room_id: props.member.room_id,
+      room_id: props.member?.room_id,
       memberDataId: memberDataId.value,
     },
     onResponse(ctx) {
       if (ctx.response.status) {
         addNotif({ message: 'Success', type: 'success', duration: 1500 })
-        const data = props.stage48members.find(i => (i as any)._id === memberDataId.value) as Database.I48Member & { _id: string } || null
-        if (member.value.member_data) {
+        const data = props.stage48members?.find(i => (i as any)._id === memberDataId.value) as Database.I48Member & { _id: string } || null
+        if (member.value?.member_data) {
           member.value.member_data = data
         }
         emit('onDismiss')
@@ -96,7 +99,7 @@ const tabList = ref([
 <template>
   <div class="fixed inset-0 z-aboveNav bg-black/50 overscroll-contain">
     <div ref="editDialog" class=" bg-container absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xl px-2">
-      <div class="roundedscrollbar my-6 max-h-[90vh] max-w-[90vw] overflow-y-auto overscroll-none px-3 md:px-5 lg:px-8">
+      <div v-if="!pending && member" class="roundedscrollbar my-6 max-h-[90vh] max-w-[90vw] overflow-y-auto overscroll-none px-3 md:px-5 lg:px-8">
         <div class="flex flex-col gap-1.5">
           <div class="flex items-center gap-6 overflow-x-auto">
             <div class="aspect-video h-32 shrink-0 overflow-hidden rounded-xl border-2 dark:border-dark-2 md:h-36 xl:h-40">
@@ -112,7 +115,7 @@ const tabList = ref([
               image-class="h-full w-full object-cover"
               :src="member?.member_data?.img" :alt="member.name"
               @uploaded="(url) => {
-                if (member.member_data)
+                if (member?.member_data)
                   member.member_data.img = url
               }"
             />
@@ -130,7 +133,7 @@ const tabList = ref([
               class="aspect-[15/5] h-32 shrink-0 overflow-hidden rounded-xl border-2 dark:border-dark-2 md:h-36 xl:h-40"
               image-class="h-full w-full object-cover bg-container-2" :src="member?.member_data?.banner"
               @uploaded="(url) => {
-                if (member.member_data)
+                if (member?.member_data)
                   member.member_data.banner = url
               }"
             />
@@ -172,14 +175,6 @@ const tabList = ref([
                 class="min-w-0 flex-1"
                 :data="stage48members.map(i => { return { title: i.name, value: (i as any)._id } })"
               />
-              <!-- <select v-if="stage48members != null" id="member_data" v-model="memberDataId" class="bg-container-2 min-w-0 flex-1 rounded-md p-1.5 text-base">
-                <option>
-                  No data
-                </option>
-                <option v-for="m in stage48members" :key="(m as any)._id" :value="(m as any)._id">
-                  {{ m.name }}
-                </option>
-              </select> -->
               <div v-else>
                 Loading...
               </div>
@@ -192,7 +187,6 @@ const tabList = ref([
                 Save
               </button>
             </div>
-            <!-- <div class="mt-3 w-full border-t border-black/10 dark:border-white/10" /> -->
             <div class="mt-4">
               <div class="flex items-stretch overflow-hidden rounded-full border-2 border-slate-200 text-center text-lg hover:[&>div]:bg-container-2 dark:border-dark-3 [&>div]:h-10">
                 <div v-for="tab in tabList" :key="tab.key" class="flex-1 cursor-pointer leading-10" :class="{ 'bg-container-2': tabState === tab.key }" @click="tabState = tab.key">
@@ -213,34 +207,21 @@ const tabList = ref([
                   <MemberFormMemberData
                     v-else
                     :member-data="member?.member_data"
-                    :jkt48members="jkt48members"
+                    :jkt48members="jkt48members || []"
                     @on-update="(data) => $emit('onUpdateMember', data)"
                     @on-dismiss="$emit('onDismiss')"
                   />
-                  <!-- <div v-else class="flex w-full flex-col gap-3">
-                    <div v-for="form in formMemberData" :key="form.id" class="flex w-full gap-3">
-                      <div class="w-[70px] shrink-0 truncate pt-1.5 md:w-[90px] lg:w-[120px]">
-                        {{ form.title }}
-                      </div>
-                      <component :is="form.component ?? FormText" v-model="form.data" form-id="start" :placeholder="form.placeholder ?? form.title" input-class="bg-container-2 flex-1" class="min-w-0 flex-1" />
-                    </div>
-                  </div> -->
                 </div>
               </div>
             </div>
-            <!-- <div class="mt-2 flex justify-end gap-3">
-              <button type="button" class="rounded-full bg-red-500 px-6 py-2.5 text-white hover:brightness-75" @click="$emit('onDismiss')">
-                Close
-              </button>
-              <button
-                type="button"
-                class="rounded-full bg-blue-500 px-6 py-2.5 text-white hover:brightness-75 disabled:brightness-50"
-              >
-                Apply
-              </button>
-            </div> -->
           </div>
         </div>
+      </div>
+      <div v-else class="p-5 text-xl text-center space-y-3 pb-7">
+        <div>
+          Loading...
+        </div>
+        <Icon name="heroicons:arrow-path" class="animate-spin" size="2rem" />
       </div>
     </div>
   </div>

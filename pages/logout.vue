@@ -3,6 +3,10 @@ import { useSettings } from '~~/store/settings'
 
 import { useNotifications } from '~/store/notifications'
 
+definePageMeta({
+  middleware: 'auth',
+})
+
 const { addNotif } = useNotifications()
 definePageMeta({ layout: false })
 const settings = useSettings()
