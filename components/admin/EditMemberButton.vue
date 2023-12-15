@@ -5,6 +5,8 @@ const props = defineProps<{
   roomId: number
 }>()
 
+const { user } = useAuth()
+
 const openDialog = ref(false)
 const pending = ref(true)
 const editMember = ref()
@@ -25,7 +27,7 @@ async function getData() {
     jkt48members.value = res.jkt48members
   }
   catch (e) {
-    editMember.value = null
+    openDialog.value = false
     addNotif({
       message: 'Failed to get data!',
       type: 'danger',
@@ -48,7 +50,7 @@ function onDismiss() {
 </script>
 
 <template>
-  <div>
+  <div v-if="user?.is_admin">
     <Transition name="fade">
       <MemberEdit
         v-if="openDialog"
