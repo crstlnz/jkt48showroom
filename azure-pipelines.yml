@@ -14,8 +14,6 @@ variables:
   pnpm_config_cache: $(Pipeline.Workspace)/.pnpm-store
 
 steps:
-  - task: Cache@2
-
   - script: |
       pnpm install
     displayName: Installing apps
