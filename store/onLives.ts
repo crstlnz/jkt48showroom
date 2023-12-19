@@ -3,7 +3,6 @@ import { useSettings } from './settings'
 import JSONSerializer from '~~/library/serializer/json'
 
 export const useOnLives = defineStore('onLives', () => {
-  const config = useRuntimeConfig()
   const { data: lives, pending, error, refresh, tryRefresh } = useLocalStoreController<LiveData | null>('onlives', {
     fetch: refreshLives,
     expiredIn: 10000,

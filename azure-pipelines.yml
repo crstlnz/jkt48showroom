@@ -4,72 +4,59 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
 trigger:
-- master
+  - master
 
 pool:
-  name: 'My Computer'
-  vmImage: 'windows-latest'
+  name: My Computer
+  vmImage: windows-latest
 
 variables:
   pnpm_config_cache: $(Pipeline.Workspace)/.pnpm-store
 
 steps:
-- task: Cache@2
-  inputs:
-    key: 'pnpm | "$(Agent.OS)" | pnpm-lock.yaml'
-    path: $(pnpm_config_cache)
-  displayName: Cache pnpm
+  - task: Cache@2
 
-- script: |
-    corepack enable
-    corepack prepare pnpm@latest-8 --activate
-  displayName: "Setup pnpm"
+  - script: |
+      pnpm install
+    displayName: Installing apps
 
-- script: |
-    pnpm config set store-dir $(pnpm_config_cache)
-  displayName: "Setup config store"
+  - script: |
+      pnpm build
+    displayName: Building apps
 
-- script: |
-    pnpm install
-  displayName: 'Installing apps'
+  - task: ArchiveFiles@2
+    inputs:
+      rootFolderOrFile: $(System.DefaultWorkingDirectory)/.output
+      includeRootFolder: false
+      archiveType: zip
+      archiveFile: $(Build.ArtifactStagingDirectory)/app.zip
+      replaceExistingArchive: true
+    displayName: Archiving build files
 
-- script: |
-    pnpm build
-  displayName: 'Building apps'
+  - task: SSH@0
+    inputs:
+      sshEndpoint: Ella
+      runOptions: commands
+      commands: 'cd ~/apps/jkt48showroom/.output && rm -r *'
+      readyTimeout: '20000'
+    continueOnError: true
+    displayName: Deleting old files
 
-- task: ArchiveFiles@2
-  inputs:
-    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/.output'
-    includeRootFolder: false
-    archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/app.zip'
-    replaceExistingArchive: true
-  displayName: Archiving build files
+  - task: CopyFilesOverSSH@0
+    inputs:
+      sshEndpoint: Ella
+      sourceFolder: $(Build.ArtifactStagingDirectory)
+      contents: app.zip
+      targetFolder: ~/apps/jkt48showroom/.output
+      cleanTargetFolder: true
+      cleanHiddenFilesInTarget: true
+      readyTimeout: '20000'
+    displayName: Transfer build files to server
 
-- task: SSH@0
-  inputs:
-    sshEndpoint: 'Ella'
-    runOptions: 'commands'
-    commands: 'cd ~/apps/jkt48showroom/.output && rm -r *'
-    readyTimeout: '20000'
-  continueOnError: true
-  displayName: Deleting old files
-
-- task: CopyFilesOverSSH@0
-  inputs:
-    sshEndpoint: 'Ella'
-    sourceFolder: '$(Build.ArtifactStagingDirectory)'
-    contents: 'app.zip'
-    targetFolder: '~/apps/jkt48showroom/.output'
-    cleanTargetFolder: true
-    cleanHiddenFilesInTarget: true
-    readyTimeout: '20000'
-  displayName: Transfer build files to server
-
-- task: SSH@0
-  inputs:
-    sshEndpoint: 'Ella'
-    runOptions: 'commands'
-    commands: 'cd ~/apps/jkt48showroom/.output && unzip app.zip && pm2 restart 1'
-    readyTimeout: '20000'
-  displayName: Run deployed apps
+  - task: SSH@0
+    inputs:
+      sshEndpoint: Ella
+      runOptions: commands
+      commands: 'cd ~/apps/jkt48showroom/.output && unzip app.zip && pm2 restart 1'
+      readyTimeout: '20000'
+    displayName: Run deployed apps
