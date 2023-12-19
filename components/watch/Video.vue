@@ -2,7 +2,9 @@
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
 import Hls, { Events } from 'hls.js/dist/hls.min.js'
 
-const props = defineProps<{ sources: ShowroomAPI.StreamingURL[], poster: string }>()
+const props = withDefaults(defineProps<{ sources: ShowroomAPI.StreamingURL[], poster: string, landscape: boolean }>(), {
+  landscape: true,
+})
 const emit = defineEmits<{ (e: 'fullsceen', isFullscreen: boolean): void }>()
 useHead({
   link: [{ href: 'https://vjs.zencdn.net/8.0.4/video-js.css', rel: 'stylesheet' }],
@@ -245,8 +247,15 @@ async function toggleFullscreen() {
   if (!isFullscreen.value) {
     const o = orientation.value
     await toggle()
-    if (['portrait-primary', 'portrait-secondary', 'portrait'].includes(o ?? '')) {
-      if (isSupported.value) await lockOrientation('landscape')
+    if (props.landscape) {
+      if (['portrait-primary', 'portrait-secondary', 'portrait'].includes(o ?? '')) {
+        if (isSupported.value) await lockOrientation('landscape')
+      }
+    }
+    else {
+      if (['landscape-primary', 'landscape-secondary', 'landscape'].includes(o ?? '')) {
+        if (isSupported.value) await lockOrientation('portrait')
+      }
     }
   }
   else {

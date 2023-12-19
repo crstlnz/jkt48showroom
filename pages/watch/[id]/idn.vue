@@ -30,6 +30,7 @@ const streamURLs = computed(() => {
         <div v-if="pending" class="w-full h-full" />
         <Suspense v-else>
           <LazyWatchVideo
+            :landscape="false"
             class="w-full h-full"
             :poster="data?.image ?? ''" :sources="streamURLs" @fullsceen="(isFullscreen) => {
             }"

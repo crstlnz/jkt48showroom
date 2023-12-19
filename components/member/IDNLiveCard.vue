@@ -104,9 +104,8 @@ const pending = ref(false)
 </script>
 
 <template>
-  <NuxtLink
+  <div
     ref="container"
-    :to="`/watch/${live.user.username}/idn`"
     class="group relative z-0 aspect-[20/28] origin-top overflow-hidden rounded-xl shadow-md transition-[transform,box-shadow,z-index] duration-300 will-change-transform md:aspect-[20/26]"
     :class="{ 'lg:scale=[122%] z-50 translate-y-[-10%] scale-[115%] shadow-black/50 drop-shadow-2xl dark:shadow-black/80 md:scale-[118%] xl:scale-125': isPreview, 'shadow-sm ': !isPreview }"
   >
@@ -123,7 +122,7 @@ const pending = ref(false)
         <Icon v-if="!openMenu" name="ph:dots-three-outline-fill" class="aspect-square text-xs text-white md:text-base" />
         <Icon v-else name="ph:x-bold" class="aspect-square text-xs md:text-base" />
       </button>
-      <div ref="hover" :class="{ 'cursor-pointer': isSupported }" class="disable-highlight relative w-full h-full">
+      <NuxtLink ref="hover" :to="`/watch/${live.user.username}/idn`" :class="{ 'cursor-pointer': isSupported }" class="disable-highlight relative w-full h-full">
         <div :class="isHovered && !isPreview && isSupported ? 'visible opacity-100' : 'invisible opacity-0'" class="absolute bottom-10 left-3 md:bottom-11 md:left-4 z-40 rounded-md bg-black px-2 py-1 text-xs text-white dark:bg-slate-100 dark:text-black">
           Keep Hover
         </div>
@@ -146,11 +145,13 @@ const pending = ref(false)
             </div>
           </div>
         </div>
-      </div>
+      </NuxtLink>
     </div>
-    <NuxtLink :to="`https://idn.app/${live?.user?.username}/live/${live?.slug}`" target="_blank" :external="true" no-prefetch class="absolute top-0 left-0 z-20 p-3 md:p-4">
-      <NuxtImg src="https://upload.wikimedia.org/wikipedia/commons/b/ba/IDN_Live.svg" size="64px" class="w-16" />
-    </NuxtLink>
+    <div class="absolute top-0 left-0 z-20 p-3 md:p-4 pointer-events-none">
+      <NuxtLink class="pointer-events-auto" :to="`https://idn.app/${live?.user?.username}/live/${live?.slug}`" target="_blank" :external="true" no-prefetch>
+        <NuxtImg src="https://upload.wikimedia.org/wikipedia/commons/b/ba/IDN_Live.svg" size="64px" class="w-16" />
+      </NuxtLink>
+    </div>
     <div class="absolute bottom-0 left-0 z-20 font-semibold w-full pointer-events-none">
       <div class="flex gap-1.5 items-center p-3 md:p-4 relative">
         <div class="shadow-bawah z-10" />
@@ -179,7 +180,7 @@ const pending = ref(false)
         </li>
       </ul>
     </div>
-  </NuxtLink>
+  </div>
 </template>
 
 <style lang="scss">
