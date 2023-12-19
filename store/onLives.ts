@@ -3,24 +3,40 @@ import JSONSerializer from '~~/library/serializer/json'
 
 export const useOnLives = defineStore('onLives', () => {
   const config = useRuntimeConfig()
-  const { data: lives, pending, error, refresh, tryRefresh } = useLocalStoreController<IRoomLive[] | null>('onlives', {
+  const { data: lives, pending, error, refresh, tryRefresh } = useLocalStoreController<LiveData | null>('onlives', {
     fetch: refreshLives,
     expiredIn: 10000,
-    serializer: new JSONSerializer<IRoomLive[] | null>(null),
+    serializer: new JSONSerializer<LiveData | null>(null),
   })
 
   const settings = useSettings()
 
+  const hasLives = computed(() => {
+    return (lives.value?.showroom?.length ?? lives.value?.idn?.length ?? 0) > 0
+  })
+
+  const liveCount = computed(() => (lives.value?.showroom?.length ?? 0) + (lives.value?.idn?.length ?? 0))
+
   const livesMap = computed(() => {
     const map = new Map()
     if (!lives.value) return map
-    for (const live of (lives.value ?? [])) {
+    for (const live of (lives.value.showroom ?? [])) {
       map.set(live.room_id, live)
     }
     return map
   })
 
-  async function refreshLives(): Promise<IRoomLive[]> {
+  async function refreshLives(): Promise<LiveData> {
+    const showroomLives = await getShowroomLives().catch(_ => [] as IRoomLive[])
+    const idnLives = await getIDNLives().catch(_ => [] as IDNLives[])
+
+    return {
+      showroom: showroomLives,
+      idn: idnLives,
+    }
+  }
+
+  async function getShowroomLives(): Promise<IRoomLive[]> {
     if (!config.public.isDev) {
       return await $apiFetch(`/api/now_live`, { query: { group: settings.group, _: new Date().getTime() } })
     }
@@ -43,12 +59,20 @@ export const useOnLives = defineStore('onLives', () => {
     }
   }
 
+  async function getIDNLives(): Promise<IDNLives[]> {
+    return await $apiFetch<IDNLives[]>(`/api/idn_lives`).catch((_) => {
+      return []
+    })
+  }
+
   function isLive(roomId: number) {
     return livesMap.value?.has(roomId)
   }
 
   return {
     data: lives,
+    hasLives,
+    liveCount,
     pending,
     error,
     tryRefresh,

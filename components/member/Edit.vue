@@ -10,11 +10,27 @@ const props = withDefaults(defineProps<{
 }>(), {
   pending: () => false,
 })
+
 const emit = defineEmits<{
   (e: 'onDismiss'): void
   (e: 'onUpdateShowroom', data: Admin.IShowroomMember): void
   (e: 'onUpdateMember', data: Admin.I48Member): void
 }>()
+
+const router = useRouter()
+const route = useRoute()
+const hashDialog = '#formdialog'
+onMounted(() => {
+  router.push({
+    path: route.fullPath,
+    hash: '#formdialog',
+  })
+})
+
+watch(() => route.hash, (hash, oldhash) => {
+  if (oldhash === hashDialog && !hash) emit('onDismiss')
+})
+
 const { addNotif } = useNotifications()
 const member = ref<Admin.IShowroomMember | undefined>(props.member)
 const stage48members = ref(props.stage48members?.filter(i => i.group === member.value?.group))
@@ -97,12 +113,12 @@ const tabList = ref([
 </script>
 
 <template>
-  <div class="fixed inset-0 z-aboveNav bg-black/50 overscroll-contain">
-    <div ref="editDialog" class=" bg-container absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xl px-2">
-      <div v-if="!pending && member" class="roundedscrollbar my-6 max-h-[90vh] max-w-[90vw] overflow-y-auto overscroll-none px-3 md:px-5 lg:px-8">
-        <div class="flex flex-col gap-1.5">
-          <div class="flex items-center gap-6 overflow-x-auto">
-            <div class="aspect-video h-32 shrink-0 overflow-hidden rounded-xl border-2 dark:border-dark-2 md:h-36 xl:h-40">
+  <div class="fixed inset-0 z-aboveNav bg-black/50">
+    <div ref="editDialog" class="bg-container absolute left-1/2 top-1/2 -translate-x-1/2 overflow-y-auto overscroll-contain -translate-y-1/2 md:rounded-xl max-md:w-full max-md:h-full max-h-full max-w-full md:max-h-[95vh] md:max-w-[95vw]">
+      <div v-if="!pending && member" class="roundedscrollbar py-4 md:py-6 px-3 md:px-5 lg:px-8">
+        <div class="flex flex-col gap-1.5 w-full">
+          <div class="flex h-20 md:h-32 xl:h-36 items-center gap-3 md:gap-5 overflow-x-auto">
+            <div class="aspect-video h-full shrink-0 overflow-hidden rounded-xl border-2 dark:border-dark-2">
               <LazyImage class="h-full w-full object-cover" :src="$fixCloudinary(member?.img || config.errorPicture)" :alt="member.name" />
             </div>
             <MemberFormImage
@@ -111,7 +127,7 @@ const tabList = ref([
               :is-potrait="true"
               :member-data-id="member?.member_data?._id"
               form-id="image"
-              class="aspect-square h-32 shrink-0 overflow-hidden rounded-full border-2 dark:border-dark-2 md:h-36 xl:h-40"
+              class="aspect-square h-full shrink-0 overflow-hidden rounded-full border-2 dark:border-dark-2"
               image-class="h-full w-full object-cover"
               :src="member?.member_data?.img" :alt="member.name"
               @uploaded="(url) => {
@@ -121,7 +137,7 @@ const tabList = ref([
             />
             <div
               v-else
-              class="bg-container-2 flex aspect-square h-32 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 text-center dark:border-dark-2 md:h-36 xl:h-40"
+              class="bg-container-2 flex aspect-square h-full shrink-0 items-center justify-center overflow-hidden rounded-full border-2 text-center dark:border-dark-2"
             >
               <div>Member data is not defined!</div>
             </div>
@@ -130,7 +146,7 @@ const tabList = ref([
               form-id="banner"
               post-url="/api/admin/member/banner"
               :member-data-id="member?.member_data?._id"
-              class="aspect-[15/5] h-32 shrink-0 overflow-hidden rounded-xl border-2 dark:border-dark-2 md:h-36 xl:h-40"
+              class="aspect-[15/5] h-full shrink-0 overflow-hidden rounded-xl border-2 dark:border-dark-2"
               image-class="h-full w-full object-cover bg-container-2" :src="member?.member_data?.banner"
               @uploaded="(url) => {
                 if (member?.member_data)
@@ -139,7 +155,7 @@ const tabList = ref([
             />
             <div
               v-else
-              class="bg-container-2 flex aspect-[15/5] h-32 shrink-0 items-center justify-center overflow-hidden rounded-xl border-2 text-center dark:border-dark-2 md:h-36 xl:h-40"
+              class="bg-container-2 flex aspect-[15/5] h-full shrink-0 items-center justify-center overflow-hidden rounded-xl border-2 text-center dark:border-dark-2"
             >
               <div>Member data is not defined!</div>
             </div>
@@ -147,16 +163,16 @@ const tabList = ref([
           <div class="flex flex-col">
             <div class="flex justify-between">
               <div>
-                <div class="pt-2 text-2xl font-bold">
+                <div class="pt-2 text-base md:text-xl xl:text-2xl font-bold">
                   {{ member.name }}
                 </div>
-                <div class="pb-2 text-base opacity-75">
+                <div class="pb-2 text-xs md:text-base opacity-75">
                   {{ member.url }}
                 </div>
               </div>
               <button type="button" class="" @click="toggleGraduate(member?.member_data?.isGraduate !== true)">
                 <div class="flex items-center gap-1 text-xl">
-                  <div class="text-base" :class="member.is_group ? 'text-blue-500' : (member?.member_data?.isGraduate ? 'text-red-500' : 'text-green-500')">
+                  <div class="text-sm md:text-base" :class="member.is_group ? 'text-blue-500' : (member?.member_data?.isGraduate ? 'text-red-500' : 'text-green-500')">
                     {{ member.is_group ? "Official" : (member?.member_data?.isGraduate ? "Graduated" : "Active") }}
                   </div>
                   <Icon name="humbleicons:exchange-horizontal" size="1.2rem" />
@@ -164,14 +180,14 @@ const tabList = ref([
               </button>
             </div>
             <div class="flex items-center gap-3">
-              <div class="whitespace-nowrap text-base">
+              <div class="whitespace-nowrap text-sm md:text-base">
                 Member Data :
               </div>
               <FormSelect
                 v-if="stage48members != null"
                 v-model="memberDataId"
                 form-id="memberDataId"
-                input-class="bg-container-2 text-base"
+                input-class="bg-container-2 text-sm md:text-base"
                 class="min-w-0 flex-1"
                 :data="stage48members.map(i => { return { title: i.name, value: (i as any)._id } })"
               />
@@ -181,15 +197,15 @@ const tabList = ref([
               <button
                 :disabled="memberDataId === (member.member_data as any)?._id || applyProgress"
                 type="button"
-                class="rounded-full bg-blue-500 px-4 py-2 text-white hover:brightness-75 disabled:brightness-50"
+                class="rounded-full bg-blue-500 px-4 md:px-5 py-1.5 md:py-2 text-white hover:brightness-75 disabled:brightness-50 text-sm md:text-base"
                 @click="applyMemberData"
               >
                 Save
               </button>
             </div>
             <div class="mt-4">
-              <div class="flex items-stretch overflow-hidden rounded-full border-2 border-slate-200 text-center text-lg hover:[&>div]:bg-container-2 dark:border-dark-3 [&>div]:h-10">
-                <div v-for="tab in tabList" :key="tab.key" class="flex-1 cursor-pointer leading-10" :class="{ 'bg-container-2': tabState === tab.key }" @click="tabState = tab.key">
+              <div class="flex items-stretch overflow-hidden rounded-full border-2 border-slate-200 text-center text-sm md:text-lg hover:[&>div]:bg-container-2 dark:border-dark-3 [&>div]:h-8 [&>div]:md:h-10">
+                <div v-for="tab in tabList" :key="tab.key" class="flex-1 cursor-pointer leading-8 md:leading-10" :class="{ 'bg-container-2': tabState === tab.key }" @click="tabState = tab.key">
                   {{ tab.title }}
                 </div>
               </div>
@@ -217,11 +233,13 @@ const tabList = ref([
           </div>
         </div>
       </div>
-      <div v-else class="p-5 text-xl text-center space-y-3 pb-7">
-        <div>
-          Loading...
+      <div v-else class="p-5 text-xl text-center pb-7 flex items-center justify-center h-full">
+        <div class="space-y-3">
+          <div>
+            Loading...
+          </div>
+          <Icon name="heroicons:arrow-path" class="animate-spin" size="2rem" />
         </div>
-        <Icon name="heroicons:arrow-path" class="animate-spin" size="2rem" />
       </div>
     </div>
   </div>

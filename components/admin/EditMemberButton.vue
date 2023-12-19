@@ -58,10 +58,12 @@ function onDismiss() {
         :member="editMember"
         :stage48members="(stage48members as any) ?? []"
         :jkt48members="(jkt48members as any) ?? []"
+        @on-update-member="onDismiss"
+        @on-update-showroom="onDismiss"
         @on-dismiss="onDismiss"
       />
     </Transition>
-    <button v-ripple type="button" class="bg-blue-500 rounded-full h-full aspect-square flex items-center justify-center" @click="editRequest">
+    <button v-ripple type="button" class="bg-blue-500 rounded-full h-full aspect-square flex items-center justify-center text-blue-50" @click="editRequest">
       <Icon name="heroicons:pencil-solid" class="w-full h-full p-2" />
     </button>
   </div>

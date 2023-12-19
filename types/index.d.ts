@@ -398,6 +398,31 @@ interface IMemberProfileAPI extends IMemberBasicData {
   upcomingTheater?: ITheaterAPI[]
 }
 
+interface IDNUser {
+  id: string
+  name: string
+  username: string
+  avatar: string
+}
+
+interface IDNLives {
+  user: IDNUser
+  image: string
+  title: string
+  slug: string
+  view_count: number
+  live_at: string
+  stream_url: string
+}
+
+type IRoomLiveExtended = IRoomLive & { type: 'showroom' }
+type IDNLivesExtended = IRoomLive & { type: 'idn' }
+type LivesData = IRoomLiveExtended | IDNLivesExtended
+interface LiveData {
+  showroom: IRoomLive[]
+  idn: IDNLives[]
+}
+
 declare module 'vue-virtual-scroller'
 declare module 'cors'
 declare module 'vue-twitter-timeline'

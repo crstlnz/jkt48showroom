@@ -1,4 +1,4 @@
-import { FormArrayString, FormNumber, FormSelect, FormSelectMultiple, FormText, FormTextArea } from '#components'
+import { FormArrayObject, FormArrayString, FormNumber, FormSelect, FormSelectMultiple, FormText, FormTextArea } from '#components'
 
 export function getForm(formName: string) {
   switch (formName) {
@@ -22,8 +22,17 @@ export function getForm(formName: string) {
       return FormArrayString
     }
 
+    case 'arrayobject' :{
+      return FormArrayObject
+    }
+
     default : {
       return FormText
     }
   }
+}
+
+export function isMultiple(component: string | undefined) {
+  if (!component) return false
+  return ['selectmultiple', 'arraystring', 'arrayobject'].includes(component)
 }

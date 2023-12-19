@@ -129,7 +129,7 @@ async function refreshDate() {
           Keep Hover
         </div>
         <div section="preview-on" :class="{ 'visible opacity-100': isPreview, 'invisible opacity-0': !isPreview }" class="absolute inset-x-0 top-0 z-20 transition-opacity duration-[400ms]">
-          <LazyPreviewVideo v-if="!live.is_premium" ref="preview" :src="streamingURL" :playing="playing" />
+          <LazyPreviewVideo v-if="!live.is_premium" ref="preview" :src="streamingURL" :playing="playing" class="aspect-video" />
           <div v-else class="flex aspect-video h-full w-full items-center justify-center bg-black/90 font-bold text-white">
             {{ $t("premium_live") }}
           </div>

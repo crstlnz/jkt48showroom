@@ -106,7 +106,7 @@ function onDragLeave(ev: DragEvent) {
       Drop a image
     </div>
     <div v-if="isChanged" class="z-1 absolute inset-0 flex items-center justify-center" @click="selectImage">
-      <button v-if="!isUploading" type="button" :disabled="isUploading" :class="saveClass" class="rounded-full bg-black/50 px-3 py-1 text-white opacity-75" @click="save">
+      <button v-if="!isUploading" type="button" :disabled="isUploading" :class="saveClass" class="rounded-full bg-black/50 px-2  md:px-3 py-0.5 md:py-1 text-white opacity-75 text-xs md:text-sm" @click="save">
         Save
       </button>
       <div v-else class="rounded-full bg-black/50">

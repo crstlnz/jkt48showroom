@@ -16,13 +16,16 @@ const props = withDefaults(defineProps<{
   label?: string
   modelValue: any[]
   inputClass?: string
+  autoFocus?: boolean
   data: { title: string, value: string }[]
 }>(), {
   inputClass: '',
+  autoFocus: false,
 })
+
 const emit = defineEmits(['update:modelValue'])
 const input = ref()
-const { focused } = useFocus(input)
+useFocus(input, { initialValue: props.autoFocus })
 const selectedData = computed(() => {
   const data = Array.isArray(props.modelValue) ? props.modelValue : [props.modelValue]
   return data.map((id) => {
@@ -60,45 +63,47 @@ watch(selectedId, (id) => {
   add(id)
   query.value = ''
 })
-onMounted(() => {
-  focused.value = true
-})
 </script>
 
 <template>
   <div class="flex flex-col gap-1 border-t-2 border-dashed border-b-2 py-2 border-white/10">
     <label v-if="label" class="pl-2.5" :for="formId">{{ label }}</label>
-    <div class="flex flex-wrap gap-3">
-      <button
-        v-for="i in selectedData" :key="i?.value" type="button" class="group py-1.5 px-2.5 bg-container-2 rounded-md overflow-hidden relative min-w-[120px]" @click="() => {
-          remove(i?.value!)
-        }"
+    <div class="flex flex-wrap gap-3 !bg-transparent" :class="inputClass">
+      <div
+        v-for="i in selectedData" :key="i?.value" type="button" class="group py-1.5 px-2.5 bg-container-2 rounded-md relative min-w-[115px]"
       >
-        <div class="absolute bg-black/60 inset-0 group-hover:opacity-100 opacity-0 transition-opacity flex justify-center items-center text-sm gap-2">
-          <span>Id : {{ i?.value }}</span>
-          <Icon name="heroicons:x-circle-20-solid" size="1.4rem" />
+        <div class="absolute right-1 -translate-y-1/2 translate-x-1/2 top-1 group-hover:opacity-100 opacity-0 transition-opacity flex justify-center items-center text-sm gap-2">
+          <button
+            type="button"
+            class="w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center" @click="() => {
+              remove(i?.value || '')
+            }"
+          >
+            <Icon name="heroicons:x-mark-20-solid" size="1.4rem" class="w-full h-full p-0.5" />
+          </button>
         </div>
-        <div class="group-hover:opacity-0">
+        <div class="flex gap-3 text-center justify-center">
           {{ i?.title }}
         </div>
-      </button>
+      </div>
       <Combobox v-model="selectedId">
-        <div class="relative">
+        <div class="relative flex-1 w-0 min-w-[160px] md:min-w-[200px]">
           <div
-            class="relative w-full cursor-default overflow-hidden rounded-lg text-left sm:text-sm"
+            class="relative w-full cursor-default overflow-hidden rounded-md text-left sm:text-sm"
           >
             <ComboboxInput
               ref="input"
               :class="inputClass"
               :placeholder="selectedData?.length ? 'Search lagi' : 'Search'"
-              class="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 focus:ring-0 outline-none min-w-[350px]"
+              class="w-full border-none py-1.5 pl-3 pr-10 text-sm leading-5 focus:ring-0 outline-none min-w-[350px]"
               :display-value="() => ''"
               @change="query = $event.target.value"
             />
             <ComboboxButton
               class="absolute inset-y-0 right-0 flex items-center pr-2"
             >
-              <ChevronUpDownIcon
+              <Icon
+                name="material-symbols:arrow-drop-down-rounded"
                 class="h-5 w-5 text-gray-400"
                 aria-hidden="true"
               />
@@ -112,7 +117,7 @@ onMounted(() => {
             @after-leave="query = ''"
           >
             <ComboboxOptions
-              class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-container-2 py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm"
+              class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-container-2 py-1.5 text-xs md:text-sm shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm"
             >
               <div
                 v-if="filteredData.length === 0 && query !== ''"
@@ -135,7 +140,7 @@ onMounted(() => {
                 as="template"
               >
                 <li
-                  class="relative cursor-default select-none py-2 px-4"
+                  class="relative cursor-pointer select-none py-2 px-4"
                   :class="{
                     'bg-blue-500': active,
                   }"
@@ -145,13 +150,6 @@ onMounted(() => {
                     :class="{ 'font-medium': selected, 'font-normal': !selected }"
                   >
                     {{ member.title }}
-                  </span>
-                  <span
-                    v-if="selected"
-                    class="absolute inset-y-0 left-0 flex items-center pl-3"
-                    :class="{ 'text-white': active, 'text-teal-600': !active }"
-                  >
-                    <CheckIcon class="h-5 w-5" aria-hidden="true" />
                   </span>
                 </li>
               </ComboboxOption>

@@ -76,6 +76,7 @@ const sortedGift = computed(() => {
 const viewers = ref(0)
 
 const user = ref({
+  id: 0,
   name: '',
   rank: 0,
   avatar: '',
@@ -88,6 +89,7 @@ async function getPolling() {
     const poll = await $apiFetch<ShowroomAPI.Polling | ShowroomAPI.PollingLiveEnd>(`${config.public.api}/api/showroom/polling`, { params: { _: new Date().getTime(), room_id: roomId.value } })
     const current_user = await $apiFetch<ShowroomAPI.CurrentUser>(`${config.public.api}/api/showroom/current_user`, { params: { _: new Date().getTime(), room_id: roomId.value } })
     user.value = {
+      id: current_user.user_id,
       name: current_user.name,
       rank: current_user.live_rank,
       avatar: current_user.avatar_url,
@@ -262,8 +264,9 @@ const { comments, delayedComments, appendComment, createComment, appendDelayedCo
 onGift((gift: ShowroomAPI.GiftLogItem) => {
   addGift(gift)
 })
+
 onComment((comment) => {
-  if (data.value?.user?.id === comment.user_id) return
+  if (user.value?.id === comment.user_id) return
   appendComment(comment)
 })
 </script>
@@ -311,12 +314,13 @@ onComment((comment) => {
                 </div>
               </div>
 
-              <LazyWatchVideo
-                v-else
-                ref="video" :poster="data?.image ?? ''" :sources="data?.streaming_url_list ?? []" @fullsceen="(isFullscreen) => {
-                  if (isFullscreen && comment) stopAutoAppend()
-                }"
-              />
+              <Suspense v-else>
+                <LazyWatchVideo
+                  ref="video" :poster="data?.image ?? ''" :sources="data?.streaming_url_list ?? []" @fullsceen="(isFullscreen) => {
+                    if (isFullscreen && comment) stopAutoAppend()
+                  }"
+                />
+              </Suspense>
             </ClientOnly>
           </div>
           <div class="mt-3 flex flex-wrap justify-between gap-2 px-2 text-xl font-semibold max-sm:flex-wrap sm:items-center md:gap-3 lg:px-0">

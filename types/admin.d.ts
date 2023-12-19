@@ -1,4 +1,41 @@
 declare namespace Admin {
+  interface FormBasic {
+    title: string
+    id: string
+    component: string
+  }
+
+  interface FormText extends FormBasic {
+    placeholder?: string
+    data: string
+    check: (data: string) => boolean
+  }
+
+  interface FormArrayText extends FormBasic {
+    data: string[]
+    check: (data: string[]) => boolean
+  }
+
+  interface FormSelect extends FormBasic {
+    data: string
+    options: {
+      title: string
+      value: string
+    }[]
+    check: (data: string) => boolean
+  }
+
+  interface FormMultipleSelect extends FormBasic {
+    data: string[]
+    options: {
+      title: string
+      value: string
+    }[]
+    check: (data: string[]) => boolean
+  }
+
+  type Form = FormSelect | FormArrayText | FormSelect | FormMultipleSelect
+
   type I48Member = Database.I48Member & { _id: string | null }
   type IShowroomMember = Omit<Database.IShowroomMember, 'member_data'> & {
     _id: string

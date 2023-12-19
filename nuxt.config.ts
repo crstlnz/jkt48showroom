@@ -31,6 +31,7 @@ export default defineNuxtConfig({
   security: {
     nonce: !isDev,
     headers: {
+      permissionsPolicy: { fullscreen: '*' },
       crossOriginEmbedderPolicy: false,
       contentSecurityPolicy: !isDev
         ? {

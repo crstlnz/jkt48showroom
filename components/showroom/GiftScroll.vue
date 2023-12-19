@@ -190,9 +190,9 @@ watch(search, () => {
     </template>
 
     <template v-if="!giftData.length && !pending" #empty>
-      <div class="flex aspect-[14/8] items-center justify-center">
+      <div class="flex aspect-[14/8] items-center justify-center px-6 pt-6 pb-8 ">
         <div class="flex flex-col">
-          <img class="mx-auto h-auto w-[300px] max-w-[90%]" :alt="$t('giftempty')" :src="`${$cloudinaryURL}/assets/img/web/empty-box.png`">
+          <img class="mx-auto h-auto w-[300px] max-w-[80%]" :alt="$t('giftempty')" :src="`${$cloudinaryURL}/assets/img/web/empty-box.png`">
           <div class="mt-3 text-center font-bold">
             {{ search != null && search !== '' ? `${$t("noresult")} "${search}"` : $t("giftempty") }}
           </div>

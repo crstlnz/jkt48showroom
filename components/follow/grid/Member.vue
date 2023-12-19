@@ -18,7 +18,7 @@ async function reorder() {
     addNotif({
       type: 'success',
       message: t('reorder.success', { name: props.room.room_name }),
-      duration: 1500,
+      duration: 2500,
     })
   }
   catch (e) {
@@ -26,7 +26,7 @@ async function reorder() {
     addNotif({
       type: 'danger',
       message: t('reorder.failed'),
-      duration: 1500,
+      duration: 2500,
     })
   }
 }
@@ -44,7 +44,7 @@ async function follow() {
     addNotif({
       type: 'success',
       message: t(isLike.value ? 'follow.following' : 'follow.unfollow', { name: props.room.room_name }),
-      duration: 1500,
+      duration: 2500,
     })
   }
   catch (e) {
@@ -52,7 +52,7 @@ async function follow() {
     addNotif({
       type: 'danger',
       message: t('follow.failed'),
-      duration: 1500,
+      duration: 2500,
     })
   }
 }

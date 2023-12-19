@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { LazyImage } from '#components'
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   formId: string
   modelValue: any
   inputClass?: string
@@ -13,6 +13,8 @@ withDefaults(defineProps<{
 })
 
 const emit = defineEmits(['update:modelValue'])
+
+const image = ref('')
 
 const inputImage = ref<HTMLInputElement>()
 
@@ -37,6 +39,31 @@ function setImageInput(file: File) {
   emit('update:modelValue', URL.createObjectURL(file))
 }
 
+watch(() => props.modelValue, () => {
+  if (typeof props.modelValue === 'string') {
+    image.value = props.modelValue
+  }
+  else {
+    readURL(props.modelValue)
+  }
+}, {
+  immediate: true,
+})
+
+function readURL(files: FileList) {
+  if (files && files[0]) {
+    const reader = new FileReader()
+
+    reader.onload = function (e) {
+      if (e.target?.result) {
+        image.value = e.target.result as string
+      }
+    }
+
+    reader.readAsDataURL(files[0])
+  }
+}
+
 defineExpose({
   selectImage,
   inputImage,
@@ -46,7 +73,7 @@ defineExpose({
 
 <template>
   <div class="relative max-w-full rounded-md outline-2 outline-black/10" :class="inputClass" @click="selectImage">
-    <LazyImage v-if="modelValue" :src="modelValue" :class="imageClass" :alt="alt ?? 'Image Form'" class="bg-container-2 h-full w-full object-cover" />
+    <LazyImage v-if="modelValue" :src="image" :class="imageClass" :alt="alt ?? 'Image Form'" class="bg-container-2 h-full w-full object-cover" />
     <div v-else :class="imageClass" :alt="alt ?? 'Image Form'" />
     <div class="absolute inset-0 flex cursor-pointer items-center justify-center bg-black/30 opacity-0 transition-opacity duration-300 hover:opacity-100">
       <Icon name="material-symbols:edit-rounded" size="1.6rem" class="text-white" />

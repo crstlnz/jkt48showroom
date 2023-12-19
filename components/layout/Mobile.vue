@@ -9,6 +9,7 @@ const props = defineProps<{
 defineEmits(['toggleDark'])
 const isOpen = ref(false)
 const route = useRoute()
+const router = useRouter()
 
 watch(() => route.path, () => {
   isOpen.value = false
@@ -35,13 +36,35 @@ onMounted(() => {
 watch(isOpen, (open) => {
   isLocked.value = open
 })
+
+const hashMenu = '#menu'
 function openMenu() {
-  isOpen.value = true
+  router.push({
+    path: route.path,
+    hash: hashMenu,
+  })
 }
 
 function closeMenu() {
-  isOpen.value = false
+  router.back()
 }
+
+watch(() => route.fullPath, (p, oP) => {
+  if (process.server) return
+  const hash = `#${p.split('#')?.[1] || ''}`
+  const path = (p.split('#')?.[0])?.split('?')?.[0] || ''
+  const oldPath = (oP?.split('#')?.[0])?.split('?')?.[0]
+  if (oldPath != null && path !== oldPath) {
+    if (hash === hashMenu && oldPath) {
+      router.back()
+    }
+  }
+  else {
+    nextTick(() => {
+      isOpen.value = hash === hashMenu
+    })
+  }
+}, { immediate: true })
 </script>
 
 <template>
@@ -80,63 +103,66 @@ function closeMenu() {
       :class="{
         'visible translate-x-0': isOpen,
         'invisible translate-x-full': !isOpen,
-      }" class="ease bg-container fixed inset-y-0 right-0 z-aboveNav w-[85%] overflow-y-auto p-5 transition-[transform,visibility] duration-300"
+      }" class="ease bg-container fixed inset-y-0 right-0 z-aboveNav w-[80%] overflow-y-auto p-5 transition-[transform,visibility] duration-300"
     >
-      <button class="absolute right-5" @click="closeMenu">
-        <Icon name="ic:round-close" size="2.2rem" />
-      </button>
-      <div class="flex flex-col">
-        <div class="mt-5 border-b">
-          <NuxtLink v-if="!authenticated" to="/login" aria-label="Login" class="my-3 flex items-center gap-3 rounded-full">
-            <div class="h-10 w-10">
-              <Icon name="ic:baseline-person" size="1.5em" class="h-full w-full rounded-full bg-slate-400 p-2 text-white dark:bg-dark-1 dark:text-slate-500/50" />
+      <div class="flex flex-col h-full">
+        <div class="pb-5 border-b-2 border-black/10 dark:border-white/5">
+          <NuxtLink :to="authenticated ? undefined : '/login'" class="flex items-center gap-3 rounded-full">
+            <div class="h-11 w-11 bg-container-2 rounded-full overflow-hidden">
+              <NuxtImg
+                v-if="authenticated && user?.image"
+                class="h-full w-full bg-slate-400 text-white dark:bg-dark-1 dark:text-slate-500/50"
+                :src="user?.image"
+                alt="User profile picture"
+                fit="fill"
+                :modifiers="{
+                  aspectRatio: 1,
+                  gravity: 'faceCenter',
+                }"
+                width="56px"
+                :placeholder="[4, 4, 75, 5]"
+                format="webp"
+              />
+              <Icon v-else name="ic:baseline-person" size="1.5em" class="h-full w-full rounded-full p-2 text-white dark:text-slate-500/50" />
             </div>
-            <div class="mr-3 flex flex-col">
-              <div class="text-base font-semibold">
-                Login
+            <div class="mr-3 flex flex-1 flex-col items-start">
+              <div class="text-base font-semibold !leading-5">
+                {{ authenticated ? user?.name : "Login" }}
               </div>
-              <div class="font-light">
-                Login with Showroom
+              <div class="text-left text-sm font-light !leading-5">
+                {{ authenticated ? user?.account_id : $t('loginwithshowroom') }}
               </div>
             </div>
           </NuxtLink>
-          <div v-else class="my-5 flex items-center gap-3 rounded-full">
-            <NuxtImg
-              v-if="user?.image"
-              class="h-12 w-12 overflow-hidden rounded-full bg-slate-400 p-2 text-white dark:bg-dark-1 dark:text-slate-500/50"
-              :src="user?.image"
-              alt="User profile picture"
-              fit="fill"
-              :modifiers="{
-                aspectRatio: 1,
-                gravity: 'faceCenter',
-              }"
-              width="48px"
-              :placeholder="[4, 4, 75, 5]"
-              format="webp"
-            />
-            <Icon v-else name="ic:baseline-person" size="1.5em" class="h-10 w-10 rounded-full bg-slate-400 p-2 text-white dark:bg-dark-1 dark:text-slate-500/50" />
-            <div class="mr-3 flex flex-1 flex-col items-start">
-              <div class="text-base font-semibold">
-                {{ user?.name }}
+        </div>
+        <div class="flex-1">
+          <div v-if="hiddenMenus.length" class="mt-5 flex flex-col gap-3 items-start border-b pb-5 border-black/10 dark:border-white/5">
+            <NuxtLink v-for="menu in hiddenMenus" :key="menu.title" :to="menu.url" class="flex w-full items-start justify-start">
+              <div class="flex items-center justify-start gap-3 rounded-full py-1.5 px-3" :class="{ 'bg-hover': route.path === menu.url }">
+                <SwitchIcon :is-switch="route.path === menu.url" :icon="menu.icon" :switch-icon="menu.activeIcon" class="h-5 w-5" />
+                <div class="text-lg font-bold">
+                  {{ menu.title }}
+                </div>
               </div>
-              <div v-if="user?.account_id" class="text-left font-light">
-                {{ user?.account_id }}
-              </div>
-            </div>
+            </NuxtLink>
+          </div>
+          <div class="flex flex-col gap-2 pt-5">
+            <LangSwitch class="bg-container flex flex-1 items-center justify-start gap-3 rounded-full p-3" :compact="false" :full-title="true" />
+            <NuxtLink v-ripple to="/history" class="flex gap-3 rounded-full p-3 text-left">
+              <Icon name="ic:round-history" class="h-5 w-5" />
+              <span class="text-lg font-semibold leading-5">
+                History
+              </span>
+            </NuxtLink>
+            <NuxtLink v-ripple :to="authenticated ? '/logout' : '/login'" class="flex gap-3 rounded-full p-3 text-left">
+              <Icon name="ic:baseline-logout" class="h-5 w-5" />
+              <span class="text-lg font-semibold leading-5">
+                {{ authenticated ? 'Logout' : 'Login' }}
+              </span>
+            </NuxtLink>
           </div>
         </div>
-        <div v-if="hiddenMenus.length" class="mt-5 flex flex-col items-start border-b pb-5">
-          <NuxtLink v-for="menu in hiddenMenus" :key="menu.title" :to="menu.url" class="flex w-full items-start justify-start">
-            <div class="flex items-center justify-start gap-3 rounded-full p-3" :class="{ 'bg-hover': route.path === menu.url }">
-              <Icon :name="menu.icon" class="h-7 w-7" />
-              <div class="text-xl">
-                {{ menu.title }}
-              </div>
-            </div>
-          </NuxtLink>
-        </div>
-        <div class="flex flex-col gap-2 pt-5">
+        <div>
           <button
             v-ripple
             type="button"
@@ -146,26 +172,7 @@ function closeMenu() {
           >
             <Icon name="ph:moon-bold" class="!hidden h-5 w-5 dark:!block" />
             <Icon name="ph:sun-bold" class="h-5 w-5 dark:!hidden" />
-            <div class="text-lg font-semibold leading-5 dark:!hidden">
-              Light
-            </div>
-            <div class="!hidden text-lg font-semibold leading-5 dark:!inline-block">
-              Dark
-            </div>
           </button>
-          <LangSwitch class="bg-container flex flex-1 items-center justify-start gap-3 rounded-full p-3" :compact="false" :full-title="true" />
-          <NuxtLink v-ripple to="/history" class="flex gap-3 rounded-full p-3 text-left">
-            <Icon name="ic:round-history" class="h-5 w-5" />
-            <span class="text-lg font-semibold leading-5">
-              History
-            </span>
-          </NuxtLink>
-          <NuxtLink v-ripple :to="authenticated ? '/logout' : '/login'" class="flex gap-3 rounded-full p-3 text-left">
-            <Icon name="ic:baseline-logout" class="h-5 w-5" />
-            <span class="text-lg font-semibold leading-5">
-              {{ authenticated ? 'Logout' : 'Login' }}
-            </span>
-          </NuxtLink>
         </div>
       </div>
     </div>

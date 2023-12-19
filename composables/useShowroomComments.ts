@@ -7,15 +7,16 @@ export default function (data: Ref<Watch.WatchData | null>) {
     comments.value = data.value?.comments ?? []
   })
 
+  const { user } = useAuth()
+
   function createComment(comment: string) { // create current user comment (logged in user is commenting to live)
-    const user = data.value?.user
     if (user) {
       const created_at = Math.floor(new Date().getTime() / 1000)
       appendComment({
-        id: `${user.id}${created_at}`,
-        avatar_id: user.avatar_id,
-        name: user.name || '',
-        user_id: user.id,
+        id: `${user.value?.id}${created_at}`,
+        avatar_id: Number(user.value?.avatar_id || 1),
+        name: user.value?.name || '',
+        user_id: Number(user.value?.id || 0),
         comment,
         created_at,
       })

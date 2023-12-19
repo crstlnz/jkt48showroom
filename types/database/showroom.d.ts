@@ -44,6 +44,7 @@ declare namespace Database {
     bloodType?: string
     height?: string
     showroom_id?: number
+    idn_username?: string
   }
 
   interface IShowroomGift {

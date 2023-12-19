@@ -72,8 +72,10 @@ function generateForm() {
     // {
     //   title: 'Social Media',
     //   id: 'socials',
-    //   component: 'select',
+    //   component: 'arrayobject',
     //   data: props.memberData?.socials,
+    //   keys: ['title', 'url'],
+    //   titleKey: 'title',
     //   options: group,
     //   check: (data: any): boolean => {
     //     return props.memberData.socials === data
@@ -138,6 +140,16 @@ function generateForm() {
         return props.memberData.generation === data
       },
     },
+    {
+      title: 'IDN Username',
+      placeholder: 'IDN Username',
+      id: 'idn_username',
+      data: props.memberData?.idn_username,
+      component: 'text',
+      check: (data: any): boolean => {
+        return props.memberData.idn_username === data
+      },
+    },
   ]
 }
 const formMemberData = ref(generateForm())
@@ -157,8 +169,22 @@ async function apply() {
   formData.append('_id', String(props.memberData._id))
   for (const form of formMemberData.value) {
     if (Array.isArray(form.data)) {
-      q[form.id] = form.data
-      for (const item of form.data) {
+      const data = []
+      if (form.component === 'arrayobject') {
+        for (const item of form.data) {
+          const obj = {} as any
+          for (const key of form.keys || []) {
+            obj[key] = (item as any)[key]
+          }
+          data.push(JSON.stringify(obj))
+        }
+      }
+      else {
+        data.push(...form.data)
+      }
+
+      q[form.id] = data
+      for (const item of data) {
         formData.append(`${form.id}[]`, String(item))
       }
     }
@@ -179,6 +205,7 @@ async function apply() {
       duration: 1500,
       message: 'Data berhasil diubah',
     })
+    console.log(q)
     emit('onUpdate', { ...props.memberData, ...q })
     isLoading.value = false
   }
@@ -197,20 +224,20 @@ async function apply() {
 <template>
   <div class="flex w-full flex-col gap-3">
     <div v-for="form in formMemberData" :key="form.id" class="flex gap-3">
-      <div class="w-[70px] shrink-0 truncate pt-1.5 md:w-[90px] lg:w-[120px]">
+      <div class="w-[65px] shrink-0 truncate pt-1.5 md:w-[90px] lg:w-[120px] text-sm md:text-base" :class="{ '!leading-[45px]': isMultiple(form.component) }">
         {{ form.title }}
       </div>
-      <Component :is="getForm(form.component ?? 'text')" v-model="form.data" :data="form.options" form-id="start" :placeholder="form.placeholder ?? form.title" input-class="bg-container-2 flex-1" class="min-w-0 flex-1" />
+      <Component :is="getForm(form.component ?? 'text')" v-model="form.data" :label="form.component === 'arrayobject' ? form.title : undefined" :title-key="form.titleKey" :keys="form.keys" :data="form.options || []" form-id="start" :placeholder="form.placeholder ?? form.title" input-class="bg-container-2 flex-1 text-sm md:text-base" class="w-0 flex-1" />
     </div>
     <div class="mt-1 flex justify-end gap-3">
       <button
         type="button"
-        class="rounded-full bg-red-500 px-6 py-2.5 text-white transition-transform hover:brightness-90 active:brightness-75 enabled:active:scale-95 disabled:cursor-not-allowed disabled:opacity-70 disabled:brightness-75"
+        class="text-sm md:text-base rounded-full bg-red-500 px-4 md:px-5 py-1.5 md:py-2 text-white transition-transform hover:brightness-90 active:brightness-75 enabled:active:scale-95 disabled:cursor-not-allowed disabled:opacity-70 disabled:brightness-75"
         @click="$emit('onDismiss')"
       >
         Close
       </button>
-      <button :disabled="!hasChanges || isLoading" type="button" class="rounded-full bg-blue-500 px-6 py-2.5 text-white transition-transform hover:brightness-90 active:brightness-75 enabled:active:scale-95 disabled:cursor-not-allowed disabled:opacity-70 disabled:brightness-75" @click="apply">
+      <button :disabled="!hasChanges || isLoading" type="button" class="text-sm md:text-base rounded-full bg-blue-500 px-4 md:px-5 py-1.5 md:py-2 text-white transition-transform hover:brightness-90 active:brightness-75 enabled:active:scale-95 disabled:cursor-not-allowed disabled:opacity-70 disabled:brightness-75" @click="apply">
         <Icon v-if="isLoading" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" name="svg-spinners:ring-resize" size="1.5rem" />
         <span :class="{ 'opacity-0': isLoading }">Apply</span>
       </button>

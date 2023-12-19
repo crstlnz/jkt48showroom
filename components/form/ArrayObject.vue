@@ -4,29 +4,43 @@ import { useFocus } from '@vueuse/core'
 const props = withDefaults(defineProps<{
   formId: string
   label?: string
-  modelValue: string[]
+  modelValue: any[]
   inputClass?: string
-  autoFocus?: boolean
+  keys: string[]
+  titleKey?: string
   data: { title: string, value: string }[]
 }>(), {
   inputClass: '',
-  autoFocus: false,
 })
 
 const emit = defineEmits(['update:modelValue'])
 const input = ref<HTMLInputElement>()
-useFocus(input, { initialValue: props.autoFocus })
+const { focused } = useFocus(input)
 
+function includes(object: object) {
+  for (const obj of props.modelValue) {
+    const object1 = obj as any
+    const object2 = object as any
+    if (Object.keys(obj).every((key: string) => object1[key] === object2[key])) return true
+  }
+  return false
+}
+
+//
 function add() {
   if (!input.value) return
-  if (props.modelValue?.includes(input.value.value)) return
+  //   if (includes(input.value.value)) return
   emit('update:modelValue', [...props.modelValue, input.value.value || ''])
   input.value.value = ''
 }
 
 function remove(data: string) {
-  return emit('update:modelValue', props.modelValue.filter(i => i !== data))
+//   return emit('update:modelValue', props.modelValue.filter(i => i !== data))
 }
+
+onMounted(() => {
+  focused.value = true
+})
 
 function previous(index: number) {
   const data = [...props.modelValue]
@@ -50,13 +64,14 @@ function next(index: number) {
     <label v-if="label" class="pl-2.5" :for="formId">{{ label }}</label>
     <div class="flex flex-wrap gap-3 !bg-transparent" :class="inputClass">
       <div
-        v-for="[idx, i] in modelValue.entries()" :key="i" type="button" class="group py-1.5 px-2.5 bg-container-2 rounded-md relative min-w-[115px]"
+        v-for="[idx, i] in modelValue.entries()" :key="String(i)" type="button" class=" group py-1.5 px-2.5 bg-container-2 rounded-md relative min-w-[115px]"
       >
+        <FormObject :title="label" :keys="keys" :data="i" class="absolute bottom-0 left-0 z-10" />
         <div class="absolute right-1 -translate-y-1/2 translate-x-1/2 top-1 group-hover:opacity-100 opacity-0 transition-opacity flex justify-center items-center text-sm gap-2">
           <button
             type="button"
             class="w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center" @click="() => {
-              remove(i)
+            //   remove(i)
             }"
           >
             <Icon name="heroicons:x-mark-20-solid" size="1.4rem" class="w-full h-full p-0.5" />
@@ -67,16 +82,15 @@ function next(index: number) {
             {{ '<' }}
           </button>
           <div class="flex-1">
-            {{ i }}
+            {{ i[titleKey ?? keys[0]] }}
           </div>
           <button v-if="modelValue.length > 1" type="button" class="disabled:opacity-40 disabled:cursor-not-allowed" :disabled="idx === modelValue.length - 1" @click="() => next(idx)">
             {{ '>' }}
           </button>
         </div>
       </div>
-      <div class="bg-container-2 rounded-md flex items-center gap-2.5 pr-2">
-        <input ref="input" type="text" :placeholder="modelValue?.length ? 'Tambah' : 'Input'" class="truncate text-sm w-[150px] bg-transparent px-2.5 py-1.5 outline-none" @keyup.enter="add">
-        <button type="button" class="bg-blue-500 px-2 py-0.5 rounded-md text-sm" @click="add">
+      <div>
+        <button type="button" class="bg-blue-500 rounded-md flex items-center px-4 md:px-5 py-1 md:py-1.5">
           Add
         </button>
       </div>

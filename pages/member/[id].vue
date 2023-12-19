@@ -36,7 +36,7 @@ async function follow() {
     addNotif({
       type: 'success',
       message: t(isFollow ? 'follow.following' : 'follow.unfollow', { name: data.value?.name }),
-      duration: 1500,
+      duration: 2500,
     })
   }
   catch (e) {
@@ -44,7 +44,7 @@ async function follow() {
     addNotif({
       type: 'danger',
       message: t('follow.failed'),
-      duration: 1500,
+      duration: 2500,
     })
   }
 }

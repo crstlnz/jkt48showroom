@@ -9,7 +9,7 @@ const { data: rawData, pending, error } = storeToRefs(onLives)
 
 const data = computed(() => {
   if (!rawData.value) return null
-  return rawData.value.filter(i => i.url !== roomKey)
+  return rawData.value.showroom.filter(i => i.url !== roomKey)
 })
 </script>
 

@@ -74,7 +74,7 @@ watch(escape, (v) => {
         <div class="text-xl font-semibold">
           {{ member.name }}
         </div>
-        <FormSelectMultiple v-model="jkt48ids" form-id="jkt48id" :data="jkt48members.map(i => ({ title: i.name, value: i.id }))" class="flex-1" input-class="bg-container-2 rounded-md flex-1" />
+        <FormSelectMultiple v-model="jkt48ids" :auto-focus="true" form-id="jkt48id" :data="jkt48members.map(i => ({ title: i.name, value: i.id }))" class="flex-1" input-class="bg-container-2 rounded-md flex-1" />
         <div class="flex justify-end mt-2">
           <button type="button" class="relative bg-blue-500 px-2 py-1 rounded-md disabled:opacity-40 disabled:bg-blue-400" :disabled="!jkt48ids?.length || pending" @click="submit">
             <div :class="{ 'opacity-0': pending }">

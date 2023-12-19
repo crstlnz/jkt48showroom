@@ -2,7 +2,7 @@
 import { useOnLives } from '~/store/onLives'
 
 const onLives = useOnLives()
-const { data, pending, error } = storeToRefs(onLives)
+const { data, pending, liveCount, hasLives, error } = storeToRefs(onLives)
 </script>
 
 <template>
@@ -18,7 +18,7 @@ const { data, pending, error } = storeToRefs(onLives)
             </div>
           </template>
           <div
-            v-if="!data?.length"
+            v-if="!data?.showroom?.length"
             class="absolute left-1/2 top-1/2 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gray-500"
           >
             <div class="aspect-square w-full rounded-full" />
@@ -37,12 +37,12 @@ const { data, pending, error } = storeToRefs(onLives)
       <template #fallback>
         <div class="pulse-color h-4 w-20 animate-pulse rounded-xl md:h-5" />
       </template>
-      <div v-if="pending && data == null" key="loading">
+      <div v-if="pending && data == null && hasLives" key="loading">
         <div class="pulse-color h-4 w-20 animate-pulse rounded-xl md:h-5" />
       </div>
       <div v-else key="data" class="text-xs opacity-60 md:text-sm">
-        {{ data?.length ?? 0 }}
-        {{ $t("member", data?.length ?? 0) }}
+        {{ liveCount }}
+        {{ $t("member", liveCount) }}
       </div>
     </ClientOnly>
   </div>
@@ -69,7 +69,7 @@ const { data, pending, error } = storeToRefs(onLives)
         <PulseLiveCard />
       </div>
       <div
-        v-else-if="data?.length"
+        v-else-if="hasLives"
         class="bg-container grid-live-now gap-4 rounded-xl p-4"
       >
         <ClientOnly>
@@ -77,8 +77,14 @@ const { data, pending, error } = storeToRefs(onLives)
             <PulseLiveCard />
           </template>
           <Suspense>
+            <LazyMemberIdnLiveCard v-for="live in data?.idn || []" :key="live.slug" :live="live" class="bg-background" />
+            <template #fallback>
+              <PulseLiveCard />
+            </template>
+          </Suspense>
+          <Suspense>
             <LazyMemberLiveCard
-              v-for="live in data.values()"
+              v-for="live in data?.showroom"
               :key="live.room_id"
               class="bg-background"
               :live="live"

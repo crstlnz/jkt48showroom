@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { DynamicScroller } from 'vue-virtual-scroller'
+import type { DynamicScroller } from 'vue-virtual-scroller'
 import type { MaybeElementRef } from '@vueuse/core'
 import { breakpointsTailwind, onClickOutside, useBreakpoints, useEventListener } from '@vueuse/core'
 import type DragListener from '~~/library/plugins/dragListener'
@@ -10,14 +10,13 @@ const props = withDefaults(
     id?: string
     title?: string
     items?: any[]
-    sizeDependencies?: string
+    itemSize?: number
     ignore?: (MaybeElementRef | string)[]
   }>(),
   {
     id: 'bottomSheet',
     title: '',
     items: () => [],
-    sizeDependencies: '',
     ignore: () => [],
   },
 )
@@ -194,20 +193,20 @@ defineExpose({ open, close, isOpen })
       <div v-if="isOpen">
         <div
           ref="background"
-          class="transform-[visibility] background visible fixed inset-0 z-belowNav !m-0 bg-black/30 dark:bg-black/60 md:invisible md:opacity-0"
+          class="background visible fixed inset-0 z-aboveNav !m-0 bg-black/30 dark:bg-black/60 md:invisible md:opacity-0"
         />
 
         <div
           ref="sheet"
-          :class="{ 'transition-transform duration-[300]': !isDrag }"
-          class="sheet-content !fixed bottom-0 left-0 z-nav max-h-[90vh] w-full touch-none overflow-hidden rounded-t-3xl ease-in-out md:left-auto md:right-10 md:w-[450px] md:rounded-t-2xl md:shadow-rounded lg:right-20"
+          :class="{ 'transition-transform': !isDrag }"
+          class="sheet-content !fixed bottom-0 left-0 z-aboveNav max-h-[90vh] w-full touch-none overflow-hidden rounded-t-3xl ease-in-out md:left-auto md:right-10 md:w-[450px] md:rounded-t-2xl md:shadow-rounded lg:right-20"
         >
-          <DynamicScroller
+          <RecycleScroller
             ref="scroller"
             class="roundedscrollbar h-[80vh] overflow-y-auto overscroll-contain bg-white dark:bg-dark-1"
             :class="{ 'no-scrollbar': $device.isMobile }"
             :items="items"
-            :min-item-size="120"
+            :item-size="itemSize"
             key-field="id"
           >
             <template #before>
@@ -241,17 +240,10 @@ defineExpose({ open, close, isOpen })
               </div>
             </template>
 
-            <template #default="{ item, index, active }">
-              <DynamicScrollerItem
-                :item="item"
-                :active="active"
-                :size-dependencies="[item[sizeDependencies ?? '']]"
-                :data-index="index"
-              >
-                <slot :item="item" :index="index" />
-              </DynamicScrollerItem>
+            <template #default="{ item, index }">
+              <slot :item="item" :index="index" />
             </template>
-          </DynamicScroller>
+          </RecycleScroller>
         </div>
       </div>
     </Transition>
