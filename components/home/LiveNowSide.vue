@@ -21,8 +21,8 @@ const { data, pending, error } = storeToRefs(onLives)
         <span>{{ $t("data.failed") }}</span>
       </div>
     </div>
-    <div v-else-if="data?.showroom?.length" class="flex flex-col gap-3">
-      <MemberSideLiveCard v-for="live in data?.showroom" :key="live.room_id" :live="live" />
+    <div v-else-if="data?.length" class="flex flex-col gap-3">
+      <MemberSideLiveCard v-for="live in data" :key="live.room_id" :live="live" />
     </div>
     <div
       v-else

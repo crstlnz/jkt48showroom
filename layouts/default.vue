@@ -33,6 +33,13 @@ const menus: MenuItem[] = [
     activeIcon: 'mingcute:home-5-fill',
   },
   {
+    title: 'Multi Viewer',
+    url: '/multi',
+    mobile: true,
+    icon: 'iconamoon:player-play-bold',
+    activeIcon: 'iconamoon:player-play-fill',
+  },
+  {
     title: 'Recent',
     url: '/recent',
     mobile: true,

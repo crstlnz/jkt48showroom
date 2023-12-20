@@ -1,8 +1,12 @@
 <script lang="ts" setup>
+import { useIDNLives } from '~/store/idnLives'
 import { useOnLives } from '~/store/onLives'
 
 const onLives = useOnLives()
 const { data, pending, liveCount, hasLives, error } = storeToRefs(onLives)
+
+const idnLives = useIDNLives()
+const { data: idnData, pending: idnPending, liveCount: idnCount, hasLives: idnHasLive, error: idnError } = storeToRefs(idnLives)
 </script>
 
 <template>
@@ -18,7 +22,7 @@ const { data, pending, liveCount, hasLives, error } = storeToRefs(onLives)
             </div>
           </template>
           <div
-            v-if="!data?.showroom?.length"
+            v-if="!data?.length"
             class="absolute left-1/2 top-1/2 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gray-500"
           >
             <div class="aspect-square w-full rounded-full" />
@@ -37,12 +41,12 @@ const { data, pending, liveCount, hasLives, error } = storeToRefs(onLives)
       <template #fallback>
         <div class="pulse-color h-4 w-20 animate-pulse rounded-xl md:h-5" />
       </template>
-      <div v-if="pending && data == null && hasLives" key="loading">
+      <div v-if="pending && data == null && hasLives && idnPending && idnData == null && idnHasLive" key="loading">
         <div class="pulse-color h-4 w-20 animate-pulse rounded-xl md:h-5" />
       </div>
       <div v-else key="data" class="text-xs opacity-60 md:text-sm">
-        {{ liveCount }}
-        {{ $t("member", liveCount) }}
+        {{ liveCount + idnCount }}
+        {{ $t("member", liveCount + idnCount) }}
       </div>
     </ClientOnly>
   </div>
@@ -56,7 +60,7 @@ const { data, pending, liveCount, hasLives, error } = storeToRefs(onLives)
         </div>
       </template>
       <div
-        v-if="error"
+        v-if="error && idnError"
         class="bg-container flex w-full flex-col items-center justify-center gap-2 rounded-xl pb-5 text-xs shadow-sm md:gap-3 md:text-sm xl:gap-5 xl:pb-8 xl:pt-2"
       >
         <img class="aspect-square w-72 max-w-[70%]" :src="`${$cloudinaryURL}/assets/svg/web/error.svg`">
@@ -76,21 +80,21 @@ const { data, pending, liveCount, hasLives, error } = storeToRefs(onLives)
           <template #fallback>
             <PulseLiveCard />
           </template>
-          <Suspense>
-            <LazyMemberIdnLiveCard v-for="live in data?.idn || []" :key="live.slug" :live="live" class="bg-background" />
+          <Suspense v-if="!idnError && idnData?.length">
+            <LazyMemberIdnLiveCard v-for="live in idnData" :key="live.slug" :live="live" class="bg-background" />
             <template #fallback>
-              <PulseLiveCard />
+              <PulseLiveCard v-for="num in idnData.length" :key="num" />
             </template>
           </Suspense>
-          <Suspense>
+          <Suspense v-if="!error && data?.length">
             <LazyMemberLiveCard
-              v-for="live in data?.showroom"
+              v-for="live in data"
               :key="live.room_id"
               class="bg-background"
               :live="live"
             />
             <template #fallback>
-              <PulseLiveCard />
+              <PulseLiveCard v-for="num in data.length" :key="num" />
             </template>
           </Suspense>
         </ClientOnly>

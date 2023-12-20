@@ -2,14 +2,12 @@
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
 import Hls, { Events } from 'hls.js/dist/hls.min.js'
 
-const props = withDefaults(defineProps<{ sources: ShowroomAPI.StreamingURL[], poster: string, landscape: boolean }>(), {
+const props = withDefaults(defineProps<{ sources: ShowroomAPI.StreamingURL[], poster: string, landscape?: boolean, useShortcut?: boolean, useDefaultControl?: boolean }>(), {
   landscape: true,
+  useShortcut: true,
+  useDefaultControl: false,
 })
 const emit = defineEmits<{ (e: 'fullsceen', isFullscreen: boolean): void }>()
-useHead({
-  link: [{ href: 'https://vjs.zencdn.net/8.0.4/video-js.css', rel: 'stylesheet' }],
-  script: [{ src: 'https://vjs.zencdn.net/8.0.4/video.min.js' }],
-})
 const sources = ref(props.sources.filter(i => i.type === 'hls') ?? [])
 const qualityId = useLocalStorage('quality-id', 2)
 const currentSource = ref((sources.value ?? []).find(i => qualityId.value === i.id) ?? sources.value[0])
@@ -402,21 +400,24 @@ function changeVideoTime() {
   isSeekDragging.value = false
 }
 
-onKeyStroke('ArrowLeft', () => {
-  const val = currentTime.value - 5
-  if (video.value) video.value.currentTime = val < 0 ? 0 : val
-}, { eventName: 'keyup' })
+if (props.useShortcut) {
+  onKeyStroke('ArrowLeft', () => {
+    const val = currentTime.value - 5
+    if (video.value) video.value.currentTime = val < 0 ? 0 : val
+  }, { eventName: 'keyup' })
 
-onKeyStroke('ArrowRight', () => {
-  const val = currentTime.value + 5
-  if (video.value) video.value.currentTime = val > duration.value ? val : duration.value
-}, { eventName: 'keyup' })
+  onKeyStroke('ArrowRight', () => {
+    const val = currentTime.value + 5
+    if (video.value) video.value.currentTime = val > duration.value ? val : duration.value
+  }, { eventName: 'keyup' })
+}
 
 watch(videoProgess, (val) => {
   if (seekSlider.value) seekSlider.value.value = String(val * (Number(seekSlider.value.max) || 0) / 100)
 }, { immediate: true })
 const currentTimeFloor = computed(() => Math.floor(currentTime.value))
-defineExpose({ stop })
+
+defineExpose({ stop, reload, togglePlay })
 </script>
 
 <template>
@@ -426,7 +427,8 @@ defineExpose({ stop })
     </div>
     <video
       ref="video"
-      class="h-full w-full"
+      :controls="useDefaultControl"
+      class="h-full w-full object-cover"
       :poster="poster"
       @click="videoClick"
     >
@@ -441,11 +443,11 @@ defineExpose({ stop })
       </p>
     </video>
 
-    <div v-if="isLoading" id="loading-spinner" class="absolute inset-0 z-0 flex items-center justify-center bg-black/30 text-black">
+    <div v-if="isLoading && !useDefaultControl" id="loading-spinner" class="absolute inset-0 z-0 flex items-center justify-center bg-black/30 text-black">
       <Icon name="svg-spinners:270-ring-with-bg" class="h-[10%] w-[10%] text-white" />
     </div>
 
-    <div id="control" ref="videoControl" :class="{ 'opacity-100': showControl || isFocusControl || isHoverControl }" class="absolute inset-x-0 bottom-0 z-10 text-slate-200 opacity-0 duration-200 ease-in-out" @click="setShowControl(true)">
+    <div v-if="!useDefaultControl" id="control" ref="videoControl" :class="{ 'opacity-100': showControl || isFocusControl || isHoverControl }" class="absolute inset-x-0 bottom-0 z-10 text-slate-200 opacity-0 duration-200 ease-in-out" @click="setShowControl(true)">
       <!-- <ClientOnly>
 
       </ClientOnly> -->
