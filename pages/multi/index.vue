@@ -56,7 +56,7 @@ function moveNext(i: number) {
           <div class="text-base font-bold">
             <NuxtLink to="/" :class="$getGroup(group) === 'jkt48' ? 'text-red-500' : 'text-sky-400'" class="text-4xl">
               {{ $getGroupTitle(group) }}
-            </NuxtLink> Multi Viewer
+            </NuxtLink> <span class="leading-1">Multi Viewer</span>
           </div>
           <div class="flex gap-3 items-center">
             <div class="flex gap-3 bg-black/5 dark:bg-white/5 px-3 py-2 rounded-md">
@@ -68,7 +68,7 @@ function moveNext(i: number) {
             </button>
           </div>
         </nav>
-        <div class="fixed bottom-10 right-12 z-aboveNav">
+        <div class="fixed bottom-4 right-4 md:bottom-8 md:right-10 xl:bottom-10 xl:right-12 z-aboveNav">
           <MultiLiveContainer :selected="videosMap" @select="add" />
         </div>
         <div v-if="videos.length" clss="flex-1">
@@ -85,7 +85,7 @@ function moveNext(i: number) {
             />
           </div>
         </div>
-        <div v-else class="flex flex-1 justify-center items-center text-2xl font-semibold">
+        <div v-else class="flex flex-1 justify-center items-center text-2xl font-semibold text-center px-3">
           Tambah videonya di kanan bawah!
         </div>
 

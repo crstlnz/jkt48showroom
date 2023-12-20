@@ -53,7 +53,7 @@ const { data: idnData, pending: idnPending, liveCount: idnCount, hasLives: idnHa
       leave-from-class="translate-y-0 translate-x-x opacity-100"
       leave-to-class="translate-y-2 translate-x-1 opacity-0"
     >
-      <PopoverPanel class="absolute -bottom-3 flex flex-col -right-3 z-0 rounded-[28px] overflow-hidden bg-white drop-shadow-lg border-black/10 border dark:border-white/10 dark:bg-dark-2 min-w-[450px] min-h-[550px] max-h-[85vh]">
+      <PopoverPanel class="absolute -bottom-3 flex flex-col -right-3 z-0 rounded-[28px] overflow-hidden bg-white drop-shadow-lg border-black/10 border dark:border-white/10 dark:bg-dark-2 w-[450px] md:min-w-[450px] max-w-[calc(100vw_-_4px)] min-h-[550px] max-h-[85vh]">
         <div class="flex flex-col px-8 py-6 text-lg 2xl:text-xl font-bold">
           Daftar Live
         </div>
@@ -65,7 +65,7 @@ const { data: idnData, pending: idnPending, liveCount: idnCount, hasLives: idnHa
             <div class="w-0 flex-1 truncate">
               {{ idnRoom.user?.name }}
             </div>
-            <button type="button" :class="{ 'bg-blue-500 invisible group-hover:visible': !selected.has(String(idnRoom.user?.id)), 'bg-red-500': selected.has(String(idnRoom.user?.id)) }" class="px-2 py-0.5 rounded-md text-base text-white" @click="() => selectIDNLives(idnRoom)">
+            <button type="button" :class="{ 'bg-blue-500 md:invisible md:group-hover:visible': !selected.has(String(idnRoom.user?.id)), 'bg-red-500': selected.has(String(idnRoom.user?.id)) }" class="px-2 py-0.5 rounded-md text-base text-white" @click="() => selectIDNLives(idnRoom)">
               {{ selected.has(idnRoom.user?.id) ? 'Delete' : 'Add' }}
             </button>
           </div>
@@ -76,7 +76,7 @@ const { data: idnData, pending: idnPending, liveCount: idnCount, hasLives: idnHa
             <div class="w-0 flex-1 truncate">
               {{ room.name }}
             </div>
-            <button type="button" :class="{ 'bg-blue-500 invisible group-hover:visible': !selected.has(String(room.room_id)), 'bg-red-500': selected.has(String(room.room_id)) }" class="px-2 py-0.5 rounded-md text-base text-white" @click="() => selectShowroom(room)">
+            <button type="button" :class="{ 'bg-blue-500 md:invisible md:group-hover:visible': !selected.has(String(room.room_id)), 'bg-red-500': selected.has(String(room.room_id)) }" class="shrink-0 px-2 py-0.5 rounded-md text-base text-white" @click="() => selectShowroom(room)">
               {{ selected.has(String(room.room_id)) ? 'Delete' : 'Add' }}
             </button>
           </div>

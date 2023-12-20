@@ -35,7 +35,7 @@ const menus: MenuItem[] = [
   {
     title: 'Multi Viewer',
     url: '/multi',
-    mobile: true,
+    mobile: false,
     icon: 'iconamoon:player-play-bold',
     activeIcon: 'iconamoon:player-play-fill',
   },
