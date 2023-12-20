@@ -1,8 +1,11 @@
 <script setup lang="ts">
 const route = useRoute()
 const { data, pending, error, refresh: refreshWatchData } = await useApiFetch<IDNLives>(`/api/watch/${route.params.id}/idn`, { params: { _: new Date().getTime() } })
+const title = computed(() => {
+  const name = data.value?.user?.name
+  return name ? `${name} - IDN Live` : ''
+})
 const streamURLs = computed(() => {
-  console.log(data.value?.stream_url)
   if (!data.value?.stream_url) return []
   return [
     {
@@ -14,6 +17,10 @@ const streamURLs = computed(() => {
       quality: 1,
     },
   ]
+})
+
+useHead({
+  title: () => title.value,
 })
 </script>
 

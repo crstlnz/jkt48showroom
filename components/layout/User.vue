@@ -47,7 +47,7 @@ function toggleUsername(e: Event) {
           </div>
         </div>
       </template>
-      <div class="flex items-center gap-3 rounded-full hover:bg-hover">
+      <div class="flex items-center gap-3 rounded-full hover:bg-hover 2xl:p-2">
         <NuxtImg
           v-if="user?.image"
           class="h-10 w-10 2xl:w-12 2xl:h-12 overflow-hidden rounded-full bg-slate-400 text-white dark:bg-dark-1 dark:text-slate-500/50"
