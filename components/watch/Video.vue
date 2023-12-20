@@ -415,7 +415,6 @@ onKeyStroke('ArrowRight', () => {
 watch(videoProgess, (val) => {
   if (seekSlider.value) seekSlider.value.value = String(val * (Number(seekSlider.value.max) || 0) / 100)
 }, { immediate: true })
-const dayjs = useDayjs()
 const currentTimeFloor = computed(() => Math.floor(currentTime.value))
 defineExpose({ stop })
 </script>
@@ -501,7 +500,7 @@ defineExpose({ stop })
           </div>
           <div class="flex-1" />
           <div class="flex items-center text-xs md:text-sm">
-            {{ dayjs.duration(currentTimeFloor, 'second').format("mm:ss") }} / {{ dayjs.duration(duration, 'second').format("mm:ss") }}
+            {{ $dayjs.duration(currentTimeFloor, 'second').format("mm:ss") }} / {{ $dayjs.duration(duration, 'second').format("mm:ss") }}
           </div>
           <button class="h-8 w-8 p-1" aria-label="Reload" type="button" @click="reload">
             <Icon name="ic:round-refresh" class="h-full w-full p-[1px]" />

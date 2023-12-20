@@ -9,7 +9,6 @@ const props = withDefaults(defineProps<{
 
 const doc = ref<Document>()
 const { cloudinaryURL } = useAppConfig()
-const dayjs = useDayjs()
 const showDetailedDate = computed(() => {
   const oneMonthAgo = new Date()
   oneMonthAgo.setDate(0)
@@ -171,7 +170,7 @@ onMounted(() => {
         <Icon name="ph:clock-bold" />
         <div v-if="showDetailedDate">
           <div :key="recent.data_id" class="group-hover:hidden">
-            {{ dayjs(recent.live_info?.date?.end).locale(locale).fromNow() }}
+            {{ $dayjs(recent.live_info?.date?.end).locale(locale).fromNow() }}
           </div>
           <div class="hidden truncate group-hover:block">
             {{ $d(new Date(props.recent.live_info?.date?.start), 'long') }}

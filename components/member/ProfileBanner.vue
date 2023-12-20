@@ -33,7 +33,7 @@ const isLive = computed(() => {
               <div class="relative m-1.5 block md:m-2">
                 <NuxtImg
                   class="aspect-square h-full w-full object-cover overflow-hidden rounded-full bg-container"
-                  :src="member.img_alt ?? member.img ?? $config.errorPicture"
+                  :src="member.img_alt ?? member.img ?? $errorPicture"
                   :alt="`${member.name} Profile Picture`"
                   fit="fill"
                   :modifiers="{
@@ -53,7 +53,7 @@ const isLive = computed(() => {
               </div>
               <NuxtImg
                 class="aspect-square h-full w-full object-cover overflow-hidden rounded-full bg-container"
-                :src="member.img_alt ?? member.img ?? $config.errorPicture"
+                :src="member.img_alt ?? member.img ?? $errorPicture"
                 :alt="`${member.name} Profile Picture`"
                 fit="fill"
                 :modifiers="{

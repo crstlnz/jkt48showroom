@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 const route = useRoute()
 const { data, pending, error } = await useApiFetch<JKT48.News>(`/api/news/${route.params.id}`)
-const dayjs = useDayjs()
 const { locale } = useI18n()
 
 const description = computed(() => {
@@ -54,7 +53,7 @@ useHead({
               width="56px"
               format="webp"
             />
-            <span class="text-sm"> {{ dayjs(data?.date).locale(locale).format("DD MMMM YYYY") }}</span>
+            <span class="text-sm"> {{ $dayjs(data?.date).locale(locale).format("DD MMMM YYYY") }}</span>
           </div>
           <div id="content" class="overflow-x-auto pb-20 !font-serif" v-html="content" />
         </div>

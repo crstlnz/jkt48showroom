@@ -54,10 +54,10 @@ const { locale } = useI18n()
           </div>
           <div v-else>
             <div class="whitespace-nowrap">
-              {{ dayjs(schedule.date, "DD-MM-YYYY").format("DD MMM") }}
+              {{ $dayjs(schedule.date, "DD-MM-YYYY").format("DD MMM") }}
             </div>
             <div>
-              {{ dayjs(schedule.date, "DD-MM-YYYY").locale(locale).format(locale === 'id' ? "dddd" : "ddd") }}
+              {{ $dayjs(schedule.date, "DD-MM-YYYY").locale(locale).format(locale === 'id' ? "dddd" : "ddd") }}
             </div>
           </div>
         </td>
@@ -80,7 +80,7 @@ const { locale } = useI18n()
       </tr>
     </table>
     <button v-if="date && !pending" type="button" class="text-xs font-light float-right px-3 pt-1.5 pb-3 truncate" @click="refresh">
-      {{ dayjs(date).locale(locale).fromNow() }}
+      {{ $dayjs(date).locale(locale).fromNow() }}
       <Icon name="ic:outline-refresh" />
     </button>
   </div>

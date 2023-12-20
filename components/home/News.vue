@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 const { data, pending, error, refresh, date } = useCachedFetch<IApiNews>('/api/news', { expireIn: 600000 })
 const newsFilter = computed(() => data.value?.news.slice(0, 5) ?? [])
-const dayjs = useDayjs()
 const { locale } = useI18n()
 </script>
 
@@ -35,7 +34,7 @@ const { locale } = useI18n()
               width="56px"
               format="webp"
             />
-            <span>{{ dayjs(news.date).locale(locale).format("DD MMMM YYYY") }}</span>
+            <span>{{ $dayjs(news.date).locale(locale).format("DD MMMM YYYY") }}</span>
           </div>
           <NuxtLink :to="`/news/${news.id}`" class="inline-block leading-5">
             {{ news.title }}
@@ -48,7 +47,7 @@ const { locale } = useI18n()
       </div>
     </div>
     <button v-if="date && !pending" type="button" class="absolute right-0 bottom-0 text-xs font-light float-right px-3 pb-3 truncate" @click="refresh">
-      {{ dayjs(date).locale(locale).fromNow() }}
+      {{ $dayjs(date).locale(locale).fromNow() }}
       <Icon name="ic:outline-refresh" />
     </button>
   </HomeContainer>

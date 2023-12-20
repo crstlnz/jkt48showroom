@@ -154,7 +154,7 @@ const isXL = greaterOrEqual('xl')
       <Icon name="eos-icons:loading" size="3rem" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 " />
     </div>
     <Error v-else-if="error || !data" :message="error ? (error.statusCode === 404 ? $t('error.pagenotfound') : $t('error.unknown')) : $t('error.pagenotfound')" :img-src="!data || error?.statusCode === 404 ? '/svg/404.svg' : '/svg/error.svg'" />
-    <LayoutRow v-else :title="title" :sub-title="`Showroom Live - ${dayjs(data.live_info.date.start).format('DD MMMM YYYY')}`">
+    <LayoutRow v-else :title="title" :sub-title="`Showroom Live - ${$dayjs(data.live_info.date.start).format('DD MMMM YYYY')}`">
       <template #default>
         <div class="flex flex-col gap-3 md:gap-4">
           <MemberProfileBanner :room-id="data.room_id" :member="data.room_info" />
@@ -162,10 +162,10 @@ const isXL = greaterOrEqual('xl')
             <div class="flex flex-col md:flex-row xl:flex-col gap-3 md:gap-4 flex-wrap">
               <InfoCard class="flex-1" icon-class="bg-red-500/20 text-red-500 dark:bg-red-300/20 dark:text-red-300" icon="material-symbols:calendar-today">
                 <template #default>
-                  {{ dayjs(dateStart).locale(locale).format('dddd, DD MMMM YYYY') }}
+                  {{ $dayjs(dateStart).locale(locale).format('dddd, DD MMMM YYYY') }}
                 </template>
                 <template #title>
-                  {{ `${dayjs(dateStart).locale(locale).format('hh:mm A')} - ${dayjs(dateEnd).locale(locale).format('hh:mm A')}` }}
+                  {{ `${$dayjs(dateStart).locale(locale).format('hh:mm A')} - ${dayjs(dateEnd).locale(locale).format('hh:mm A')}` }}
                 </template>
               </InfoCard>
               <InfoCard class="flex-1" icon-class="bg-yellow-500/20 text-yellow-500 dark:bg-yellow-300/20 dark:text-yellow-300" icon="material-symbols:auto-timer" :title="$t('duration')" :value="formatDuration(data.live_info?.duration ?? 0)" />

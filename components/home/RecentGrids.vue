@@ -18,7 +18,6 @@ onFocus(() => {
   tryRefresh()
 })
 const { locale } = useI18n()
-const dayjs = useDayjs()
 </script>
 
 <template>
@@ -73,7 +72,7 @@ const dayjs = useDayjs()
               <li>
                 <Icon name="ph:clock-bold" class="self-center text-sm md:text-base" />
                 <div>
-                  {{ dayjs(recent.live_info?.date?.end ? recent.live_info.date.end : recent.created_at).locale(locale).fromNow() }}
+                  {{ $dayjs(recent.live_info?.date?.end ? recent.live_info.date.end : recent.created_at).locale(locale).fromNow() }}
                 </div>
               </li>
             </ul>

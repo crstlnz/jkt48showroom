@@ -3,7 +3,6 @@ const route = useRoute()
 const router = useRouter()
 const page = ref(Number(route.query.page) || 1)
 const { data, pending, error } = await useApiFetch<IApiNews>('/api/news', { params: { page }, key: 'jkt48news', cache: 'only-if-cached' })
-const dayjs = useDayjs()
 const { locale } = useI18n()
 function changePage(p: number) {
   page.value = p
@@ -43,7 +42,7 @@ watch(page, (p) => {
             {{ news.title }}
           </NuxtLink>
           <div class="text-sm font-light">
-            {{ dayjs(news.date).locale(locale).format("DD MMMM YYYY") }}
+            {{ $dayjs(news.date).locale(locale).format("DD MMMM YYYY") }}
           </div>
         </div>
       </div>

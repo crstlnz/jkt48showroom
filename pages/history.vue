@@ -7,7 +7,6 @@ const title = ref('')
 // useHead({ title: computed(() => t(title.value || 'page.title.recent')) })
 useHead({ title: 'History Watch' })
 const { user } = useAuth()
-const dayjs = useDayjs()
 const { locale } = useI18n()
 const fetch = await useRecentFetch({ changeRoute: false, mode: 'infinite', initPage: 1, userHistory: user.value?.id != null })
 const { data: res, query, pending, error } = fetch.data
@@ -299,7 +298,7 @@ const recentHeight = computed(() => {
                           </div>
                         </div>
                         <div class="font-light text-xs md:text-sm">
-                          {{ dayjs(item.live_info?.date?.end).locale(locale).fromNow() }}
+                          {{ $dayjs(item.live_info?.date?.end).locale(locale).fromNow() }}
                         </div>
                       </div>
                       <NuxtImg

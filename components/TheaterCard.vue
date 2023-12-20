@@ -3,14 +3,13 @@ defineProps<{
   theater: ITheaterAPI
 }>()
 
-const dayjs = useDayjs()
 const { locale } = useI18n()
 </script>
 
 <template>
   <NuxtLink :title="theater.name" :to="`/theater/${theater.id}`" class="group flex flex-col relative aspect-[3/4] rounded-xl overflow-hidden">
     <div class="bg-blue-400 dark:bg-red-500 px-2 py-0.5 rounded-md text-xs md:text-sm text-center absolute left-2 top-2 font-semibold">
-      {{ dayjs(theater.date).locale(locale).format("DD MMM YYYY") }}
+      {{ $dayjs(theater.date).locale(locale).format("DD MMM YYYY") }}
     </div>
     <div class="flex-1">
       <NuxtImg
@@ -29,7 +28,7 @@ const { locale } = useI18n()
       </div>
       <div class="py-2 pr-2.5">
         <div class="px-1 rounded-md !leading-5 text-xs md:text-sm bg-blue-500">
-          {{ dayjs(theater.date).locale(locale).format("HH:mm") }}
+          {{ $dayjs(theater.date).locale(locale).format("HH:mm") }}
         </div>
       </div>
     </div>

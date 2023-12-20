@@ -3,7 +3,6 @@ import { WatchComment } from '#components'
 import type { WatchVideo } from '#components'
 import { useNotifications } from '~~/store/notifications'
 
-const dayjs = useDayjs()
 const route = useRoute()
 const { data, pending, error, refresh: refreshWatchData } = await useApiFetch<Watch.WatchData>(`/api/watch/${route.params.id}`, { params: { _: new Date().getTime() } })
 
@@ -338,7 +337,7 @@ onComment((comment) => {
               <span
                 v-if="isLive" v-tooltip="`${timeAgo}`" class="shrink-0 space-x-1 rounded-lg bg-slate-700 px-1.5 py-1 text-sm text-slate-50 dark:bg-slate-500"
               >
-                {{ dayjs(convertToMilliseconds(data?.started_at ?? 0)).format('h:mm A') }}
+                {{ $dayjs(convertToMilliseconds(data?.started_at ?? 0)).format('h:mm A') }}
               </span>
             </div>
 
