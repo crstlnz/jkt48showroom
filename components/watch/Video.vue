@@ -209,7 +209,12 @@ function loadSource(src: string) {
 }
 
 function reload() {
-  createHLS(currentSource.value.url)
+  try {
+    createHLS(currentSource.value.url)
+  }
+  catch (e) {
+    destroyVideo()
+  }
 }
 
 const videoControl = ref<HTMLElement>()
@@ -240,13 +245,24 @@ useEventListener(videoControl, 'focusout', () => {
   isFocusControl.value = false
 })
 const { isSupported, orientation, lockOrientation, unlockOrientation } = useScreenOrientation()
+const videoWidth = ref(0)
+const videoHeight = ref(0)
+const isLandscape = computed(() => {
+  return videoHeight.value <= videoWidth.value
+})
+
+useEventListener(video, 'loadedmetadata', function () {
+  videoWidth.value = (this as any).videoWidth
+  videoHeight.value = (this as any).videoHeight
+})
+
 const { isFullscreen, toggle } = useFullscreen(videoPlayer)
 async function toggleFullscreen() {
   if (!isFullscreen.value) {
     const o = orientation.value
     await toggle()
     try {
-      if (props.landscape) {
+      if (isLandscape.value) {
         if (['portrait-primary', 'portrait-secondary', 'portrait'].includes(o ?? '')) {
           if (isSupported.value) await lockOrientation('landscape')
         }
@@ -422,11 +438,11 @@ watch(videoProgess, (val) => {
 }, { immediate: true })
 const currentTimeFloor = computed(() => Math.floor(currentTime.value))
 
-defineExpose({ stop, reload, togglePlay })
+defineExpose({ stop, reload, togglePlay, isLandscape })
 </script>
 
 <template>
-  <div ref="videoPlayer" class="group relative">
+  <div ref="videoPlayer" class="group relative" :class="isLandscape ? 'aspect-video' : 'aspect-[9/12]'">
     <div v-if="!isPlaying && !isLoading" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/50 p-1">
       <Icon name="material-symbols:pause" class="text-white/60" size="3rem" />
     </div>

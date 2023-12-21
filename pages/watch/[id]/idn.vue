@@ -26,7 +26,7 @@ useHead({
 
 <template>
   <div class="">
-    <div v-if="!error" class="max-md:w-full md:max-h-[100vh] mx-auto aspect-[9/16] relative bg-container">
+    <div v-if="!error" class="max-md:w-full md:max-h-[100vh] bg-blue-500 mx-auto relative bg-container">
       <NuxtLink :to="`https://idn.app/${data?.user?.username}/live/${data?.slug}`" target="_blank" :external="true" no-prefetch class="absolute top-0 left-0 z-20 p-4 mt-0.5">
         <NuxtImg src="https://upload.wikimedia.org/wikipedia/commons/b/ba/IDN_Live.svg" size="64px" class="w-20 md:w-24" />
       </NuxtLink>
@@ -38,7 +38,7 @@ useHead({
         <Suspense v-else>
           <LazyWatchVideo
             :landscape="false"
-            class="w-full h-full"
+            class="max-h-[100vh]"
             :poster="data?.image ?? ''" :sources="streamURLs" @fullsceen="(isFullscreen) => {
             }"
           />

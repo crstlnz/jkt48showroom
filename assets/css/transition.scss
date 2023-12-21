@@ -187,3 +187,22 @@
 .gamecontrol-leave-active {
     opacity: 0;
 }
+
+
+.multivideo-move, /* apply transition to moving elements */
+.multivideo-enter-active,
+.multivideo-leave-active {
+  transition: all 0.3s ease-out;
+}
+
+.multivideo-enter-from,
+.multivideo-leave-to {
+  opacity: 0; 
+  transform: scale(0.8);
+}
+
+/* ensure leaving items are taken out of layout flow so that moving
+   animations can be calculated correctly. */
+.multivideo-leave-active {
+  position: absolute;
+}

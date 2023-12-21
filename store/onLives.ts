@@ -29,9 +29,9 @@ export const useOnLives = defineStore('onLives', () => {
   const { addNotif } = useNotifications()
   const config = useRuntimeConfig()
   async function getShowroomLives(): Promise<IRoomLive[]> {
-    return await $apiFetch(`/api/now_live`, { query: { group: settings.group, _: new Date().getTime() } })
     try {
       if (!config.public.isDev) {
+        return await $apiFetch(`/api/now_live`, { query: { group: settings.group, _: new Date().getTime() } })
       }
       else {
         const data: any = await $apiFetch(`/api/showroom/onlives`)

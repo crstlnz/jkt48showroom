@@ -256,6 +256,9 @@ span.ripple {
 button,
 a {
   @apply outline-0 focus-visible:ring-2 ring-blue-500;
+}
+
+* {
   -webkit-tap-highlight-color: transparent;
 }
 

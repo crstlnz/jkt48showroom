@@ -37,14 +37,14 @@ function selectShowroom(room: IRoomLive) {
   })
 }
 const onLives = useOnLives()
-const { data, pending, liveCount, hasLives, error } = storeToRefs(onLives)
+const { data } = storeToRefs(onLives)
 
 const idnLives = useIDNLives()
-const { data: idnData, pending: idnPending, liveCount: idnCount, hasLives: idnHasLive, error: idnError } = storeToRefs(idnLives)
+const { data: idnData } = storeToRefs(idnLives)
 </script>
 
 <template>
-  <Popover class="pointer-events-auto">
+  <Popover class="pointer-events-auto fixed bottom-4 right-4 md:bottom-8 md:right-10 xl:bottom-10 xl:right-12 z-aboveNav">
     <Transition
       enter-active-class="transition duration-200 ease-out"
       enter-from-class="translate-y-2 translate-x-1 opacity-0"
@@ -53,7 +53,7 @@ const { data: idnData, pending: idnPending, liveCount: idnCount, hasLives: idnHa
       leave-from-class="translate-y-0 translate-x-x opacity-100"
       leave-to-class="translate-y-2 translate-x-1 opacity-0"
     >
-      <PopoverPanel class="absolute -bottom-3 flex flex-col -right-3 z-0 rounded-[28px] overflow-hidden bg-white drop-shadow-lg border-black/10 border dark:border-white/10 dark:bg-dark-2 w-[450px] md:min-w-[450px] max-w-[calc(100vw_-_4px)] min-h-[550px] max-h-[85vh]">
+      <PopoverPanel class="absolute -bottom-3 flex flex-col -right-3 z-0 rounded-[28px] overflow-hidden bg-white drop-shadow-lg border-black/10 border dark:border-white/10 dark:bg-dark-2 w-[450px] md:min-w-[450px] max-w-[calc(100vw_-_8px)] min-h-[550px] max-h-[85vh]">
         <div class="flex flex-col px-8 py-6 text-lg 2xl:text-xl font-bold">
           Daftar Live
         </div>

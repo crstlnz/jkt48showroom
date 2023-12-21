@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { WatchComment } from '#build/components'
 import { useSettings } from '~/store/settings'
 
 definePageMeta({
@@ -23,7 +24,34 @@ function add(video: Multi.Video) {
   }
 }
 
+const { width } = useWindowSize()
+const minWidth = 180
+const maxCount = computed(() => {
+  return Math.floor(width.value / minWidth)
+})
+
 const rowCount = useLocalStorage('multiRowCount', 4, { deep: true })
+
+watch(maxCount, (c) => {
+  if (rowCount.value > c) {
+    rowCount.value = c
+  }
+})
+
+function rowCountChange(event: Event) {
+  const inputEl = event.target as HTMLInputElement
+  if (inputEl) {
+    let row = Number(inputEl.value.slice(-1))
+    if (row > maxCount.value) {
+      row = maxCount.value
+    }
+    else if (row < 1) {
+      row = 1
+    }
+    rowCount.value = row
+    inputEl.value = String(row)
+  }
+}
 
 const { group } = useSettings()
 
@@ -46,35 +74,57 @@ function moveNext(i: number) {
     v.order = idx + 1
   }
 }
+
+function onBeforeLeave(el: Element) {
+  const rect = el.getBoundingClientRect()
+  const element = el as HTMLElement
+  element.style.top = `${rect.top}px`
+  element.style.left = `${rect.left}px`
+  element.style.height = `${rect.height}px`
+  element.style.width = `${rect.width}px`
+}
+
+const videoPlayers = ref<typeof WatchComment[]>([])
+
+function refreshAll() {
+  for (const video of videoPlayers.value) {
+    video.refresh()
+  }
+}
 </script>
 
 <template>
   <div>
     <SplashScreen>
       <div class="min-h-[100vh] flex flex-col">
-        <nav class="flex justify-center items-center gap-10 p-5">
+        <nav class="flex justify-center items-center gap-10 p-4 md:p-5">
           <div class="text-base font-bold">
             <NuxtLink to="/" :class="$getGroup(group) === 'jkt48' ? 'text-red-500' : 'text-sky-400'" class="text-4xl">
               {{ $getGroupTitle(group) }}
             </NuxtLink> <span class="leading-1">Multi Viewer</span>
           </div>
           <div class="flex gap-3 items-center">
+            <div class="flex gap-2 flex-col md:flex-row">
+              <button type="button" class="h-5 w-5 md:w-6 md:h-6" @click="() => videosMap.clear()">
+                <Icon name="mingcute:broom-fill" class="w-full h-full" />
+              </button>
+              <button type="button" class="h-5 w-5 md:w-6 md:h-6" @click="refreshAll">
+                <Icon name="material-symbols:sync" class="w-full h-full" />
+              </button>
+            </div>
             <div class="flex gap-3 bg-black/5 dark:bg-white/5 px-3 py-2 rounded-md">
               <div>Row</div>
-              <input v-model="rowCount" type="number" class="inputRow rounded-md text-center min-w-[50px] bg-black/25" max="8" min="1" placeholder="Row Count">
+              <input :value="rowCount" type="number" class="inputRow rounded-md text-center min-w-[50px] bg-black/25" max="8" min="1" placeholder="Row Count" @change="(e) => console.log(e)" @input="rowCountChange">
             </div>
-            <button type="button" class="w-6 h-6" @click="() => videosMap.clear()">
-              <Icon name="mingcute:broom-fill" class="w-full h-full" />
-            </button>
           </div>
         </nav>
-        <div class="fixed bottom-4 right-4 md:bottom-8 md:right-10 xl:bottom-10 xl:right-12 z-aboveNav">
-          <MultiLiveContainer :selected="videosMap" @select="add" />
-        </div>
-        <div v-if="videos.length" clss="flex-1">
-          <div class="grid flex-1" :style="{ gridTemplateColumns: `repeat(${rowCount || 4}, minmax(0, 1fr))` }">
+        <MultiLiveContainer :selected="videosMap" @select="add" />
+
+        <div v-if="videos.length" class="flex-1">
+          <TransitionGroup name="multivideo" tag="div" class="grid flex-1" :style="{ gridTemplateColumns: `repeat(${rowCount || 4}, minmax(0, 1fr))` }" @before-leave="onBeforeLeave">
             <MultiVideo
               v-for="[idx, video] in videos.entries()"
+              ref="videoPlayers"
               :key="video.id"
               :index="idx"
               :videos-length="videos.length"
@@ -83,7 +133,7 @@ function moveNext(i: number) {
               @move-next="() => moveNext(idx)"
               @move-previous="() => movePrevious(idx)"
             />
-          </div>
+          </TransitionGroup>
         </div>
         <div v-else class="flex flex-1 justify-center items-center text-2xl font-semibold text-center px-3">
           Tambah videonya di kanan bawah!
