@@ -13,6 +13,7 @@ export default function (opts?: FocusOptions) {
   const lastTrigger = ref(Date.now())
   const focused = useWindowFocus()
   const trigger = createEventHook()
+  const unfocus = createEventHook()
   const { idle } = useIdle(opts?.idleTime)
 
   function checkTime() {
@@ -22,12 +23,22 @@ export default function (opts?: FocusOptions) {
   }
 
   watch(focused, (isFocus) => {
-    if (isFocus && checkTime()) trigger.trigger(true)
+    if (isFocus && checkTime()) {
+      trigger.trigger()
+    }
+    else {
+      unfocus.trigger()
+    }
   })
 
   watch(idle, (isIdle) => {
-    if (!isIdle && checkTime()) trigger.trigger(true)
+    if (!isIdle && checkTime()) {
+      trigger.trigger()
+    }
+    else {
+      unfocus.trigger()
+    }
   })
 
-  return { onFocus: trigger.on }
+  return { onFocus: trigger.on, onUnfocus: unfocus.on }
 }

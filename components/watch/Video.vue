@@ -245,15 +245,20 @@ async function toggleFullscreen() {
   if (!isFullscreen.value) {
     const o = orientation.value
     await toggle()
-    if (props.landscape) {
-      if (['portrait-primary', 'portrait-secondary', 'portrait'].includes(o ?? '')) {
-        if (isSupported.value) await lockOrientation('landscape')
+    try {
+      if (props.landscape) {
+        if (['portrait-primary', 'portrait-secondary', 'portrait'].includes(o ?? '')) {
+          if (isSupported.value) await lockOrientation('landscape')
+        }
+      }
+      else {
+        if (['landscape-primary', 'landscape-secondary', 'landscape'].includes(o ?? '')) {
+          if (isSupported.value) await lockOrientation('portrait')
+        }
       }
     }
-    else {
-      if (['landscape-primary', 'landscape-secondary', 'landscape'].includes(o ?? '')) {
-        if (isSupported.value) await lockOrientation('portrait')
-      }
+    catch (e) {
+      console.log(e)
     }
   }
   else {
@@ -428,7 +433,7 @@ defineExpose({ stop, reload, togglePlay })
     <video
       ref="video"
       :controls="useDefaultControl"
-      class="h-full w-full object-cover"
+      class="h-full w-full"
       :poster="poster"
       @click="videoClick"
     >

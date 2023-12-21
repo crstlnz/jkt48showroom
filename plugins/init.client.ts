@@ -18,13 +18,12 @@ export default defineNuxtPlugin(({ hook }) => {
 
   const onLives = useOnLives()
   const idnLives = useIDNLives()
-  const { onFocus } = useUserFocus({
+  const { onFocus, onUnfocus } = useUserFocus({
     time: 1000,
     idleTime: 30000,
   })
 
-  const { start, stop } = useTimeoutFn(() => {
-    console.log('START')
+  const { start, stop: stopTimeout } = useTimeoutFn(() => {
     start()
     onLives.tryRefresh()
     if (group === 'jkt48') {
@@ -32,6 +31,17 @@ export default defineNuxtPlugin(({ hook }) => {
     }
     fetchFirstDate()
   }, 10000, { immediate: true })
+
+  onUnfocus(() => {
+    stopTimeout()
+  })
+
+  onFocus(() => {
+    onLives.tryRefresh()
+    if (group === 'jkt48') {
+      idnLives.tryRefresh()
+    }
+  })
 
   hook('app:created', () => {
     onLives.tryRefresh()
@@ -43,13 +53,6 @@ export default defineNuxtPlugin(({ hook }) => {
 
   hook('app:mounted', () => {
     refreshCSRF()
-  })
-
-  onFocus(() => {
-    onLives.tryRefresh()
-    if (group === 'jkt48') {
-      idnLives.tryRefresh()
-    }
   })
 
   hook('page:start', () => { // when the page is change try refresh the state

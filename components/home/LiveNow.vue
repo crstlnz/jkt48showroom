@@ -22,7 +22,7 @@ const { data: idnData, pending: idnPending, liveCount: idnCount, hasLives: idnHa
             </div>
           </template>
           <div
-            v-if="!data?.length"
+            v-if="!data?.length && !idnData?.length"
             class="absolute left-1/2 top-1/2 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gray-500"
           >
             <div class="aspect-square w-full rounded-full" />
