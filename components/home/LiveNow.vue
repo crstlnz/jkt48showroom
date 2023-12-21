@@ -73,7 +73,7 @@ const { data: idnData, pending: idnPending, liveCount: idnCount, hasLives: idnHa
         <PulseLiveCard />
       </div>
       <div
-        v-else-if="hasLives"
+        v-else-if="hasLives || idnHasLive"
         class="bg-container grid-live-now gap-4 rounded-xl p-4"
       >
         <ClientOnly>
