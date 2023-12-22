@@ -4,7 +4,26 @@ import type { WatchVideo } from '#components'
 import { useNotifications } from '~~/store/notifications'
 
 const route = useRoute()
-const { data, pending, error, refresh: refreshWatchData } = await useApiFetch<Watch.WatchData>(`/api/watch/${route.params.id}`, { params: { _: new Date().getTime() } })
+const isPremium = ref(false)
+const { data, pending, error, refresh: refreshWatchData } = await useApiFetch<Watch.WatchData>(`/api/watch/${route.params.id}`, { params: {
+  _: new Date().getTime(),
+}, onResponseError(e) {
+  if (e.response._data?.status === 404) {
+    isPremium.value = e.response?._data?.message === 'Live is premium!'
+    if (!isPremium.value) {
+      throw createError({ statusCode: 404, message: 'Page not found!' })
+    }
+    if (process.server) {
+      useNuxtApp().payload.isPremium = true
+    }
+  }
+} })
+
+if (process.client) {
+  if (useNuxtApp().payload.isPremium !== null) {
+    isPremium.value = useNuxtApp().payload.isPremium as boolean
+  }
+}
 
 const roomId = computed(() => {
   return data.value?.room_id || 0
@@ -102,19 +121,6 @@ async function getPolling() {
     console.log(e)
   }
 }
-
-if (error.value?.statusCode === 404) {
-  const e = error.value?.data?.data?.errors
-  const premium = e && e[0]?.redirect_url
-  if (!premium) {
-    throw createError({ statusCode: 404, message: 'Page not found!' })
-  }
-}
-
-const isPremium = computed(() => {
-  const e = error.value?.data?.data?.errors
-  return !(!e || !e[0]?.redirect_url)
-})
 
 const title = computed(() => {
   return `${data?.value?.name ?? 'Showroom'} Room`
@@ -273,7 +279,7 @@ onComment((comment) => {
 <template>
   <div class="h-full w-full pb-5 sm:pb-14 lg:px-3 lg:pb-20 lg:pt-4">
     <div v-if="isPremium">
-      <Error :message="$t('premium_live')" :alt="$t('error.unknown')" :img-src="`${$cloudinaryURL}/assets/svg/web/video_files.svg`" url="/" />
+      <Error :message="$t('premium_live')" :alt="$t('premium_live')" :img-src="`${$cloudinaryURL}/assets/svg/web/video_files.svg`" url="/" />
     </div>
     <div v-else-if="pending" class="h-full w-full">
       <div class="relative flex w-full flex-col gap-3 md:gap-4 lg:flex-row">

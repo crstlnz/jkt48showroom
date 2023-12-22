@@ -22,27 +22,33 @@ const streamURLs = computed(() => {
 useHead({
   title: () => title.value,
 })
+
+const isLandscape = ref(true)
 </script>
 
 <template>
   <div class="">
-    <div v-if="!error" class="max-md:w-full md:max-h-[100vh] bg-blue-500 mx-auto relative bg-container">
-      <NuxtLink :to="`https://idn.app/${data?.user?.username}/live/${data?.slug}`" target="_blank" :external="true" no-prefetch class="absolute top-0 left-0 z-20 p-4 mt-0.5">
-        <NuxtImg src="https://upload.wikimedia.org/wikipedia/commons/b/ba/IDN_Live.svg" size="64px" class="w-20 md:w-24" />
-      </NuxtLink>
-      <div v-if="!pending" class="absolute right-0 top-0 px-2 md:px-3 py-1 text-base font-semibold text-white z-20 bg-black/40 rounded-xl m-3">
-        {{ data?.user?.name }}
-      </div>
+    <div v-if="!error" class="max-md:w-full md:max-h-[100vh] flex flex-col items-center mx-auto relative">
       <ClientOnly>
-        <div v-if="pending" class="w-full h-full" />
-        <Suspense v-else>
-          <LazyWatchVideo
-            :landscape="false"
-            class="max-h-[100vh]"
-            :poster="data?.image ?? ''" :sources="streamURLs" @fullsceen="(isFullscreen) => {
-            }"
-          />
-        </Suspense>
+        <div class="relative bg-contain" :class="{ 'w-full': isLandscape }">
+          <NuxtLink :to="`https://idn.app/${data?.user?.username}/live/${data?.slug}`" target="_blank" :external="true" no-prefetch class="absolute top-0 left-0 z-20 p-4 mt-0.5">
+            <NuxtImg src="https://upload.wikimedia.org/wikipedia/commons/b/ba/IDN_Live.svg" size="64px" class="w-20 md:w-24" />
+          </NuxtLink>
+          <div v-if="!pending" class="absolute right-0 top-0 px-2 md:px-3 py-1 text-base font-semibold text-white z-20 bg-black/40 rounded-xl m-3">
+            {{ data?.user?.name }}
+          </div>
+          <div v-if="pending" class="w-full h-full" />
+          <Suspense v-else>
+            <LazyWatchVideo
+              :landscape="false"
+              class="max-h-[100vh]"
+              :class="isLandscape ? 'w-full' : 'h-[100vh]'"
+              :poster="data?.image ?? ''"
+              :sources="streamURLs" @is-landscape="(l) => isLandscape = l" @fullsceen="(isFullscreen) => {
+              }"
+            />
+          </Suspense>
+        </div>
       </ClientOnly>
     </div>
     <div v-else>

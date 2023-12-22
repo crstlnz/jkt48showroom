@@ -7,7 +7,7 @@ const props = withDefaults(defineProps<{ sources: ShowroomAPI.StreamingURL[], po
   useShortcut: true,
   useDefaultControl: false,
 })
-const emit = defineEmits<{ (e: 'fullsceen', isFullscreen: boolean): void }>()
+const emit = defineEmits<{ (e: 'fullsceen', isFullscreen: boolean): void, (e: 'isLandscape', isLandscape: boolean): void }>()
 const sources = ref(props.sources.filter(i => i.type === 'hls') ?? [])
 const qualityId = useLocalStorage('quality-id', 2)
 const currentSource = ref((sources.value ?? []).find(i => qualityId.value === i.id) ?? sources.value[0])
@@ -249,6 +249,12 @@ const videoWidth = ref(0)
 const videoHeight = ref(0)
 const isLandscape = computed(() => {
   return videoHeight.value <= videoWidth.value
+})
+
+watch(isLandscape, (l) => {
+  emit('isLandscape', l)
+}, {
+  immediate: true,
 })
 
 useEventListener(video, 'loadedmetadata', function () {
