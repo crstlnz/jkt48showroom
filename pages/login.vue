@@ -2,7 +2,7 @@
 import { useSettings } from '~~/store/settings'
 
 definePageMeta({
-  layout: false,
+  layout: 'empty',
   middleware: 'unauthenticated',
 })
 

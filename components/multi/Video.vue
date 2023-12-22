@@ -4,7 +4,7 @@ const props = defineProps<{
   index: number
   videosLength: number
 }>()
-defineEmits<{ (e: 'moveNext'): void, (e: 'movePrevious'): void, (e: 'delete'): void }>()
+defineEmits<{ (e: 'moveNext'): void, (e: 'movePrevious'): void, (e: 'delete', reason?: string): void }>()
 
 const videoElement = ref()
 
@@ -35,7 +35,7 @@ defineExpose({ refresh })
   <div class="flex items-center flex-col">
     <div class="overflow-hidden flex-1 h-0 bg-black/50 self-stretch flex items-center">
       <div class="w-full">
-        <LazyWatchVideo ref="videoElement" :key="video.id" poster="" :sources="sourceURLs" class="flex-1 w-full object-fill" :use-shortcut="false" :use-default-control="true" />
+        <LazyWatchVideo ref="videoElement" :key="video.id" poster="" :sources="sourceURLs" class="flex-1 w-full object-fill" :use-shortcut="false" :use-default-control="true" @source-not-found="$emit(`delete`, $t('notif.live.ended'))" />
       </div>
     </div>
     <div class="relative p-1 md:p-2 xl:p-3 gap-1 md:gap-2 xl:gap-3 w-full bg-white border border-black/10 drop-shadow-sm dark:border-white/10 dark:bg-black/20">

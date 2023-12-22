@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import type { WatchComment } from '#build/components'
+import { useNotifications } from '~/store/notifications'
 import { useSettings } from '~/store/settings'
 
 definePageMeta({
-  layout: false,
+  layout: 'empty',
 })
 
 const videosMap = useSessionStorage<Map<string, Multi.Video>>('videoMultiSelected', new Map())
@@ -91,17 +92,31 @@ function refreshAll() {
     video.refresh()
   }
 }
+
+const { addNotif } = useNotifications()
+
+function deleteVideo(video: Multi.Video, reason?: string) {
+  if (reason) {
+    addNotif({
+      type: 'info',
+      title: reason,
+      message: `${video.name} Room`,
+    })
+  }
+  add(video)
+}
 </script>
 
 <template>
   <div>
     <SplashScreen>
-      <div class="min-h-[100vh] flex flex-col">
+      <div key="multiviewer" class="min-h-[100vh] flex flex-col">
         <nav class="flex justify-center items-center gap-10 p-4 md:p-5">
           <div class="text-base font-bold">
             <NuxtLink to="/" :class="$getGroup(group) === 'jkt48' ? 'text-red-500' : 'text-sky-400'" class="text-4xl">
               {{ $getGroupTitle(group) }}
-            </NuxtLink> <span class="leading-1">Multi Viewer</span>
+            </NuxtLink>
+            <span class="leading-1">Multi Viewer</span>
           </div>
           <div class="flex gap-3 items-center">
             <div class="flex gap-2 flex-col md:flex-row">
@@ -114,7 +129,7 @@ function refreshAll() {
             </div>
             <div class="flex gap-3 bg-black/5 dark:bg-white/5 px-3 py-2 rounded-md">
               <div>Row</div>
-              <input :value="rowCount" type="number" class="inputRow rounded-md text-center min-w-[50px] bg-black/25" max="8" min="1" placeholder="Row Count" @change="(e) => console.log(e)" @input="rowCountChange">
+              <input :value="rowCount" type="number" class="inputRow rounded-md text-center min-w-[50px] bg-black/25" max="8" min="1" placeholder="Row Count" @input="rowCountChange">
             </div>
           </div>
         </nav>
@@ -129,7 +144,7 @@ function refreshAll() {
               :index="idx"
               :videos-length="videos.length"
               :video="video"
-              @delete="add(video)"
+              @delete="(reason) => deleteVideo(video, reason)"
               @move-next="() => moveNext(idx)"
               @move-previous="() => movePrevious(idx)"
             />
@@ -141,7 +156,10 @@ function refreshAll() {
 
         <footer class="text-center py-20">
           <div class="opacity-50 text-sm">
-            Created by <NuxtLink to="https://twitter.com/crstlnz" target="_blank" class="">
+            <span>
+              Created by
+            </span>
+            <NuxtLink to="https://twitter.com/crstlnz" target="_blank" class="">
               @crstlnz
             </NuxtLink>
           </div>

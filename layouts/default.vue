@@ -3,25 +3,15 @@ import { useSettings } from '~~/store/settings'
 
 const settings = useSettings()
 
-const { getTitle, getFavicon } = useAppConfig()
-const title = getTitle(settings.group)
+const { getTitle } = useAppConfig()
+const title = computed(() => getTitle(settings.group))
 const menuOpen = ref(false)
 
 useHead({
   htmlAttrs: {
     class: () => menuOpen.value ? 'max-md:overflow-hidden' : '',
   },
-  titleTemplate: t => t ? `${t} | ${title}` : title,
-  // meta: [
-  //   {
-  //     hid: 'description',
-  //     name: 'description',
-  //     content: `A fanmade ${title} log web`,
-  //   },
-  // ],
-  link: [
-    { rel: 'icon', type: 'image/x-icon', href: getFavicon(settings.group) },
-  ],
+  titleTemplate: t => t ? `${t} | ${title.value}` : title.value,
 })
 
 const menus: MenuItem[] = [

@@ -7,7 +7,7 @@ const props = withDefaults(defineProps<{ sources: ShowroomAPI.StreamingURL[], po
   useShortcut: true,
   useDefaultControl: false,
 })
-const emit = defineEmits<{ (e: 'fullsceen', isFullscreen: boolean): void, (e: 'isLandscape', isLandscape: boolean): void }>()
+const emit = defineEmits<{ (e: 'fullsceen', isFullscreen: boolean): void, (e: 'isLandscape', isLandscape: boolean): void, (e: 'sourceNotFound'): void }>()
 const sources = ref(props.sources.filter(i => i.type === 'hls') ?? [])
 const qualityId = useLocalStorage('quality-id', 2)
 const currentSource = ref((sources.value ?? []).find(i => qualityId.value === i.id) ?? sources.value[0])
@@ -140,6 +140,10 @@ function createHLS(url: string) {
   })
 
   hls.value.on(Hls.Events.ERROR, (_e: any, d: any) => {
+    console.log('ERROR BOI', d)
+    if (d?.response?.code === 404) {
+      emit('sourceNotFound')
+    }
     if (d.details === Hls.ErrorDetails.BUFFER_STALLED_ERROR) {
       isLoading.value = true
     }

@@ -13,7 +13,8 @@ const i18nHead = useLocaleHead({
 })
 
 const url = useRequestURL()
-
+const settings = useSettings()
+const { getFavicon } = useAppConfig()
 useHead({
   htmlAttrs: {
     lang: i18nHead.value.htmlAttrs?.lang,
@@ -23,14 +24,11 @@ useHead({
     { children: 'JavaScript is required' },
   ],
   link: [
+    { rel: 'icon', type: 'image/x-icon', href: getFavicon(settings.group) },
     { rel: 'canonical', href: url.href },
     { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
     { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: 'anonymous' },
     { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,200;9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,800;9..40,900&family=Noto+Serif+JP:wght@300;400;600;700;900&display=swap' },
-
-    // ...(i18nHead.value.link || []),
-    // { rel: 'preload', href: '/fonts/signika/regular.woff2', as: 'font', type: 'font/woff2', crossorigin: 'anonymous' },
-    // { rel: 'preload', href: '/fonts/signika/700.woff2', as: 'font', type: 'font/woff2', crossorigin: 'anonymous' },
   ],
   meta: [
     ...(i18nHead.value.meta || []),
@@ -104,6 +102,7 @@ watch(shiftCtrlA, (v) => {
 })
 
 useCSRF()
+useAuth()
 </script>
 
 <template>
