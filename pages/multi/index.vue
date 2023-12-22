@@ -151,7 +151,7 @@ function deleteVideo(video: Multi.Video, reason?: string) {
           </TransitionGroup>
         </div>
         <div v-else class="flex flex-1 justify-center items-center text-2xl font-semibold text-center px-3">
-          Tambah videonya di kanan bawah!
+          {{ $t("selectvideofirst") }}
         </div>
 
         <footer class="text-center py-20">

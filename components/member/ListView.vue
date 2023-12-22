@@ -53,7 +53,7 @@ const config = useAppConfig()
             <div class="bg-container flex gap-3 rounded-xl p-3">
               <NuxtLink :key="item.room_id" :to="`/member/${item.url}`" class="h-20 w-20 overflow-hidden rounded-full">
                 <NuxtImg
-                  class="h-full w-full object-cover"
+                  class="h-20 w-20 object-cover"
                   :src="item.img_alt ?? item.img ?? config.errorPicture"
                   :alt="`${item.name} Profile Picture`"
                   fit="fill"
@@ -75,14 +75,14 @@ const config = useAppConfig()
                     {{ item.is_group ? "Official" : (item.is_graduate ? "Graduated" : "Active") }}
                   </div>
                   <div class="flex items-center gap-4 self-end text-base text-slate-700 dark:text-slate-400">
-                    <NuxtLink :to="$liveURL(item.url)" target="_blank">
+                    <NuxtLink :to="$liveURL(item.url)" target="_blank" :aria-label="`${item.name} Live`">
                       <Icon name="ic:round-videocam" size="1.6rem" />
                     </NuxtLink>
-                    <NuxtLink :to="$profileURL(item.room_id)" target="_blank">
+                    <NuxtLink :to="$profileURL(item.room_id)" target="_blank" :aria-label="`${item.name} Showroom Profile`">
                       <Icon name="ic:round-person" size="1.6rem" />
                     </NuxtLink>
                     <NuxtLink :to="`/member/${item.url}`">
-                      <Icon name="mdi:card-account-details-outline" size="1.6rem" />
+                      <Icon name="mdi:card-account-details-outline" size="1.6rem" :aria-label="`${item.name} Profile`" />
                     </NuxtLink>
                   </div>
                 </div>

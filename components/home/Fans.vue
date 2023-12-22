@@ -34,7 +34,7 @@ const { userClick } = useSelectedUser()
             type="button"
           >
             <img
-              lazy="false"
+              lazy="true"
               class="aspect-square w-full rounded-xl object-cover lg:rounded-2xl"
               :alt="fans.name"
               :src="$avatarURL(fans.avatar_id)"
