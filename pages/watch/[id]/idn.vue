@@ -5,6 +5,12 @@ const title = computed(() => {
   const name = data.value?.user?.name
   return name ? `${name} - IDN Live` : ''
 })
+
+const { width, height } = useWindowSize()
+
+const isLandscape = computed(() => {
+  return width.value >= height.value
+})
 const streamURLs = computed(() => {
   if (!data.value?.stream_url) return []
   return [
@@ -23,14 +29,14 @@ useHead({
   title: () => title.value,
 })
 
-const isLandscape = ref(true)
+const videoIsLandscape = ref(true)
 </script>
 
 <template>
   <div class="">
     <div v-if="!error" class="max-md:w-full md:max-h-[100vh] flex flex-col items-center mx-auto relative">
       <ClientOnly>
-        <div class="relative bg-contain" :class="{ 'w-full': isLandscape }">
+        <div class="relative bg-contain flex flex-col" :class="{ 'w-full': videoIsLandscape || !isLandscape }">
           <NuxtLink :to="`https://idn.app/${data?.user?.username}/live/${data?.slug}`" target="_blank" :external="true" no-prefetch class="absolute top-0 left-0 z-20 p-4 mt-0.5">
             <NuxtImg src="https://upload.wikimedia.org/wikipedia/commons/b/ba/IDN_Live.svg" size="64px" class="w-20 md:w-24" />
           </NuxtLink>
@@ -42,9 +48,9 @@ const isLandscape = ref(true)
             <LazyWatchVideo
               :landscape="false"
               class="max-h-[100vh]"
-              :class="isLandscape ? 'w-full' : 'h-[100vh]'"
+              :class="videoIsLandscape || !isLandscape ? 'w-full' : 'h-[100vh]'"
               :poster="data?.image ?? ''"
-              :sources="streamURLs" @is-landscape="(l) => isLandscape = l" @fullsceen="(isFullscreen) => {
+              :sources="streamURLs" @is-landscape="(l) => videoIsLandscape = l" @fullsceen="(isFullscreen) => {
               }"
             />
           </Suspense>

@@ -32,7 +32,7 @@ defineExpose({ refresh })
 </script>
 
 <template>
-  <div class="flex items-center flex-col mb-5">
+  <div class="flex items-center flex-col">
     <div class="overflow-hidden flex-1 h-0 bg-black/50 self-stretch flex items-center">
       <div class="w-full">
         <LazyWatchVideo ref="videoElement" :key="video.id" poster="" :sources="sourceURLs" class="flex-1 w-full object-fill" :use-shortcut="false" :use-default-control="true" />
