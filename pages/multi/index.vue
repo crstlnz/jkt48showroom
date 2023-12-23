@@ -1,6 +1,8 @@
 <script lang="ts" setup>
-import type { WatchComment } from '#build/components'
+import { MultiVideo } from '#components'
+import { useIDNLives } from '~/store/idnLives'
 import { useNotifications } from '~/store/notifications'
+import { useOnLives } from '~/store/onLives'
 import { useSettings } from '~/store/settings'
 
 definePageMeta({
@@ -85,10 +87,9 @@ function onBeforeLeave(el: Element) {
   element.style.width = `${rect.width}px`
 }
 
-const videoPlayers = ref<typeof WatchComment[]>([])
-
+const videoPlayers = ref<Map<string, typeof MultiVideo>>(new Map())
 function refreshAll() {
-  for (const video of videoPlayers.value) {
+  for (const video of videoPlayers.value.values()) {
     video.refresh()
   }
 }
@@ -105,15 +106,62 @@ function deleteVideo(video: Multi.Video, reason?: string) {
   }
   add(video)
 }
+
+const onLives = useOnLives()
+const { data } = storeToRefs(onLives)
+const { t } = useI18n()
+
+const idnLives = useIDNLives()
+const { data: idnData } = storeToRefs(idnLives)
+function checkLive(video: Multi.Video) {
+  const showroomLives = data.value ?? []
+  const idnLives = idnData.value ?? []
+  const showroomRoom = showroomLives.find(i => video.id === String(i.room_id))
+  const idnRoom = idnLives.find(i => video.id === i.user.id)
+  if (!showroomRoom && !idnRoom) {
+    add(video) /// delete
+    addNotif({
+      type: 'info',
+      title: t('notif.live.ended'),
+      message: `${video.name} Room`,
+    })
+  }
+  else {
+    const oldVideo = videosMap.value.get(video.id)
+    if (oldVideo) {
+      if (showroomRoom) {
+        videosMap.value.set(oldVideo.id, {
+          ...convertShowroom(showroomRoom),
+          order: oldVideo.order,
+        })
+      }
+      else if (idnRoom) {
+        videosMap.value.set(oldVideo.id, {
+          ...convertIDNLive(idnRoom),
+          order: oldVideo.order,
+        })
+      }
+    }
+  }
+}
+
+function applyVideoRefs(ref: any, video: Multi.Video) {
+  if (ref) {
+    videoPlayers.value.set(video.id, ref)
+  }
+  else {
+    videoPlayers.value.delete(video.id)
+  }
+}
 </script>
 
 <template>
   <div>
     <SplashScreen>
       <div key="multiviewer" class="min-h-[100vh] flex flex-col">
-        <nav class="flex justify-center items-center gap-10 p-4 md:p-5">
-          <div class="text-base font-bold">
-            <NuxtLink to="/" :class="$getGroup(group) === 'jkt48' ? 'text-red-500' : 'text-sky-400'" class="text-4xl">
+        <nav class="flex sm:justify-center items-center gap-10 p-4 md:p-5 justify-between">
+          <div class="text-base font-bold flex flex-col sm:flex-row sm:items-end sm:gap-0.5">
+            <NuxtLink to="/" :class="$getGroup(group) === 'jkt48' ? 'text-red-500' : 'text-sky-400'" class="text-4xl max-sm:leading-8">
               {{ $getGroupTitle(group) }}
             </NuxtLink>
             <span class="leading-1">Multi Viewer</span>
@@ -136,15 +184,16 @@ function deleteVideo(video: Multi.Video, reason?: string) {
         <MultiLiveContainer :selected="videosMap" @select="add" />
 
         <div v-if="videos.length" class="flex-1">
-          <TransitionGroup name="multivideo" tag="div" class="grid flex-1" :style="{ gridTemplateColumns: `repeat(${rowCount || 4}, minmax(0, 1fr))` }" @before-leave="onBeforeLeave">
+          <TransitionGroup v-if="videos.length" name="multivideo" tag="div" class="grid" :style="{ gridTemplateColumns: `repeat(${rowCount || 4}, minmax(0, 1fr))` }" @before-leave="onBeforeLeave">
             <MultiVideo
               v-for="[idx, video] in videos.entries()"
-              ref="videoPlayers"
+              :ref="(ref) => applyVideoRefs(ref, video)"
               :key="video.id"
               :index="idx"
               :videos-length="videos.length"
               :video="video"
               @delete="(reason) => deleteVideo(video, reason)"
+              @source-not-found="() => checkLive(video)"
               @move-next="() => moveNext(idx)"
               @move-previous="() => movePrevious(idx)"
             />

@@ -2,6 +2,7 @@
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
 import { useIDNLives } from '~/store/idnLives'
 import { useOnLives } from '~/store/onLives'
+import { convertShowroom } from '~/utils/multi'
 
 const props = defineProps<{
   selected: Map<string, Multi.Video>
@@ -9,30 +10,18 @@ const props = defineProps<{
 
 const emit = defineEmits<{ (e: 'select', id: Multi.Video): void }>()
 
-const { idnLiveUrl, liveURL, idnLiveIcon, showroomIcon } = useAppConfig()
-
 function selectIDNLives(room: IDNLives) {
+  const video = convertIDNLive(room)
   emit('select', {
-    id: room.user?.id,
-    name: room.user?.name,
-    image: room.image,
-    landscape: false,
-    original_url: idnLiveUrl(room.user?.username, room.slug),
-    icon: idnLiveIcon,
-    stream_url: room.stream_url,
+    ...video,
     order: props.selected.size + 1,
   })
 }
 
 function selectShowroom(room: IRoomLive) {
+  const video = convertShowroom(room)
   emit('select', {
-    id: String(room.room_id),
-    name: room.name,
-    image: room.img,
-    landscape: true,
-    stream_url: room.streaming_url_list.find(i => i.id === 3 || i.id === 4)?.url ?? room.streaming_url_list[0]?.url ?? '',
-    original_url: liveURL(room.url),
-    icon: showroomIcon,
+    ...video,
     order: props.selected.size + 1,
   })
 }

@@ -2,12 +2,23 @@
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
 import Hls, { Events } from 'hls.js/dist/hls.min.js'
 
-const props = withDefaults(defineProps<{ sources: ShowroomAPI.StreamingURL[], poster: string, landscape?: boolean, useShortcut?: boolean, useDefaultControl?: boolean }>(), {
-  landscape: true,
-  useShortcut: true,
-  useDefaultControl: false,
-})
-const emit = defineEmits<{ (e: 'fullsceen', isFullscreen: boolean): void, (e: 'isLandscape', isLandscape: boolean): void, (e: 'sourceNotFound'): void }>()
+const props = withDefaults(
+  defineProps<{
+    sources: ShowroomAPI.StreamingURL[]
+    poster: string
+    landscape?: boolean
+    useShortcut?: boolean
+    useDefaultControl?: boolean
+    maxBufferSize?: number
+    maxMaxBufferLength?: number
+  }>(),
+  {
+    landscape: true,
+    useShortcut: true,
+    useDefaultControl: false,
+  },
+)
+const emit = defineEmits<{ (e: 'fullsceen', isFullscreen: boolean): void, (e: 'isLandscape', isLandscape: boolean): void, (e: 'sourceError'): void }>()
 const sources = ref(props.sources.filter(i => i.type === 'hls') ?? [])
 const qualityId = useLocalStorage('quality-id', 2)
 const currentSource = ref((sources.value ?? []).find(i => qualityId.value === i.id) ?? sources.value[0])
@@ -96,12 +107,18 @@ function setShowControl(show: boolean) {
 }
 
 const fatalError = ref(0)
+const reloadTimeout = ref<NodeJS.Timeout | undefined>()
+function clearReloadTimeout() {
+  if (reloadTimeout.value) clearTimeout(reloadTimeout.value)
+}
 function createHLS(url: string) {
   fatalError.value = 0
   isLoading.value = true
   destroyVideo()
   hls.value = new Hls({
     enableWorker: true,
+    maxBufferSize: props.maxBufferSize ? props.maxBufferSize : 254 * 1000 * 1000,
+    maxMaxBufferLength: props.maxMaxBufferLength ? props.maxMaxBufferLength : 1800,
     lowLatencyMode: lowLatencyMode.value,
     backBufferLength: 90,
     fetchSetup(context: any, initParams: any) {
@@ -140,15 +157,18 @@ function createHLS(url: string) {
   })
 
   hls.value.on(Hls.Events.ERROR, (_e: any, d: any) => {
-    console.log('ERROR BOI', d)
-    if (d?.response?.code === 404) {
-      emit('sourceNotFound')
-    }
+    emit('sourceError')
     if (d.details === Hls.ErrorDetails.BUFFER_STALLED_ERROR) {
       isLoading.value = true
     }
+
+    clearReloadTimeout()
+    reloadTimeout.value = setTimeout(() => {
+      reload()
+    }, 10000)
   })
   hls.value.on(Hls.Events.FRAG_BUFFERED, () => {
+    clearReloadTimeout()
     isLoading.value = false
   })
 
@@ -157,11 +177,12 @@ function createHLS(url: string) {
   })
 
   hls.value.on(Hls.Events.LEVEL_LOADED, () => {
+    clearReloadTimeout()
     isLoading.value = false
   })
 
   hls.value.attachMedia(video.value)
-  loadSource(url)
+  hls.value.loadSource(url)
   play()
 }
 
@@ -171,21 +192,33 @@ function destroyVideo() {
 
 function toggleMute() {
   if (video.value) {
-    if (volume.value > 0) {
-      mute()
+    if (video.value.muted) {
+      unmute()
     }
     else {
-      unmute()
+      mute()
     }
   }
 }
 
 function mute() {
-  setVolume(0)
+  if (video.value) {
+    video.value.muted = true
+    isMuted.value = true
+  }
+  else {
+    setVolume(0)
+  }
 }
 
 function unmute() {
-  setVolume(tempVolume.value || 100)
+  if (video.value) {
+    video.value.muted = false
+    isMuted.value = false
+  }
+  else {
+    setVolume(tempVolume.value || 100)
+  }
 }
 
 const isProcessingPlay = ref(false)
@@ -208,11 +241,8 @@ async function togglePlay() {
   }
 }
 
-function loadSource(src: string) {
-  hls.value?.loadSource(src)
-}
-
 function reload() {
+  clearReloadTimeout()
   try {
     createHLS(currentSource.value.url)
   }
@@ -322,7 +352,10 @@ async function play() {
     }
     catch (e) {
       await nextTick(async () => {
-        setVolume(0, true)
+        if (video.value) {
+          video.value.muted = true
+          isMuted.value = true
+        }
         await video.value?.play()
       })
     }
