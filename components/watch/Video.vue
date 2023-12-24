@@ -466,13 +466,13 @@ function changeVideoTime() {
 
 if (props.useShortcut) {
   onKeyStroke('ArrowLeft', () => {
-    const val = currentTime.value - 5
+    const val = currentTime.value - 2
     if (video.value) video.value.currentTime = val < 0 ? 0 : val
   }, { eventName: 'keyup' })
 
   onKeyStroke('ArrowRight', () => {
-    const val = currentTime.value + 5
-    if (video.value) video.value.currentTime = val > duration.value ? val : duration.value
+    const val = currentTime.value + 2
+    if (video.value) video.value.currentTime = val > duration.value ? duration.value : val
   }, { eventName: 'keyup' })
 }
 
