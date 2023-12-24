@@ -153,6 +153,20 @@ function applyVideoRefs(ref: any, video: Multi.Video) {
     videoPlayers.value.delete(video.id)
   }
 }
+const { getGroupTitle } = useAppConfig()
+useHeadSafe({
+  title: `${getGroupTitle(group)} Multi Viewer`,
+})
+
+const description = computed(() => {
+  return `Multi viewer for ${getGroupTitle(group)} Live Streams!`
+})
+
+useSeoMeta({
+  description,
+  ogDescription: () => description.value,
+
+})
 </script>
 
 <template>

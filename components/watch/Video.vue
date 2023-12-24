@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
-import Hls, { Events } from 'hls.js/dist/hls.min.js'
+import Hls from 'hls.js'
 
 const props = withDefaults(
   defineProps<{
@@ -128,7 +128,7 @@ function createHLS(url: string) {
     },
   })
 
-  hls.value.on(Events.ERROR, (event: any, data: any) => {
+  hls.value.on(Hls.Events.ERROR, (event: any, data: any) => {
     if (data.fatal) {
       switch (data.type) {
         case Hls.ErrorTypes.NETWORK_ERROR:
