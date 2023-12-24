@@ -117,10 +117,10 @@ function createHLS(url: string) {
   destroyVideo()
   hls.value = new Hls({
     enableWorker: true,
+    liveSyncDurationCount: 1.2,
     maxBufferSize: props.maxBufferSize ? props.maxBufferSize : 254 * 1000 * 1000,
     maxMaxBufferLength: props.maxMaxBufferLength ? props.maxMaxBufferLength : 1800,
-    lowLatencyMode: lowLatencyMode.value,
-    backBufferLength: 90,
+    lowLatencyMode: true,
     fetchSetup(context: any, initParams: any) {
       // Always send cookies, even for cross-origin calls.
       initParams.credentials = 'include'
