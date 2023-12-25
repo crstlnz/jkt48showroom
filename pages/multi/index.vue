@@ -28,7 +28,7 @@ function add(video: Multi.Video) {
 }
 
 const { width } = useWindowSize()
-const minWidth = 180
+const minWidth = 160
 const maxCount = computed(() => {
   return Math.floor(width.value / minWidth)
 })
