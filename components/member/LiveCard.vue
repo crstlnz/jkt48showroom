@@ -189,13 +189,13 @@ async function refreshDate() {
         <h2 class="flex-1 truncate text-sm font-bold md:text-base" :title="live.name">
           {{ live.name }}
         </h2>
-        <div class="ext-center grid grid-cols-2 gap-2 text-xs font-semibold text-white md:text-sm">
+        <div class="ext-center grid grid-cols-2 gap-2 text-sm sm:text-xs font-semibold text-white md:text-sm">
           <NuxtLink
             :to="`/watch/${live.url}`"
             class="flex cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-red-500 p-2  hover:bg-red-600 md:px-4 md:py-2"
           >
-            <Icon name="ic:round-videocam" class="text-sm md:text-base" />
-            <span class="truncate">Open</span>
+            <Icon name="ic:round-videocam" />
+            <span class="truncate max-sm:hidden">Open</span>
           </NuxtLink>
           <a
             :tabindex="openMenu ? -1 : undefined"
@@ -204,7 +204,7 @@ async function refreshDate() {
             class="flex cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-blue-500 p-2 hover:bg-blue-600 md:px-4 md:py-2"
           >
             <Icon name="octicon:link-external-16" />
-            <span class="truncate">View</span>
+            <span class="max-sm:hidden truncate">View</span>
           </a>
         </div>
       </div>

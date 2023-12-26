@@ -65,10 +65,16 @@ watch(() => route.fullPath, (p, oP) => {
     })
   }
 }, { immediate: true })
+
+const hiddenUsername = useCookie('_h_usrnme', {
+  default: () => true,
+  maxAge: 3600 * 24 * 30,
+  path: '/',
+})
 </script>
 
 <template>
-  <div class="w-full">
+  <div class="w-full min-h-[100vh]">
     <nav class="fixed inset-x-0 bottom-0 z-nav border-t-2 bg-white drop-shadow-md dark:border-dark-3 dark:bg-dark-2">
       <div class="relative flex h-[60px] gap-4 overflow-hidden px-4">
         <div v-for="menu in menus" :key="menu.title" class="relative flex min-w-0 flex-1 flex-col items-center">
@@ -103,7 +109,7 @@ watch(() => route.fullPath, (p, oP) => {
       :class="{
         'visible translate-x-0': isOpen,
         'invisible translate-x-full': !isOpen,
-      }" class="ease bg-container fixed inset-y-0 right-0 z-aboveNav w-[80%] overflow-y-auto p-5 transition-[transform,visibility] duration-300"
+      }" class="bg-container fixed inset-y-0 right-0 z-aboveNav w-[80%] overflow-y-auto p-5 transition-[transform,visibility] duration-300"
     >
       <div class="flex flex-col h-full">
         <div class="pb-5 border-b-2 border-black/10 dark:border-white/5">
@@ -129,8 +135,16 @@ watch(() => route.fullPath, (p, oP) => {
               <div class="text-base font-semibold !leading-5">
                 {{ authenticated ? user?.name : "Login" }}
               </div>
-              <div class="text-left text-sm font-light !leading-5">
-                {{ authenticated ? user?.account_id : $t('loginwithshowroom') }}
+              <div v-if="authenticated" class="text-left text-sm font-light !leading-5" @click="hiddenUsername = !hiddenUsername">
+                <div v-if="!hiddenUsername">
+                  {{ authenticated ? user?.account_id : $t('loginwithshowroom') }}
+                </div>
+                <div v-else class="flex items-center gap-1 align-middle">
+                  <span>********</span><Icon name="formkit:hidden" />
+                </div>
+              </div>
+              <div v-else class="text-left text-sm font-light !leading-5">
+                {{ $t('loginwithshowroom') }}
               </div>
             </div>
           </NuxtLink>
@@ -162,7 +176,7 @@ watch(() => route.fullPath, (p, oP) => {
             </NuxtLink>
           </div>
         </div>
-        <div>
+        <div class="flex justify-between items-center">
           <button
             v-ripple
             type="button"
@@ -170,9 +184,10 @@ watch(() => route.fullPath, (p, oP) => {
             class="bg-container flex items-center justify-start gap-3 rounded-full p-3"
             @click="$emit('toggleDark')"
           >
-            <Icon name="ph:moon-bold" class="!hidden h-5 w-5 dark:!block" />
-            <Icon name="ph:sun-bold" class="h-5 w-5 dark:!hidden" />
+            <Icon name="ph:moon-bold" class="!hidden h-6 w-6 dark:!block" />
+            <Icon name="ph:sun-bold" class="h-6 w-6 dark:!hidden" />
           </button>
+          <Footer />
         </div>
       </div>
     </div>

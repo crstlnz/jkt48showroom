@@ -62,10 +62,8 @@ onMounted(() => {
       </LayoutRowTitle>
     </div>
     <slot />
-    <div class="pt-4 pb-14 text-right px-3 md:px-4">
-      <NuxtLink to="https://twitter.com/crstlnz" target="_blank" class="mt-4 opacity-50">
-        @crstlnz
-      </NuxtLink>
+    <div class="pt-4 pb-10 text-center px-3 md:px-4">
+      <Footer class="mt-12 opacity-50" />
     </div>
   </div>
 </template>

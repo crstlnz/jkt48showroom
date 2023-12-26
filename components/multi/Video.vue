@@ -34,7 +34,12 @@ defineExpose({ refresh })
 <template>
   <div class="flex items-center flex-col">
     <div class="overflow-hidden flex-1 h-0 bg-black/50 self-stretch flex items-center">
-      <div class="w-full">
+      <div class="w-full relative">
+        <div class="absolute left-1 top-0.5 md:left-2 md:top-2 z-10">
+          <NuxtLink :to="video.original_url" :external="true" target="_blank" class="inline-block">
+            <NuxtImg :src="video.icon" size="64px" class="h-3 md:h-5 object-contain max-w-[90px]" />
+          </NuxtLink>
+        </div>
         <WatchVideo
           ref="videoElement"
           :key="`video-${video.id}`"

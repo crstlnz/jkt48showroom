@@ -8,5 +8,6 @@ declare namespace Multi {
     order: number
     original_url: string
     icon: string
+    type: 'idn' | 'showroom'
   }
 }

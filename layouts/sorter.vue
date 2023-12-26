@@ -45,7 +45,7 @@ useSeoMeta({
             <slot />
           </div>
           <footer class="p-6 text-center font-bold my-10 opacity-50">
-            <a href="https://twitter.com/crstlnz" target="_blank">@crstlnz</a>
+            <Footer />
           </footer>
         </div>
       </template>

@@ -176,9 +176,7 @@ async function signInHandler() {
                 <span :class="{ 'opacity-0': loading }">Login</span>
               </ButtonText>
             </div>
-            <NuxtLink to="https://twitter.com/crstlnz" target="_blank" class="mt-4 opacity-50">
-              @crstlnz
-            </NuxtLink>
+            <Footer class="mt-4 opacity-50" />
           </div>
         </div>
       </div>

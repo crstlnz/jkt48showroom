@@ -14,7 +14,7 @@ function isSort(s: any): s is sortType {
 
 const urls = {
   idnLiveIcon: 'https://upload.wikimedia.org/wikipedia/commons/b/ba/IDN_Live.svg',
-  showroomIcon: 'https://upload.wikimedia.org/wikipedia/commons/b/ba/IDN_Live.svg',
+  showroomIcon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/SHOWROOM_logo.svg/500px-SHOWROOM_logo.svg.png',
   idnLiveUrl: (username: string, slug: string) => `https://idn.app/${username}/live/${slug}`,
   defaultCardBackground: 'https://res.cloudinary.com/haymzm4wp/image/upload/v1689879547/assets/img/jkt48pt_vbvdpw.png',
   giftUrl: (id: string | number, type: GiftSize = 'small') => `https://static.showroom-live.com/image/gift/${id}_${type === 'small' ? 's' : 'm'}.png`,
