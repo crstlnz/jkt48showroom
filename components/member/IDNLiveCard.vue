@@ -82,20 +82,6 @@ if (isSupported.value) {
     }
   })
 }
-const pending = ref(false)
-// async function refreshDate() {
-//   pending.value = true
-//   try {
-//     const data = await $apiFetch<APILiveInfo>('/api/showroom/live_info', { params: { room_id: props.live.room_id } })
-//     if (Array.isArray(data)) throw new TypeError('Data must be not in array')
-//     date.value = data.started_at ?? ''
-//     pending.value = false
-//   }
-//   catch (e) {
-//     // console.log(e)
-//     pending.value = false
-//   }
-// }
 </script>
 
 <template>

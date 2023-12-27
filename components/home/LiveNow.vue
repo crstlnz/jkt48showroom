@@ -81,7 +81,7 @@ const { data: idnData, pending: idnPending, liveCount: idnCount, hasLives: idnHa
             <PulseLiveCard />
           </template>
           <Suspense v-if="!idnError && idnData?.length">
-            <LazyMemberIdnLiveCard v-for="live in idnData" :key="live.slug" :live="live" class="bg-background" />
+            <LazyMemberIDNLiveCard v-for="live in idnData" :key="live.slug" :live="live" class="bg-background" />
             <template #fallback>
               <PulseLiveCard v-for="num in idnData.length" :key="num" />
             </template>

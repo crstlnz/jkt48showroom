@@ -3,7 +3,13 @@
 import c from '~~/app.config'
 import { useSelectedUser } from '~/store/selectedUser'
 
-const props = defineProps<{ gifts: IFansGift[], pageMode?: boolean, dataId: string, giftList: IGift[] }>()
+const props = defineProps<{
+  gifts: IFansGift[]
+  pageMode?: boolean
+  dataId: string
+  giftList: IGift[]
+  hasNextPage: boolean
+}>()
 const search = ref('')
 
 const giftList = computed<Map<number, IGiftImg>>(() => {
@@ -29,7 +35,7 @@ const bufferSize = computed(() => {
 })
 
 const searchInput = ref()
-const isEnded = ref(false)
+const isEnded = ref(!(props.hasNextPage ?? true))
 const pending = ref(false)
 const error = ref(false)
 const page = ref(1)

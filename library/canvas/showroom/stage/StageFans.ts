@@ -81,7 +81,7 @@ export class FansAvatar {
     ctx.setTransform(1, 0, 0, 1, this.x, this.y)
     if (isAnimated) ctx.rotate(((this.rotation ?? 0) * Math.PI) / 180)
     if (this.isCurrentUser && this.bg) {
-      ctx.drawImage(this.bg, -(this.bg?.width / 1.5 ?? 0) / 2, -(this.bg.height / 1.5 ?? 0), this.bg.width / 1.5, this.bg.height / 1.5)
+      ctx.drawImage(this.bg, -(this.bg?.width / 1.5) / 2, -(this.bg.height / 1.5), this.bg.width / 1.5, this.bg.height / 1.5)
     }
     this.drawAvatar(ctx)
   }

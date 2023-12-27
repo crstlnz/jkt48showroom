@@ -35,6 +35,7 @@ useHead({
       rel: 'preload',
       href: fontUrl,
       onload: 'this.onload=null;this.rel=\'stylesheet\'',
+      integrity: 'sha256-kKlLxnad8Do086ydv+he7LBbcypafVAsEawL4sh9x/E=',
       as: 'style',
     },
   ],

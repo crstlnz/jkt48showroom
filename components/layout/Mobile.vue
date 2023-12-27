@@ -91,7 +91,9 @@ const hiddenUsername = useCookie('_h_usrnme', {
         </div>
         <button class="relative flex min-w-0 flex-1 flex-col items-center" @click="openMenu">
           <div class="absolute left-1/2 top-1/2 flex aspect-square -translate-x-1/2 -translate-y-1/2 cursor-pointer flex-col items-center justify-center rounded-full p-5">
-            <Icon name="ic:round-settings" class="h-9 w-9 shrink-0 rounded-full p-1.5" />
+            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full p-1">
+              <Icon name="ic:round-settings" class="h-full w-full" />
+            </div>
             <div class="shrink-0 text-xs">
               Settings
             </div>

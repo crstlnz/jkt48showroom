@@ -19,6 +19,7 @@ async function fetchProfile(room_id: string) {
       room_id,
     },
   })
+  isFollow.value = profile.value.is_follow
 }
 
 const { t } = useI18n()
@@ -214,7 +215,7 @@ useHead({
                 <div class="flex gap-1 mb-1">
                   <Icon name="icon-park-twotone:theater" class="self-center text-lg xl:text-xl" />
                   <h2 class="text-lg xl:text-xl font-bold leading-10">
-                    {{ $t(`recent_theater`) }}
+                    {{ $t(`upcoming_theater`) }}
                   </h2>
                 </div>
                 <div class="md:pt-1 grid grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4">

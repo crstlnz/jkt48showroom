@@ -254,7 +254,7 @@ const isXL = greaterOrEqual('xl')
             </div>
           </div>
           <div class="mx-3 md:mx-4 overflow-hidden rounded-xl bg-white shadow-sm dark:bg-dark-1">
-            <ShowroomGiftScroll :gifts="calculatedGift" :page-mode="true" :data-id="data.data_id" :gift-list="data?.live_info?.gift?.list ?? []" />
+            <ShowroomGiftScroll :gifts="calculatedGift" :page-mode="true" :data-id="data.data_id" :has-next-page="data.live_info?.gift?.next_page" :gift-list="data?.live_info?.gift?.list ?? []" />
           </div>
         </div>
       </template>
