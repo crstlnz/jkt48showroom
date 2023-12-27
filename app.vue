@@ -15,6 +15,8 @@ const i18nHead = useLocaleHead({
 const url = useRequestURL()
 const settings = useSettings()
 const { getFavicon } = useAppConfig()
+const config = useRuntimeConfig()
+
 const fontUrl = 'https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,200;9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,800;9..40,900&family=Noto+Serif+JP:wght@300;400;600;700;900&display=swap'
 useHead({
   htmlAttrs: {
@@ -32,10 +34,9 @@ useHead({
     { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
     { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: 'anonymous' },
     {
-      rel: 'preload',
+      rel: 'stylesheet',
       href: fontUrl,
-      onload: 'this.onload=null;this.rel=\'stylesheet\'',
-      integrity: 'sha256-kKlLxnad8Do086ydv+he7LBbcypafVAsEawL4sh9x/E=',
+      integrity: config.public.isDev ? undefined : 'sha256-kKlLxnad8Do086ydv+he7LBbcypafVAsEawL4sh9x/E=',
       as: 'style',
     },
   ],
