@@ -36,7 +36,6 @@ useHead({
     {
       rel: 'stylesheet',
       href: fontUrl,
-      integrity: config.public.isDev ? undefined : 'sha256-kKlLxnad8Do086ydv+he7LBbcypafVAsEawL4sh9x/E=',
       as: 'style',
     },
   ],
