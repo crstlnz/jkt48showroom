@@ -113,6 +113,7 @@ async function refreshDate() {
   >
     <div class="flex h-full flex-col">
       <button
+        aria-label="More button"
         type="button"
         class="absolute right-0 z-[25] m-2 flex aspect-square w-5 cursor-pointer select-none items-center justify-center rounded-full hover:bg-zinc-500 hover:text-slate-700 dark:hover:text-slate-100 md:m-3 md:w-6 xl:m-4"
         :class="{

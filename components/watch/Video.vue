@@ -33,6 +33,19 @@ const isPlaying = ref(false)
 const isLoading = ref(true)
 const volume = ref(0)
 const { isMobile } = useResponsive()
+const {start : startAutoReload , stop : stopAutoReload} = useTimeoutFn(()=>{
+  reload()
+}, 5000)
+
+watch(isPlaying, (play)=>{
+  if(!play){
+    startAutoReload()
+  }else{
+    stopAutoReload()
+  }
+}, {
+  immediate : true
+})
 
 function setVolume(v: any, forced = false) {
   const n = Number.parseInt(v)
@@ -167,6 +180,7 @@ function createHLS(url: string) {
       reload()
     }, 10000)
   })
+  
   hls.value.on(Hls.Events.FRAG_BUFFERED, () => {
     clearReloadTimeout()
     isLoading.value = false
@@ -392,7 +406,6 @@ onMounted(() => {
   navigator.mediaSession.setActionHandler('nexttrack', () => {
     reload()
   })
-  // currentSource.value = (sources.value ?? []).find(i => qualityId.value === i.id) ?? sources.value[0]
   if (video.value) {
     volume.value = tempVolume.value
     isPlaying.value = !video.value.paused
@@ -409,7 +422,7 @@ onMounted(() => {
     else {
       mute()
     }
-    createHLS(currentSource.value.url)
+    reload()
   })
 })
 
@@ -486,7 +499,7 @@ defineExpose({ stop, reload, togglePlay, isLandscape })
 
 <template>
   <div ref="videoPlayer" class="group relative" :class="isLandscape ? 'aspect-video' : 'aspect-[9/12]'">
-    <div v-if="!isPlaying && !isLoading" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/50 p-1">
+    <div v-if="!isPlaying && !isLoading && !useDefaultControl" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/50 p-1">
       <Icon name="material-symbols:pause" class="text-white/60" size="3rem" />
     </div>
     <video
@@ -512,9 +525,6 @@ defineExpose({ stop, reload, togglePlay, isLandscape })
     </div>
 
     <div v-if="!useDefaultControl" id="control" ref="videoControl" :class="{ 'opacity-100': showControl || isFocusControl || isHoverControl }" class="absolute inset-x-0 bottom-0 z-10 text-slate-200 opacity-0 duration-200 ease-in-out" @click="setShowControl(true)">
-      <!-- <ClientOnly>
-
-      </ClientOnly> -->
       <div>
         <div class="group flex items-center justify-center">
           <div class="relative flex h-full w-full duration-200 group-hover/volume:w-20">

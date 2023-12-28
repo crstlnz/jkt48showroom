@@ -1,9 +1,9 @@
 <template>
   <div class="inline-flex gap-2">
-    <NuxtLink to="https://twitter.com/crstlnz" target="_blank" :external="true" class="rounded-md transition-colors duration-300 w-8 h-8 hover:bg-black/5 hover:dark:bg-white/5 flex items-center">
+    <NuxtLink to="https://twitter.com/crstlnz" aria-label="@Crstlnz" target="_blank" :external="true" class="rounded-md transition-colors duration-300 w-8 h-8 hover:bg-black/5 hover:dark:bg-white/5 flex items-center">
       <Icon name="ri:twitter-x-line" class="w-full h-full p-1.5" />
     </NuxtLink>
-    <NuxtLink to="https://github.com/crstlnz/jkt48showroom" target="_blank" :external="true" class="rounded-md transition-colors duration-300 w-8 h-8 hover:bg-black/5 hover:dark:bg-white/5 flex items-center">
+    <NuxtLink to="https://github.com/crstlnz/jkt48showroom" aria-label="Github Repository" target="_blank" :external="true" class="rounded-md transition-colors duration-300 w-8 h-8 hover:bg-black/5 hover:dark:bg-white/5 flex items-center">
       <Icon name="ri:github-fill" class="w-full h-full p-1" />
     </NuxtLink>
   </div>
