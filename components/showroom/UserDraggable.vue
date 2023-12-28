@@ -208,7 +208,7 @@ onMounted(() => {
               <div :href="$fansProfileURL(userId)" class="inline-block h-8 w-[104px] rounded-sm bg-blue-500 text-sm leading-8 text-white" />
             </div>
           </div>
-          <div v-else-if="error" class="w-[210px] space-y-10 px-5">
+          <div v-else-if="error" class="w-[210px] space-y-10 px-5 mx-auto">
             <img :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" class="h-full px-2 pt-3" alt="Not found">
             <div class="pb-5 text-center">
               {{ $t('data.notfound') }}

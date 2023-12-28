@@ -89,7 +89,7 @@ const stageNum = computed(() => {
       return i
     }
   }
-  return stageList.value?.length - 1 ?? 0
+  return (stageList.value?.length - 1) ?? 0
 })
 
 function getFansRankList(): IUIStageFans[] {

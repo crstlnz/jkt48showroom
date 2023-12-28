@@ -124,39 +124,6 @@ export function getDominantColorClient(src: string, canvas?: HTMLCanvasElement |
   })
 }
 
-// export function getDominantColorServer(src: string): Promise<[number, number, number]> {
-//   return new Promise((resolve, reject) => {
-//     // Draw cat with lime helmet
-//     loadImage(src).then((image) => {
-//       const canvas = createCanvas(image.width, image.height)
-//       const ctx = canvas.getContext('2d')
-//       // Draw the image on the canvas
-//       ctx.drawImage(image, 0, 0)
-//       // Get the pixel data of the image
-//       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-//       const pixelData = imageData.data
-//       // Initialize the total red, green, and blue values to 0
-//       let totalR = 0
-//       let totalG = 0
-//       let totalB = 0
-
-//       // Loop through each pixel and sum up the red, green, and blue components
-//       for (let i = 0; i < pixelData.length; i += 4) {
-//         totalR += pixelData[i]
-//         totalG += pixelData[i + 1]
-//         totalB += pixelData[i + 2]
-//       }
-//       // Calculate the average red, green, and blue values
-//       const avgR = Math.round(totalR / (pixelData.length / 4))
-//       const avgG = Math.round(totalG / (pixelData.length / 4))
-//       const avgB = Math.round(totalB / (pixelData.length / 4))
-//       resolve([avgR, avgG, avgB])
-//     }).catch((e) => {
-//       reject(e)
-//     })
-//   })
-// }
-
 export function clamp(min: number, max: number, num: number, pad = 0) {
   return Math.max(min + pad, Math.min(num, max - pad))
 }

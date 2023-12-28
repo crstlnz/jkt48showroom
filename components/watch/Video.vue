@@ -25,7 +25,6 @@ const currentSource = ref((sources.value ?? []).find(i => qualityId.value === i.
 const videoPlayer = ref<HTMLElement>()
 const video = ref<HTMLVideoElement>()
 const hls = ref()
-const lowLatencyMode = ref(true)
 const tempVolume = useLocalStorage('data-volume', 0)
 const isMuted = ref(false)
 const mutedData = useLocalStorage('data-muted', false)
@@ -33,20 +32,22 @@ const isPlaying = ref(false)
 const isLoading = ref(true)
 const volume = ref(0)
 const { isMobile } = useResponsive()
-const {start : startAutoReload , stop : stopAutoReload} = useTimeoutFn(()=>{
+
+const { start: startAutoReload, stop: stopAutoReload } = useTimeoutFn(() => {
   reload()
-}, 5000)
+}, 3000)
 
 const pausedByUser = ref(false)
 
-watch(isPlaying, (play)=>{
-  if(!play && !pausedByUser.value){
+watch(isPlaying, (play) => {
+  if (!play && !pausedByUser.value) {
     startAutoReload()
-  }else{
+  }
+  else {
     stopAutoReload()
   }
 }, {
-  immediate : true
+  immediate: true,
 })
 
 function setVolume(v: any, forced = false) {
@@ -73,7 +74,7 @@ const isHoverControl = ref(false)
 const { start: autoRemoveHover, stop: stopAutoRemoveHover } = useTimeoutFn(() => {
   isFocusControl.value = false
   setShowControl(false)
-}, 3000)
+}, 2500)
 
 const { isOutside, x, y } = useMouseInElement(videoPlayer)
 watch(x, () => {
@@ -88,13 +89,11 @@ watch(y, () => {
   }
 })
 
-
 watch(isFocusControl, (v) => {
   if (!isMobile) setShowControl(v)
 })
 
 const volumeSlider = ref<HTMLInputElement | null>(null)
-
 
 useEventListener(volumeSlider, 'input', (event) => {
   setShowControl(true)
@@ -172,7 +171,7 @@ function createHLS(url: string) {
       reload()
     }, 10000)
   })
-  
+
   hls.value.on(Hls.Events.FRAG_BUFFERED, () => {
     clearReloadTimeout()
     isLoading.value = false

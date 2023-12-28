@@ -72,7 +72,7 @@ const isLive = computed(() => {
             <div class="flex-1 text-xl sm:text-2xl md:text-3xl">
               {{ (member.nickname || member.name)?.split("-")?.[0] }}
             </div>
-            <NuxtLink target="_blank" :to="$liveURL(member.url)" class="rounded-full bg-blue-500 px-2.5 h-6 leading-6 md:leading-9 md:h-9 md:px-4 text-xs sm:text-sm text-white self-center">
+            <NuxtLink target="_blank" :to="$liveURL(member.url)" class="rounded-full bg-blue-500 px-2.5 h-6 leading-6 md:leading-9 md:h-9 md:px-4 text-xs sm:text-sm text-white self-center flex items-center">
               Showroom
             </NuxtLink>
             <AdminEditMemberButton :room-id="roomId" class="h-7 md:h-9" />

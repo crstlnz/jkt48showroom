@@ -116,9 +116,9 @@ useAuth()
 
 <template>
   <div>
-    <NuxtLoadingIndicator
+    <!-- <NuxtLoadingIndicator
       :height="4"
-    />
+    /> -->
     <Dialog />
     <ShowroomUserDraggable />
     <NotificationView />
