@@ -37,8 +37,10 @@ const {start : startAutoReload , stop : stopAutoReload} = useTimeoutFn(()=>{
   reload()
 }, 5000)
 
+const pausedByUser = ref(false)
+
 watch(isPlaying, (play)=>{
-  if(!play){
+  if(!play && !pausedByUser.value){
     startAutoReload()
   }else{
     stopAutoReload()
@@ -86,23 +88,13 @@ watch(y, () => {
   }
 })
 
-// watch(isOutside, (val) => {
-//   if (!isMobile) setShowControl(!val)
-// })
 
 watch(isFocusControl, (v) => {
   if (!isMobile) setShowControl(v)
 })
 
 const volumeSlider = ref<HTMLInputElement | null>(null)
-// const showVolume = ref(false)
-// useEventListener(volumeSlider, 'focusin', () => {
-//   showVolume.value = true
-// })
 
-// useEventListener(volumeSlider, 'focusout', () => {
-//   showVolume.value = false
-// })
 
 useEventListener(volumeSlider, 'input', (event) => {
   setShowControl(true)
@@ -242,9 +234,11 @@ async function togglePlay() {
     isProcessingPlay.value = true
     try {
       if (video.value.paused) {
+        pausedByUser.value = false
         await video.value.play()
       }
       else {
+        pausedByUser.value = true
         await video.value.pause()
       }
       isProcessingPlay.value = false
