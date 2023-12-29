@@ -129,7 +129,7 @@ if (isSupported.value) {
       </NuxtLink>
     </div>
     <div class="absolute top-0 left-0 z-20 p-3 md:p-4 pointer-events-none">
-      <NuxtLink class="pointer-events-auto" :to="`https://idn.app/${live?.user?.username}/live/${live?.slug}`" target="_blank" :external="true" no-prefetch>
+      <NuxtLink class="pointer-events-auto" :to="$idnLiveUrl(live?.user?.username, live?.slug)" target="_blank" :external="true" no-prefetch>
         <NuxtImg src="https://upload.wikimedia.org/wikipedia/commons/b/ba/IDN_Live.svg" size="64px" class="w-16" />
       </NuxtLink>
     </div>
@@ -155,7 +155,7 @@ if (isSupported.value) {
         class="flex max-h-[75%] flex-col overflow-hidden overflow-y-auto text-lg [&>li]:my-3 [&>li]:cursor-pointer [&>li]:px-4 [&>li]:text-center [&>li]:font-semibold"
       >
         <li>
-          <NuxtLink :to="`https://idn.app/${live.user.username}/live/${live.slug}`" target="_blank" :external="true" no-prefetch>
+          <NuxtLink :to="$idnLiveUrl(live?.user?.username, live?.slug)" target="_blank" :external="true" no-prefetch>
             Buka di IDN
           </NuxtLink>
         </li>

@@ -38,7 +38,7 @@ const { isMobile } = useDevice()
     <div v-if="!error" class="max-md:w-full md:max-h-[100vh] flex flex-col items-center mx-auto relative" :class="{ 'h-full': !videoIsLandscape && !isLandscape }">
       <ClientOnly>
         <div class="relative bg-contain flex flex-col h-full" :class="{ 'w-full': videoIsLandscape || !isLandscape }">
-          <NuxtLink :to="`https://idn.app/${data?.user?.username}/live/${data?.slug}`" target="_blank" :external="true" no-prefetch class="absolute top-0 left-0 z-20 p-4 mt-0.5">
+          <NuxtLink :to="$idnLiveUrl(data?.user?.username || '', data?.slug || '')" target="_blank" :external="true" no-prefetch class="absolute top-0 left-0 z-20 p-4 mt-0.5">
             <NuxtImg src="https://upload.wikimedia.org/wikipedia/commons/b/ba/IDN_Live.svg" size="64px" class="w-20 md:w-24" />
           </NuxtLink>
           <div v-if="!pending" class="absolute right-0 top-0 px-2 md:px-3 py-1 text-base font-semibold text-white z-20 bg-black/40 rounded-xl m-3">
