@@ -35,7 +35,7 @@ const { isMobile } = useResponsive()
 
 const { start: startAutoReload, stop: stopAutoReload } = useTimeoutFn(() => {
   reload()
-}, 3000)
+}, 5000)
 
 const pausedByUser = ref(false)
 
@@ -396,9 +396,15 @@ function timeUpdate() {
 }
 
 onMounted(() => {
-  navigator.mediaSession.setActionHandler('nexttrack', () => {
-    reload()
-  })
+  try {
+    navigator.mediaSession.setActionHandler('nexttrack', () => {
+      reload()
+    })
+  }
+  catch (e) {
+    console.log(e)
+  }
+
   if (video.value) {
     volume.value = tempVolume.value
     isPlaying.value = !video.value.paused
@@ -546,8 +552,8 @@ defineExpose({ stop, reload, togglePlay, isLandscape })
             <Icon v-if="isPlaying" name="ic:baseline-pause" class="h-full w-full" />
             <Icon v-else name="ph:play-fill" class="h-full w-full p-[2.5px]" />
           </button>
-          <div class="group/volume flex items-center gap-1">
-            <button class="h-8 w-8 p-1" aria-label="Mute" type="button" @click="toggleMute">
+          <div class="group-volume flex items-center gap-1">
+            <button class="!h-8 !w-8 p-1" aria-label="Mute" type="button" @click="toggleMute">
               <Icon v-if="!isMuted" :name=" volume >= 50 ? 'ic:round-volume-up' : 'ic:round-volume-down' " class="h-full w-full p-[1px]" />
               <Icon v-else name="ic:round-volume-off" class="h-full w-full p-[1px]" />
             </button>

@@ -35,6 +35,12 @@ const maxCount = computed(() => {
 
 const rowCount = useLocalStorage('multiRowCount', 4, { deep: true })
 
+onMounted(() => {
+  if (rowCount.value > maxCount.value) {
+    rowCount.value = maxCount.value
+  }
+})
+
 watch(maxCount, (c) => {
   if (rowCount.value > c) {
     rowCount.value = c
