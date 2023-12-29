@@ -60,7 +60,7 @@ function forceRefresh() {
           <div>
             Daftar Live
           </div>
-          <button type="button" class="w-8 h-8 hover:bg-black/10 hover:dark:bg-white/5 flex items-center justify-center rounded-full" @click="forceRefresh">
+          <button v-ripple type="button" class="w-8 h-8 hover:bg-black/10 hover:dark:bg-white/5 flex items-center justify-center rounded-full" @click="forceRefresh">
             <Icon name="ic:round-refresh" class="h-full w-full p-1" />
           </button>
         </div>

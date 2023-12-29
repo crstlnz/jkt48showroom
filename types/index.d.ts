@@ -103,6 +103,7 @@ interface IMember {
   is_graduate: boolean
   is_group: boolean
   generation?: string
+  idn_username?: string
 }
 
 interface IRecent {

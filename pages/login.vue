@@ -136,13 +136,13 @@ async function signInHandler() {
             {{ getTitle(settings.group) }}
           </NuxtLink>
         </div>
-        <div class="mx-auto w-[650px] max-w-[100%] rounded-3xl bg-dark-1 px-5 py-8 text-white/75 drop-shadow-md md:px-8">
-          <div class="flex items-center justify-center gap-1.5 text-center text-2xl font-bold">
-            <Icon name="solar:login-3-bold-duotone" class="text-red-500" size="2.5rem" />
+        <div class="mx-auto w-[650px] max-w-[calc(100%_-_24px)] rounded-3xl bg-dark-1 px-4 py-8 text-white/75 drop-shadow-md md:px-8">
+          <div class="flex items-center justify-center gap-1.5 text-center text-lg md:text-xl xl:text-2xl font-bold">
+            <Icon name="solar:login-3-bold-duotone" class="text-red-500 text-4xl md:text-5xl xl:text-6xl" />
             <span>Login to Showroom</span>
           </div>
           <div />
-          <div class="mt-8 flex flex-col gap-4 md:mt-10">
+          <div class="mt-8 flex flex-col gap-3 md:gap-4 md:mt-10">
             <div class="mb-5 relative rounded-xl ring-blue-500 focus-within:ring-2" :class="{ 'ring-1 ring-red-500': usernameError, 'cursor-not-allowed opacity-50': loading }">
               <input v-model="username" class="w-full rounded-xl bg-dark-3 px-3.5 py-2.5 outline-none focus:!border-none disabled:pointer-events-none" placeholder="Username" :disabled="loading" @keyup.enter="checkSubmit">
               <div v-if="usernameError" class="absolute top-[calc(100%_+_5px)] text-sm text-red-500">
@@ -176,7 +176,12 @@ async function signInHandler() {
                 <span :class="{ 'opacity-0': loading }">Login</span>
               </ButtonText>
             </div>
-            <Footer class="mt-4 opacity-50" />
+            <div class="text-orange-500 text-sm">
+              {{ $t('logininfo') }}
+            </div>
+            <div class="text-center">
+              <Footer class="mt-2 opacity-50" />
+            </div>
           </div>
         </div>
       </div>
