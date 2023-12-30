@@ -32,8 +32,12 @@ export default async function (opts: RecentFetchOpts | null = null, q: RecentsQu
   const cooldown = ref(false)
   const timeout = ref<NodeJS.Timeout | undefined>(undefined)
 
-  const { data: res, error, pending, refresh } = await useApiFetch<IApiRecents>(opts?.userHistory ? '/api/user/history' : '/api/recent', { key, query, watch: false, deep: false, server: false, lazy: true })
+  const { data: res, error, pending: apiPending, refresh } = await useApiFetch<IApiRecents>(opts?.userHistory ? '/api/user/history' : '/api/recent', { key, query, watch: false, deep: false, server: false, lazy: true })
 
+  const mustPending = ref(false)
+  const pending = computed(() => {
+    return mustPending.value || apiPending.value
+  })
   const pageData = computed(() => {
     return {
       totalCount: res.value?.total_count ?? 1,
@@ -81,7 +85,7 @@ export default async function (opts: RecentFetchOpts | null = null, q: RecentsQu
         if (Object.keys(newQuery).length === Object.keys(oldQuery).length) {
           if (queryCheck(newQuery, oldQuery)) {
             query.value = buildQuery(q)
-            refresh()
+            slowRefresh()
             return
           }
         }
@@ -89,7 +93,14 @@ export default async function (opts: RecentFetchOpts | null = null, q: RecentsQu
     }
     query.value = buildQuery(q)
     queryChange.trigger(q)
-    refresh()
+    slowRefresh()
+  }
+
+  async function slowRefresh() {
+    mustPending.value = true
+    await sleep(2000)
+    await refresh()
+    mustPending.value = false
   }
 
   function settingQuery(query: { [key: string]: unknown }) {

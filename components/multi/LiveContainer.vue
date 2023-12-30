@@ -2,6 +2,7 @@
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
 import { useIDNLives } from '~/store/idnLives'
 import { useOnLives } from '~/store/onLives'
+import { useSettings } from '~/store/settings'
 import { convertShowroom } from '~/utils/multi'
 
 const props = defineProps<{
@@ -39,9 +40,13 @@ const lives = computed<Omit< Multi.Video, 'order'>[]>(() => {
   return result
 })
 
+const { group } = useSettings()
+
 function forceRefresh() {
+  if (group === 'jkt48') {
+    idnLives.refresh()
+  }
   onLives.refresh()
-  idnLives.refresh()
 }
 </script>
 
