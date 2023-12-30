@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useNotifications } from '~/store/notifications'
+
 const props = defineProps<{
   video: Multi.Video
   index: number
@@ -8,12 +10,25 @@ defineEmits<{ (e: 'moveNext'): void, (e: 'movePrevious'): void, (e: 'delete', re
 
 const videoElement = ref()
 
+function refresh() {
+  if (videoElement.value) {
+    videoElement.value.reload()
+  }
+}
+
+const { addNotif } = useNotifications()
+const updatedStreamURL = ref()
+const stream_url = computed(() => {
+  if (updatedStreamURL.value) return updatedStreamURL.value
+  return props.video.stream_url
+})
+
 const sourceURLs = computed(() => {
-  if (!props.video.stream_url) return []
+  if (!stream_url.value) return []
   return [
     {
       is_default: true,
-      url: props.video.stream_url,
+      url: stream_url.value,
       type: 'hls',
       id: 1,
       label: 'Default',
@@ -21,10 +36,25 @@ const sourceURLs = computed(() => {
     },
   ]
 })
-
-function refresh() {
-  if (videoElement.value) {
-    videoElement.value.reload()
+async function refreshShowroomStreamURL() {
+  try {
+    const res = await $apiFetch<Watch.WatchData>(`/api/watch/${props.video.original_url.replaceAll('https://www.showroom-live.com/r/', '')}`)
+    updatedStreamURL.value = res.streaming_url_list.find(i => i.id === 3 || i.id === 4)?.url ?? res.streaming_url_list[0]?.url ?? ''
+    refresh()
+    addNotif({
+      message: props.video.name,
+      title: 'Stream url refreshed!',
+      type: 'info',
+      duration: 2500,
+    })
+  }
+  catch (e) {
+    addNotif({
+      message: props.video.name,
+      title: 'Stream url refresh failed!',
+      type: 'danger',
+      duration: 2500,
+    })
   }
 }
 
@@ -70,6 +100,9 @@ defineExpose({ refresh })
           </div>
         </div>
         <div class="flex gap-1 md:gap-1.5">
+          <button v-if="video.type === 'showroom'" type="button" class="bg-blue-500 text-white h-6 w-6 md:w-7 md:h-7 flex justify-center items-center rounded-md text-sm" @click="refreshShowroomStreamURL()">
+            <Icon name="ic:outline-sync" class="w-full h-full p-1" />
+          </button>
           <button type="button" class="bg-blue-500 text-white h-6 w-6 md:w-7 md:h-7 flex justify-center items-center rounded-md text-sm" @click="refresh()">
             <Icon name="material-symbols:refresh-rounded" class="w-full h-full p-1" />
           </button>

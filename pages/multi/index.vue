@@ -223,7 +223,7 @@ useSeoMeta({
           {{ $t("selectvideofirst") }}
         </div>
 
-        <footer class="text-center py-20">
+        <footer class="text-center pt-10 py-10 flex flex-col gap-3 items-center">
           <div class="opacity-50 text-sm">
             <span>
               Created by
@@ -232,6 +232,7 @@ useSeoMeta({
               @crstlnz
             </NuxtLink>
           </div>
+          <Footer class="opacity-50 scale-75" />
         </footer>
       </div>
     </SplashScreen>
