@@ -19,7 +19,7 @@ export function convertShowroom(room: IRoomLive): Omit< Multi.Video, 'order'> {
     name: room.name,
     image: room.img_alt || room.img,
     landscape: true,
-    stream_url: room.streaming_url_list.find(i => i.id === 3 || i.id === 4)?.url ?? room.streaming_url_list[0]?.url ?? '',
+    stream_url: room.streaming_url_list?.filter(a => a.type === 'hls')?.sort((a, b) => b.quality - a.quality)?.[0]?.url ?? room.streaming_url_list?.[0]?.url ?? '',
     original_url: liveURL(room.url),
     icon: showroomIcon,
     type: 'showroom',

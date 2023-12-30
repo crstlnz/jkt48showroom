@@ -39,7 +39,8 @@ const sourceURLs = computed(() => {
 async function refreshShowroomStreamURL() {
   try {
     const res = await $apiFetch<Watch.WatchData>(`/api/watch/${props.video.original_url.replaceAll('https://www.showroom-live.com/r/', '')}`)
-    updatedStreamURL.value = res.streaming_url_list.find(i => i.id === 3 || i.id === 4)?.url ?? res.streaming_url_list[0]?.url ?? ''
+    updatedStreamURL.value = res.streaming_url_list?.filter(a => a.type === 'hls')?.sort((a, b) => b.quality - a.quality)?.[0]?.url ?? res.streaming_url_list?.[0]?.url ?? ''
+    console.log('refreshed stream url', updatedStreamURL.value)
     refresh()
     addNotif({
       message: props.video.name,
