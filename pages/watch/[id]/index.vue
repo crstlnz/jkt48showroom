@@ -5,19 +5,19 @@ import { useNotifications } from '~~/store/notifications'
 
 const route = useRoute()
 const isPremium = ref(false)
-const { data, pending, error, refresh: refreshWatchData } = await useApiFetch<Watch.WatchData>(`/api/watch/${route.params.id}`, { params: {
-  _: new Date().getTime(),
-}, onResponseError(e) {
-  if (e.response._data?.status === 404) {
-    isPremium.value = e.response?._data?.message === 'Live is premium!'
-    if (!isPremium.value) {
-      throw createError({ statusCode: 404, message: 'Page not found!' })
+const { data, pending, error, refresh: refreshWatchData } = await useApiFetch<Watch.WatchData>(`/api/watch/${route.params.id}`, {
+  onResponseError(e) {
+    if (e.response._data?.status === 404) {
+      isPremium.value = e.response?._data?.message === 'Live is premium!'
+      if (!isPremium.value) {
+        throw createError({ statusCode: 404, message: 'Page not found!' })
+      }
+      if (process.server) {
+        useNuxtApp().payload.isPremium = true
+      }
     }
-    if (process.server) {
-      useNuxtApp().payload.isPremium = true
-    }
-  }
-} })
+  },
+})
 
 if (process.client) {
   if (useNuxtApp().payload.isPremium !== null) {
@@ -104,8 +104,8 @@ const config = useRuntimeConfig()
 
 async function getPolling() {
   try {
-    const poll = await $apiFetch<ShowroomAPI.Polling | ShowroomAPI.PollingLiveEnd>(`${config.public.api}/api/showroom/polling`, { params: { _: new Date().getTime(), room_id: roomId.value } })
-    const current_user = await $apiFetch<ShowroomAPI.CurrentUser>(`${config.public.api}/api/showroom/current_user`, { params: { _: new Date().getTime(), room_id: roomId.value } })
+    const poll = await $apiFetch<ShowroomAPI.Polling | ShowroomAPI.PollingLiveEnd>(`${config.public.api}/api/showroom/polling`, { params: { room_id: roomId.value } })
+    const current_user = await $apiFetch<ShowroomAPI.CurrentUser>(`${config.public.api}/api/showroom/current_user`, { params: { room_id: roomId.value } })
     user.value = {
       id: current_user.user_id,
       name: current_user.name,

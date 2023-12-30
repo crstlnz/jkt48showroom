@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const route = useRoute()
-const { data, pending, error, refresh: refreshWatchData } = await useApiFetch<IDNLives>(`/api/watch/${route.params.id}/idn`, { params: { _: new Date().getTime() } })
+const { data, pending, error, refresh: refreshWatchData } = await useApiFetch<IDNLives>(`/api/watch/${route.params.id}/idn`)
 const title = computed(() => {
   const name = data.value?.user?.name
   return name ? `${name} - IDN Live` : ''
