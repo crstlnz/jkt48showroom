@@ -41,7 +41,7 @@ export default function useCachedFetch<DataT>(url: string, options?: CachedFetch
         return
       }
       const time = new Date().getTime()
-      const res = await $apiFetch<DataT>(`${config.public.api}${url}?_=${time}`, { params: get(options?.params) })
+      const res = await $apiFetch<DataT>(`${config.public.api}${url}`, { params: get(options?.params) })
       data.value = res
       date.value = time
       cache.value = {
