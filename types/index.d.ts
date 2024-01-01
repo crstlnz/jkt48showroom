@@ -106,7 +106,7 @@ interface IMember {
   idn_username?: string
 }
 
-interface BaseRecent {
+interface IRecent {
   data_id: string
   member: {
     name: string
@@ -131,25 +131,8 @@ interface BaseRecent {
   }
   room_id: number
   points: number
-  gift_rate: number
-  type: Log.Type
-
 }
 
-interface IDNRecent extends BaseRecent {
-  idn: {
-    id: string
-    username: string
-    slug: string
-  }
-  type: 'idn'
-}
-
-interface ShowroomRecent extends BaseRecent {
-  type: 'showroom'
-}
-
-type IRecent = ShowroomRecent | IDNRecent
 interface IApiRecents {
   recents: IRecent[]
   page: number
