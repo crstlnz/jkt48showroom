@@ -82,12 +82,19 @@ const calculatedGift = computed<IFansGift[]>(() => {
 
 const { status, user } = useAuth()
 const { addNotif } = useNotifications()
+
+const { createEvent } = useGtagCustom()
+
 function setLike() {
   if (status.value === 'unauthenticated') {
     navigateTo('/login')
   }
   else {
     if (!data.value) return
+    createEvent('bookmark', {
+      set: !liked.value,
+    })
+
     $apiFetch('/api/user/like', {
       method: liked.value ? 'DELETE' : 'PUT',
       query: {

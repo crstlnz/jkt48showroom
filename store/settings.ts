@@ -49,7 +49,14 @@ export const useSettings = defineStore('settings', () => {
     return parts?.[0] || ''
   }
 
-  return { domain, setDomain, group, csrfToken, firstDate, session: skipHydrate(session), fetchFirstDate }
+
+  const {getTitle} = useAppConfig()
+
+  function getWebTitle(){
+    return getTitle(group.value)
+  }
+
+  return { domain, setDomain, getWebTitle, group, csrfToken, firstDate, session: skipHydrate(session), fetchFirstDate }
 })
 
 if (import.meta.hot) {

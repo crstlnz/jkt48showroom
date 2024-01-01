@@ -4,13 +4,12 @@ import { useOnLives } from '~~/store/onLives'
 
 export default defineNuxtPlugin(({ hook }) => {
   const route = useRoute()
-  const { gtag } = useGtag()
+  const { createEvent } = useGtagCustom()
   const { refresh: refreshCSRF } = useCSRF()
   const { authenticated } = useAuth()
   const { fetchFirstDate, group } = useSettings()
   watch(() => route.fullPath, (path) => {
-    gtag('event', 'path_view', {
-      app_name: 'JKT48 Showroom',
+    createEvent('path_view', {
       path,
       authenticated: authenticated.value,
     })
