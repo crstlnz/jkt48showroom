@@ -1,6 +1,6 @@
 type OrderType = 1 | -1
 type sortType = 'date' | 'gift' | 'views' | 'duration'
-
+type LogType = 'showroom' | 'idn'
 interface Id {
   _id: Types.ObjectId
 }
@@ -26,6 +26,7 @@ interface RecentsQuery {
   filter?: 'graduated' | 'active' | 'all'
   date?: QueryDateRange
   group?: Group
+  type?: LogType | 'all'
 }
 
 interface ILiveInfo {
@@ -106,7 +107,7 @@ interface IMember {
   idn_username?: string
 }
 
-interface IRecent {
+interface BaseRecent {
   data_id: string
   member: {
     name: string
@@ -131,8 +132,25 @@ interface IRecent {
   }
   room_id: number
   points: number
+  gift_rate: number
+  type: Log.Type
+
 }
 
+interface IDNRecent extends BaseRecent {
+  idn: {
+    id: string
+    username: string
+    slug: string
+  }
+  type: 'idn'
+}
+
+interface ShowroomRecent extends BaseRecent {
+  type: 'showroom'
+}
+
+type IRecent = ShowroomRecent | IDNRecent
 interface IApiRecents {
   recents: IRecent[]
   page: number
@@ -179,14 +197,17 @@ interface IApiTheaterDetailList {
   date: string
 }
 
-interface IApiGifts {
-  gifts: IUserGiftList[]
-  users: IFansCompact[]
+interface IApiGift<T, B> {
+  gifts: T[]
+  users: B[]
   search: string
   page: number
   perpage: number
   total_count: number
 }
+
+type IApiShowroomGift = IApiGift<LogDetail.GiftLog, LogDetail.ShowroomUser>
+type IApiIDNGift = IApiGift<LogDetail.GiftLog, LogDetail.IDNUser>
 
 interface IApiSchedule {
   schedules: JKT48.Schedule[]

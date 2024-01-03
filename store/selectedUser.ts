@@ -1,15 +1,17 @@
 export const useSelectedUser = defineStore('selectedUser', () => {
-  const userId = ref(0)
+  const userId = ref<string | number>(0)
   const position = ref({ x: 0, y: 0 })
   const isHidden = ref(true)
+  const type = ref<LogType>('showroom')
 
-  function setUserId(_userId: number) {
+  function setUserId(_userId: string | number) {
     userId.value = _userId
     isHidden.value = false
   }
 
-  function set(_userId: number, pos: { x: number, y: number }) {
+  function set(_userId: string | number, _type: LogType, pos: { x: number, y: number }) {
     userId.value = _userId
+    type.value = _type
     position.value = pos
     isHidden.value = false
   }
@@ -22,15 +24,15 @@ export const useSelectedUser = defineStore('selectedUser', () => {
     isHidden.value = false
   }
 
-  function userClick(e: MouseEvent, userId: number) {
-    set(userId, { x: e.clientX, y: e.clientY })
+  function userClick(e: MouseEvent, userId: number | string, type: LogType = 'showroom') {
+    set(userId, type, { x: e.clientX, y: e.clientY })
   }
 
   function hide() {
     isHidden.value = true
   }
 
-  return { userId, position, isHidden, setUserId, set, setPosition, userClick, hide }
+  return { userId, type, position, isHidden, setUserId, set, setPosition, userClick, hide }
 })
 
 if (import.meta.hot) {

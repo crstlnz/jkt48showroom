@@ -39,7 +39,6 @@ export const useIDNLives = defineStore('useIDNLives', () => {
     if (!members.value) members.value = await getMembers().catch(_ => [])
     const idnUsernames: string[] = members.value?.filter(i => i.idn_username).map(i => i.idn_username) as string[] || []
     if (idnUsernames?.length !== 41) {
-      console.log('IDN Usernames is missing!')
       return await $apiFetch<IDNLives[]>(`/api/idn_lives`).catch((_) => {
         addNotif({
           type: 'danger',
@@ -47,9 +46,6 @@ export const useIDNLives = defineStore('useIDNLives', () => {
         })
         return []
       })
-    }
-    else {
-      console.log('IDN Username Success!')
     }
 
     const res = await $fetch<any>(`https://api.idn.app/graphql`, {

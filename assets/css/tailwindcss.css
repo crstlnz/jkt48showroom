@@ -3,6 +3,16 @@
 @tailwind utilities;
 
 @layer base {
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .text-shadow {
+    text-shadow: 0px 0px 5px rgba(0, 0, 0, 1);
+  }
+
   .background {
     @apply bg-slate-100 dark:bg-dark-2;
   }
@@ -26,6 +36,10 @@
   }
   .bg-hover {
     @apply bg-slate-300 dark:bg-slate-200/25;
+  }
+
+  .bg-hover-2 {
+    @apply bg-black/10 dark:bg-white/10
   }
 
   .disable-highlight {

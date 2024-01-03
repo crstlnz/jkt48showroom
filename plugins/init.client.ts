@@ -4,6 +4,7 @@ import { useOnLives } from '~~/store/onLives'
 
 export default defineNuxtPlugin(({ hook }) => {
   const route = useRoute()
+
   const { createEvent } = useGtagCustom()
   const { refresh: refreshCSRF } = useCSRF()
   const { authenticated } = useAuth()

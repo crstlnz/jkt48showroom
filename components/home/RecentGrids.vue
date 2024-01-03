@@ -5,6 +5,7 @@ const settings = useSettings()
 const { data, pending, tryRefresh } = useCachedFetch<IApiRecents>('/api/recent', {
   params: {
     group: settings.group,
+    type: 'all',
   },
   expireIn: 600000,
 })
@@ -42,7 +43,8 @@ const { locale } = useI18n()
       class="grid grid-cols-1 grid-rows-1 gap-4 sm:grid-cols-2 xl:grid-cols-3"
     >
       <div v-for="recent in data.recents.slice(0, 6)" :key="recent.data_id" class="bg-container flex gap-3 rounded-xl p-3 md:p-4">
-        <NuxtLink :to="`/member/${recent.member.url}`">
+        <NuxtLink :to="`/member/${recent.member.url}`" class="relative">
+          <NuxtImg v-if="recent.type === 'idn'" :src="$idnLiveIcon" size="64px" class="absolute left-2 top-2 mt-[4px] h-4 md:h-4 object-contain max-w-[90px]" />
           <NuxtImg
             provider="cloudinary"
             :src="recent.member.img_alt ?? recent.member.img"

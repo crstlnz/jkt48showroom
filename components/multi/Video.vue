@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { WatchVideo } from '#components'
 import { useNotifications } from '~/store/notifications'
 
 const props = defineProps<{
@@ -6,13 +7,20 @@ const props = defineProps<{
   index: number
   videosLength: number
 }>()
-defineEmits<{ (e: 'moveNext'): void, (e: 'movePrevious'): void, (e: 'delete', reason?: string): void, (e: 'sourceNotFound'): void }>()
 
-const videoElement = ref()
+const emit = defineEmits<{ (e: 'moveNext'): void, (e: 'movePrevious'): void, (e: 'delete', reason?: string): void, (e: 'sourceNotFound'): void }>()
+const autoRemove = useLocalStorage('auto_remove_player', () => true)
+const videoElement = ref<InstanceType<typeof WatchVideo>>()
 
 function refresh() {
   if (videoElement.value) {
     videoElement.value.reload()
+  }
+}
+
+function changeSource(streamUrl: ShowroomAPI.StreamingURL) {
+  if (videoElement.value) {
+    videoElement.value.changeSource(streamUrl)
   }
 }
 
@@ -39,8 +47,9 @@ const sourceURLs = computed(() => {
 async function refreshShowroomStreamURL() {
   try {
     const res = await $apiFetch<Watch.WatchData>(`/api/watch/${props.video.original_url.replaceAll('https://www.showroom-live.com/r/', '')}`)
-    updatedStreamURL.value = res.streaming_url_list?.filter(a => a.type === 'hls')?.sort((a, b) => b.quality - a.quality)?.[0]?.url ?? res.streaming_url_list?.[0]?.url ?? ''
-    console.log('refreshed stream url', updatedStreamURL.value)
+    const newStreamURL = res.streaming_url_list?.filter(a => a.type === 'hls')?.sort((a, b) => b.quality - a.quality)?.[0]?.url ?? res.streaming_url_list?.[0]?.url ?? ''
+    updatedStreamURL.value = newStreamURL
+    changeSource(sourceURLs.value[0])
     refresh()
     addNotif({
       message: props.video.name,
@@ -59,7 +68,17 @@ async function refreshShowroomStreamURL() {
   }
 }
 
-defineExpose({ refresh })
+function onSourceNotFound() {
+  if (autoRemove.value) {
+    emit(`sourceNotFound`)
+  }
+}
+
+function remove() {
+  emit('delete')
+}
+
+defineExpose({ refresh, video: videoElement, data: props.video, remove })
 </script>
 
 <template>
@@ -67,7 +86,7 @@ defineExpose({ refresh })
     <div class="overflow-hidden flex-1 h-0 bg-black/50 self-stretch flex items-center">
       <div class="w-full relative">
         <div class="absolute left-1 top-0.5 md:left-2 md:top-2 z-10">
-          <NuxtLink :to="video.original_url" :external="true" target="_blank" class="inline-block">
+          <NuxtLink v-if="video.type === 'idn'" :to="video.original_url" :external="true" target="_blank" class="inline-block">
             <NuxtImg :src="video.icon" size="64px" class="h-3 md:h-5 object-contain max-w-[90px]" />
           </NuxtLink>
         </div>
@@ -81,7 +100,8 @@ defineExpose({ refresh })
           :use-default-control="true"
           :max-buffer-size="300 * 1000 * 1000"
           :max-max-buffer-length="300"
-          @source-error="$emit(`sourceNotFound`)"
+          :save-state="false"
+          @source-error="onSourceNotFound"
         />
       </div>
     </div>

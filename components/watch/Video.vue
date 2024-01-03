@@ -11,23 +11,28 @@ const props = withDefaults(
     useDefaultControl?: boolean
     maxBufferSize?: number
     maxMaxBufferLength?: number
+    saveState?: boolean
   }>(),
   {
     landscape: true,
     useShortcut: true,
     useDefaultControl: false,
+    saveState: true,
   },
 )
 const emit = defineEmits<{ (e: 'fullsceen', isFullscreen: boolean): void, (e: 'isLandscape', isLandscape: boolean): void, (e: 'sourceError'): void }>()
 const sources = ref(props.sources.filter(i => i.type === 'hls') ?? [])
+watch(() => props.sources, () => {
+  sources.value = props.sources.filter(i => i.type === 'hls') ?? []
+})
 const qualityId = useLocalStorage('quality-id', 2)
 const currentSource = ref((sources.value ?? []).find(i => qualityId.value === i.id) ?? sources.value[0])
 const videoPlayer = ref<HTMLElement>()
 const video = ref<HTMLVideoElement>()
 const hls = ref()
-const tempVolume = useLocalStorage('data-volume', 0)
+const tempVolume = props.saveState ? useLocalStorage('data-volume', 0) : ref(1)
 const isMuted = ref(false)
-const mutedData = useLocalStorage('data-muted', false)
+const mutedData = props.saveState ? useLocalStorage('data-muted', false) : ref(false)
 const isPlaying = ref(false)
 const isLoading = ref(true)
 const volume = ref(0)
@@ -51,7 +56,7 @@ watch(isPlaying, (play) => {
 })
 
 function setVolume(v: any, forced = false) {
-  const n = Number.parseInt(v)
+  const n = Number.parseFloat(v)
   if (video.value) {
     if (n === 0) {
       video.value.muted = true
@@ -59,12 +64,12 @@ function setVolume(v: any, forced = false) {
     }
     else {
       video.value.muted = false
-      video.value.volume = n / 100
+      video.value.volume = n
     }
     if (n > 0) tempVolume.value = n
     if (!forced) mutedData.value = video.value.muted
     isMuted.value = video.value.muted
-    volume.value = video.value.volume * 100
+    // volume.value = video.value.volume * 100
   }
 }
 const showControl = ref(false)
@@ -121,9 +126,13 @@ function createHLS(url: string) {
   destroyVideo()
   hls.value = new Hls({
     enableWorker: true,
-    liveSyncDurationCount: 1.2,
+    liveSyncDurationCount: 1,
     maxBufferSize: props.maxBufferSize ? props.maxBufferSize : 254 * 1000 * 1000,
-    maxMaxBufferLength: props.maxMaxBufferLength ? props.maxMaxBufferLength : 1800,
+    // maxMaxBufferLength: props.maxMaxBufferLength ? props.maxMaxBufferLength : 1800,
+    maxBufferLength: 5,
+    // liveSyncDuration: 3,
+    // liveMaxLatencyDuration: 5,
+    // highBufferWatchdogPeriod: 1,
     lowLatencyMode: true,
     fetchSetup(context: any, initParams: any) {
       // Always send cookies, even for cross-origin calls.
@@ -222,7 +231,7 @@ function unmute() {
     isMuted.value = false
   }
   else {
-    setVolume(tempVolume.value || 100)
+    setVolume(tempVolume.value || 1)
   }
 }
 
@@ -347,6 +356,7 @@ function changeSource(source: ShowroomAPI.StreamingURL) {
 
 async function play() {
   if (process.server) return
+  pausedByUser.value = false
   if (video.value) {
     try {
       if (mutedData.value) {
@@ -406,7 +416,7 @@ onMounted(() => {
   }
 
   if (video.value) {
-    volume.value = tempVolume.value
+    volume.value = Number(tempVolume.value) || 1
     isPlaying.value = !video.value.paused
     video.value.addEventListener('play', playEvent)
     video.value.addEventListener('pause', pauseEvent)
@@ -484,7 +494,8 @@ if (props.useShortcut) {
 
   onKeyStroke('ArrowRight', () => {
     const val = currentTime.value + 2
-    if (video.value) video.value.currentTime = val > duration.value ? duration.value : val
+    const maxTime = duration.value - 3
+    if (video.value) video.value.currentTime = val > maxTime ? maxTime : val
   }, { eventName: 'keyup' })
 }
 
@@ -493,13 +504,43 @@ watch(videoProgess, (val) => {
 }, { immediate: true })
 const currentTimeFloor = computed(() => Math.floor(currentTime.value))
 
-defineExpose({ stop, reload, togglePlay, isLandscape })
+function checkMute() {
+  return video.value?.getAttribute('prop')
+}
+
+useEventListener(video, 'volumechange', (event) => {
+  isMuted.value = (event.target as HTMLVideoElement)?.muted
+  volume.value = (event.target as HTMLVideoElement)?.volume || 0
+})
+
+const volumeIcon = computed(() => {
+  if (!isMuted.value && (volume.value >= 0.5)) {
+    return 'ic:round-volume-up'
+  }
+  else if (!isMuted.value && (volume.value > 0)) {
+    return 'ic:round-volume-down'
+  }
+  return 'ic:round-volume-off'
+})
+
+function pause() {
+  video.value?.pause()
+  pausedByUser.value = true
+}
+
+function syncLive() {
+  if (video.value) {
+    video.value.currentTime = duration.value - 3
+  }
+}
+
+defineExpose({ stop, syncLive, isPlaying, isMuted, reload, togglePlay, isLandscape, changeSource, checkMute, volume, pause, play, mute, unmute, setVolume })
 </script>
 
 <template>
   <div ref="videoPlayer" class="group relative" :class="isLandscape ? 'aspect-video' : 'aspect-[9/12]'">
     <div v-if="!isPlaying && !isLoading && !useDefaultControl" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/50 p-1">
-      <Icon name="material-symbols:pause" class="text-white/60" size="3rem" />
+      <Icon name="ic:round-pause" class="text-white/60" size="3rem" />
     </div>
     <video
       ref="video"
@@ -549,17 +590,16 @@ defineExpose({ stop, reload, togglePlay, isLandscape })
         </div>
         <div class="flex w-full bg-black/70 px-1 duration-200 dark:bg-black/75 md:px-2">
           <button class="h-8 w-8 p-1" aria-label="Play" type="button" @click="togglePlay">
-            <Icon v-if="isPlaying" name="ic:baseline-pause" class="h-full w-full" />
-            <Icon v-else name="ph:play-fill" class="h-full w-full p-[2.5px]" />
+            <Icon v-if="isPlaying" name="ic:round-pause" class="h-full w-full" />
+            <Icon v-else name="ic:round-play-arrow" class="h-full w-full" />
           </button>
-          <div class="group-volume flex items-center gap-1">
-            <button class="!h-8 !w-8 p-1" aria-label="Mute" type="button" @click="toggleMute">
-              <Icon v-if="!isMuted" :name=" volume >= 50 ? 'ic:round-volume-up' : 'ic:round-volume-down' " class="h-full w-full p-[1px]" />
-              <Icon v-else name="ic:round-volume-off" class="h-full w-full p-[1px]" />
+          <div class="group/volume flex items-center gap-1">
+            <button class="h-8 w-8 p-1" aria-label="Mute" type="button" @click="toggleMute">
+              <Icon :name="volumeIcon" class="h-full w-full" />
             </button>
             <div class="relative flex h-full w-16 items-center duration-200 group-hover/volume:w-20 md:w-20">
               <div class="absolute inset-0 top-1/2 z-0 h-1 w-16 -translate-y-1/2 overflow-hidden rounded-sm bg-gray-300/25 md:w-20">
-                <div class="h-full bg-slate-200" :style="{ width: `${volume}%` }" />
+                <div class="h-full bg-slate-200" :style="{ width: `${volume * 100}%` }" />
               </div>
               <input
                 ref="volumeSlider"
@@ -567,8 +607,8 @@ defineExpose({ stop, reload, togglePlay, isLandscape })
                 aria-label="Volume"
                 type="range"
                 min="0"
-                max="100"
-                step="5"
+                max="1"
+                step="0.01"
                 class="volume-slider z-20 h-1 w-16 cursor-pointer md:w-20"
               >
             </div>

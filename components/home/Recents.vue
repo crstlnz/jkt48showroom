@@ -5,6 +5,7 @@ const settings = useSettings()
 const { data, pending, refresh, tryRefresh, date } = useCachedFetch<IApiRecents>('/api/recent', {
   params: {
     group: settings.group,
+    type: 'all',
   },
   expireIn: 600000,
 })

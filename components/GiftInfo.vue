@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 const props = defineProps<{
-  gifts: Database.GiftData[]
+  gifts: LogDetail.BaseGiftInfo[]
 }>()
 const totalAllGifts = computed(() => {
   if (!props.gifts) return 0

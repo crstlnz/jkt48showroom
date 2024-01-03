@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { MultiVideo } from '#components'
+import { MultiMediaControl, MultiVideo } from '#components'
 import { useIDNLives } from '~/store/idnLives'
 import { useNotifications } from '~/store/notifications'
 import { useOnLives } from '~/store/onLives'
@@ -28,9 +28,16 @@ function add(video: Multi.Video) {
 }
 
 const { width } = useWindowSize()
-const minWidth = 160
+const { isSmall } = useResponsive()
+const minWidth = computed(() => {
+  if (!isSmall.value) {
+    return 240
+  }
+  return 160
+})
+
 const maxCount = computed(() => {
-  return Math.floor(width.value / minWidth)
+  return Math.floor(width.value / minWidth.value)
 })
 
 const rowCount = useLocalStorage('multiRowCount', 4, { deep: true })
@@ -60,6 +67,16 @@ function rowCountChange(event: Event) {
     rowCount.value = row
     inputEl.value = String(row)
   }
+}
+
+function changeRow(row: number) {
+  if (row > maxCount.value) {
+    row = maxCount.value
+  }
+  else if (row < 1) {
+    row = 1
+  }
+  rowCount.value = row
 }
 
 const { group } = useSettings()
@@ -93,7 +110,7 @@ function onBeforeLeave(el: Element) {
   element.style.width = `${rect.width}px`
 }
 
-const videoPlayers = ref<Map<string, typeof MultiVideo>>(new Map())
+const videoPlayers = ref<Map<string, InstanceType<typeof MultiVideo>>>(new Map())
 function refreshAll() {
   for (const video of videoPlayers.value.values()) {
     video.refresh()
@@ -102,15 +119,19 @@ function refreshAll() {
 
 const { addNotif } = useNotifications()
 
+const autoRemove = useLocalStorage('auto_remove_player', () => true)
 function deleteVideo(video: Multi.Video, reason?: string) {
   if (reason) {
+    if (autoRemove.value) add(video) // add is for deleting video because add function is toggle
     addNotif({
       type: 'info',
       title: reason,
       message: `${video.name} Room`,
     })
   }
-  add(video)
+  else {
+    add(video)
+  }
 }
 
 const onLives = useOnLives()
@@ -125,7 +146,7 @@ function checkLive(video: Multi.Video) {
   const showroomRoom = showroomLives.find(i => video.id === String(i.room_id))
   const idnRoom = idnLives.find(i => video.id === i.user.id)
   if (!showroomRoom && !idnRoom) {
-    add(video) /// delete
+    if (autoRemove.value) add(video) /// delete
     addNotif({
       type: 'info',
       title: t('notif.live.ended'),
@@ -173,35 +194,54 @@ useSeoMeta({
   ogDescription: () => description.value,
 
 })
+const mediaControl = ref<InstanceType<typeof MultiMediaControl>>()
+
+function openMediaControl() {
+  if (mediaControl.value) mediaControl.value.open()
+}
 </script>
 
 <template>
   <div>
     <SplashScreen>
       <div key="multiviewer" class="min-h-[100vh] flex flex-col">
-        <nav class="flex sm:justify-center items-center gap-10 p-4 md:p-5 justify-between">
+        <MultiMediaControl ref="mediaControl" :video-players="videoPlayers" />
+        <nav class="flex items-center gap-4 p-4 md:p-5 justify-between mx-auto max-w-[648px] w-full">
           <div class="text-base font-bold flex flex-col sm:flex-row sm:items-end sm:gap-0.5">
-            <NuxtLink to="/" :class="$getGroup(group) === 'jkt48' ? 'text-red-500' : 'text-sky-400'" class="text-4xl max-sm:leading-8">
+            <NuxtLink to="/" :class="$getGroup(group) === 'jkt48' ? 'text-red-500' : 'text-sky-400'" class="text-3xl lg:text-4xl max-sm:leading-8">
               {{ $getGroupTitle(group) }}
             </NuxtLink>
-            <span class="leading-1">Multi Viewer</span>
+            <span class="leading-1 text-sm lg:text-base">Multi Viewer</span>
           </div>
           <div class="flex gap-3 items-center">
-            <div class="flex gap-2 flex-col md:flex-row">
-              <button type="button" class="h-5 w-5 md:w-6 md:h-6" @click="() => videosMap.clear()">
+            <div class="flex md:flex-row border border-black/5 dark:border-white/5 rounded-md overflow-hidden">
+              <button v-ripple type="button" class="flex h-8 w-8 bg-container hover:bg-container border-r border-black/5 dark:border-white/5  p-1.5" @click="() => videosMap.clear()">
                 <Icon name="mingcute:broom-fill" class="w-full h-full" />
               </button>
-              <button type="button" class="h-5 w-5 md:w-6 md:h-6" @click="refreshAll">
+              <button v-ripple type="button" class="flex h-8 w-8 bg-container hover:bg-container border-r border-black/5 dark:border-white/5  p-1.5" @click="refreshAll">
                 <Icon name="material-symbols:sync" class="w-full h-full" />
               </button>
+              <button v-ripple type="button" class="flex h-8 w-8 bg-container hover:bg-container p-1.5" @click="openMediaControl">
+                <Icon name="icon-park-outline:equalizer" class="w-full h-full p-0.5" />
+              </button>
             </div>
-            <div class="flex gap-3 bg-black/5 dark:bg-white/5 px-3 py-2 rounded-md">
+            <div class="flex gap-2 bg-white dark:bg-white/5 px-3 py-2 rounded-md items-center overflow-hidden text-sm md:text-base">
               <div>Row</div>
-              <input :value="rowCount" type="number" class="inputRow rounded-md text-center min-w-[50px] bg-black/25" max="8" min="1" placeholder="Row Count" @input="rowCountChange">
+              <input :value="rowCount" type="number" class="inputRow rounded-md text-center min-w-[20px] bg-transparent outline-none" max="8" min="1" placeholder="Row Count" @input="rowCountChange">
+              <div class="flex flex-col -my-2 -mr-3">
+                <button v-ripple type="button" class="h-5 w-5 md:w-6 md:h-6 flex border-l border-b border-black/5 dark:border-white/5" @click="changeRow(rowCount + 1)">
+                  <Icon name="material-symbols:arrow-drop-up-rounded" class="w-full h-full" />
+                </button>
+                <button v-ripple type="button" class="h-5 w-5 md:w-6 md:h-6 flex border-l border-black/5 dark:border-white/5" @click="changeRow(rowCount - 1)">
+                  <Icon name="material-symbols:arrow-drop-down-rounded" class="w-full h-full" />
+                </button>
+              </div>
             </div>
           </div>
         </nav>
-        <MultiLiveContainer :selected="videosMap" @select="add" />
+        <div class="fixed bottom-0 inset-x-0 w-screen pointer-events-none z-aboveNav">
+          <MultiLiveContainer :selected="videosMap" class="pointer-events-auto" @select="add" />
+        </div>
 
         <div v-if="videos.length" class="flex-1">
           <TransitionGroup v-if="videos.length" name="multivideo" tag="div" class="grid" :style="{ gridTemplateColumns: `repeat(${rowCount || 4}, minmax(0, 1fr))` }" @before-leave="onBeforeLeave">

@@ -3,7 +3,7 @@ import type { FetchError } from 'ofetch'
 export function useAuth() {
   const { payload } = useNuxtApp()
   const data = useState<ShowroomLogin.User | null>('authUser', () => process.client ? payload.data.auth.user || null : null)
-  const pending = useState('authPending', () => process.client ? payload.data.auth.pending ?? false : false)
+  const pending = useState('authPending', () => process.client ? payload.data.auth.pending ?? true : false)
   const error = useState('authError', () => process.client ? (payload.data.auth.error ? Error(payload.data.auth.error) : null) : null)
 
   const status = computed<StatusLogin>(() => {

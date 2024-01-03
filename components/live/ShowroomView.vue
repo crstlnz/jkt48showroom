@@ -11,10 +11,10 @@ const props = defineProps<{
   memberImage: string
   date: ILiveDate
   background: string
-  screenshot?: Database.IScreenshot
+  screenshot?: Live.Screenshots
   stageList: IStageList[]
   users: IFansCompact[]
-  giftData: IGiftsLogData
+  giftData: LogDetail.ShowroomGiftData
 }>()
 const { $avatarURL, $giftUrl } = useNuxtApp()
 const stageList = ref(props.stageList)
@@ -100,7 +100,7 @@ function getFansRankList(): IUIStageFans[] {
       id: i,
       name: fans?.name ?? 'Not Found!',
       avatar: $avatarURL(fans?.avatar_id ?? 1),
-      isCurrentUser: String(user.value?.id) === String(fans?.id),
+      isCurrentUser: String(user.value?.id || -1) === String(fans?.id || -2),
     }
   })
 }

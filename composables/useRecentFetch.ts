@@ -19,11 +19,12 @@ export default async function (opts: RecentFetchOpts | null = null, q: RecentsQu
   const settings = useSettings()
   let query: Ref<RecentsQuery>
   if (q) {
-    query = ref(q)
+    query = ref({ ...q, type: 'all' })
   }
   else {
     query = useSessionStorage<RecentsQuery>(opts?.userHistory ? 'history-fetch-query' : `recent-fetch-query`, buildQuery())
     // query = useSessionStorage<RecentsQuery>('recent-fetch-query', { page: opts?.initPage ?? 1 }, { mergeDefaults: opts?.initPage != null })
+    query.value.type = 'all'
     if (opts?.initPage != null) {
       query.value.page = opts.initPage
     }
@@ -32,7 +33,15 @@ export default async function (opts: RecentFetchOpts | null = null, q: RecentsQu
   const cooldown = ref(false)
   const timeout = ref<NodeJS.Timeout | undefined>(undefined)
 
-  const { data: res, error, pending: apiPending, refresh } = await useApiFetch<IApiRecents>(opts?.userHistory ? '/api/user/history' : '/api/recent', { key, query, watch: false, deep: false, server: false, lazy: true })
+  const {
+    data: res,
+    error,
+    pending: apiPending,
+    refresh,
+  } = await useApiFetch<IApiRecents>(
+    opts?.userHistory ? '/api/user/history' : '/api/recent',
+    { key, query, watch: false, deep: false, server: false, lazy: true },
+  )
 
   const mustPending = ref(false)
   const pending = computed(() => {
@@ -98,7 +107,7 @@ export default async function (opts: RecentFetchOpts | null = null, q: RecentsQu
 
   async function slowRefresh() {
     mustPending.value = true
-    await sleep(2000)
+    await sleep(1700)
     await refresh()
     mustPending.value = false
   }

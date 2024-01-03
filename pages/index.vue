@@ -39,7 +39,7 @@ const searchInput = ref()
       <div class="flex flex-col gap-3 md:gap-4">
         <HomeLiveNow />
         <HomeRecentGrids v-if="group === 'jkt48'" />
-        <HomeStats />
+        <!-- <HomeStats /> -->
         <div class="mx-3 flex items-center justify-between md:mx-4 xl:mt-2">
           <div class="flex gap-1">
             <Icon name="ph:info-bold" class="self-center text-xl sm:text-2xl" />

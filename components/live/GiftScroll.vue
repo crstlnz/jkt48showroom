@@ -4,24 +4,26 @@ import c from '~~/app.config'
 import { useSelectedUser } from '~/store/selectedUser'
 
 const props = defineProps<{
-  gifts: IFansGift[]
+  gifts: RecentUserGifts[]
   pageMode?: boolean
   dataId: string
-  giftList: IGift[]
+  giftList: LogDetail.IDNGift[] | LogDetail.ShowroomGift[]
   hasNextPage: boolean
+  type: LogType
 }>()
 const search = ref('')
 
-const giftList = computed<Map<number, IGiftImg>>(() => {
-  const gifts = new Map<number, IGiftImg>()
+const giftList = computed<Map<string, LogDetail.BaseGift>>(() => {
+  const gifts = new Map<string, LogDetail.BaseGift>()
   if (!props.giftList) return gifts
   const g = props.giftList
   for (const gift of g) {
-    gifts.set(gift.id, {
+    gifts.set(String(gift.id), {
       id: gift.id,
+      name: gift.name,
       free: gift.free,
       point: gift.point,
-      img: c.giftUrl(gift?.id ?? 0),
+      img: props.type === 'showroom' ? c.giftUrl(gift?.id ?? 0) : gift.img,
     })
   }
   return gifts
@@ -53,7 +55,7 @@ async function getPage(p = 1, search = '') {
   page.value = p
   await sleep(500)
   try {
-    const data = await $apiFetch<IApiGifts>(`/api/recent/${props.dataId}/gifts`, { params: { page: p, s: search } })
+    const data = await $apiFetch<IApiShowroomGift | IApiIDNGift>(`/api/recent/${props.dataId}/gifts`, { params: { page: p, s: search } })
     if (lastQuery.value !== search) return
     if (!data.gifts.length) {
       isEnded.value = true
@@ -62,20 +64,21 @@ async function getPage(p = 1, search = '') {
       if (data.gifts.length < data.perpage) {
         isEnded.value = true
       }
-      const mappedGifts = data.gifts.map<IFansGift>((i) => {
+      const mappedGifts = data.gifts.map<RecentUserGifts>((i) => {
         const user = data.users.find(item => item.id === i.user_id)
-        const giftMap = new Map<number, IGifts>()
+        const giftMap = new Map<string, RecentGift>()
         for (const gift of i.gifts) {
-          if (giftMap.has(gift.id)) {
-            const g = giftMap.get(gift.id)
+          if (giftMap.has(String(gift.id))) {
+            const g = giftMap.get(String(gift.id))
             if (g) g.num += gift.num
           }
           else {
-            const g = giftList.value.get(gift.id)
+            const g = giftList.value.get(String(gift.id))
             if (!g) continue
-            giftMap.set(gift.id, {
+            giftMap.set(String(gift.id), {
               num: gift.num,
-              id: g.id,
+              id: String(g.id),
+              name: g.name,
               free: g.free,
               point: g.point,
               img: g.img,
@@ -83,13 +86,26 @@ async function getPage(p = 1, search = '') {
             })
           }
         }
-        return {
-          name: user?.name ?? 'User not Found!',
-          id: user?.id ?? i.user_id ?? (Math.floor(Math.random() * 500) + Math.floor(Math.random() * 10) + 1),
-          avatar: c.avatarURL(user?.avatar_id ?? 1),
-          avatar_id: user?.avatar_id ?? 1,
-          total: i.total,
-          gifts: Array.from(giftMap.values()).sort((a, b) => b.point - a.point),
+        if (props.type === 'showroom') {
+          const userData = user as LogDetail.ShowroomUser
+          return {
+            name: userData?.name ?? 'User not Found!',
+            id: userData?.id ?? i.user_id ?? (Math.floor(Math.random() * 500) + Math.floor(Math.random() * 10) + 1),
+            avatar: c.avatarURL(userData?.avatar_id ?? 1),
+            avatar_id: userData?.avatar_id ?? 1,
+            total: i.total,
+            gifts: Array.from(giftMap.values()).sort((a, b) => b.point - a.point),
+          }
+        }
+        else {
+          const userData = user as LogDetail.IDNUser
+          return {
+            name: userData?.name ?? 'User not Found!',
+            id: userData?.id ?? i.user_id ?? (Math.floor(Math.random() * 500) + Math.floor(Math.random() * 10) + 1),
+            avatar: userData?.avatar_url,
+            total: i.total,
+            gifts: Array.from(giftMap.values()).sort((a, b) => b.point - a.point),
+          }
         }
       })
 
@@ -153,22 +169,22 @@ watch(search, () => {
     <template #default="{ item, index, active }">
       <DynamicScrollerItem :key="item.id" :item="item" :active="active" :size-dependencies="[item.gifts]" :data-index="index">
         <div class="space-y-2 border-b-2 border-slate-100/60 p-3 dark:border-dark-2/60 md:p-4">
-          <button type="button" class="truncate text-base xl:text-lg font-bold" :title="item.name" @click="(e) => userClick(e, item.id)">
+          <button type="button" class="truncate text-base xl:text-lg font-bold" :title="item.name" @click="(e) => userClick(e, item.id, type)">
             {{ item.name }}
           </button>
           <div class="flex gap-2.5 md:gap-3.5 items-start">
-            <button type="button" class="user-btn" :aria-label="`${item.name} profile`" @click="(e) => userClick(e, item.id)">
+            <button type="button" class="user-btn" :aria-label="`${item.name} profile`" @click="(e) => userClick(e, item.id, type)">
               <img
                 :key="item.id"
-                class="h-[70px] w-[70px] rounded-lg bg-slate-100/90 p-2 hover:bg-slate-200 dark:bg-slate-100/5 hover:dark:bg-slate-300/10 lg:h-20 lg:w-20"
-                :src="$avatarURL(item.avatar_id)"
+                class="h-[70px] w-[70px] rounded-lg bg-slate-100/90 hover:bg-slate-200 dark:bg-slate-100/5 hover:dark:bg-slate-300/10 lg:h-20 lg:w-20"
+                :src="item.type === 'showroom' ? $giftUrl(item.avatar_id) : (item.avatar || $defaultIDNProfilePicture)"
                 :alt="`${item.name} Avatar`"
               >
             </button>
             <div class="min-w-0 flex-1">
               <div :key="item.id" class="flex flex-wrap gap-2 pb-[8px] md:gap-2.5">
                 <div v-for="gift in item.gifts" :key="item.id + gift.id" v-tooltip="$currency(gift.point)" class="relative">
-                  <div class="max-h-[45px] max-w-[45px]">
+                  <div :class="{ 'max-h-[45px] max-w-[45px]': type === 'showroom', 'max-h-[54px] max-w-[54px]': type === 'idn' }">
                     <img :key="`${item.id}${gift.id}`" :src="gift.img" alt="Gift" class="aspect-square">
                     <div
                       v-if="gift.num > 1"

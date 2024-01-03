@@ -46,7 +46,7 @@ const isLive = computed(() => {
                 />
               </div>
             </template>
-            <NuxtLink :to="isLive ? `/watch/${member.url}` : `/member/${member.url}`" class="relative m-1.5 block md:m-2">
+            <NuxtLink :to="isLive ? `/watch/${member.url}` : `/member/${member.url}`" class="relative m-1.5 block md:m-2 rounded-full">
               <div v-if="isLive" class="absolute bottom-[14.5%] right-[14.5%] z-10 h-[15%] w-[15%] translate-x-1/2 translate-y-1/2">
                 <div class="absolute inset-0 z-10 rounded-full bg-red-500" />
                 <div class="absolute inset-0 -z-10 animate-ping rounded-full bg-red-500" />

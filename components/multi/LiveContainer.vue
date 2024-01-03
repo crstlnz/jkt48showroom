@@ -51,7 +51,7 @@ function forceRefresh() {
 </script>
 
 <template>
-  <Popover class="pointer-events-auto fixed bottom-4 right-4 md:bottom-8 md:right-10 xl:bottom-10 xl:right-12 z-aboveNav">
+  <Popover class="pointer-events-auto absolute bottom-4 right-4 md:bottom-8 md:right-10 xl:bottom-10 xl:right-14">
     <Transition
       enter-active-class="transition duration-200 ease-out"
       enter-from-class="translate-y-2 translate-x-1 opacity-0"

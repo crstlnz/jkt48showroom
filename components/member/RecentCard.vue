@@ -117,7 +117,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="bg-container rounded-xl p-3 shadow-sm md:p-4">
+  <div class="bg-container rounded-xl p-3 shadow-sm md:p-4 relative">
+    <div class="absolute right-3 top-3 md:top-3 md:right-4">
+      <NuxtImg :src="recent.type === 'showroom' ? $showroomIcon : $idnLiveIcon" size="64px" class="h-5 object-contain max-w-[90px]" />
+    </div>
     <div class="flex gap-3 md:gap-4">
       <div
         ref="thumbnail"

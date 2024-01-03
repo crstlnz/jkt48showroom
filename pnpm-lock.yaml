@@ -14,6 +14,9 @@ dependencies:
   '@nuxt/image':
     specifier: ^1.1.0
     version: 1.1.0(rollup@3.29.4)
+  blaze-slider:
+    specifier: ^1.9.3
+    version: 1.9.3
   cloudinary:
     specifier: ^1.41.0
     version: 1.41.1
@@ -50,7 +53,7 @@ dependencies:
 
 devDependencies:
   '@antfu/eslint-config':
-    specifier: ^2.4.6
+    specifier: ^2.6.1
     version: 2.6.1(@vue/compiler-sfc@3.3.13)(eslint@8.56.0)(typescript@5.3.3)
   '@nuxtjs/color-mode':
     specifier: ^3.3.2
@@ -3251,6 +3254,10 @@ packages:
       readable-stream: 3.6.2
     dev: false
     optional: true
+
+  /blaze-slider@1.9.3:
+    resolution: {integrity: sha512-u8i4AhbjICF6gpyKeMEg65kupT2JoN+E7yOJjOt3ocUtS+r4SKYU79DPNSBV2Zb61fix4ChIxfPyyRUSmLao5g==}
+    dev: false
 
   /blob-to-buffer@1.2.9:
     resolution: {integrity: sha512-BF033y5fN6OCofD3vgHmNtwZWRcq9NLyyxyILx9hfMy1sXYy4ojFl765hJ2lP0YaN2fuxPaLO2Vzzoxy0FLFFA==}

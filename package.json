@@ -1,7 +1,7 @@
 {
   "name": "jkt48showroom",
   "type": "module",
-  "version": "0.10.6",
+  "version": "0.10.7",
   "engines": {
     "node": "20.x.x"
   },
@@ -19,6 +19,7 @@
     "@headlessui/tailwindcss": "^0.2.0",
     "@headlessui/vue": "^1.7.16",
     "@nuxt/image": "^1.1.0",
+    "blaze-slider": "^1.9.3",
     "cloudinary": "^1.41.0",
     "dayjs": "^1.11.10",
     "dotenv": "^16.3.1",
@@ -32,7 +33,7 @@
     "vue-virtual-scroller": "2.0.0-beta.8"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^2.4.6",
+    "@antfu/eslint-config": "^2.6.1",
     "@nuxtjs/color-mode": "^3.3.2",
     "@nuxtjs/device": "^3.1.1",
     "@nuxtjs/eslint-config-typescript": "^12.1.0",

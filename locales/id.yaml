@@ -190,8 +190,14 @@ room_level: Room level
 watch_count: Menonton
 watch_count_info: Kamu telah menonton member ini sebanyak {count} kali
 times: kali
-pleaselogin: Login dulu
-loginwithshowroom: Login dengan Showroom
-selectvideofirst: Tambah videonya di kanan bawah!
+pleaselogin: Please login
+loginwithshowroom: Login with Showroom
+selectvideofirst: Add the video from the bottom right!
 logininfo: 'Login tidak akan menyimpan data Anda pada web ini. Dengan login, anda dapat mengakses fitur komen pada showroom, markah, serta beberapa informasi yang menggunakan akun showroom.'
 watch_on: Tonton di
+add: Tambah
+delete: Hapus
+media_controls: Kontrol Media
+no_video_player: Tidak ada video yang terlampir. Tambah dulu videonya!
+multi:
+  auto_remove: Otomatis menghapus player saat stream telah selesai

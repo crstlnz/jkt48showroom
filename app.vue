@@ -120,7 +120,7 @@ useAuth()
       :height="4"
     /> -->
     <Dialog />
-    <ShowroomUserDraggable />
+    <LiveUserDraggable />
     <NotificationView />
     <NuxtLayout>
       <NuxtPage

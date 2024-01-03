@@ -233,7 +233,7 @@ useHead({
                   <TheaterCard v-for="theater in member.recentTheater.slice(0, 4)" :key="theater.url" :theater="theater" />
                 </div>
               </div>
-              <HomeStats v-if="member?.room_id" :room-id="member?.room_id" />
+              <!-- <HomeStats v-if="member?.room_id" :room-id="member?.room_id" /> -->
               <ClientOnly>
                 <div v-if="!isXL" class="px-3 md:px-4">
                   <div v-if=" !member?.room_id" class="bg-container flex aspect-video w-full flex-col items-center justify-center rounded-xl p-4 xl:mt-5">

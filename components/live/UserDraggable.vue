@@ -4,7 +4,7 @@ import { LazyImage } from '#components'
 import { useSelectedUser } from '~/store/selectedUser'
 
 const divId = ref(0)
-const { userId, isHidden, position } = storeToRefs(useSelectedUser())
+const { userId, type, isHidden, position } = storeToRefs(useSelectedUser())
 
 const padding = 20
 const cursorPadding = 40
@@ -22,7 +22,58 @@ function setPosition(x: number, y: number) {
 }
 defineExpose({ setPosition })
 
-const { data: userData, pending, error, refresh } = await useApiFetch<ShowroomAPI.UserProfile>(() => `/api/showroom/user/profile?user_id=${userId.value}`, { lazy: true, server: false, immediate: false })
+const userData = ref<UserDraggable.User | null>(null)
+const pending = ref(true)
+const error = ref<Error | null>(null)
+
+async function refresh() {
+  pending.value = true
+  try {
+    if (type.value === 'showroom') {
+      const res = await $apiFetch<ShowroomAPI.UserProfile>(`/api/showroom/user/profile?user_id=${userId.value}`)
+      userData.value = {
+        id: String(userId.value),
+        name: res.name,
+        image: res.image,
+        description: res.description,
+        avatar_url: res.avatar_url,
+        sns_list: res.sns_list,
+        type: 'showroom',
+      }
+    }
+    else {
+      const res = await $fetch<UserDraggable.IDNUserApi>('https://api.idn.app/graphql', {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          query: `query GetPublicProfile { getPublicProfile(uuid: "${userId.value}") { uuid username name avatar bio_description following_count follower_count is_follow }}`,
+
+        }),
+      })
+      userData.value = {
+        id: res.data.getPublicProfile.uuid,
+        name: res.data.getPublicProfile.name,
+        image: res.data.getPublicProfile.avatar,
+        description: res.data.getPublicProfile.bio_description,
+        type: 'idn',
+      }
+    }
+  }
+  catch (e) {
+    console.log(e)
+    if (e instanceof Error) {
+      error.value = e
+    }
+    else {
+      error.value = new Error(String(e))
+    }
+  }
+  pending.value = false
+}
+
+// const { data: userData, pending, error, refresh } = await useApiFetch<ShowroomAPI.UserProfile>(() => `/api/showroom/user/profile?user_id=${userId.value}`, { lazy: true, server: false, immediate: false })
 
 watch(position, (v) => {
   if (v) {
@@ -205,7 +256,7 @@ onMounted(() => {
             <div class="aspect-square w-32 rounded-full bg-gray-300 dark:bg-dark-2/80 lg:w-36" />
             <div class="h-8 w-32 rounded-md bg-gray-300 dark:bg-dark-2/80" />
             <div class="flex flex-wrap gap-2 text-lg font-semibold">
-              <div :href="$fansProfileURL(userId)" class="inline-block h-8 w-[104px] rounded-sm bg-blue-500 text-sm leading-8 text-white" />
+              <div :href="$fansProfileURL(userId)" class="inline-block h-8 w-[104px] rounded-md bg-blue-500 text-sm leading-8 text-white" />
             </div>
           </div>
           <div v-else-if="error" class="w-[210px] space-y-10 px-5 mx-auto">
@@ -217,7 +268,7 @@ onMounted(() => {
           <div v-else-if="userData" class="mb-6 flex flex-col items-center gap-4">
             <div class="relative aspect-square w-32 lg:w-36">
               <LazyImage :alt="`${userData.name} profile picture`" class="h-full w-full overflow-hidden rounded-full" :src="userData.image" />
-              <img :src="userData.avatar_url" class="absolute -bottom-2 -right-4 aspect-square w-16">
+              <img v-if="userData.avatar_url" :src="userData.avatar_url" class="absolute -bottom-2 -right-4 aspect-square w-16">
             </div>
             <div class="disable-drag flex flex-col gap-2 text-center">
               <div class="disable-drag text-2xl font-semibold">
@@ -231,7 +282,7 @@ onMounted(() => {
               <a v-for="sns in (userData.sns_list ?? [])" :key="sns.url" :href="sns.url" target="_blank">
                 <img :src="sns.icon" alt="SNS Icon" class="aspect-square h-8">
               </a>
-              <a target="_blank" :href="$fansProfileURL(userId)" class="inline-block h-8 select-none rounded-sm bg-blue-500 px-4 text-sm leading-8 text-white">{{ $t('viewprofile') }}</a>
+              <a v-if="userData.type === 'showroom'" target="_blank" :href="$fansProfileURL(userId)" class="inline-block h-8 select-none rounded-md bg-blue-500 px-4 text-sm leading-8 text-white">{{ $t('viewprofile') }}</a>
             </div>
           </div>
           <div v-else class="w-[210px] space-y-10 px-5">
