@@ -91,7 +91,7 @@ useHead({
                 {{ theater.setlist?.description ?? "Tidak ada deskripsi." }}
               </div>
 
-              <table class="gap-2 pt-5 text-base font-light [&_td:first-child]:min-w-[150px] [&_td:first-child]:pr-5 [&_td:first-child]:font-light [&_td:first-child]:opacity-50 sm:[&_td:first-child]:min-w-[200px] xl:[&_td:first-child]:min-w-[270px] [&_td]:py-2">
+              <table class="gap-2 pt-5 text-sm md:text-base font-light max-md:[&_td:first-child]:max-w-[120px] md:[&_td:first-child]:min-w-[150px] [&_td:first-child]:pr-5 [&_td:first-child]:font-light [&_td:first-child]:opacity-50 sm:[&_td:first-child]:min-w-[200px] xl:[&_td:first-child]:min-w-[270px] [&_td]:py-2">
                 <tr>
                   <td>{{ $t("total_member") }}</td>
                   <td>{{ theater.members?.length || '-' }}</td>
@@ -101,16 +101,38 @@ useHead({
                   <td>{{ $t("sort.date") }}</td>
                   <td>{{ $dayjs(theater.date).format("DD MMMM YYYY - HH:mm") }}</td>
                 </tr>
-
-                <tr v-if="theater.seitansai?.length">
-                  <td>Seitansai</td>
-                  <td>
-                    <NuxtLink v-for="[i, member] in theater.seitansai.entries()" :key="member.id" :to="member.url_key ? `/member/${member.url_key}` : undefined">
-                      {{ member.name }}{{ i !== theater.seitansai.length - 1 ? ', ' : '' }}
-                    </NuxtLink>
-                  </td>
-                </tr>
               </table>
+
+              <div v-if="theater.seitansai?.length" class="flex flex-col gap-1.5">
+                <div class="font-semibold mt-2 flex items-center gap-2">
+                  <Icon name="twemoji:birthday-cake" /> <span>Seitansai</span>
+                </div>
+                <div class="grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(130px,1fr))] md:flex flex-wrap gap-4 md:gap-5">
+                  <NuxtImg
+                    v-for="member in theater.seitansai"
+                    :key="member.id"
+                    class="bg-container block aspect-[8/10] w-[100px] md:w-[120px] overflow-hidden rounded-xl object-cover"
+                    :src="member.img || pic"
+                    alt="Default member picture"
+                    fit="fill"
+                    :modifiers="{
+                      aspectRatio: 8 / 10,
+                      gravity: 'faceCenter',
+                    }"
+                    sizes="100px md:180px"
+                    :placeholder="[8, 10, 75, 5]"
+                    format="webp"
+                  />
+                </div>
+                <div class="text-sm md:text-base">
+                  {{ $t('seitansai_text') }}
+                  <div v-for="[i, member] in theater.seitansai.entries()" :key="member.id" class="inline">
+                    <NuxtLink class="text-red-500" :to="member.url_key ? `/member/${member.url_key}` : undefined">
+                      {{ member.name }}
+                    </NuxtLink>{{ i === theater.seitansai.length - 2 ? ' dan ' : (i === theater.seitansai.length - 1 ? '' : ', ') }}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 

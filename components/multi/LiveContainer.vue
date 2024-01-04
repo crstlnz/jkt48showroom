@@ -76,7 +76,7 @@ function forceRefresh() {
           <MultiLiveCard v-for="live in lives" :key="live.id" :live="live" :selected="selected.has(live.id)" @live-click="select(live)" />
         </div>
         <div v-else class="text-center py-2 flex px-8 text-base font-light">
-          Tidak ada live
+          {{ $t('nolive') }}
         </div>
       </PopoverPanel>
     </Transition>
