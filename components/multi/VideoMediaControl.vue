@@ -59,7 +59,7 @@ onMounted(() => {
             <Icon v-if="!player.video?.isMuted" name="ic:round-volume-up" class="h-full w-full p-[1px]" />
             <Icon v-else name="ic:round-volume-off" class="h-full w-full p-[1px]" />
           </button>
-          <button v-ripple type="button" class="w-7 h-7 md:h-7 md:w-7 flex hover:bg-hover-2 rounded-full p-1">
+          <button v-ripple type="button" class="w-7 h-7 md:h-7 md:w-7 flex hover:bg-hover-2 rounded-full p-1" @click="player.remove">
             <Icon name="ic:baseline-delete" class="h-full w-full p-[1px]" />
           </button>
         </div>

@@ -26,11 +26,11 @@ function openModal() {
   isOpen.value = true
 }
 
-const isAllMuted = computed(() => {
-  return videoPlayers.value.some((v) => {
-    return v.video?.checkMute()
-  })
-})
+// const isAllMuted = computed(() => {
+//   return videoPlayers.value.some((v) => {
+//     return v.video?.checkMute()
+//   })
+// })
 
 function playAll() {
   for (const player of videoPlayers.value) {

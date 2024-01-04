@@ -24,10 +24,14 @@ export function useAuth() {
 
   async function checkAuthOnServer() {
     if (process.client) return
+    const event = useRequestEvent()
+    const cookie = event.headers.get('Cookie')
     payload.data.auth.pending = true
     pending.value = true
     try {
-      data.value = await $apiFetch<ShowroomLogin.User>('/api/user')
+      if (cookie?.includes('_st=')) {
+        data.value = await $apiFetch<ShowroomLogin.User>('/api/user')
+      }
       payload.data.auth.user = data.value
     }
     catch (e: any) {

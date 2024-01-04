@@ -107,7 +107,7 @@ export default async function (opts: RecentFetchOpts | null = null, q: RecentsQu
 
   async function slowRefresh() {
     mustPending.value = true
-    await sleep(1700)
+    await sleep(1200)
     await refresh()
     mustPending.value = false
   }
