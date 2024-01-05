@@ -78,6 +78,12 @@ function remove() {
   emit('delete')
 }
 
+function rotate() {
+  if (videoElement.value) {
+    videoElement.value.rotate()
+  }
+}
+
 defineExpose({ refresh, video: videoElement, data: props.video, remove })
 </script>
 
@@ -121,10 +127,10 @@ defineExpose({ refresh, video: videoElement, data: props.video, remove })
           </div>
         </div>
         <div class="flex gap-1 md:gap-1.5">
-          <button v-if="video.type === 'showroom'" type="button" class="bg-blue-500 text-white h-6 w-6 md:w-7 md:h-7 flex justify-center items-center rounded-md text-sm" @click="refreshShowroomStreamURL()">
+          <button type="button" class="bg-blue-500 text-white h-6 w-6 md:w-7 md:h-7 flex justify-center items-center rounded-md text-sm" @click="rotate">
             <Icon name="ic:outline-sync" class="w-full h-full p-1" />
           </button>
-          <button type="button" class="bg-blue-500 text-white h-6 w-6 md:w-7 md:h-7 flex justify-center items-center rounded-md text-sm" @click="refresh()">
+          <button type="button" class="bg-blue-500 text-white h-6 w-6 md:w-7 md:h-7 flex justify-center items-center rounded-md text-sm" @click="refresh">
             <Icon name="material-symbols:refresh-rounded" class="w-full h-full p-1" />
           </button>
           <NuxtLink :to="video.original_url" target="_blank" :external="true" no-prefetch type="button" class="bg-blue-500 flex items-center h-6 w-6 md:w-7 md:h-7 justify-center  text-white rounded-md text-sm">

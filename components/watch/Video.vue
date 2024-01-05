@@ -534,7 +534,15 @@ function syncLive() {
   }
 }
 
-defineExpose({ stop, syncLive, isPlaying, isMuted, reload, togglePlay, isLandscape, changeSource, checkMute, volume, pause, play, mute, unmute, setVolume })
+const rotation = ref(0)
+function rotate() {
+  rotation.value += 90
+  if (rotation.value >= 360) {
+    rotation.value -= 360
+  }
+}
+
+defineExpose({ stop, rotate, syncLive, isPlaying, isMuted, reload, togglePlay, isLandscape, changeSource, checkMute, volume, pause, play, mute, unmute, setVolume })
 </script>
 
 <template>
@@ -546,6 +554,7 @@ defineExpose({ stop, syncLive, isPlaying, isMuted, reload, togglePlay, isLandsca
       ref="video"
       :controls="useDefaultControl"
       class="h-full w-full"
+      :style="{ rotate: `${rotation}deg` }"
       :poster="poster"
       @click="videoClick"
     >

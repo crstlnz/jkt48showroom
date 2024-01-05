@@ -118,14 +118,12 @@ onMounted(() => {
 
 <template>
   <div class="bg-container rounded-xl p-3 shadow-sm md:p-4 relative">
-    <div class="absolute right-3 top-3 md:top-3 md:right-4">
-      <NuxtImg :src="recent.type === 'showroom' ? $showroomIcon : $idnLiveIcon" size="64px" class="h-5 object-contain max-w-[90px]" />
-    </div>
     <div class="flex gap-3 md:gap-4">
       <div
         ref="thumbnail"
         class="group relative flex aspect-video h-20 items-center justify-center gap-0.5 overflow-hidden rounded-xl font-bold text-white drop-shadow-sm sm:h-24 md:h-28 lg:h-32 xl:h-36"
       >
+        <NuxtImg :src="recent.type === 'showroom' ? $showroomIcon : $idnLiveIcon" size="64px" class="h-3 md:h-4 xl:h-5 object-contain max-w-[90px] absolute z-10 left-2 bottom-1 md:bottom-1.5 xl:bottom-2 md:left-2.5 xl:left-3" />
         <div v-if="isHovered" :class="{ 'recentcardprogress': !finishLoading, 'progressfinish w-[100%]': showLoading && finishLoading }" class="absolute left-0 top-0 z-10 h-1 bg-blue-500/70" />
         <img v-if="ss" :src="ss" alt="Screenshot's">
         <NuxtImg

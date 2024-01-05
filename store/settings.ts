@@ -44,19 +44,28 @@ export const useSettings = defineStore('settings', () => {
     subDomain.value = getSubdomain(d) ?? ''
   }
 
+  const host = ref('')
+  const path = ref('')
   function getSubdomain(domain: string): string {
+    host.value = domain
     const parts = domain.split('.')
     return parts?.[0] || ''
   }
 
+  const { getTitle } = useAppConfig()
 
-  const {getTitle} = useAppConfig()
-
-  function getWebTitle(){
+  function getWebTitle() {
     return getTitle(group.value)
   }
 
-  return { domain, setDomain, getWebTitle, group, csrfToken, firstDate, session: skipHydrate(session), fetchFirstDate }
+  const currentURL = computed(() => host.value + path.value)
+
+  const route = useRoute()
+
+  watch(() => route.fullPath, (p) => {
+    path.value = p
+  })
+  return { domain, setDomain, currentURL, getWebTitle, group, csrfToken, firstDate, session: skipHydrate(session), fetchFirstDate }
 })
 
 if (import.meta.hot) {

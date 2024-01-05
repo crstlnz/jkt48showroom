@@ -2,7 +2,7 @@
 import { useSettings } from '~~/store/settings'
 
 const { group } = useSettings()
-const { data, pending, error } = await useApiFetch<IMemberBirthDay[]>('/api/birthday', { params: { group } })
+const { data, pending, error } = await useCachedFetch<IMemberBirthDay[]>('/api/birthday', { params: { group }, expireIn : 600000 })
 const sortedBirthdays = computed(() => {
   if (!data.value) return null
   return data.value.sort((a, b) => new Date(a.birthdate).getDate() - new Date(b.birthdate).getDate())

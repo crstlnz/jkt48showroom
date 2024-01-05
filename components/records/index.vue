@@ -2,7 +2,7 @@
 import { useSettings } from '~~/store/settings'
 
 const { group } = useSettings()
-const { data, pending, error } = await useApiFetch<ShowroomRecord[]>('/api/records', { params: { group } })
+const { data, pending, error } = await useCachedFetch<ShowroomRecord[]>('/api/records', { params: { group }, expireIn : 3600000 * 12})
 </script>
 
 <template>

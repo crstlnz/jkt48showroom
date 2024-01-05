@@ -2,11 +2,11 @@
 import { useSettings } from '~~/store/settings'
 
 const settings = useSettings()
-const { data: next, pending: isLoading } = await useApiFetch<INextLive[]>('/api/next_live', {
-  query: {
+const { data: next, pending: isLoading } = await useCachedFetch<INextLive[]>('/api/next_live', {
+  params: {
     group: settings.group,
   },
-  server: false,
+  expireIn: 3600000,
 })
 
 const mustLoading = ref(false)

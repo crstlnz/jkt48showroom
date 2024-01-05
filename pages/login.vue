@@ -119,7 +119,7 @@ async function signInHandler() {
     }
     else {
       errorData.value = {
-        error: 'An error occured!',
+        error: t('loginfailedinfo'),
       }
     }
   }

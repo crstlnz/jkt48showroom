@@ -28,6 +28,7 @@ const error = ref<Error | null>(null)
 
 async function refresh() {
   pending.value = true
+  error.value = null
   try {
     if (type.value === 'showroom') {
       const res = await $apiFetch<ShowroomAPI.UserProfile>(`/api/showroom/user/profile?user_id=${userId.value}`)

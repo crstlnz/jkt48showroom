@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { getSign } from 'horoscope'
 import { useNotifications } from '~/store/notifications'
+import { useSettings } from '~/store/settings'
 
 const route = useRoute()
 const { addNotif } = useNotifications()
 const { data, pending, error } = await useApiFetch<IMemberProfileAPI>(`/api/member/${route.params.id}`)
-const { status } = useAuth()
+const { status, user } = useAuth()
 const isFollow = ref(false)
 const profile = ref<IMiniRoomProfile | null>()
 
@@ -20,6 +21,27 @@ async function fetchProfile(room_id: string) {
     },
   })
   isFollow.value = profile.value.is_follow
+  // const data = await $fetch<ShowroomAPI.Profile>(`https://api.codetabs.com/v1/proxy/?quest=https://www.showroom-live.com/api/room/profile?room_id=${room_id}`, {
+  //   headers: {
+  //     Cookie: `sr_id=${user.value?.sr_id}`,
+  //   },
+  // })
+
+  // profile.value = {
+  //   follower: data.follower_num,
+  //   is_follow: data.is_follow,
+  //   visit_count: data.visit_count,
+  //   room_level: data.room_level,
+  // }
+
+  // isFollow.value = data.is_follow
+
+  // return {
+  //   follower: data.follower_num,
+  //   is_follow: data.is_follow,
+  //   visit_count: data.visit_count,
+  //   room_level: data.room_level,
+  // }
 }
 
 const { t } = useI18n()
@@ -75,7 +97,12 @@ const { greaterOrEqual } = useResponsive()
 const isXL = greaterOrEqual('xl')
 const { $fixCloudinary } = useNuxtApp()
 const { getGroup } = useAppConfig()
-const description = ref(member.value?.jikosokai || t('member_profile_description', { name: data.value?.nickname || data.value?.fullname || data.value?.name, group: data.value?.is_group ? undefined : getGroup(data.value?.group ?? '') }))
+const { group } = useSettings()
+const description = computed(() => {
+  if (data.value?.jikosokai) return data.value.jikosokai
+  const name = data.value?.nickname || data.value?.fullname || data.value?.name
+  return `Berikut profile lengkap dari ${name} ${getGroup(group)}`
+})
 useSeoMeta({
   ogTitle: () => `${data.value?.fullname || member.value?.name} Profile` || 'Member Profile',
   description,
@@ -114,7 +141,7 @@ useHead({
                 </div>
                 <div v-tooltip="authenticated ? $t('watch_count_info', { count: profile?.visit_count || 0 }) : undefined" class="flex justify-center items-center gap-1.5 text-base md:text-lg font-semibold">
                   <Icon name="material-symbols:auto-read-play" class="text-red-500" />
-                  <span v-if="authenticated"> {{ $n(profile?.visit_count || 0) }} {{ $t("times") }}</span>
+                  <span v-if="authenticated"> {{ $n(profile?.visit_count || 0) }} {{ profile?.visit_count ? $t("times") : '' }}</span>
                   <span v-else> {{ $t('pleaselogin') }}</span>
                 </div>
               </div>

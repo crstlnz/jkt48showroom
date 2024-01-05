@@ -190,10 +190,11 @@ room_level: Room level
 watch_count: Watch count
 watch_count_info: You have watched this member {count} times
 times: x
-pleaselogin: Please login
+pleaselogin: Login!
 loginwithshowroom: Login with Showroom
 selectvideofirst: Add the video from the bottom right!
 logininfo: 'Logging in will not store your data on this website. By logging in, you can access the commenting feature in showroom live, bookmarks, and various other information that utilizes your showroom account.'
+loginfailedinfo: 'If login failed, try to refresh this page!'
 watch_on: Watch on
 add: Add
 delete: Delete

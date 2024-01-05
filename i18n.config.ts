@@ -46,7 +46,8 @@ export default defineI18nConfig(() => ({
     'en-US': {
       currency: {
         style: 'currency',
-        currency: 'USD',
+        currency: 'IDR',
+        currencyDisplay: 'symbol',
       },
     },
     'ja-JP': {

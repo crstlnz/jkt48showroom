@@ -176,7 +176,7 @@ total_member: Jumlah member
 recent_theater: Theater terakhir
 upcoming_theater: Theater selanjutnya
 recent_detail_description: Lihat rekap gift dan fans ranking live Showroom {name} pada tanggal {date}
-member_profile_description: Profile lengkap {name} {group} dan semua rekap live showroom
+member_profile_description: Berikut profile lengkap dari {name} {group}
 reorder:
   failed: Gagal mengurutkan ke atas!
   success: '{name} diurutkan ke atas!'
@@ -187,13 +187,14 @@ follow:
   unfollow: 'Anda telah berhenti mengikuti {name}!'
 follower: Pengikut
 room_level: Room level
-watch_count: Menonton
+watch_count: Jumlah Nonton
 watch_count_info: Kamu telah menonton member ini sebanyak {count} kali
 times: kali
-pleaselogin: Please login
+pleaselogin: Login!
 loginwithshowroom: Login with Showroom
 selectvideofirst: Tambah videonya di kanan bawah!
 logininfo: 'Login tidak akan menyimpan data Anda pada web ini. Dengan login, anda dapat mengakses fitur komen pada showroom, markah, serta beberapa informasi yang menggunakan akun showroom.'
+loginfailedinfo: 'Jika login gagal, coba untuk merefresh halaman ini!'
 watch_on: Tonton di
 add: Tambah
 delete: Hapus

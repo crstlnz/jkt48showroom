@@ -91,6 +91,13 @@ const menus: MenuItem[] = [
     icon: 'material-symbols:shield-person-outline-rounded',
     activeIcon: 'material-symbols:shield-person-rounded',
   },
+  {
+    title: 'About',
+    url: '/about',
+    mobile: false,
+    icon: 'material-symbols:info-outline-rounded',
+    activeIcon: 'material-symbols:info-rounded',
+  },
 ]
 const colorMode = useColorMode()
 function toggleDark() {

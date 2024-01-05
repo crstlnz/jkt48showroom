@@ -1,13 +1,21 @@
 <script lang="ts" setup>
 import { useOnLives } from '~/store/onLives'
+import { useSettings } from '~/store/settings'
 
 const props = defineProps<{
   member: Database.IMemberBasicData
   roomId: number
+  shareUrl?: string
 }>()
 const { isLive: checkLive } = useOnLives()
 const isLive = computed(() => {
   return props.roomId ? checkLive(props.roomId || 0) : false
+})
+
+const { currentURL } = useSettings()
+const shareUrl = computed(() => {
+  if (props.shareUrl) return props.shareUrl
+  return currentURL
 })
 </script>
 
@@ -26,11 +34,32 @@ const isLive = computed(() => {
       :src="member.banner || $getDefaultBanner(member.group)"
     />
     <div class="flex flex-col gap-3 px-3 lg:px-4">
-      <div class="flex gap-2 md:gap-3 -mb-1.5 md:-mb-2">
-        <div class="-ml-1.5 md:-ml-2 bg-background relative mt-[-22px] h-[85px] w-[85px] sm:w-[100px] sm:h-[100px] shrink-0 rounded-full sm:mt-[-30px] md:mt-[-35px] 2xl:mt-[-56px] md:h-[120px] md:w-[120px] 2xl:h-[140px] 2xl:w-[140px]">
-          <ClientOnly>
-            <template #fallback>
-              <div class="relative m-1.5 block md:m-2">
+      <div class="flex -mb-1.5 md:-mb-2 flex-col">
+        <div class="flex gap-3 md:gap-4 justify-between">
+          <div class="-ml-1.5 md:-ml-2 bg-background relative mt-[-40px] h-[85px] w-[85px] sm:w-[100px] sm:h-[100px] shrink-0 rounded-full sm:mt-[-30px] md:mt-[-35px] 2xl:mt-[-56px] md:h-[120px] md:w-[120px] 2xl:h-[140px] 2xl:w-[140px]">
+            <ClientOnly>
+              <template #fallback>
+                <div class="relative m-1.5 block md:m-2">
+                  <NuxtImg
+                    class="aspect-square h-full w-full object-cover overflow-hidden rounded-full bg-container"
+                    :src="member.img_alt ?? member.img ?? $errorPicture"
+                    :alt="`${member.name} Profile Picture`"
+                    fit="fill"
+                    :modifiers="{
+                      aspectRatio: 1,
+                      gravity: 'faceCenter',
+                    }"
+                    sizes="90px sm:100px md:120px 2xl:140px"
+                    :placeholder="[10, 10, 75, 5]"
+                    format="webp"
+                  />
+                </div>
+              </template>
+              <NuxtLink :to="isLive ? `/watch/${member.url}` : `/member/${member.url}`" class="relative m-1.5 block md:m-2 rounded-full">
+                <div v-if="isLive" class="absolute bottom-[14.5%] right-[14.5%] z-10 h-[15%] w-[15%] translate-x-1/2 translate-y-1/2">
+                  <div class="absolute inset-0 z-10 rounded-full bg-red-500" />
+                  <div class="absolute inset-0 -z-10 animate-ping rounded-full bg-red-500" />
+                </div>
                 <NuxtImg
                   class="aspect-square h-full w-full object-cover overflow-hidden rounded-full bg-container"
                   :src="member.img_alt ?? member.img ?? $errorPicture"
@@ -44,38 +73,25 @@ const isLive = computed(() => {
                   :placeholder="[10, 10, 75, 5]"
                   format="webp"
                 />
-              </div>
-            </template>
-            <NuxtLink :to="isLive ? `/watch/${member.url}` : `/member/${member.url}`" class="relative m-1.5 block md:m-2 rounded-full">
-              <div v-if="isLive" class="absolute bottom-[14.5%] right-[14.5%] z-10 h-[15%] w-[15%] translate-x-1/2 translate-y-1/2">
-                <div class="absolute inset-0 z-10 rounded-full bg-red-500" />
-                <div class="absolute inset-0 -z-10 animate-ping rounded-full bg-red-500" />
-              </div>
-              <NuxtImg
-                class="aspect-square h-full w-full object-cover overflow-hidden rounded-full bg-container"
-                :src="member.img_alt ?? member.img ?? $errorPicture"
-                :alt="`${member.name} Profile Picture`"
-                fit="fill"
-                :modifiers="{
-                  aspectRatio: 1,
-                  gravity: 'faceCenter',
-                }"
-                sizes="90px sm:100px md:120px 2xl:140px"
-                :placeholder="[10, 10, 75, 5]"
-                format="webp"
-              />
-            </NuxtLink>
-          </ClientOnly>
-        </div>
-        <div class="flex min-w-0 self-start flex-1 items-start justify-end pt-2 md:pt-3 flex-col">
-          <div class="font-semibold flex gap-3 md:gap-4 self-stretch">
-            <div class="flex-1 text-xl sm:text-2xl md:text-3xl">
-              {{ (member.nickname || member.name)?.split("-")?.[0] }}
-            </div>
+              </NuxtLink>
+            </ClientOnly>
+          </div>
+          <div class="flex gap-3 items-center">
             <NuxtLink target="_blank" :to="$liveURL(member.url)" class="rounded-full bg-blue-500 px-2.5 h-6 leading-6 md:leading-9 md:h-9 md:px-4 text-xs sm:text-sm text-white self-center flex items-center">
               Showroom
             </NuxtLink>
+            <NuxtLink target="_blank" class="rounded-full bg-blue-500 gap-1 px-2.5 h-6 leading-6 md:leading-9 md:h-9 md:px-4 text-xs sm:text-sm text-white self-center flex items-center" :to="`https://twitter.com/intent/tweet?text=${shareUrl}`" data-size="large">
+              <Icon name="mdi:twitter" class="text-lg md:text-xl" />
+              <span>Share</span>
+            </NuxtLink>
             <AdminEditMemberButton :room-id="roomId" class="h-7 md:h-9" />
+          </div>
+        </div>
+        <div class="flex min-w-0 self-start flex-1 items-start justify-end flex-col mb-3">
+          <div class="font-semibold flex gap-3 md:gap-4 self-stretch">
+            <div class="flex-1 text-2xl md:text-3xl">
+              {{ (member.nickname || member.name)?.split("-")?.[0] }}
+            </div>
           </div>
           <div class="flex gap-2 text-xs md:text-sm">
             <div
