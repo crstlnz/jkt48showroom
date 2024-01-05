@@ -29,6 +29,8 @@ useHead({
   title: () => title.value,
 })
 
+useIDNComment(data)
+
 const videoIsLandscape = ref(true)
 const { isMobile } = useDevice()
 </script>

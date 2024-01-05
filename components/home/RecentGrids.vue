@@ -68,7 +68,7 @@ const { locale } = useI18n()
               <li>
                 <Icon name="bx:bxs-gift" class="self-center text-sm md:text-base" />
                 <div>
-                  {{ $n(recent.points) }}
+                  {{ parseGift(recent.points, { rate: recent.gift_rate }) }}
                 </div>
               </li>
               <li>

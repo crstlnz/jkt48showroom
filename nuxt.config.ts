@@ -1,5 +1,6 @@
 const isDev = process.env.NODE_ENV === 'development'
 console.log('API', process.env.API)
+console.log('API UTILS', process.env.API_UTILS)
 export default defineNuxtConfig({
   app: {
     rootId: 'app',
@@ -10,6 +11,7 @@ export default defineNuxtConfig({
     public: {
       isDev,
       api: process.env.API,
+      api_second: process.env.API_UTILS,
     },
   },
   watch: ['~/assets/css/tailwindcss.css'],

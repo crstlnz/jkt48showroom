@@ -148,9 +148,7 @@ onMounted(() => {
         <ul class="space-y-1 text-xs md:text-sm lg:text-base [&>li]:flex [&>li]:gap-2">
           <li class="flex items-center">
             <Icon name="bx:bxs-gift" class="h-4 p-[3px] w-auto rounded-full bg-amber-500 md:p-1 text-white lg:h-6" />
-            <div class="inline-block align-baseline">
-              {{ $currency(recent.points) }}
-            </div>
+            <ParserGift parse-type="gift" :rate="recent.gift_rate" :value="recent.points" class="inline-block align-baseline" />
           </li>
           <li v-if="recent.live_info?.viewers != null" class="flex items-center">
             <Icon :name="recent.live_info?.viewers?.is_excitement ? 'ic:round-star' : 'mingcute:user-2-fill'" class="h-4 p-[3px] w-auto rounded-full bg-blue-500 md:p-1 text-white lg:h-6" />

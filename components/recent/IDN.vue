@@ -122,7 +122,7 @@ const calculatedGift = computed<RecentUserGifts[]>(() => {
                 Gift
               </td>
               <td>
-                {{ $currency(data.total_gifts ?? 0) }}
+                {{ parseGift(data.total_gifts ?? 0, { rate: data.gift_rate, showOriginal: true }) }}
               </td>
             </tr>
             <tr>

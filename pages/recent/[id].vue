@@ -37,26 +37,14 @@ function setLike() {
       },
     }).then(() => {
       liked.value = !liked.value
-    }).catch((e) => {
+    }).catch(() => {
       addNotif({ message: 'Bookmark failed!', type: 'danger' })
     })
   }
 }
 
 const dayjs = useDayjs()
-const { locale, t, n } = useI18n()
-
-const dateStart = computed(() => {
-  return data.value?.live_info?.date?.start || data.value?.created_at || '0'
-})
-
-// const dateEnd = computed(() => {
-//   return data.value?.live_info?.date?.end || data.value?.created_at || '0'
-// })
-
-const date = computed(() => {
-  return dayjs(dateStart.value).locale(locale.value).format('DD MMMM YYYY')
-})
+const { n } = useI18n()
 
 const title = computed(() => {
   const t = (!pending.value && (data.value || !error.value)) ? `${data.value?.room_info?.fullname ?? data.value?.room_info?.nickname ?? data.value?.room_info?.name}` : getTitle(settings.group)

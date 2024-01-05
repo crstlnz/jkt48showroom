@@ -1,21 +1,26 @@
 <script lang="ts" setup>
-const props = defineProps<{
-  parseType: ParseType
-  value: string
-}>()
+const props = withDefaults(defineProps<{
+  parseType?: ParseType
+  rate?: number
+  showOriginal?: boolean
+  value: string | number
+}>(), {
+  showOriginal: false,
+})
 
-const num = ref<number>(parseInt())
-
-function parseInt() {
+const data = computed<string>(() => {
+  let number = 0
   try {
-    return Number.parseInt(props.value)
+    number = Number(props.value)
   }
   catch (e) {
-    return 0
+    console.error(e)
   }
-}
+
+  return parseGift(number, { rate: props.rate, showOriginal: props.showOriginal })
+})
 </script>
 
 <template>
-  <div>{{ $currency(num, 'sr') }}</div>
+  <div>{{ data }}</div>
 </template>
