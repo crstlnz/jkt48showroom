@@ -16,7 +16,7 @@ export default defineNuxtConfig({
   },
   watch: ['~/assets/css/tailwindcss.css'],
   modules: [
-    '@nuxtjs/partytown',
+    // '@nuxtjs/partytown',
     '@nuxtjs/fontaine',
     'floating-vue/nuxt',
     'nuxt-security',

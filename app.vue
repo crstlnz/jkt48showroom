@@ -25,9 +25,9 @@ useHead({
   },
   script: [
     {
+      async: true,
       src: 'https://www.googletagmanager.com/gtag/js?id=G-C92JVM8CR4',
-      type: 'text/partytown',
-
+      // type: 'text/partytown',
     },
     {
       children: `
