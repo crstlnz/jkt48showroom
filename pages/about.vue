@@ -19,7 +19,7 @@
       </p>
       <p class="text-justify indent-8">
         Website ini dikembangkan oleh
-        <NuxtLink to="https://x.com/crstlnz">
+        <NuxtLink v-social-click="'twitter'" to="https://x.com/crstlnz" target="_blank">
           <b>@crstlnz</b>
         </NuxtLink> dan dikarenakan website ini menggunakan hosting yang seadanya, maka dari itu mohon maaf jika terkadang website lambat atau down 🙏😭.
         Jika kalian ingin mendukung project ini untuk membantu biaya server, kalian bisa donasi melalui link saweria di

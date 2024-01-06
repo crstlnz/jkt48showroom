@@ -16,15 +16,13 @@ watch(likeData, (val) => {
 const { status, user } = useAuth()
 const { addNotif } = useNotifications()
 
-const { createEvent } = useGtagCustom()
-
 function setLike() {
   if (status.value === 'unauthenticated') {
     navigateTo('/login')
   }
   else {
     if (!data.value) return
-    createEvent('bookmark', {
+    createGtagEvent('bookmark', {
       set: !liked.value,
     })
 
@@ -84,7 +82,7 @@ const isXL = greaterOrEqual('xl')
       <Icon name="eos-icons:loading" size="3rem" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 " />
     </div>
     <Error v-else-if="error || !data" :message="error ? (error.statusCode === 404 ? $t('error.pagenotfound') : $t('error.unknown')) : $t('error.pagenotfound')" :img-src="!data || error?.statusCode === 404 ? '/svg/404.svg' : '/svg/error.svg'" />
-    <LayoutRow v-else :title="title" :sub-title="`${data.type === 'idn' ? 'IDN' : 'Showroom'} Live - ${$dayjs(data.live_info.date.start).format('DD MMMM YYYY')}`">
+    <LayoutRow v-else :title="title" :sub-title="`${data.type === 'idn' ? 'IDN' : 'Showroom'} Live - ${$dayjs(data.live_info?.date?.start).format('DD MMMM YYYY')}`">
       <template #default>
         <RecentShowroom v-if="data.type === 'showroom'" :data="data" />
         <RecentIDN v-else-if="data.type === 'idn'" :data="data" />

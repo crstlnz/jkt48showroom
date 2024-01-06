@@ -1,20 +1,19 @@
 import { useIDNLives } from '~/store/idnLives'
 import { useSettings } from '~/store/settings'
+import { createGtagEvent } from '~/utils/gtag'
 import { useOnLives } from '~~/store/onLives'
 
 export default defineNuxtPlugin(({ hook }) => {
   const route = useRoute()
-
-  const { createEvent } = useGtagCustom()
   const { refresh: refreshCSRF } = useCSRF()
   const { authenticated } = useAuth()
   const { fetchFirstDate, group } = useSettings()
   watch(() => route.fullPath, (path) => {
-    createEvent('path_view', {
+    createGtagEvent('path_view', {
       path,
       authenticated: authenticated.value,
     })
-  }, { immediate: true })
+  })
 
   const onLives = useOnLives()
   const idnLives = useIDNLives()
@@ -30,7 +29,7 @@ export default defineNuxtPlugin(({ hook }) => {
       idnLives.tryRefresh()
     }
     fetchFirstDate()
-  }, 10000, { immediate: true })
+  }, 15000, { immediate: true })
 
   onUnfocus(() => {
     stopTimeout()

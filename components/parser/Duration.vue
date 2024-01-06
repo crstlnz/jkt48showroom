@@ -37,6 +37,9 @@ const date = computed(() => {
     if (hour && props.hour) str.push(`${hour || ''} ${t('hour', hour)}`)
     if (minute && props.minute) str.push(`${minute || ''} ${t('minute', minute)}`)
     if (second && props.second) str.push(`${second || ''} ${t('second', second)}`)
+    if (!str.length && !props.second) {
+      str.push(`${second || '0'} ${t('second', second)}`)
+    }
     return str.join(' ')
   }
   catch (e) {

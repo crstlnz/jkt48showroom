@@ -16,11 +16,11 @@ export default defineNuxtConfig({
   },
   watch: ['~/assets/css/tailwindcss.css'],
   modules: [
+    '@nuxtjs/partytown',
     '@nuxtjs/fontaine',
     'floating-vue/nuxt',
     'nuxt-security',
     'dayjs-nuxt',
-    'nuxt-gtag',
     '@nuxtjs/device',
     'nuxt-icon',
     '@nuxtjs/tailwindcss',
@@ -63,12 +63,12 @@ export default defineNuxtConfig({
     defaultLocale: 'en',
     defaultTimezone: 'Asia/Jakarta',
   },
-  gtag: {
-    id: 'G-C92JVM8CR4',
-    config: {
-      isDev,
-    },
-  },
+  // gtag: {
+  //   id: 'G-C92JVM8CR4',
+  //   config: {
+  //     isDev,
+  //   },
+  // },
   css: ['~/assets/css/style.scss', '~/assets/css/transition.scss'],
   colorMode: {
     preference: 'dark',

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const route = useRoute()
-const { data, pending, error, refresh: refreshWatchData } = await useApiFetch<IDNLives>(`/api/watch/${route.params.id}/idn`)
+const { data, pending, error } = await useApiFetch<IDNLives>(`/api/watch/${route.params.id}/idn`)
 const title = computed(() => {
   const name = data.value?.user?.name
   return name ? `${name} - IDN Live` : ''
@@ -63,16 +63,66 @@ const { isMobile } = useDevice()
               }"
             />
           </Suspense>
-          <div class="flex justify-end pr-3 md:pr-0">
-            <NuxtLink target="_blank" :to="$idnLiveUrl(data?.user?.username || '', data?.slug || '')" class="mb-3 text-sm bg-red-500 self-end h-7 flex items-center text-white px-3 py-1 rounded-md">
-              {{ $t('watch_on') }} IDN
-            </NuxtLink>
+          <div id="comment-section" class="bottom-0 inset-x-0 absolute bg-blue-500/50 p-3 text-sm max-h-[180px] overflow-y-auto overscroll-contain">
+            <div>
+              Comment section
+            </div>
+            <div>
+              Comment section
+            </div>
+            <div>
+              Comment section
+            </div>
+            <div>
+              Comment section
+            </div>
+            <div>
+              Comment section
+            </div>
+            <div>
+              Comment section
+            </div>
+            <div>
+              Comment section
+            </div>
+            <div>
+              Comment section
+            </div>
+            <div>
+              Comment section
+            </div>
+            <div>
+              Comment section
+            </div>
+            <div>
+              Comment section
+            </div>
           </div>
         </div>
       </ClientOnly>
+      <div class="flex justify-end pr-3 md:pr-0 w-full">
+        <NuxtLink target="_blank" :to="$idnLiveUrl(data?.user?.username || '', data?.slug || '')" class="mb-3 text-sm bg-red-500 self-end h-7 mt-3 flex items-center text-white px-3 py-1 rounded-md">
+          {{ $t('watch_on') }} IDN
+        </NuxtLink>
+      </div>
     </div>
     <div v-else>
       <Error :message="error.statusMessage || ''" :img-src="error.statusCode === 404 ? `${$cloudinaryURL}/assets/svg/web/404.svg` : `${$cloudinaryURL}/assets/svg/web/error.svg`" />
     </div>
   </div>
 </template>
+
+<style lang="scss">
+#comment-section {
+  --mask: linear-gradient(to top,
+      rgba(0,0,0, 1) 0,   rgba(0,0,0, 1) 70%,
+      rgba(0,0,0, 0) 100%
+  ) 100% 50% / 100% 100% repeat-x;
+  -webkit-mask: var(--mask);
+  mask: var(--mask);
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+</style>

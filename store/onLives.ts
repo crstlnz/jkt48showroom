@@ -5,7 +5,7 @@ import JSONSerializer from '~~/library/serializer/json'
 export const useOnLives = defineStore('onLives', () => {
   const { data: lives, pending, error, refresh, tryRefresh } = useLocalStoreController<IRoomLive[] | null>('onlives', {
     fetch: getShowroomLives,
-    expiredIn: 10000,
+    expiredIn: 12000,
     serializer: new JSONSerializer<IRoomLive[] | null>(null),
   })
 
