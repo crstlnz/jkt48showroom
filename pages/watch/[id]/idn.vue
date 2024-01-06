@@ -29,7 +29,7 @@ useHead({
   title: () => title.value,
 })
 
-useIDNComment(data)
+// useIDNComment(data)
 
 const videoIsLandscape = ref(true)
 const { isMobile } = useDevice()
@@ -63,7 +63,7 @@ const { isMobile } = useDevice()
               }"
             />
           </Suspense>
-          <div id="comment-section" class="bottom-0 inset-x-0 absolute bg-blue-500/50 p-3 text-sm max-h-[180px] overflow-y-auto overscroll-contain">
+          <!-- <div id="comment-section" class="bottom-0 inset-x-0 absolute bg-blue-500/50 p-3 text-sm max-h-[180px] overflow-y-auto overscroll-contain">
             <div>
               Comment section
             </div>
@@ -97,14 +97,14 @@ const { isMobile } = useDevice()
             <div>
               Comment section
             </div>
+          </div> -->
+          <div class="flex justify-end pr-3 md:pr-0 w-full">
+            <NuxtLink target="_blank" :to="$idnLiveUrl(data?.user?.username || '', data?.slug || '')" class="mb-3 text-sm bg-red-500 self-end h-7 flex items-center text-white px-3 py-1 rounded-md">
+              {{ $t('watch_on') }} IDN
+            </NuxtLink>
           </div>
         </div>
       </ClientOnly>
-      <div class="flex justify-end pr-3 md:pr-0 w-full">
-        <NuxtLink target="_blank" :to="$idnLiveUrl(data?.user?.username || '', data?.slug || '')" class="mb-3 text-sm bg-red-500 self-end h-7 mt-3 flex items-center text-white px-3 py-1 rounded-md">
-          {{ $t('watch_on') }} IDN
-        </NuxtLink>
-      </div>
     </div>
     <div v-else>
       <Error :message="error.statusMessage || ''" :img-src="error.statusCode === 404 ? `${$cloudinaryURL}/assets/svg/web/404.svg` : `${$cloudinaryURL}/assets/svg/web/error.svg`" />
