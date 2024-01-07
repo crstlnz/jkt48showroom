@@ -2,9 +2,6 @@
   "name": "jkt48showroom",
   "type": "module",
   "version": "0.10.8",
-  "engines": {
-    "node": "20.x.x"
-  },
   "scripts": {
     "start": "node .output/server/index.mjs",
     "build": "nuxt build",
@@ -43,10 +40,6 @@
     "@nuxtjs/partytown": "^1.4.0",
     "@nuxtjs/tailwindcss": "^6.8.0",
     "@pinia/nuxt": "^0.5.1",
-    "@types/cookie": "^0.6.0",
-    "@types/node": "20.8.7",
-    "@types/node-cron": "^3.0.10",
-    "@types/node-fetch": "^2.6.7",
     "@vuepic/vue-datepicker": "^7.4.0",
     "@vueuse/components": "^10.7.0",
     "@vueuse/core": "^10.7.0",
