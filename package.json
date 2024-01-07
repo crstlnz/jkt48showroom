@@ -64,5 +64,8 @@
     "typescript": "^5.3.3",
     "v-wave": "^2.0.0",
     "vue-virtual-scroll-grid": "^1.11.0"
+  },
+  "overrides": {
+    "vue": "latest"
   }
 }
