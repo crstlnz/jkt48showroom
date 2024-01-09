@@ -53,7 +53,7 @@ const { $fixCloudinary } = useNuxtApp()
 const name = computed(() => data.value?.room_info.nickname || data.value?.room_info.fullname || data.value?.room_info?.name)
 const description = computed(() => {
   // return t('recent_detail_description', { name: data.value?.room_info.nickname || data.value?.room_info.fullname || data.value?.room_info?.name, date: date.value })
-  return `${name.value} mendapatkan gift sebanyak ± Rp ${n((data.value?.total_gifts || 0) * (data.value?.gift_rate || 0), 'currency', 'id-ID')} pada live ini!`
+  return `${name.value} mendapatkan gift sebanyak ± ${n((data.value?.total_gifts || 0) * (data.value?.gift_rate || 0), 'currency', 'id-ID')} pada live ini!`
 })
 
 const titleSeo = computed(() => `${data.value?.type === 'showroom' ? 'Live Showroom' : 'Live IDN'} ${title.value} - ${dayjs(data.value?.live_info?.date?.start || data.value?.created_at).format('DD MMM YYYY')}`)
