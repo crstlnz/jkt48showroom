@@ -38,7 +38,7 @@ export const useIDNLives = defineStore('useIDNLives', () => {
   async function getIDNLives(): Promise<IDNLives[]> {
     if (!members.value) members.value = await getMembers().catch(_ => [])
     const idnUsernames: string[] = members.value?.filter(i => i.idn_username).map(i => i.idn_username) as string[] || []
-    if (idnUsernames?.length !== 41) {
+    if (idnUsernames?.length) {
       return await $apiFetch<IDNLives[]>(`/api/idn_lives`).catch((_) => {
         addNotif({
           type: 'danger',
@@ -82,6 +82,8 @@ export const useIDNLives = defineStore('useIDNLives', () => {
       }
     })
 
+    const additionalUsername = ['jkt48-official']
+    idnUsernames.push(...additionalUsername)
     const config = useRuntimeConfig()
     const filtered = data.filter(i => idnUsernames.includes(i.user.username))
     if (config.public.isDev && !filtered.length) {
