@@ -65,6 +65,7 @@ useSeoMeta({
   ogDescription: description,
   twitterDescription: description,
   twitterTitle: () => titleSeo.value,
+  twitterSite: '@crstlnz',
   twitterImage: () => $fixCloudinary(data.value?.room_info?.img_alt || data.value?.room_info?.img || ''),
   twitterCard: 'summary',
 })

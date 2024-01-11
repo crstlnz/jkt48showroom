@@ -5,6 +5,7 @@ import { useSelectedUser } from '~/store/selectedUser'
 
 const props = defineProps<{
   gifts: RecentUserGifts[]
+  giftRate: number
   pageMode?: boolean
   dataId: string
   giftList: LogDetail.IDNGift[] | LogDetail.ShowroomGift[]
@@ -199,7 +200,7 @@ watch(search, () => {
             </div>
           </div>
           <div class="text-right text-base font-semibold">
-            {{ $currency(item.total) }}
+            <ParserGift :rate="giftRate" :show-original="true" :value="item.total" />
           </div>
         </div>
       </DynamicScrollerItem>

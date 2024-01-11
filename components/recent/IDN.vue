@@ -164,7 +164,7 @@ const calculatedGift = computed<RecentUserGifts[]>(() => {
     <!-- <HomeFans v-if="data.fans?.length" :data="data.fans" class="rounded-xl mx-3 md:mx-4" /> -->
 
     <div class="mx-3 md:mx-4 overflow-hidden rounded-xl bg-white shadow-sm dark:bg-dark-1">
-      <LiveGiftScroll :gifts="calculatedGift" :page-mode="true" :data-id="data.data_id" :has-next-page="data.live_info?.gift?.next_page" :gift-list="data?.live_info?.gift?.list ?? []" type="idn" />
+      <LiveGiftScroll :gift-rate="data.gift_rate || 2500" :gifts="calculatedGift" :page-mode="true" :data-id="data.data_id" :has-next-page="data.live_info?.gift?.next_page" :gift-list="data?.live_info?.gift?.list ?? []" type="idn" />
     </div>
   </div>
 </template>

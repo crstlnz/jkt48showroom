@@ -5,10 +5,10 @@ const props = defineProps<{
   members: ISortMember[]
 }>()
 
-defineEmits<{ (e: 'filtered', members: ISortMember[], filterList: string[]): void }>()
-
+const emit = defineEmits<{ (e: 'filtered', members: ISortMember[], filterList: string[]): void }>()
+console.log(props.members.length)
 const filteredMembers = useSessionStorage<ISortMember[]>('sorter-members', [])
-const filterList = useSessionStorage<string[]>('sorter-filterlist', [])
+const filterList = useSessionStorage<string[]>('sorter-filterlist', [], { deep: true, listenToStorageChanges: true })
 
 const { group } = useSettings()
 const generation = generateGen()[group as 'jkt48' | 'hinatazaka46']
@@ -92,6 +92,11 @@ function getFilterList(): string[] {
 const validStart = computed(() => {
   return filteredMembers.value.length >= 2
 })
+
+function updateFilter() {
+  filterList.value = getFilterList()
+  emit('filtered', filteredMembers.value, getFilterList())
+}
 </script>
 
 <template>
@@ -163,10 +168,7 @@ const validStart = computed(() => {
         label: 'oshi_sorter',
         category: 'game',
       }"
-      class="mt-3 rounded-full bg-red-500 p-2.5 text-lg font-bold text-white/90" @click="() => {
-        filterList = getFilterList()
-        $emit('filtered', filteredMembers, getFilterList())
-      }"
+      class="mt-3 rounded-full bg-red-500 p-2.5 text-lg font-bold text-white/90" @click="updateFilter"
     >
       Start
     </Button>

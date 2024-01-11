@@ -3,8 +3,8 @@ defineProps<{
   members: ISortMember[]
 }>()
 
-const filterList = useSessionStorage<string[]>('sorter-filterlist', [])
-const { start, state, stop, GameState, setSelectedMember,cardOne, cardTwo, pick, undo, progress } = useMemberSorter()
+const filterList = useSessionStorage<string[]>('sorter-filterlist', [], { deep: true, listenToStorageChanges: true })
+const { start, state, stop, GameState, setSelectedMember, cardOne, cardTwo, pick, undo, progress } = useMemberSorter()
 watch(state, (val) => {
   if (val === GameState.FINISHED) navigateTo('/sorter/result')
 })
@@ -31,6 +31,7 @@ watch(state, (val) => {
           key="filter"
           class="mt-8"
           :members="members" @filtered="(members, filterLista) => {
+            filterList = filterLista
             setSelectedMember(members)
             start()
           }"

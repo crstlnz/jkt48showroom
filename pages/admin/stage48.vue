@@ -155,7 +155,7 @@ function toggleGen(key: string) {
                           format="webp"
                           :alt="item.room_name"
                           class="w-full h-full flex-1 object-cover rounded-xl"
-                          :src="item.member_data?.img || item.img"
+                          :src="item.member_data?.img || item.img || $errorPicture"
                         />
                       </NuxtLink>
                       <div class="flex flex-1 flex-col">

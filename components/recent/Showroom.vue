@@ -101,7 +101,7 @@ const calculatedGift = computed<RecentUserGifts[]>(() => {
                 Gift
               </td>
               <td>
-                {{ $currency(data.total_gifts ?? 0) }}
+                <ParserGift :value="data.total_gifts ?? 0" :rate="data.gift_rate" :show-original="true" />
               </td>
             </tr>
             <tr>
@@ -174,7 +174,7 @@ const calculatedGift = computed<RecentUserGifts[]>(() => {
       </div>
     </div>
     <div class="mx-3 md:mx-4 overflow-hidden rounded-xl bg-white shadow-sm dark:bg-dark-1">
-      <LiveGiftScroll type="showroom" :gifts="calculatedGift" :page-mode="true" :data-id="data.data_id" :has-next-page="data.live_info?.gift?.next_page" :gift-list="data?.live_info?.gift?.list ?? []" />
+      <LiveGiftScroll :gift-rate="data.gift_rate || 107.1" type="showroom" :gifts="calculatedGift" :page-mode="true" :data-id="data.data_id" :has-next-page="data.live_info?.gift?.next_page" :gift-list="data?.live_info?.gift?.list ?? []" />
     </div>
   </div>
 </template>
