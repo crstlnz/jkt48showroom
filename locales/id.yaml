@@ -206,3 +206,14 @@ multi:
   hidevideocontrol: Sembunyikan kontrol video
   showvideocontrol: Tampilkan kontrol video
 seitansai_text: Show ini merupakan seitansai
+menu:
+  home: Home
+  multi_viewer: Multi Viewer
+  recent: Recent
+  news: Berita
+  member: Member
+  bookmark: Markah
+  oshi_sorter: Oshi Sorter
+  admin: Admin
+  report_bugs: Lapor Bug
+  about: Tentang

@@ -84,7 +84,7 @@ const hiddenUsername = useCookie('_h_usrnme', {
                 <Icon :name="route.path !== menu.url ? menu.icon : menu.activeIcon" class="h-full w-full" />
               </div>
               <div class="shrink-0 text-xs">
-                {{ menu.title }}
+                {{ $t(menu.locale_id) }}
               </div>
             </div>
           </NuxtLink>
@@ -157,7 +157,7 @@ const hiddenUsername = useCookie('_h_usrnme', {
               <div class="flex items-center justify-start gap-3 rounded-full py-1.5 px-3" :class="{ 'bg-hover': route.path === menu.url }">
                 <SwitchIcon :is-switch="route.path === menu.url" :icon="menu.icon" :switch-icon="menu.activeIcon" class="h-5 w-5" />
                 <div class="text-lg font-bold">
-                  {{ menu.title }}
+                  {{ $t(menu.locale_id) }}
                 </div>
               </div>
             </NuxtLink>

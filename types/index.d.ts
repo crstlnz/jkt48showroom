@@ -316,6 +316,7 @@ interface LoadingDialog extends Dialog {
 
 interface MenuItem {
   title: string
+  locale_id: string
   url: string
   mobile: boolean
   login?: boolean

@@ -17,6 +17,7 @@ useHead({
 const menus: MenuItem[] = [
   {
     title: 'Home',
+    locale_id: 'menu.home',
     url: '/',
     mobile: true,
     icon: 'mingcute:home-5-line',
@@ -24,6 +25,7 @@ const menus: MenuItem[] = [
   },
   {
     title: 'Multi Viewer',
+    locale_id: 'menu.multi_viewer',
     url: '/multi',
     mobile: false,
     icon: 'iconamoon:player-play-bold',
@@ -32,6 +34,7 @@ const menus: MenuItem[] = [
   {
     title: 'Recent',
     url: '/recent',
+    locale_id: 'menu.recent',
     mobile: true,
     icon: 'fluent:history-16-regular',
     activeIcon: 'fluent:history-16-filled',
@@ -39,6 +42,7 @@ const menus: MenuItem[] = [
   {
     title: 'News',
     url: '/news',
+    locale_id: 'menu.news',
     group: 'jkt48',
     mobile: false,
     icon: 'fluent:news-20-regular',
@@ -55,20 +59,22 @@ const menus: MenuItem[] = [
   {
     title: 'Member',
     url: '/member',
+    locale_id: 'menu.member',
     mobile: true,
     icon: 'heroicons:user-group',
     activeIcon: 'heroicons:user-group-solid',
   },
-  {
-    title: 'Follow',
-    url: '/user/follow',
-    login: true,
-    mobile: false,
-    icon: 'ic:round-favorite-border',
-    activeIcon: 'ic:round-favorite',
-  },
+  // {
+  //   title: 'Follow',
+  //   url: '/user/follow',
+  //   login: true,
+  //   mobile: false,
+  //   icon: 'ic:round-favorite-border',
+  //   activeIcon: 'ic:round-favorite',
+  // },
   {
     title: 'Bookmark',
+    locale_id: 'menu.bookmark',
     url: '/user/bookmark',
     login: true,
     mobile: true,
@@ -77,6 +83,7 @@ const menus: MenuItem[] = [
   },
   {
     title: 'Oshi Sorter',
+    locale_id: 'menu.oshi_sorter',
     url: '/sorter',
     mobile: false,
     icon: 'solar:square-sort-vertical-linear',
@@ -85,6 +92,7 @@ const menus: MenuItem[] = [
   {
     title: 'Admin',
     url: '/admin',
+    locale_id: 'menu.admin',
     login: true,
     mobile: false,
     admin: true,
@@ -92,8 +100,17 @@ const menus: MenuItem[] = [
     activeIcon: 'material-symbols:shield-person-rounded',
   },
   {
+    title: 'Lapor Bug',
+    url: '/feedback',
+    locale_id: 'menu.report_bugs',
+    mobile: false,
+    icon: 'fluent:person-feedback-16-regular',
+    activeIcon: 'fluent:person-feedback-16-filled',
+  },
+  {
     title: 'About',
     url: '/about',
+    locale_id: 'menu.about',
     mobile: false,
     icon: 'material-symbols:info-outline-rounded',
     activeIcon: 'material-symbols:info-rounded',

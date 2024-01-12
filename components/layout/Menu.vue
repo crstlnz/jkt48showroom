@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-defineProps<{ icon: string, activeIcon: string, title: string, url: string, activeClass?: string, active: boolean }>()
+defineProps<{ icon: string, activeIcon: string, title: string, url: string, activeClass?: string, active: boolean, localeId: string }>()
 </script>
 
 <template>
@@ -9,7 +9,7 @@ defineProps<{ icon: string, activeIcon: string, title: string, url: string, acti
         <SwitchIcon :is-switch="active" :icon="icon" :switch-icon="activeIcon" size="28px" class="h-full w-full" />
       </div>
       <div class="ml-5 mr-4 text-xl leading-7 max-2xl:hidden" :class="{ 'font-black': active }">
-        {{ title }}
+        {{ $t(localeId) }}
       </div>
     </div>
   </NuxtLink>

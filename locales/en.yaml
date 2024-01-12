@@ -206,3 +206,14 @@ multi:
   hidevideocontrol: Hide video control
   showvideocontrol: Show video control
 seitansai_text: This show is seitansai for
+menu:
+  home: Home
+  multi_viewer: Multi Viewer
+  recent: Recent
+  news: News
+  member: Member
+  bookmark: Bookmark
+  oshi_sorter: Oshi Sorter
+  admin: Admin
+  report_bugs: Report Bugs
+  about: About

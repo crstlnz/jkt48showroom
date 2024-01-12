@@ -33,6 +33,7 @@ const isXL = greaterOrEqual('2xl')
           v-tooltip="!isXL ? m.title : undefined"
           class="block"
           :title="m.title"
+          :locale-id="m.locale_id"
           :icon="m.icon"
           :active-icon="m.activeIcon"
           :active="route.path === m.url"

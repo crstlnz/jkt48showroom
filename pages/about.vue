@@ -1,5 +1,5 @@
 <template>
-  <LayoutSingleRow title="About">
+  <LayoutSingleRow :title="$t('menu.about')">
     <div class="mx-3 md:mx-4 p space-y-5 md:space-y-8 max-w-2xl [&_b]:text-red-500 text-sm md:text-base">
       <p class="text-justify indent-8">
         Project website ini dibuat untuk memudahkan fans JKT48 dalam menonton live Showroom dan IDN Live (IDN susah bet bukanya 😭).
