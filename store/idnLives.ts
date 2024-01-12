@@ -4,7 +4,7 @@ import JSONSerializer from '~~/library/serializer/json'
 export const useIDNLives = defineStore('useIDNLives', () => {
   const { data: lives, pending, error, refresh, tryRefresh } = useLocalStoreController<IDNLives[] | null>('idnLivess', {
     fetch: getIDNLives,
-    expiredIn: 12000,
+    expiredIn: 6000,
     serializer: new JSONSerializer<IDNLives[] | null>(null),
   })
 

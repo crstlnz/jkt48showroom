@@ -46,7 +46,6 @@ export function useAuth() {
     if (authenticated.value) return
     const cookie = document.cookie
     if (!cookie.includes('_st=')) return
-    console.log('CHECKING AUTH ON CLIENT')
     pending.value = true
     error.value = null
     try {
