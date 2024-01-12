@@ -21,7 +21,7 @@ topfans: Top fans
 nextlive: Next live
 showonshowroom: Show on Showroom
 openshowroom: Open Showroom
-streamoffline: Stream is offline
+streamoffline: Room is offline
 view: View
 viewlive: View Live
 viewer: Viewer | Viewers
@@ -202,4 +202,7 @@ media_controls: Media Controls
 no_video_player: No video attached.
 multi:
   auto_remove: Auto remove player when stream is offline
+  center: Align video to center
+  hidevideocontrol: Hide video control
+  showvideocontrol: Show video control
 seitansai_text: This show is seitansai for

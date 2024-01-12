@@ -43,6 +43,10 @@ export function useAuth() {
 
   async function checkAuthOnClient() {
     if (process.server) return
+    if (authenticated.value) return
+    const cookie = document.cookie
+    if (!cookie.includes('_st=')) return
+    console.log('CHECKING AUTH ON CLIENT')
     pending.value = true
     error.value = null
     try {

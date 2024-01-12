@@ -92,8 +92,8 @@ const calculatedGift = computed<RecentUserGifts[]>(() => {
           />
         </div>
         <div class="flex-1">
-          <RecentIDNScreenshots v-if="data.live_info.screenshot" class="" :screenshots="data.live_info.screenshot" />
-          <div v-else>
+          <RecentIDNScreenshots v-if="data.live_info.screenshot?.list?.length" class="" :screenshots="data.live_info.screenshot" />
+          <div v-else class="w-full h-full flex justify-center items-center bg-container rounded-xl p-3 md:p-4 aspect-video">
             Tidak ada screenshot
           </div>
         </div>

@@ -60,4 +60,7 @@ export default defineNuxtPlugin(({ hook }) => {
       idnLives.tryRefresh()
     }
   })
+
+  const { checkAuth } = useAuth()
+  checkAuth()
 })

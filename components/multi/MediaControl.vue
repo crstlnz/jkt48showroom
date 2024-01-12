@@ -73,6 +73,8 @@ function syncLive() {
 }
 
 const autoRemove = useLocalStorage('auto_remove_player', () => true)
+const centerVideos = useLocalStorage('center_videos', () => false)
+const showVideoControl = useLocalStorage('show_video_control', () => true)
 
 function onVolumeChange(vol: number | undefined) {
   console.log(vol)
@@ -185,7 +187,15 @@ onMounted(() => {
                   </div>
                 </div>
               </div>
-              <button type="button" class="flex items-center gap-2.5 text-xs text-left md:text-sm opacity-80 font-light mt-3" @click="autoRemove = !autoRemove">
+              <button type="button" class="flex items-center gap-2.5 text-xs text-left md:text-sm opacity-80 font-light mt-3" @click="centerVideos = !centerVideos">
+                <input v-model="centerVideos" type="checkbox" class="cursor-pointer">
+                <div>{{ $t("multi.center") }}</div>
+              </button>
+              <button type="button" class="flex items-center gap-2.5 text-xs text-left md:text-sm opacity-80 font-light mt-2" @click="showVideoControl = !showVideoControl">
+                <input v-model="showVideoControl" type="checkbox" class="cursor-pointer">
+                <div>{{ $t("multi.showvideocontrol") }}</div>
+              </button>
+              <button type="button" class="flex items-center gap-2.5 text-xs text-left md:text-sm opacity-80 font-light mt-1" @click="autoRemove = !autoRemove">
                 <input v-model="autoRemove" type="checkbox" class="cursor-pointer">
                 <div>{{ $t("multi.auto_remove") }}</div>
               </button>

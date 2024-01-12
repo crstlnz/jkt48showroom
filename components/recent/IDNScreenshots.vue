@@ -46,7 +46,7 @@ onBeforeUnmount(() => {
     <div v-if="screenshots.length > 3" class="blaze-container">
       <div class="blaze-track-container rounded-md overflow-hidden">
         <div class="blaze-track">
-          <img v-for="ss in screenshots" :key="ss" :src="ss" class="h-80 bg-container rounded-md object-cover aspect-[5/6.5]">
+          <img v-for="ss in screenshots" :key="ss" :src="ss" class="max-md:w-full md:h-80 bg-container rounded-md object-cover aspect-[5/6.5]">
         </div>
       </div>
 
@@ -58,8 +58,8 @@ onBeforeUnmount(() => {
         <Icon name="material-symbols:arrow-right" class="w-full h-full" />
       </button>
     </div>
-    <div v-else class="h-80 grid grid-cols-3 gap-3 md:gap-4">
-      <img v-for="ss in screenshots" :key="ss" :src="ss" class="h-80 bg-container rounded-md object-cover aspect-[5/6.5]">
+    <div v-else class="md:h-80 grid grid-cols-3 gap-3 md:gap-4">
+      <img v-for="ss in screenshots" :key="ss" :src="ss" class="md:h-80 bg-container rounded-md object-cover aspect-[5/6.5]">
     </div>
   </div>
 </template>

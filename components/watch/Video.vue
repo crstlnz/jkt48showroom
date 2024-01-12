@@ -9,15 +9,23 @@ const props = withDefaults(
     landscape?: boolean
     useShortcut?: boolean
     useDefaultControl?: boolean
+    hideControl?: boolean
     maxBufferSize?: number
     maxMaxBufferLength?: number
     saveState?: boolean
+    rotateFill?: 'width' | 'height'
+    videoFill?: 'width' | 'height'
+    compact?: boolean
   }>(),
   {
     landscape: true,
     useShortcut: true,
     useDefaultControl: false,
+    hideControl: false,
     saveState: true,
+    rotateFill: 'width',
+    compact: false,
+    videoFill: 'width',
   },
 )
 const emit = defineEmits<{ (e: 'fullsceen', isFullscreen: boolean): void, (e: 'isLandscape', isLandscape: boolean): void, (e: 'sourceError'): void }>()
@@ -43,17 +51,6 @@ const { start: startAutoReload, stop: stopAutoReload } = useTimeoutFn(() => {
 }, 5000)
 
 const pausedByUser = ref(false)
-
-watch(isPlaying, (play) => {
-  if (!play && !pausedByUser.value) {
-    startAutoReload()
-  }
-  else {
-    stopAutoReload()
-  }
-}, {
-  immediate: true,
-})
 
 function setVolume(v: any, forced = false) {
   const n = Number.parseFloat(v)
@@ -158,7 +155,6 @@ function createHLS(url: string) {
         // cannot recover
           fatalError.value += 2
           if (fatalError.value > 3) {
-            isPlaying.value = false
             hls.value.destroy()
           }
           else {
@@ -243,7 +239,7 @@ async function togglePlay() {
     try {
       if (video.value.paused) {
         pausedByUser.value = false
-        await video.value.play()
+        play()
       }
       else {
         pausedByUser.value = true
@@ -354,6 +350,20 @@ function changeSource(source: ShowroomAPI.StreamingURL) {
   reload()
 }
 
+const errorPlayCount = ref(0)
+
+watch(isPlaying, (play) => {
+  if (!play && !pausedByUser.value) {
+    startAutoReload()
+  }
+  else {
+    stopAutoReload()
+    errorPlayCount.value = 0
+  }
+}, {
+  immediate: true,
+})
+
 async function play() {
   if (process.server) return
   pausedByUser.value = false
@@ -368,12 +378,16 @@ async function play() {
       await video.value.play()
     }
     catch (e) {
+      errorPlayCount.value += 1
+      if (errorPlayCount.value > 3) return
       await nextTick(async () => {
-        if (video.value) {
-          video.value.muted = true
-          isMuted.value = true
+        if ((e as Error)?.message?.includes('play() failed because the user didn\'t interact with the document first.')) {
+          if (video.value) {
+            video.value.muted = true
+            isMuted.value = true
+          }
         }
-        await video.value?.play()
+        video.value?.play()
       })
     }
   }
@@ -383,68 +397,17 @@ const isSeekDragging = ref(false)
 
 watch(isFullscreen, (fullscreen) => {
   emit('fullsceen', fullscreen)
+  calculateVideoSize()
 })
-
-function playEvent() {
-  isPlaying.value = true
-}
-
-function pauseEvent() {
-  isPlaying.value = false
-}
 
 const duration = ref(0)
 const currentTime = ref(0)
 
-function durationChange() {
-  duration.value = video.value?.duration || 0
-}
-
-function timeUpdate() {
-  if (isSeekDragging.value) return
-  currentTime.value = video.value?.currentTime || 0
-}
-
-onMounted(() => {
-  try {
-    navigator.mediaSession.setActionHandler('nexttrack', () => {
-      reload()
-    })
-  }
-  catch (e) {
-    console.log(e)
-  }
-
-  if (video.value) {
-    volume.value = Number(tempVolume.value) || 1
-    isPlaying.value = !video.value.paused
-    video.value.addEventListener('play', playEvent)
-    video.value.addEventListener('pause', pauseEvent)
-    video.value.addEventListener('durationchange', durationChange)
-    video.value.addEventListener('timeupdate', timeUpdate)
-  }
-
-  nextTick(() => {
-    if (!mutedData.value) {
-      unmute()
-    }
-    else {
-      mute()
-    }
-    reload()
-  })
-})
-
 onBeforeUnmount(() => {
+  console.log('Destroy video!')
   destroyVideo()
   if (document?.pictureInPictureElement) {
     document.exitPictureInPicture()
-  }
-  if (video.value) {
-    video.value.removeEventListener('play', playEvent)
-    video.value.removeEventListener('pause', pauseEvent)
-    video.value.removeEventListener('durationchange', durationChange)
-    video.value.removeEventListener('timeupdate', timeUpdate)
   }
 })
 
@@ -452,11 +415,7 @@ function videoClick() {
   if (!isMobile) {
     togglePlay()
   }
-  else if (showControl.value) {
-    togglePlay()
-  }
-  else {
-    if (!isPlaying.value) togglePlay()
+  else if (!showControl.value) {
     setShowControl(true)
   }
 }
@@ -523,6 +482,13 @@ const volumeIcon = computed(() => {
   return 'ic:round-volume-off'
 })
 
+const playIcon = computed(() => {
+  if (isPlaying.value) {
+    return 'ic:round-pause'
+  }
+  return 'ic:round-play-arrow'
+})
+
 function pause() {
   video.value?.pause()
   pausedByUser.value = true
@@ -537,53 +503,167 @@ function syncLive() {
 const rotation = ref(0)
 function rotate() {
   rotation.value += 90
-  if (rotation.value >= 360) {
-    rotation.value -= 360
+}
+
+const oldWidth = ref(0)
+const oldHeight = ref(0)
+
+const { width, height } = useElementSize(videoPlayer)
+const originalSize = ref<{ width: number, height: number } | null>(null)
+const isMiring = computed(() => {
+  return (rotation.value / 90) % 2 !== 0
+})
+
+function calculateVideoSize() {
+  if (!originalSize.value) {
+    const rect = video.value?.getBoundingClientRect()
+    originalSize.value = {
+      width: rect?.width || 0,
+      height: rect?.height || 0,
+    }
+  }
+  const deg = rotation.value
+  if (!video.value || !videoPlayer.value) return
+  video.value.style.removeProperty('scale')
+  if ((deg / 90) % 2 !== 0) {
+    if (!originalSize.value) return
+    const potrait = originalSize.value.height / originalSize.value.width
+    const landscape = originalSize.value.width / originalSize.value.height
+    const isPortrait = originalSize.value.height > originalSize.value.width
+    let aspectRatio: number
+    if (props.rotateFill === 'width') {
+      aspectRatio = landscape
+    }
+    else {
+      aspectRatio = potrait
+    }
+    console.log('is potrait', isPortrait, originalSize.value.width, originalSize.value.height)
+    if (isFullscreen.value) {
+      aspectRatio = potrait
+    }
+    // aspectRatio = isFullscreen.value ? (isPortrait ? potrait : landscape) : (!isPortrait ? landscape : potrait)
+    video.value.style.scale = `${aspectRatio}`
   }
 }
 
-defineExpose({ stop, rotate, syncLive, isPlaying, isMuted, reload, togglePlay, isLandscape, changeSource, checkMute, volume, pause, play, mute, unmute, setVolume })
+watch(rotation, () => {
+  const isMiring = (rotation.value / 90) % 2 !== 0
+  const isLs = isLandscape.value ? !isMiring : isMiring
+  emit('isLandscape', isLs)
+  requestAnimationFrame(() => calculateVideoSize())
+})
+
+useEventListener(video, 'play', () => {
+  isPlaying.value = true
+})
+useEventListener(video, 'pause', () => {
+  isPlaying.value = false
+})
+useEventListener(video, 'durationchange', () => {
+  duration.value = video.value?.duration || 0
+})
+useEventListener(video, 'timeupdate', () => {
+  if (isSeekDragging.value) return
+  currentTime.value = video.value?.currentTime || 0
+})
+
+const pipEnabled = ref(false)
+
+onMounted(() => {
+  useEventListener(window, 'resize', () => {
+    requestAnimationFrame(() => calculateVideoSize())
+  })
+
+  pipEnabled.value = document.pictureInPictureEnabled
+
+  // set custom button on picture on picture
+  try {
+    navigator.mediaSession.setActionHandler('nexttrack', () => {
+      reload()
+    })
+  }
+  catch (e) {
+    console.log(e)
+  }
+  /////
+
+  if (video.value) {
+    volume.value = Number(tempVolume.value) || 1
+    isPlaying.value = !video.value.paused
+  }
+
+  nextTick(() => {
+    if (!mutedData.value) {
+      unmute()
+    }
+    else {
+      mute()
+    }
+    reload()
+  })
+})
+
+const aspectRatio = computed(() => {
+  const landscapeRatio = isMiring.value ? 'aspect-[9/12]' : 'aspect-video'
+  const portraitRatio = !isMiring.value ? 'aspect-[9/12]' : 'aspect-video'
+  return isLandscape.value ? landscapeRatio : portraitRatio
+})
+
+const { isMD } = useResponsive()
+
+defineExpose({ stop, rotate, syncLive, calculateVideoSize, isPlaying, isMuted, reload, togglePlay, isLandscape, changeSource, checkMute, volume, pause, play, mute, unmute, setVolume })
 </script>
 
 <template>
-  <div ref="videoPlayer" class="group relative" :class="isLandscape ? 'aspect-video' : 'aspect-[9/12]'">
-    <div v-if="!isPlaying && !isLoading && !useDefaultControl" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/50 p-1">
+  <div ref="videoPlayer" class="overflow-hidden relative group flex items-center transform-all duration-300" :class="rotateFill === 'width' ? aspectRatio : 'h-full w-full'">
+    <div
+      v-if="!isPlaying && !isLoading && !useDefaultControl" class="z-10 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/50 p-1" @click="() => {
+        if (isMobile) togglePlay()
+      }"
+    >
+      <Icon name="ic:round-play-arrow" class="text-white/60" size="3rem" />
+    </div>
+    <div v-if="isMobile && !useDefaultControl && isPlaying && showControl" class="z-10 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/50 p-1" @click="togglePlay">
       <Icon name="ic:round-pause" class="text-white/60" size="3rem" />
     </div>
-    <video
-      ref="video"
-      :controls="useDefaultControl"
-      class="h-full w-full"
-      :style="{ rotate: `${rotation}deg` }"
-      :poster="poster"
+    <div
+      class="absolute top-1/2 -translate-y-1/2 z-0"
+      :class="{ 'aspect-video': isLandscape, 'aspsect-[9/12]': !isLandscape, 'w-full': (videoFill === 'width') && !isFullscreen, 'h-full': videoFill === 'height' || isFullscreen }"
       @click="videoClick"
     >
-      <!-- <source v-for="src in sources" :key="src.id" :src="src.url"> -->
-      <p class="vjs-no-js">
-        To view this video please enable JavaScript, and consider upgrading to a
-        web browser that
-        <a
-          href="https://videojs.com/html5-video-support/"
-          target="_blank"
-        >supports HTML5 video</a>
-      </p>
-    </video>
+      <video
+        ref="video"
+        :controls="useDefaultControl && !hideControl"
+        class="inset-0 w-full h-full transition-all duration-500 object-cover origin-center"
+        :style="{ transform: `rotate(${rotation}deg)` }"
+        :poster="poster"
+      >
+        <p class="vjs-no-js">
+          To view this video please enable JavaScript, and consider upgrading to a
+          web browser that
+          <a
+            href="https://videojs.com/html5-video-support/"
+            target="_blank"
+          >supports HTML5 video</a>
+        </p>
+      </video>
+    </div>
 
     <div v-if="isLoading && !useDefaultControl" id="loading-spinner" class="absolute inset-0 z-0 flex items-center justify-center bg-black/30 text-black">
-      <Icon name="svg-spinners:270-ring-with-bg" class="h-[10%] w-[10%] text-white" />
+      <Icon name="svg-spinners:270-ring-with-bg" class="h-[15%] w-[15%] text-white" />
     </div>
 
     <div v-if="!useDefaultControl" id="control" ref="videoControl" :class="{ 'opacity-100': showControl || isFocusControl || isHoverControl }" class="absolute inset-x-0 bottom-0 z-10 text-slate-200 opacity-0 duration-200 ease-in-out" @click="setShowControl(true)">
-      <div>
+      <div :class="{ 'pointer-events-none': isMobile && !showControl }">
         <div class="group flex items-center justify-center">
           <div class="relative flex h-full w-full duration-200 group-hover/volume:w-20">
-            <div class="absolute bottom-0 z-0 h-1 w-full overflow-hidden bg-neutral-700/75">
+            <div :class="{ 'h-[3px]': compact, 'h-1': !compact }" class="absolute bottom-0 z-0 w-full overflow-hidden bg-neutral-700/75">
               <div class="h-full bg-red-600" :style="{ width: `${videoProgess}%` }" />
             </div>
-            <div :class="{ 'opacity-0': !isMobile }" class="absolute bottom-[2px] h-3 w-3 -translate-x-1/2 translate-y-1/2 rounded-full bg-red-600 transition-opacity duration-300 group-hover:opacity-100" :style="{ left: `${videoProgess}%` }" />
+            <div :class="{ 'opacity-0': !isMobile, 'h-3 w-3': !compact, 'h-2 w-2': compact }" class="absolute bottom-[2px] -translate-x-1/2 translate-y-1/2 rounded-full bg-red-600 transition-opacity duration-300 group-hover:opacity-100" :style="{ left: `${videoProgess}%` }" />
             <input
               ref="seekSlider"
-              :class="{ 'opacity-0': !isMobile }"
+              :class="{ 'opacity-0': !isMobile, compact }"
               aria-label="Playback"
               type="range"
               min="0"
@@ -597,17 +677,16 @@ defineExpose({ stop, rotate, syncLive, isPlaying, isMuted, reload, togglePlay, i
             >
           </div>
         </div>
-        <div class="flex w-full bg-black/70 px-1 duration-200 dark:bg-black/75 md:px-2">
-          <button class="h-8 w-8 p-1" aria-label="Play" type="button" @click="togglePlay">
-            <Icon v-if="isPlaying" name="ic:round-pause" class="h-full w-full" />
-            <Icon v-else name="ic:round-play-arrow" class="h-full w-full" />
+        <div class="flex w-full bg-black/70 px-1 duration-200 dark:bg-black/75 md:px-2 items-center">
+          <button class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1" aria-label="Play" type="button" @click="togglePlay">
+            <Icon :name="playIcon" class="h-full w-full" />
           </button>
-          <div class="group/volume flex items-center gap-1">
-            <button class="h-8 w-8 p-1" aria-label="Mute" type="button" @click="toggleMute">
+          <div v-if="!compact" class="group/volume flex items-center gap-1">
+            <button class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1" aria-label="Mute" type="button" @click="toggleMute">
               <Icon :name="volumeIcon" class="h-full w-full" />
             </button>
             <div class="relative flex h-full w-16 items-center duration-200 group-hover/volume:w-20 md:w-20">
-              <div class="absolute inset-0 top-1/2 z-0 h-1 w-16 -translate-y-1/2 overflow-hidden rounded-sm bg-gray-300/25 md:w-20">
+              <div class="absolute inset-0 top-1/2 h-1 z-0 w-16 -translate-y-1/2 overflow-hidden rounded-sm bg-gray-300/25 md:w-20">
                 <div class="h-full bg-slate-200" :style="{ width: `${volume * 100}%` }" />
               </div>
               <input
@@ -623,14 +702,17 @@ defineExpose({ stop, rotate, syncLive, isPlaying, isMuted, reload, togglePlay, i
             </div>
           </div>
           <div class="flex-1" />
-          <div class="flex items-center text-xs md:text-sm">
+          <div v-if="!compact && isMD" class="flex items-center text-xs md:text-sm">
             {{ $dayjs.duration(currentTimeFloor, 'second').format("mm:ss") }} / {{ $dayjs.duration(duration, 'second').format("mm:ss") }}
           </div>
-          <button class="h-8 w-8 p-1" aria-label="Reload" type="button" @click="reload">
+          <button class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1" aria-label="Reload" type="button" @click="reload">
             <Icon name="ic:round-refresh" class="h-full w-full p-[1px]" />
           </button>
-          <Popover>
-            <PopoverButton aria-label="Setting" class="h-8 w-8 p-1">
+          <button class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1" aria-label="Reload" type="button" @click="rotate">
+            <Icon name="ic:outline-rotate-right" class="h-full w-full p-[1px]" />
+          </button>
+          <Popover v-if="!compact">
+            <PopoverButton aria-label="Setting" class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1">
               <Icon name="ic:baseline-settings" class="h-full w-full p-[2px] duration-300" />
             </PopoverButton>
             <Transition
@@ -660,10 +742,10 @@ defineExpose({ stop, rotate, syncLive, isPlaying, isMuted, reload, togglePlay, i
               </PopoverPanel>
             </Transition>
           </Popover>
-          <button class="group h-8 w-8 p-1 " aria-label="Fullscreen" type="button" @click="togglePictureInPicture">
+          <button v-if="pipEnabled" class="group h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1 " aria-label="Fullscreen" type="button" @click="togglePictureInPicture">
             <Icon name="ic:round-picture-in-picture" class="h-full w-full p-0.5 duration-300" />
           </button>
-          <button class="group h-8 w-8 p-1 " aria-label="Fullscreen" type="button" @click="toggleFullscreen">
+          <button class="group h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1 " aria-label="Fullscreen" type="button" @click="toggleFullscreen">
             <Icon v-if="!isFullscreen" name="ic:round-fullscreen" class="h-full w-full duration-300 hover:scale-125" />
             <Icon v-else name="ic:round-fullscreen-exit" class="h-full w-full duration-300 hover:scale-125" />
           </button>
@@ -700,6 +782,18 @@ defineExpose({ stop, rotate, syncLive, isPlaying, isMuted, reload, togglePlay, i
     border-radius: 100%; /* Green background */
     cursor: pointer; /* Cursor on hover */
     appearance: none;
+  }
+
+  &.compact {
+    &::-webkit-slider-thumb {
+      width: 7px; /* Set a specific slider handle width */
+      height: 7px; /* Slider handle height */
+    }
+
+    &::-moz-range-thumb {
+      width: 7px; /* Set a specific slider handle width */
+      height: 7px; /* Slider handle height */
+    }
   }
 
   &.hidden-slider{

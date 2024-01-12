@@ -437,6 +437,23 @@ interface IDNLives {
   stream_url: string
 }
 
+interface IDNLivesDetail {
+  user?: IDNUser
+  image?: string
+  title?: string
+  slug?: string
+  view_count?: number
+  live_at?: string
+  stream_url?: string
+  is_live: boolean
+  member_info: {
+    name?: string
+    img?: string
+    room_id?: number
+    key?: string
+  }
+}
+
 type IRoomLiveExtended = IRoomLive & { type: 'showroom' }
 type IDNLivesExtended = IRoomLive & { type: 'idn' }
 type LivesData = IRoomLiveExtended | IDNLivesExtended

@@ -321,7 +321,11 @@ onComment((comment) => {
 
               <Suspense v-else>
                 <LazyWatchVideo
-                  ref="video" :poster="data?.image ?? ''" :sources="data?.streaming_url_list ?? []" @fullsceen="(isFullscreen) => {
+                  ref="video"
+                  :poster="data?.image ?? ''"
+                  :sources="data?.streaming_url_list ?? []"
+                  rotate-fill="height"
+                  @fullsceen="(isFullscreen) => {
                     if (isFullscreen && comment) stopAutoAppend()
                   }"
                 />

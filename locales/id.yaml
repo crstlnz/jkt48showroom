@@ -21,7 +21,7 @@ topfans: Fans teratas
 nextlive: Jadwal live
 showonshowroom: Lihat di Showroom
 openshowroom: Buka Showroom
-streamoffline: Streaming sedang offline
+streamoffline: Room sedang offline
 view: Lihat
 viewlive: Buka Live
 viewer: Penonton
@@ -202,4 +202,7 @@ media_controls: Kontrol Media
 no_video_player: Tidak ada video yang terlampir. Tambah dulu videonya!
 multi:
   auto_remove: Otomatis menghapus player saat stream telah selesai
+  center: Sejajarkan video ke tengah
+  hidevideocontrol: Sembunyikan kontrol video
+  showvideocontrol: Tampilkan kontrol video
 seitansai_text: Show ini merupakan seitansai

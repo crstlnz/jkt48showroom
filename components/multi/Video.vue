@@ -6,6 +6,7 @@ const props = defineProps<{
   video: Multi.Video
   index: number
   videosLength: number
+  showVideoControl: boolean
 }>()
 
 const emit = defineEmits<{ (e: 'moveNext'): void, (e: 'movePrevious'): void, (e: 'delete', reason?: string): void, (e: 'sourceNotFound'): void }>()
@@ -103,15 +104,17 @@ defineExpose({ refresh, video: videoElement, data: props.video, remove })
           :sources="sourceURLs"
           class="flex-1 w-full object-fill"
           :use-shortcut="false"
-          :use-default-control="true"
           :max-buffer-size="300 * 1000 * 1000"
           :max-max-buffer-length="300"
           :save-state="false"
+          :hide-control="true"
+          :compact="true"
+          :use-default-control="false"
           @source-error="onSourceNotFound"
         />
       </div>
     </div>
-    <div class="relative p-1 md:p-2 xl:p-3 gap-1 md:gap-2 xl:gap-3 w-full bg-white border border-black/10 drop-shadow-sm dark:border-white/10 dark:bg-black/20">
+    <div v-if="showVideoControl" class="relative p-1 md:p-2 xl:p-3 gap-1 md:gap-2 xl:gap-3 w-full bg-white border border-black/10 drop-shadow-sm dark:border-white/10 dark:bg-black/20">
       <div class="absolute inset-0 flex justify-between p-1 md:p-2 xl:p-3 pointer-events-none">
         <button :disabled="index === 0" type="button" class="pointer-events-auto bg-black/10 dark:bg-white/5 h-6 w-6 md:w-7 md:h-7 rounded-full disabled:opacity-40 disabled:cursor-not-allowed" @click="$emit('movePrevious')">
           <Icon name="material-symbols:arrow-left" size="1.5rem" />

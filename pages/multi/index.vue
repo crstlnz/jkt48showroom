@@ -31,7 +31,7 @@ const { width } = useWindowSize()
 const { isSmall } = useResponsive()
 const minWidth = computed(() => {
   if (!isSmall.value) {
-    return 240
+    return 190
   }
   return 160
 })
@@ -120,6 +120,9 @@ function refreshAll() {
 const { addNotif } = useNotifications()
 
 const autoRemove = useLocalStorage('auto_remove_player', () => true)
+const centerVideos = useLocalStorage('center_videos', () => false)
+const showVideoControl = useLocalStorage('show_video_control', () => true)
+
 function deleteVideo(video: Multi.Video, reason?: string) {
   if (reason) {
     if (autoRemove.value) add(video) // add is for deleting video because add function is toggle
@@ -173,6 +176,7 @@ function checkLive(video: Multi.Video) {
 }
 
 function applyVideoRefs(ref: any, video: Multi.Video) {
+  console.log('Apply refs for', video.id)
   if (ref) {
     videoPlayers.value.set(video.id, ref)
   }
@@ -187,6 +191,12 @@ useHeadSafe({
 
 const description = computed(() => {
   return `Multi viewer for ${getGroupTitle(group)} Live Streams!`
+})
+
+watch(rowCount, () => {
+  for (const v of videoPlayers.value.values()) {
+    v.video?.calculateVideoSize()
+  }
 })
 
 useSeoMeta({
@@ -244,14 +254,18 @@ function openMediaControl() {
         </div>
 
         <div v-if="videos.length" class="flex-1">
-          <TransitionGroup v-if="videos.length" name="multivideo" tag="div" class="grid" :style="{ gridTemplateColumns: `repeat(${rowCount || 4}, minmax(0, 1fr))` }" @before-leave="onBeforeLeave">
+          <!-- :style="{ gridTemplateColumns: `repeat(${rowCount || 4}, minmax(0, 1fr))` }" -->
+          <TransitionGroup v-if="videos.length" name="multivideo" tag="div" class="flex flex-wrap" :class="{ 'justify-center': centerVideos }" @before-leave="onBeforeLeave">
             <MultiVideo
               v-for="[idx, video] in videos.entries()"
               :ref="(ref) => applyVideoRefs(ref, video)"
               :key="video.id"
+              :style="{ flex: `0 0 ${100 / (rowCount || 4)}%` }"
+              :class="{ 'transition-all duration-300': videos.length === 1 }"
               :index="idx"
               :videos-length="videos.length"
               :video="video"
+              :show-video-control="showVideoControl"
               @delete="(reason) => deleteVideo(video, reason)"
               @source-not-found="() => checkLive(video)"
               @move-next="() => moveNext(idx)"
