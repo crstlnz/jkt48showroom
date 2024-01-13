@@ -5,6 +5,7 @@
 
 html {
   padding: 0 !important;
+  overflow: initial !important;
 }
 
 * {
@@ -49,7 +50,7 @@ button:focus {
 }
 
 body {
-  overflow-x: hidden;
+  overflow-x: clip;
   overflow-y: scroll;
   @apply background text-slate-800 dark:text-slate-100;
 }

@@ -49,7 +49,7 @@ const title = computed(() => {
   return t.split('-')[0]
 })
 
-const { $fixCloudinary } = useNuxtApp()
+// const { $fixCloudinary } = useNuxtApp()
 const name = computed(() => data.value?.room_info.nickname || data.value?.room_info.fullname || data.value?.room_info?.name)
 const description = computed(() => {
   // return t('recent_detail_description', { name: data.value?.room_info.nickname || data.value?.room_info.fullname || data.value?.room_info?.name, date: date.value })
@@ -66,8 +66,8 @@ useSeoMeta({
   twitterDescription: description,
   twitterTitle: () => titleSeo.value,
   twitterSite: '@crstlnz',
-  twitterImage: () => $fixCloudinary(data.value?.room_info?.img_alt || data.value?.room_info?.img || ''),
-  twitterCard: 'summary',
+  twitterImage: () => data.value?.room_info?.img || '',
+  twitterCard: 'summary_large_image',
 })
 useHead({
   title: () => titleSeo.value,
