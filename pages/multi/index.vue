@@ -254,7 +254,6 @@ function openMediaControl() {
         </div>
 
         <div v-if="videos.length" class="flex-1">
-          <!-- :style="{ gridTemplateColumns: `repeat(${rowCount || 4}, minmax(0, 1fr))` }" -->
           <TransitionGroup v-if="videos.length" name="multivideo" tag="div" class="flex flex-wrap" :class="{ 'justify-center': centerVideos }" @before-leave="onBeforeLeave">
             <MultiVideo
               v-for="[idx, video] in videos.entries()"

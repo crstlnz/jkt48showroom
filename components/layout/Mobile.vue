@@ -179,16 +179,20 @@ const hiddenUsername = useCookie('_h_usrnme', {
           </div>
         </div>
         <div class="flex justify-between items-center">
-          <button
-            v-ripple
-            type="button"
-            aria-label="Toggle Dark Mode"
-            class="bg-container flex items-center justify-start gap-3 rounded-full p-3"
-            @click="$emit('toggleDark')"
-          >
-            <Icon name="ph:moon-bold" class="!hidden h-6 w-6 dark:!block" />
-            <Icon name="ph:sun-bold" class="h-6 w-6 dark:!hidden" />
-          </button>
+          <div class="flex gap-1.5">
+            <button
+              v-ripple
+              type="button"
+              aria-label="Toggle Dark Mode"
+              class="bg-container flex items-center justify-start gap-3 rounded-full p-3"
+              @click="$emit('toggleDark')"
+            >
+              <Icon name="ph:moon-bold" class="!hidden h-6 w-6 dark:!block" />
+              <Icon name="ph:sun-bold" class="h-6 w-6 dark:!hidden" />
+            </button>
+            <SettingsDialog />
+          </div>
+
           <Footer />
         </div>
       </div>

@@ -46,7 +46,7 @@ useHead({
           <div class="mb-5 mt-2 flex items-center gap-2">
             <NuxtImg
               class="h-[19px] w-[56px] rounded-[3px]"
-              :src="`https://jkt48.com${data.label}`"
+              :src="`${$cloudinaryURL}/assets/jkt48${data.label}`"
               alt="Label"
               loading="lazy"
               fit="fill"

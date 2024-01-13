@@ -31,7 +31,7 @@ watch(page, (p) => {
         <div v-for="news in data.news" :key="news.id" class="bg-container mx-3 flex flex-col gap-2 rounded-xl p-3 md:mx-4 md:p-4">
           <NuxtImg
             class="h-[19px] w-[56px] rounded-[3px]"
-            :src="`https://jkt48.com${news.label}`"
+            :src="`${$cloudinaryURL}/assets/jkt48${news.label}`"
             alt="Label"
             loading="lazy"
             fit="fill"

@@ -48,7 +48,7 @@ const { isMobile } = useResponsive()
 
 const { start: startAutoReload, stop: stopAutoReload } = useTimeoutFn(() => {
   reload()
-}, 5000)
+}, 10000)
 
 const pausedByUser = ref(false)
 
@@ -113,10 +113,6 @@ function setShowControl(show: boolean) {
 }
 
 const fatalError = ref(0)
-const reloadTimeout = ref<NodeJS.Timeout | undefined>()
-function clearReloadTimeout() {
-  if (reloadTimeout.value) clearTimeout(reloadTimeout.value)
-}
 function createHLS(url: string) {
   fatalError.value = 0
   isLoading.value = true
@@ -139,6 +135,11 @@ function createHLS(url: string) {
   })
 
   hls.value.on(Hls.Events.ERROR, (event: any, data: any) => {
+    if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
+      emit('sourceError')
+    }
+
+    startAutoReload()
     if (data.fatal) {
       switch (data.type) {
         case Hls.ErrorTypes.NETWORK_ERROR:
@@ -152,7 +153,8 @@ function createHLS(url: string) {
           hls.value.recoverMediaError()
           break
         default:
-        // cannot recover
+          console.log('cannot recover error')
+          // cannot recover
           fatalError.value += 2
           if (fatalError.value > 3) {
             hls.value.destroy()
@@ -163,22 +165,15 @@ function createHLS(url: string) {
           break
       }
     }
-  })
-
-  hls.value.on(Hls.Events.ERROR, (_e: any, d: any) => {
-    emit('sourceError')
-    if (d.details === Hls.ErrorDetails.BUFFER_STALLED_ERROR) {
-      isLoading.value = true
+    else {
+      if (data.details === Hls.ErrorDetails.BUFFER_STALLED_ERROR) {
+        isLoading.value = true
+      }
     }
-
-    clearReloadTimeout()
-    reloadTimeout.value = setTimeout(() => {
-      reload()
-    }, 10000)
   })
 
   hls.value.on(Hls.Events.FRAG_BUFFERED, () => {
-    clearReloadTimeout()
+    stopAutoReload()
     isLoading.value = false
   })
 
@@ -187,7 +182,7 @@ function createHLS(url: string) {
   })
 
   hls.value.on(Hls.Events.LEVEL_LOADED, () => {
-    clearReloadTimeout()
+    stopAutoReload()
     isLoading.value = false
   })
 
@@ -239,7 +234,7 @@ async function togglePlay() {
     try {
       if (video.value.paused) {
         pausedByUser.value = false
-        play()
+        await play()
       }
       else {
         pausedByUser.value = true
@@ -254,7 +249,7 @@ async function togglePlay() {
 }
 
 function reload() {
-  clearReloadTimeout()
+  stopAutoReload()
   try {
     createHLS(currentSource.value.url)
   }
@@ -378,16 +373,14 @@ async function play() {
       await video.value.play()
     }
     catch (e) {
-      errorPlayCount.value += 1
-      if (errorPlayCount.value > 3) return
+      console.log(errorPlayCount.value, e)
+      if (errorPlayCount.value > 5) return
       await nextTick(async () => {
-        if ((e as Error)?.message?.includes('play() failed because the user didn\'t interact with the document first.')) {
-          if (video.value) {
-            video.value.muted = true
-            isMuted.value = true
-          }
+        if (errorPlayCount.value > 4) {
+          mute()
+          return play()
         }
-        video.value?.play()
+        return play()
       })
     }
   }
@@ -500,15 +493,13 @@ function syncLive() {
   }
 }
 
+const enableRotate = useLocalStorage<boolean>('rotate_feature', () => true)
 const rotation = ref(0)
 function rotate() {
+  if (!enableRotate.value) return
   rotation.value += 90
 }
 
-const oldWidth = ref(0)
-const oldHeight = ref(0)
-
-const { width, height } = useElementSize(videoPlayer)
 const originalSize = ref<{ width: number, height: number } | null>(null)
 const isMiring = computed(() => {
   return (rotation.value / 90) % 2 !== 0
@@ -610,7 +601,6 @@ const aspectRatio = computed(() => {
 })
 
 const { isMD } = useResponsive()
-
 defineExpose({ stop, rotate, syncLive, calculateVideoSize, isPlaying, isMuted, reload, togglePlay, isLandscape, changeSource, checkMute, volume, pause, play, mute, unmute, setVolume })
 </script>
 
@@ -627,15 +617,23 @@ defineExpose({ stop, rotate, syncLive, calculateVideoSize, isPlaying, isMuted, r
       <Icon name="ic:round-pause" class="text-white/60" size="3rem" />
     </div>
     <div
-      class="absolute top-1/2 -translate-y-1/2 z-0"
-      :class="{ 'aspect-video': isLandscape, 'aspsect-[9/12]': !isLandscape, 'w-full': (videoFill === 'width') && !isFullscreen, 'h-full': videoFill === 'height' || isFullscreen }"
+      :class="{
+        'w-full h-full': !enableRotate,
+        'absolute top-1/2 -translate-y-1/2 z-0': enableRotate && !isFullscreen,
+        'absolute top-1/2 -translate-y-1/2 z-0 -translate-x-1/2 left-1/2': enableRotate && isFullscreen,
+        'aspect-video': isLandscape && enableRotate,
+        'aspsect-[9/12]': !isLandscape && enableRotate,
+        'w-full': (videoFill === 'width') && !isFullscreen && enableRotate,
+        'h-full': videoFill === 'height' || isFullscreen && enableRotate,
+      }"
       @click="videoClick"
     >
       <video
         ref="video"
         :controls="useDefaultControl && !hideControl"
-        class="inset-0 w-full h-full transition-all duration-500 object-cover origin-center"
-        :style="{ transform: `rotate(${rotation}deg)` }"
+        :class="{ 'object-cover': !isFullscreen }"
+        class="inset-0 w-full h-full transition-all duration-500 origin-center"
+        :style="{ transform: enableRotate ? `rotate(${rotation}deg)` : 'none' }"
         :poster="poster"
       >
         <p class="vjs-no-js">
@@ -708,7 +706,7 @@ defineExpose({ stop, rotate, syncLive, calculateVideoSize, isPlaying, isMuted, r
           <button class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1" aria-label="Reload" type="button" @click="reload">
             <Icon name="ic:round-refresh" class="h-full w-full p-[1px]" />
           </button>
-          <button class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1" aria-label="Reload" type="button" @click="rotate">
+          <button v-if="enableRotate" class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1" aria-label="Reload" type="button" @click="rotate">
             <Icon name="ic:outline-rotate-right" class="h-full w-full p-[1px]" />
           </button>
           <Popover v-if="!compact">

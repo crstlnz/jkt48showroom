@@ -27,7 +27,7 @@ const { locale } = useI18n()
           <div class="mb-1 flex items-center gap-2 text-sm font-light">
             <NuxtImg
               class="h-[19px] w-[56px] rounded-[3px]"
-              :src="`https://jkt48.com${news.label}`"
+              :src="`${$cloudinaryURL}/assets/jkt48${news.label}`"
               alt="Label"
               loading="lazy"
               fit="fill"

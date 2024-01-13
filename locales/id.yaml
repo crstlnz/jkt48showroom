@@ -199,7 +199,9 @@ watch_on: Tonton di
 add: Tambah
 delete: Hapus
 media_controls: Kontrol Media
+settings_global: Pengaturan
 no_video_player: Tidak ada video yang terlampir. Tambah dulu videonya!
+enable_rotate: Hidupkan fitur rotate untuk pemutar video
 multi:
   auto_remove: Otomatis menghapus player saat stream telah selesai
   center: Sejajarkan video ke tengah
@@ -217,3 +219,4 @@ menu:
   admin: Admin
   report_bugs: Lapor Bug
   about: Tentang
+known_issues: Masalah yang diketahui

@@ -84,7 +84,7 @@ function rotate() {
     videoElement.value.rotate()
   }
 }
-
+const enableRotate = useLocalStorage<boolean>('rotate_feature', () => true)
 defineExpose({ refresh, video: videoElement, data: props.video, remove })
 </script>
 
@@ -130,7 +130,7 @@ defineExpose({ refresh, video: videoElement, data: props.video, remove })
           </div>
         </div>
         <div class="flex gap-1 md:gap-1.5">
-          <button type="button" class="bg-blue-500 text-white h-6 w-6 md:w-7 md:h-7 flex justify-center items-center rounded-md text-sm" @click="rotate">
+          <button v-if="enableRotate" type="button" class="bg-blue-500 text-white h-6 w-6 md:w-7 md:h-7 flex justify-center items-center rounded-md text-sm" @click="rotate">
             <Icon name="ic:outline-sync" class="w-full h-full p-1" />
           </button>
           <button type="button" class="bg-blue-500 text-white h-6 w-6 md:w-7 md:h-7 flex justify-center items-center rounded-md text-sm" @click="refresh">

@@ -199,7 +199,9 @@ watch_on: Watch on
 add: Add
 delete: Delete
 media_controls: Media Controls
+settings_global: Settings
 no_video_player: No video attached.
+enable_rotate: Enable video player rotate feature
 multi:
   auto_remove: Auto remove player when stream is offline
   center: Align video to center
@@ -217,3 +219,4 @@ menu:
   admin: Admin
   report_bugs: Report Bugs
   about: About
+known_issues: Known Issues

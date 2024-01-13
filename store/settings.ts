@@ -58,7 +58,7 @@ export const useSettings = defineStore('settings', () => {
     return getTitle(group.value)
   }
 
-  const currentURL = computed(() => host.value + path.value)
+  const currentURL = computed(() => `https://${host.value}${path.value}`)
 
   const route = useRoute()
 

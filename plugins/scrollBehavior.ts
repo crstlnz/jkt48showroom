@@ -1,6 +1,4 @@
-import { nextTick } from 'vue'
 import type { RouteLocationNormalized, RouterScrollBehavior } from 'vue-router'
-import { defineNuxtPlugin } from '#imports'
 
 type ScrollPosition = Awaited<ReturnType<RouterScrollBehavior>>
 

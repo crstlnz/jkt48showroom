@@ -40,18 +40,19 @@ const isXL = greaterOrEqual('2xl')
           :url="m.url"
         />
       </div>
-      <div class="flex justify-center gap-4 max-2xl:flex-col">
+      <div class="flex justify-center gap-2 max-2xl:flex-col">
         <LangSwitch class="bg-container flex flex-1 items-center justify-center gap-2 rounded-full p-3" />
         <button
           v-ripple
           type="button"
-          aria-label="Toggle Dark Mode"
+          aria-label="Settings menu"
           class="bg-container flex items-center justify-center gap-2 rounded-full p-3"
           @click="$emit('toggleDark')"
         >
           <Icon name="ph:moon-bold" class="!hidden h-5 w-5 dark:!inline-block" />
           <Icon name="ph:sun-bold" class="h-5 w-5 dark:!hidden" />
         </button>
+        <SettingsDialog />
       </div>
       <div class="border-t-2 dark:border-zinc-700 max-2xl:self-center">
         <LayoutUser />

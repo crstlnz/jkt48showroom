@@ -65,7 +65,7 @@ const { locale } = useI18n()
           <component :is="event.url.startsWith('/theater/schedule/id/') ? NuxtLink : 'div'" v-for="event in schedule.events" :key="event.id" :to="event.url.startsWith('/theater/schedule/id/') ? `/theater/${$getTheaterId(event.url)}` ?? undefined : undefined" class="flex gap-2">
             <NuxtImg
               class="aspect-[56/19] h-4 self-center"
-              :src="`https://jkt48.com${event.label}`"
+              :src="`${$cloudinaryURL}/assets/jkt48${event.label}`"
               alt="Label"
               loading="lazy"
               quality="100"
