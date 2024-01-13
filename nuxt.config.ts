@@ -153,13 +153,14 @@ export default defineNuxtConfig({
     componentIslands: true,
   },
   devtools: {
+    enabled: false,
     timeline: {
       enabled: true,
     },
   },
   image: {
     cloudinary: {
-      baseURL: 'https://res.cloudinary.com/doig4w6cm/image/fetch/',
+      baseURL: 'https://res.cloudinary.com/dy1ypevxw/image/fetch/',
     },
     quality: 80,
     placeholder: 10,
