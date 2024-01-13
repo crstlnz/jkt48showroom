@@ -73,7 +73,7 @@ const { data: idnData, pending: idnPending, liveCount: idnCount, hasLives: idnHa
         <PulseLiveCard />
       </div>
       <div
-        v-else-if="(hasLives || idnHasLive) && false"
+        v-else-if="hasLives || idnHasLive"
         class="bg-container grid-live-now gap-4 rounded-xl p-4"
       >
         <ClientOnly>
@@ -103,7 +103,7 @@ const { data: idnData, pending: idnPending, liveCount: idnCount, hasLives: idnHa
         v-else
         class="bg-container relative grid-live-now gap-4 rounded-xl p-4"
       >
-        <div class="aspect-[20/28] opacity-0" />
+        <div class="aspect-[20/28] md:aspect-[20/26] opacity-0" />
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex h-[245.5px] flex-col items-center justify-center gap-2 text-center text-xs max-sm:aspect-square sm:h-[230.88px] md:h-[250px] md:gap-3 md:text-sm lg:h-[270.55px] xl:h-[349.2px] 2xl:h-[318px]">
           <img class="mx-auto w-64 lg:w-72 max-w-[70%] md:max-w-[80%] aspect-[5/4]" alt="No member onlive" :src="`${$cloudinaryURL}/assets/svg/web/space.svg`">
           <span class="mt-4 md:mt-5">{{ $t("nolive") }}</span>
