@@ -78,7 +78,7 @@ useHead({
                 </h3>
                 <NuxtImg
                   class="self-center rounded-md"
-                  :src="`https://jkt48.com${theater.team.img}`"
+                  :src="`${$cloudinaryURL}/assets/jkt48${theater.team.img}`"
                   alt="Team Label"
                   loading="lazy"
                   fit="fill"
