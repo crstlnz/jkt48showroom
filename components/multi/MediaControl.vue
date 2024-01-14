@@ -72,6 +72,7 @@ function syncLive() {
   }
 }
 
+const rotateFeature = useLocalStorage('rotate_feature_v1', () => false)
 const autoRemove = useLocalStorage('auto_remove_player', () => true)
 const centerVideos = useLocalStorage('center_videos', () => false)
 const showVideoControl = useLocalStorage('show_video_control', () => true)
@@ -187,6 +188,10 @@ onMounted(() => {
                   </div>
                 </div>
               </div>
+              <button type="button" class="flex items-center gap-2.5 text-xs text-left md:text-sm opacity-80 font-light mt-3" @click="rotateFeature = !rotateFeature">
+                <input v-model="rotateFeature" type="checkbox" class="cursor-pointer">
+                <div>{{ $t("enable_rotate") }}</div>
+              </button>
               <button type="button" class="flex items-center gap-2.5 text-xs text-left md:text-sm opacity-80 font-light mt-3" @click="centerVideos = !centerVideos">
                 <input v-model="centerVideos" type="checkbox" class="cursor-pointer">
                 <div>{{ $t("multi.center") }}</div>

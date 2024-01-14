@@ -16,7 +16,7 @@ function openModal() {
   isOpen.value = true
 }
 
-const rotateFeature = useLocalStorage('rotate_feature', () => true)
+const rotateFeature = useLocalStorage('rotate_feature_v1', () => false)
 const autoRemove = useLocalStorage('auto_remove_player', () => true)
 const centerVideos = useLocalStorage('center_videos', () => false)
 const showVideoControl = useLocalStorage('show_video_control', () => true)

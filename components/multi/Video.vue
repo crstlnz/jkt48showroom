@@ -84,7 +84,7 @@ function rotate() {
     videoElement.value.rotate()
   }
 }
-const enableRotate = useLocalStorage<boolean>('rotate_feature', () => true)
+const enableRotate = useLocalStorage<boolean>('rotate_feature_v1', () => false)
 defineExpose({ refresh, video: videoElement, data: props.video, remove })
 </script>
 
@@ -109,7 +109,7 @@ defineExpose({ refresh, video: videoElement, data: props.video, remove })
           :save-state="false"
           :hide-control="true"
           :compact="true"
-          :use-default-control="false"
+          :use-default-control="true"
           @source-error="onSourceNotFound"
         />
       </div>

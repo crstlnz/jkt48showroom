@@ -374,6 +374,7 @@ async function play() {
     }
     catch (e) {
       console.log(errorPlayCount.value, e)
+      errorPlayCount.value += 1
       if (errorPlayCount.value > 5) return
       await nextTick(async () => {
         if (errorPlayCount.value > 4) {
@@ -608,161 +609,36 @@ defineExpose({ stop, rotate, syncLive, calculateVideoSize, isPlaying, isMuted, r
 
 <template>
   <div ref="videoPlayer" class="overflow-hidden relative group flex items-center transform-all duration-300" :class="rotateFill === 'width' ? aspectRatio : 'h-full w-full'">
-    <div v-if="enableRotate || useDefaultControl">
-      <div
-        :class="{
-          'w-full h-full': !enableRotate,
-          'absolute top-1/2 -translate-y-1/2 z-0': enableRotate && !isFullscreen,
-          'absolute top-1/2 -translate-y-1/2 z-0 -translate-x-1/2 left-1/2': enableRotate && isFullscreen,
-          'aspect-video': isLandscape && enableRotate,
-          'aspsect-[9/12]': !isLandscape && enableRotate,
-          'w-full': ((videoFill === 'width') && !isFullscreen && enableRotate) || isFullscreen,
-          'h-full': (videoFill === 'height' && !isFullscreen && enableRotate),
+    <div
+      v-if="!isPlaying && !isLoading && !useDefaultControl" class="z-10 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/50 p-1" @click="() => {
+        if (isMobile) togglePlay()
+      }"
+    >
+      <Icon name="ic:round-play-arrow" class="text-white/60" size="3rem" />
+    </div>
+    <div v-if="isMobile && !useDefaultControl && isPlaying && showControl && !isLoading" class="z-10 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/50 p-1" @click="togglePlay">
+      <Icon name="ic:round-pause" class="text-white/60" size="3rem" />
+    </div>
+    <div
+      :class="{
+        'w-full h-full': !enableRotate,
+        'absolute top-1/2 -translate-y-1/2 z-0': enableRotate && !isFullscreen,
+        'absolute top-1/2 -translate-y-1/2 z-0 -translate-x-1/2 left-1/2': enableRotate && isFullscreen,
+        'aspect-video': isLandscape && enableRotate,
+        'aspsect-[9/12]': !isLandscape && enableRotate,
+        'w-full': ((videoFill === 'width') && !isFullscreen && enableRotate) || isFullscreen,
+        'h-full': (videoFill === 'height' && !isFullscreen && enableRotate),
         // 'w-full': isFullscreen && enableRotate && isFullscreenLandscape && !isLandscape,
         // 'w-full': isFullscreen && enableRotate && isFullscreenLandscape,
-        }"
-        @click="videoClick"
-      >
-        <video
-          ref="video"
-          :controls="useDefaultControl && !hideControl"
-          :class="{ 'object-cover': !isFullscreen }"
-          class="inset-0 w-full h-full transition-all duration-500 origin-center"
-          :style="{ transform: enableRotate ? `rotate(${rotation}deg)` : 'none' }"
-          :poster="poster"
-        >
-          <p class="vjs-no-js">
-            To view this video please enable JavaScript, and consider upgrading to a
-            web browser that
-            <a
-              href="https://videojs.com/html5-video-support/"
-              target="_blank"
-            >supports HTML5 video</a>
-          </p>
-        </video>
-      </div>
-
-      <div
-        v-if="!isPlaying && !isLoading && !useDefaultControl" class="z-10 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/50 p-1" @click="() => {
-          if (isMobile) togglePlay()
-        }"
-      >
-        <Icon name="ic:round-play-arrow" class="text-white/60" size="3rem" />
-      </div>
-      <div v-if="isMobile && !useDefaultControl && isPlaying && showControl && !isLoading" class="z-10 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/50 p-1" @click="togglePlay">
-        <Icon name="ic:round-pause" class="text-white/60" size="3rem" />
-      </div>
-
-      <div v-if="isLoading && !useDefaultControl" id="loading-spinner" class="absolute inset-0 z-0 flex items-center justify-center bg-black/30 text-black">
-        <Icon name="svg-spinners:270-ring-with-bg" class="h-[15%] w-[15%] text-white" />
-      </div>
-
-      <div v-if="!useDefaultControl" id="control" ref="videoControl" :class="{ 'opacity-100': showControl || isFocusControl || isHoverControl }" class="absolute inset-x-0 bottom-0 z-10 text-slate-200 opacity-0 duration-200 ease-in-out" @click="setShowControl(true)">
-        <div :class="{ 'pointer-events-none': isMobile && !showControl }">
-          <div class="group flex items-center justify-center">
-            <div class="relative flex h-full w-full duration-200 group-hover/volume:w-20">
-              <div :class="{ 'h-[3px]': compact, 'h-1': !compact }" class="absolute bottom-0 z-0 w-full overflow-hidden bg-neutral-700/75">
-                <div class="h-full bg-red-600" :style="{ width: `${videoProgess}%` }" />
-              </div>
-              <div :class="{ 'opacity-0': !isMobile, 'h-3 w-3': !compact, 'h-2 w-2': compact }" class="absolute bottom-[2px] -translate-x-1/2 translate-y-1/2 rounded-full bg-red-600 transition-opacity duration-300 group-hover:opacity-100" :style="{ left: `${videoProgess}%` }" />
-              <input
-                ref="seekSlider"
-                :class="{ 'opacity-0': !isMobile, compact }"
-                aria-label="Playback"
-                type="range"
-                min="0"
-                max="10000"
-                step="1"
-                class="volume-slider hidden-slider z-20 h-4 w-full cursor-pointer transition-opacity duration-300 hover:opacity-100"
-                @change="changeVideoTime"
-                @input="seek"
-                @pointerdown="isSeekDragging = true"
-                @pointerup="isSeekDragging = false"
-              >
-            </div>
-          </div>
-          <div class="flex w-full bg-black/70 px-1 duration-200 dark:bg-black/75 md:px-2 items-center">
-            <button class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1" aria-label="Play" type="button" @click="togglePlay">
-              <Icon :name="playIcon" class="h-full w-full" />
-            </button>
-            <div v-if="!compact" class="group/volume flex items-center gap-1">
-              <button class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1" aria-label="Mute" type="button" @click="toggleMute">
-                <Icon :name="volumeIcon" class="h-full w-full" />
-              </button>
-              <div class="relative flex h-full w-16 items-center duration-200 group-hover/volume:w-20 md:w-20">
-                <div class="absolute inset-0 top-1/2 h-1 z-0 w-16 -translate-y-1/2 overflow-hidden rounded-sm bg-gray-300/25 md:w-20">
-                  <div class="h-full bg-slate-200" :style="{ width: `${volume * 100}%` }" />
-                </div>
-                <input
-                  ref="volumeSlider"
-                  v-model="volume"
-                  aria-label="Volume"
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.01"
-                  class="volume-slider z-20 h-1 w-16 cursor-pointer md:w-20"
-                >
-              </div>
-            </div>
-            <div class="flex-1" />
-            <div v-if="!compact && isMD" class="flex items-center text-xs md:text-sm">
-              {{ $dayjs.duration(currentTimeFloor, 'second').format("mm:ss") }} / {{ $dayjs.duration(duration, 'second').format("mm:ss") }}
-            </div>
-            <button class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1" aria-label="Reload" type="button" @click="reload">
-              <Icon name="ic:round-refresh" class="h-full w-full p-[1px]" />
-            </button>
-            <button v-if="enableRotate" class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1" aria-label="Reload" type="button" @click="rotate">
-              <Icon name="ic:outline-rotate-right" class="h-full w-full p-[1px]" />
-            </button>
-            <Popover v-if="!compact">
-              <PopoverButton aria-label="Setting" class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1">
-                <Icon name="ic:baseline-settings" class="h-full w-full p-[2px] duration-300" />
-              </PopoverButton>
-              <Transition
-                enter-active-class="transition duration-200 ease-out"
-                enter-from-class="translate-y-2 translate-x-1 opacity-0"
-                enter-to-class="translate-y-0 translate-x-0 opacity-100"
-                leave-active-class="transition duration-150 ease-in"
-                leave-from-class="translate-y-0 translate-x-x opacity-100"
-                leave-to-class="translate-y-2 translate-x-1 opacity-0"
-              >
-                <PopoverPanel class="absolute bottom-11 right-4 rounded-md bg-black/70 dark:bg-black/80">
-                  <div>
-                    <div class="border-b border-white/20 px-3 py-1.5 md:px-4 md:py-2.5">
-                      {{ $t('quality') }}
-                    </div>
-                    <div class="flex w-[220px] flex-col py-1 text-base md:w-[250px]">
-                      <PopoverButton v-for="source in sources" :key="source.id" class="flex items-center truncate text-left text-sm hover:bg-black/50" @click="() => changeSource(source)">
-                        <div class="h-10 w-10">
-                          <Icon v-if="currentSource.id === source.id" name="ic:round-check" class="h-full w-full p-2.5" />
-                        </div>
-                        <div>
-                          {{ source.label }}
-                        </div>
-                      </PopoverButton>
-                    </div>
-                  </div>
-                </PopoverPanel>
-              </Transition>
-            </Popover>
-            <button v-if="pipEnabled" class="group h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1 " aria-label="Fullscreen" type="button" @click="togglePictureInPicture">
-              <Icon name="ic:round-picture-in-picture" class="h-full w-full p-0.5 duration-300" />
-            </button>
-            <button class="group h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1 " aria-label="Fullscreen" type="button" @click="toggleFullscreen">
-              <Icon v-if="!isFullscreen" name="ic:round-fullscreen" class="h-full w-full duration-300 hover:scale-125" />
-              <Icon v-else name="ic:round-fullscreen-exit" class="h-full w-full duration-300 hover:scale-125" />
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div v-else class="h-full w-full">
+      }"
+      @click="videoClick"
+    >
       <video
         ref="video"
-        controls
+        :controls="useDefaultControl && !hideControl"
         :class="{ 'object-cover': !isFullscreen }"
-        class="w-full h-full"
+        class="inset-0 w-full h-full transition-all duration-500 origin-center"
+        :style="{ transform: enableRotate ? `rotate(${rotation}deg)` : 'none' }"
         :poster="poster"
       >
         <p class="vjs-no-js">
@@ -774,6 +650,110 @@ defineExpose({ stop, rotate, syncLive, calculateVideoSize, isPlaying, isMuted, r
           >supports HTML5 video</a>
         </p>
       </video>
+    </div>
+
+    <div v-if="isLoading && !useDefaultControl" id="loading-spinner" class="absolute inset-0 z-0 flex items-center justify-center bg-black/30 text-black">
+      <Icon name="svg-spinners:270-ring-with-bg" class="h-[15%] w-[15%] text-white" />
+    </div>
+
+    <div v-if="!useDefaultControl" id="control" ref="videoControl" :class="{ 'opacity-100': showControl || isFocusControl || isHoverControl }" class="absolute inset-x-0 bottom-0 z-10 text-slate-200 opacity-0 duration-200 ease-in-out" @click="setShowControl(true)">
+      <div :class="{ 'pointer-events-none': isMobile && !showControl }">
+        <div class="group flex items-center justify-center">
+          <div class="relative flex h-full w-full duration-200 group-hover/volume:w-20">
+            <div :class="{ 'h-[3px]': compact, 'h-1': !compact }" class="absolute bottom-0 z-0 w-full overflow-hidden bg-neutral-700/75">
+              <div class="h-full bg-red-600" :style="{ width: `${videoProgess}%` }" />
+            </div>
+            <div :class="{ 'opacity-0': !isMobile, 'h-3 w-3': !compact, 'h-2 w-2': compact }" class="absolute bottom-[2px] -translate-x-1/2 translate-y-1/2 rounded-full bg-red-600 transition-opacity duration-300 group-hover:opacity-100" :style="{ left: `${videoProgess}%` }" />
+            <input
+              ref="seekSlider"
+              :class="{ 'opacity-0': !isMobile, compact }"
+              aria-label="Playback"
+              type="range"
+              min="0"
+              max="10000"
+              step="1"
+              class="volume-slider hidden-slider z-20 h-4 w-full cursor-pointer transition-opacity duration-300 hover:opacity-100"
+              @change="changeVideoTime"
+              @input="seek"
+              @pointerdown="isSeekDragging = true"
+              @pointerup="isSeekDragging = false"
+            >
+          </div>
+        </div>
+        <div class="flex w-full bg-black/70 px-1 duration-200 dark:bg-black/75 md:px-2 items-center">
+          <button class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1" aria-label="Play" type="button" @click="togglePlay">
+            <Icon :name="playIcon" class="h-full w-full" />
+          </button>
+          <div v-if="!compact" class="group/volume flex items-center gap-1">
+            <button class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1" aria-label="Mute" type="button" @click="toggleMute">
+              <Icon :name="volumeIcon" class="h-full w-full" />
+            </button>
+            <div class="relative flex h-full w-16 items-center duration-200 group-hover/volume:w-20 md:w-20">
+              <div class="absolute inset-0 top-1/2 h-1 z-0 w-16 -translate-y-1/2 overflow-hidden rounded-sm bg-gray-300/25 md:w-20">
+                <div class="h-full bg-slate-200" :style="{ width: `${volume * 100}%` }" />
+              </div>
+              <input
+                ref="volumeSlider"
+                v-model="volume"
+                aria-label="Volume"
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                class="volume-slider z-20 h-1 w-16 cursor-pointer md:w-20"
+              >
+            </div>
+          </div>
+          <div class="flex-1" />
+          <div v-if="!compact && isMD" class="flex items-center text-xs md:text-sm">
+            {{ $dayjs.duration(currentTimeFloor, 'second').format("mm:ss") }} / {{ $dayjs.duration(duration, 'second').format("mm:ss") }}
+          </div>
+          <button class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1" aria-label="Reload" type="button" @click="reload">
+            <Icon name="ic:round-refresh" class="h-full w-full p-[1px]" />
+          </button>
+          <button v-if="enableRotate" class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1" aria-label="Reload" type="button" @click="rotate">
+            <Icon name="ic:outline-rotate-right" class="h-full w-full p-[1px]" />
+          </button>
+          <Popover v-if="!compact">
+            <PopoverButton aria-label="Setting" class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1">
+              <Icon name="ic:baseline-settings" class="h-full w-full p-[2px] duration-300" />
+            </PopoverButton>
+            <Transition
+              enter-active-class="transition duration-200 ease-out"
+              enter-from-class="translate-y-2 translate-x-1 opacity-0"
+              enter-to-class="translate-y-0 translate-x-0 opacity-100"
+              leave-active-class="transition duration-150 ease-in"
+              leave-from-class="translate-y-0 translate-x-x opacity-100"
+              leave-to-class="translate-y-2 translate-x-1 opacity-0"
+            >
+              <PopoverPanel class="absolute bottom-11 right-4 rounded-md bg-black/70 dark:bg-black/80">
+                <div>
+                  <div class="border-b border-white/20 px-3 py-1.5 md:px-4 md:py-2.5">
+                    {{ $t('quality') }}
+                  </div>
+                  <div class="flex w-[220px] flex-col py-1 text-base md:w-[250px]">
+                    <PopoverButton v-for="source in sources" :key="source.id" class="flex items-center truncate text-left text-sm hover:bg-black/50" @click="() => changeSource(source)">
+                      <div class="h-10 w-10">
+                        <Icon v-if="currentSource.id === source.id" name="ic:round-check" class="h-full w-full p-2.5" />
+                      </div>
+                      <div>
+                        {{ source.label }}
+                      </div>
+                    </PopoverButton>
+                  </div>
+                </div>
+              </PopoverPanel>
+            </Transition>
+          </Popover>
+          <button v-if="pipEnabled" class="group h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1 " aria-label="Fullscreen" type="button" @click="togglePictureInPicture">
+            <Icon name="ic:round-picture-in-picture" class="h-full w-full p-0.5 duration-300" />
+          </button>
+          <button class="group h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1 " aria-label="Fullscreen" type="button" @click="toggleFullscreen">
+            <Icon v-if="!isFullscreen" name="ic:round-fullscreen" class="h-full w-full duration-300 hover:scale-125" />
+            <Icon v-else name="ic:round-fullscreen-exit" class="h-full w-full duration-300 hover:scale-125" />
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
