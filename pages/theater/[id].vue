@@ -40,6 +40,7 @@ useSeoMeta({
   ogDescription: description,
 })
 
+const { locale } = useI18n()
 useHead({
   title,
 })
@@ -51,7 +52,7 @@ useHead({
       <Icon name="eos-icons:loading" size="3rem" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 " />
     </div>
     <Error v-else-if="error || !data" :message="error ? (error.statusCode === 404 ? $t('error.pagenotfound') : $t('error.unknown')) : $t('error.pagenotfound')" :img-src="!data || error?.statusCode === 404 ? '/svg/404.svg' : '/svg/error.svg'" />
-    <LayoutSingleRow v-else :title="`${title} - ${$dayjs(data?.date).format('DD MMMM YYYY')}`">
+    <LayoutSingleRow v-else :title="`${title} - ${$dayjs(data?.date).locale(locale).format('DD MMMM YYYY')}`">
       <div v-if="data.shows?.length" class="px-4 md:px-5 space-y-10">
         <div v-for="[idx, theater] in data.shows.entries()" :key="theater.id" class="space-y-4 md:space-y-5 border-b-4 border-dashed border-white/10 pb-10">
           <div class="flex flex-col gap-5 md:flex-row md:gap-4">
@@ -131,6 +132,37 @@ useHead({
                       {{ member.name }}
                     </NuxtLink>{{ i === theater.seitansai.length - 2 ? ' dan ' : (i === theater.seitansai.length - 1 ? '' : ', ') }}
                   </div>
+                </div>
+              </div>
+              <div v-if="theater.graduation?.length" class="flex flex-col gap-1.5">
+                <div class="font-semibold mt-2 flex items-center gap-2">
+                  <Icon name="twemoji:birthday-cake" /> <span>Graduation</span>
+                </div>
+                <div class="grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(130px,1fr))] md:flex flex-wrap gap-4 md:gap-5">
+                  <NuxtImg
+                    v-for="member in theater.graduation"
+                    :key="member.id"
+                    class="bg-container block aspect-[8/10] w-[100px] md:w-[120px] overflow-hidden rounded-xl object-cover"
+                    :src="member.img || pic"
+                    alt="Default member picture"
+                    fit="fill"
+                    :modifiers="{
+                      aspectRatio: 8 / 10,
+                      gravity: 'faceCenter',
+                    }"
+                    sizes="100px md:180px"
+                    :placeholder="[8, 10, 75, 5]"
+                    format="webp"
+                  />
+                </div>
+                <div class="text-sm md:text-base">
+                  {{ $t('graduation_text') }}
+                  <div v-for="[i, member] in theater.graduation.entries()" :key="member.id" class="inline">
+                    <NuxtLink class="text-red-500" :to="member.url_key ? `/member/${member.url_key}` : undefined">
+                      {{ member.name }}
+                    </NuxtLink>{{ i === theater.graduation.length - 2 ? ' dan ' : (i === theater.graduation.length - 1 ? '' : ', ') }}
+                  </div>,
+                  huhuhu 😭
                 </div>
               </div>
             </div>

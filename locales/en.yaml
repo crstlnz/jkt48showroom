@@ -208,6 +208,7 @@ multi:
   hidevideocontrol: Hide video control
   showvideocontrol: Show video control
 seitansai_text: This show is seitansai for
+graduation_text: This show is a graduation show for
 menu:
   home: Home
   multi_viewer: Multi Viewer

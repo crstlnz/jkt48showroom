@@ -184,7 +184,8 @@ interface IApiTheaterDetail {
   url: string
   setlist?: JKT48.Setlist
   members: JKT48MemberExtend[]
-  seitansai: Member[]
+  seitansai: JKT48MemberExtend[]
+  graduation: JKT48MemberExtend[]
   date: Date
   team: {
     id: string

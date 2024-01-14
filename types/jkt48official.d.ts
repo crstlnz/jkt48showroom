@@ -20,6 +20,7 @@ declare namespace JKT48 {
     setlistId: string
     memberIds: string[]
     seitansaiIds: string[]
+    graduationIds: string[]
     date: Date
     team: {
       id: string
