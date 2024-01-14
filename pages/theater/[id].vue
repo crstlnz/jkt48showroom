@@ -136,7 +136,7 @@ useHead({
               </div>
               <div v-if="theater.graduation?.length" class="flex flex-col gap-1.5">
                 <div class="font-semibold mt-2 flex items-center gap-2">
-                  <Icon name="twemoji:birthday-cake" /> <span>Graduation</span>
+                  <Icon name="game-icons:graduate-cap" class="text-red-500 w-5 h-5" /> <span>Graduation</span>
                 </div>
                 <div class="grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(130px,1fr))] md:flex flex-wrap gap-4 md:gap-5">
                   <NuxtImg
