@@ -107,7 +107,6 @@ defineExpose({ refresh, video: videoElement, data: props.video, remove })
           :max-buffer-size="300 * 1000 * 1000"
           :max-max-buffer-length="300"
           :save-state="false"
-          :hide-control="true"
           :compact="true"
           :use-default-control="true"
           @source-error="onSourceNotFound"
