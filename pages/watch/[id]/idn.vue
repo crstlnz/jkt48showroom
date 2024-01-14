@@ -74,7 +74,7 @@ function setVideoLandscape(val: boolean) {
         <div
           class="relative flex flex-col gap-3 overflow-hidden transition-all duration-300"
           :class="{
-            'w-full aspect-video': videoIsLandscape,
+            'w-full aspect-[13.15/9]': videoIsLandscape,
             'h-[calc(100dvh_-_60px)]': !videoIsLandscape,
             'w-full': isMobile || !isLandscape,
             'aspect-[9/16]': !isMobile,
@@ -96,7 +96,7 @@ function setVideoLandscape(val: boolean) {
             <LazyWatchVideo
               :landscape="false"
               class="bg-container flex justify-center flex-col flex-1"
-              :video-fill="videoIsLandscape ? 'height' : 'width'"
+              :video-fill="!videoIsLandscape ? 'height' : 'width'"
               :class="{
                 'aspect-square w-full': videoIsLandscape,
                 'w-full h-full': !videoIsLandscape,

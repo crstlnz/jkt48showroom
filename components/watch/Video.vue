@@ -388,8 +388,10 @@ async function play() {
 
 const isSeekDragging = ref(false)
 
+const isFullscreenLandscape = ref(false)
 watch(isFullscreen, (fullscreen) => {
   emit('fullsceen', fullscreen)
+  isFullscreenLandscape.value = window.innerHeight <= window.innerWidth
   calculateVideoSize()
 })
 
@@ -530,7 +532,7 @@ function calculateVideoSize() {
     }
     console.log('is potrait', isPortrait, originalSize.value.width, originalSize.value.height)
     if (isFullscreen.value) {
-      aspectRatio = potrait
+      aspectRatio = isFullscreenLandscape ? (!isLandscape.value ? landscape : potrait) : (!isLandscape.value ? potrait : landscape)
     }
     // aspectRatio = isFullscreen.value ? (isPortrait ? potrait : landscape) : (!isPortrait ? landscape : potrait)
     video.value.style.scale = `${aspectRatio}`
@@ -613,7 +615,7 @@ defineExpose({ stop, rotate, syncLive, calculateVideoSize, isPlaying, isMuted, r
     >
       <Icon name="ic:round-play-arrow" class="text-white/60" size="3rem" />
     </div>
-    <div v-if="isMobile && !useDefaultControl && isPlaying && showControl" class="z-10 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/50 p-1" @click="togglePlay">
+    <div v-if="isMobile && !useDefaultControl && isPlaying && showControl && !isLoading" class="z-10 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/50 p-1" @click="togglePlay">
       <Icon name="ic:round-pause" class="text-white/60" size="3rem" />
     </div>
     <div
@@ -623,8 +625,10 @@ defineExpose({ stop, rotate, syncLive, calculateVideoSize, isPlaying, isMuted, r
         'absolute top-1/2 -translate-y-1/2 z-0 -translate-x-1/2 left-1/2': enableRotate && isFullscreen,
         'aspect-video': isLandscape && enableRotate,
         'aspsect-[9/12]': !isLandscape && enableRotate,
-        'w-full': (videoFill === 'width') && !isFullscreen && enableRotate,
-        'h-full': videoFill === 'height' || isFullscreen && enableRotate,
+        'w-full': ((videoFill === 'width') && !isFullscreen && enableRotate) || isFullscreen,
+        'h-full': (videoFill === 'height' && !isFullscreen && enableRotate),
+        // 'w-full': isFullscreen && enableRotate && isFullscreenLandscape && !isLandscape,
+        // 'w-full': isFullscreen && enableRotate && isFullscreenLandscape,
       }"
       @click="videoClick"
     >
