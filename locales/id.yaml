@@ -146,6 +146,7 @@ sorter:
 selectdate: Pilih tanggal
 birthday:
   thismonth: Ultah bulan ini
+  next: Ultah selanjutnya
   empty: Tidak ada yang ultah bulan ini
 form:
   captcha: Tolong isi captcha dibawah ini
@@ -171,6 +172,7 @@ tabview:
 news: News
 schedule: Events
 today: Hari ini
+tomorrow: Besok
 noresult: Tidak ada hasil dengan pencarian
 total_member: Jumlah member
 recent_theater: Theater terakhir

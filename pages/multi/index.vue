@@ -191,7 +191,6 @@ function checkLive(video: Multi.Video) {
 }
 
 function applyVideoRefs(ref: any, video: Multi.Video) {
-  console.log('Apply refs for', video.id)
   if (ref) {
     videoPlayers.value.set(video.id, ref)
   }

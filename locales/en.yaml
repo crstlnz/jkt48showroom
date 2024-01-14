@@ -146,6 +146,7 @@ sorter:
 selectdate: Select date
 birthday:
   thismonth: Birthdays this month
+  next: Next Birthday
   empty: No one has a birthday this month
 form:
   captcha: Please fill out the captcha
@@ -171,6 +172,7 @@ tabview:
 news: News
 schedule: Events
 today: Today
+tomorrow: Tomorrow
 noresult: No query result for
 total_member: Participating members
 recent_theater: Recent Theater
