@@ -85,7 +85,7 @@ function rotate() {
   }
 }
 const enableRotate = useLocalStorage<boolean>('rotate_feature_v1', () => false)
-defineExpose({ refresh, video: videoElement, data: props.video, remove })
+defineExpose({ refresh, video: videoElement, data: props.video, remove, id: props.video.id })
 </script>
 
 <template>
