@@ -113,82 +113,91 @@ function setShowControl(show: boolean) {
 }
 
 const fatalError = ref(0)
+
+const device = useDevice()
 function createHLS(url: string) {
-  fatalError.value = 0
-  isLoading.value = true
-  destroyVideo()
-  hls.value = new Hls({
-    enableWorker: true,
-    liveSyncDurationCount: 1,
-    maxBufferSize: props.maxBufferSize ? props.maxBufferSize : 254 * 1000 * 1000,
-    // maxMaxBufferLength: props.maxMaxBufferLength ? props.maxMaxBufferLength : 1800,
-    maxBufferLength: 5,
-    // liveSyncDuration: 3,
-    // liveMaxLatencyDuration: 5,
-    // highBufferWatchdogPeriod: 1,
-    lowLatencyMode: true,
-    fetchSetup(context: any, initParams: any) {
-      // Always send cookies, even for cross-origin calls.
-      initParams.credentials = 'include'
-      return new Request(context.url, initParams)
-    },
-  })
-
-  hls.value.on(Hls.Events.ERROR, (event: any, data: any) => {
-    if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
-      emit('sourceError')
-    }
-
-    startAutoReload()
-    if (data.fatal) {
-      switch (data.type) {
-        case Hls.ErrorTypes.NETWORK_ERROR:
-        // try to recover network error
-          console.log('fatal network error encountered, try to recover')
-          hls.value.startLoad()
-          break
-        case Hls.ErrorTypes.MEDIA_ERROR:
-          console.log('fatal media error encountered, try to recover')
-          hls.value.swapAudioCodec()
-          hls.value.recoverMediaError()
-          break
-        default:
-          console.log('cannot recover error')
-          // cannot recover
-          fatalError.value += 2
-          if (fatalError.value > 3) {
-            hls.value.destroy()
-          }
-          else {
-            reload()
-          }
-          break
-      }
-    }
-    else {
-      if (data.details === Hls.ErrorDetails.BUFFER_STALLED_ERROR) {
-        isLoading.value = true
-      }
-    }
-  })
-
-  hls.value.on(Hls.Events.FRAG_BUFFERED, () => {
-    stopAutoReload()
-    isLoading.value = false
-  })
-
-  hls.value.on(Hls.Events.MANIFEST_LOADING, () => {
+  if (Hls.isSupported()) {
+    fatalError.value = 0
     isLoading.value = true
-  })
+    destroyVideo()
+    hls.value = new Hls({
+      enableWorker: true,
+      liveSyncDurationCount: 1,
+      maxBufferSize: props.maxBufferSize ? props.maxBufferSize : 254 * 1000 * 1000,
+      // maxMaxBufferLength: props.maxMaxBufferLength ? props.maxMaxBufferLength : 1800,
+      maxBufferLength: 5,
+      // liveSyncDuration: 3,
+      // liveMaxLatencyDuration: 5,
+      // highBufferWatchdogPeriod: 1,
+      lowLatencyMode: true,
+      fetchSetup(context: any, initParams: any) {
+      // Always send cookies, even for cross-origin calls.
+        initParams.credentials = 'include'
+        return new Request(context.url, initParams)
+      },
+    })
 
-  hls.value.on(Hls.Events.LEVEL_LOADED, () => {
-    stopAutoReload()
-    isLoading.value = false
-  })
+    hls.value.on(Hls.Events.ERROR, (event: any, data: any) => {
+      if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
+        emit('sourceError')
+      }
 
-  hls.value.attachMedia(video.value)
-  hls.value.loadSource(url)
-  play()
+      startAutoReload()
+      if (data.fatal) {
+        switch (data.type) {
+          case Hls.ErrorTypes.NETWORK_ERROR:
+            // try to recover network error
+            console.log('fatal network error encountered, try to recover')
+            hls.value.startLoad()
+            break
+          case Hls.ErrorTypes.MEDIA_ERROR:
+            console.log('fatal media error encountered, try to recover')
+            hls.value.swapAudioCodec()
+            hls.value.recoverMediaError()
+            break
+          default:
+            console.log('cannot recover error')
+            // cannot recover
+            fatalError.value += 2
+            if (fatalError.value > 3) {
+              hls.value.destroy()
+            }
+            else {
+              reload()
+            }
+            break
+        }
+      }
+      else {
+        if (data.details === Hls.ErrorDetails.BUFFER_STALLED_ERROR) {
+          isLoading.value = true
+        }
+      }
+    })
+
+    hls.value.on(Hls.Events.FRAG_BUFFERED, () => {
+      stopAutoReload()
+      isLoading.value = false
+    })
+
+    hls.value.on(Hls.Events.MANIFEST_LOADING, () => {
+      isLoading.value = true
+    })
+
+    hls.value.on(Hls.Events.LEVEL_LOADED, () => {
+      stopAutoReload()
+      isLoading.value = false
+    })
+
+    hls.value.attachMedia(video.value)
+    hls.value.loadSource(url)
+    play()
+  }
+  else {
+    if (device.isApple || device.isIos) {
+      videoPlayer.value?.setAttribute('src', url) // The media starts playing on iphone right here
+    }
+  }
 }
 
 function destroyVideo() {
@@ -375,6 +384,7 @@ async function play() {
     catch (e) {
       console.log(errorPlayCount.value, e)
       if (errorPlayCount.value > 5) return
+      errorPlayCount.value += 1
       await nextTick(async () => {
         if (errorPlayCount.value > 4) {
           mute()
