@@ -32,6 +32,9 @@ const isLocked = useScrollLock(el)
 
 onMounted(() => {
   el.value = document.body
+  useEventListener(window, 'popstate', (event) => {
+    isOpen.value = !!event.state?.isPopup
+  })
 })
 watch(isOpen, (open) => {
   isLocked.value = open
@@ -39,14 +42,13 @@ watch(isOpen, (open) => {
 
 const hashMenu = '#menu'
 function openMenu() {
-  router.push({
-    path: route.path,
-    hash: hashMenu,
-  })
+  window.history.pushState({ isOpen: true }, 'Menu Nav')
+  isOpen.value = true
 }
 
 function closeMenu() {
-  router.back()
+  window.history.back()
+  isOpen.value = false
 }
 
 watch(() => route.fullPath, (p, oP) => {
