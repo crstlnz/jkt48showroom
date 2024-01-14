@@ -22,7 +22,7 @@ const { data, pending, error } = await useCachedFetch<IMemberBirthDay[]>('/api/n
       <img class="mx-auto w-72 max-w-[80%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`">
       <span>{{ $t("birthday.empty") }}</span>
     </div>
-    <div v-else class="grid grid-cols-3 md:py-4 gap-5 md:gap-6">
+    <div v-else class="grid grid-cols-2 lg:grid-cols-3 md:py-4 gap-5 md:gap-6 max-sm:mt-2 max-sm:px-1.5">
       <MemberBirthdayCard v-for="member in data" :key="member.room_id || member.name" :member="member" class="mt-2" />
     </div>
   </div>
