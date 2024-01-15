@@ -115,7 +115,10 @@ function setShowControl(show: boolean) {
 const fatalError = ref(0)
 
 const device = useDevice()
+
 function createHLS(url: string) {
+  // const url = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8'
+  // const url = 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
   if (Hls.isSupported()) {
     fatalError.value = 0
     isLoading.value = true
@@ -194,8 +197,9 @@ function createHLS(url: string) {
     play()
   }
   else {
-    if (device.isApple || device.isIos) {
-      videoPlayer.value?.setAttribute('src', url) // The media starts playing on iphone right here
+    if (video.value) {
+      video.value?.setAttribute('src', url)
+      play()
     }
   }
 }
@@ -305,11 +309,6 @@ watch(isLandscape, (l) => {
   emit('isLandscape', l)
 }, {
   immediate: true,
-})
-
-useEventListener(video, 'loadedmetadata', function () {
-  videoWidth.value = (this as any).videoWidth
-  videoHeight.value = (this as any).videoHeight
 })
 
 const isBuiltInFullscreen = ref(false)
@@ -566,11 +565,25 @@ watch(rotation, () => {
   requestAnimationFrame(() => calculateVideoSize())
 })
 
+useEventListener(video, 'loadedmetadata', function () {
+  videoWidth.value = (this as any).videoWidth
+  videoHeight.value = (this as any).videoHeight
+})
+
 useEventListener(video, 'play', () => {
+  isLoading.value = false
   isPlaying.value = true
 })
 useEventListener(video, 'pause', () => {
+  isLoading.value = false
   isPlaying.value = false
+})
+useEventListener(video, 'playing', () => {
+  isLoading.value = false
+  isPlaying.value = true
+})
+useEventListener(video, 'stalled', () => {
+  isLoading.value = true
 })
 useEventListener(video, 'durationchange', () => {
   duration.value = video.value?.duration || 0
@@ -578,6 +591,9 @@ useEventListener(video, 'durationchange', () => {
 useEventListener(video, 'timeupdate', () => {
   if (isSeekDragging.value) return
   currentTime.value = video.value?.currentTime || 0
+})
+useEventListener(video, 'loadstart', () => {
+  isLoading.value = true
 })
 
 function checkBuiltInFullscreen() {
@@ -662,11 +678,10 @@ defineExpose({ stop, rotate, syncLive, calculateVideoSize, isPlaying, isMuted, r
     >
       <video
         ref="video"
-        :controls="!(enableRotate || (!useDefaultControl && hideControl))"
+        :controls="!(!useDefaultControl || enableRotate || hideControl)"
         :class="{
           'object-cover': !isFullscreen,
         }"
-        :is-fullscreen="isFullscreen"
         class="inset-0 w-full h-full transition-all duration-500 origin-center"
         :style="{ transform: enableRotate ? `rotate(${rotation}deg)` : 'none' }"
         :poster="poster"

@@ -74,10 +74,10 @@ function setVideoLandscape(val: boolean) {
         <div
           class="relative flex flex-col gap-3 overflow-hidden transition-all duration-300"
           :class="{
-            'w-full aspect-[13.15/9]': videoIsLandscape,
+            'w-full aspect-[13.5/9] sm:aspect-[15/9]': videoIsLandscape,
             'h-[calc(100dvh_-_60px)]': !videoIsLandscape,
             'w-full': isMobile || !isLandscape,
-            'aspect-[9/16]': !isMobile,
+            'aspect-[9/16]': !videoIsLandscape && !isMobile,
           }"
         >
           <NuxtLink :to="$idnLiveUrl(data?.user?.username || '', data?.slug || '')" target="_blank" :external="true" no-prefetch class="absolute top-0 left-0 z-20 p-4 mt-0.5">
