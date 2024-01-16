@@ -159,7 +159,7 @@ onMounted(() => {
                 <div v-if="!videoPlayers.length" class="text-base text-gray-400">
                   {{ $t('no_video_player') }}
                 </div>
-                <div v-else class="flex flex-col flex-1 h-0">
+                <div v-else class="flex flex-col flex-1">
                   <div class="flex-col max-md:items-stretch md:flex-row border-b-2 border-black/10 dark:border-white/10 py-2 md:px-4 md:py-2.5 flex items-center md:gap-4 justify-between">
                     <div class="flex items-center max-md:justify-around">
                       <button v-ripple type="button" class="flex w-8 h-8 md:w-9 md:h-9 hover:bg-hover-2 rounded-full p-1" @click="playAll">

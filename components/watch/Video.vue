@@ -570,6 +570,11 @@ useEventListener(video, 'loadedmetadata', function () {
   videoHeight.value = (this as any).videoHeight
 })
 
+useEventListener(video, 'loadeddata', function () {
+  videoWidth.value = (this as any).videoWidth
+  videoHeight.value = (this as any).videoHeight
+})
+
 useEventListener(video, 'play', () => {
   isLoading.value = false
   isPlaying.value = true
@@ -678,6 +683,8 @@ defineExpose({ stop, rotate, syncLive, calculateVideoSize, isPlaying, isMuted, r
     >
       <video
         ref="video"
+        playsinline
+        webkit-playsinline
         :controls="!(!useDefaultControl || enableRotate || hideControl)"
         :class="{
           'object-cover': !isFullscreen,

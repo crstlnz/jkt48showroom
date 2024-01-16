@@ -144,24 +144,24 @@ const { t } = useI18n()
 const idnLives = useIDNLives()
 const { data: idnData } = storeToRefs(idnLives)
 
-const livesIds = computed(() => {
-  return [...(data.value?.map(i => String(i.room_id)) || []), ...(idnData.value?.map(i => String(i.user?.id)) || [])]
-})
+// const livesIds = computed(() => {
+//   return [...(data.value?.map(i => String(i.room_id)) || []), ...(idnData.value?.map(i => String(i.user?.id)) || [])]
+// })
 
-watch(livesIds, (ids) => {
-  if (autoRemove.value) {
-    for (const v of videoPlayers.value.values()) {
-      if (!ids.includes(v.id)) {
-        v.remove()
-        addNotif({
-          type: 'info',
-          title: t('notif.live.ended'),
-          message: `${v.data.name} Room`,
-        })
-      }
-    }
-  }
-})
+// watch(livesIds, (ids) => {
+//   if (autoRemove.value) {
+//     for (const v of videoPlayers.value.values()) {
+//       if (!ids.includes(v.id)) {
+//         v.remove()
+//         addNotif({
+//           type: 'info',
+//           title: t('notif.live.ended'),
+//           message: `${v.data.name} Room`,
+//         })
+//       }
+//     }
+//   }
+// })
 
 function checkLive(video: Multi.Video) {
   const showroomLives = data.value ?? []
