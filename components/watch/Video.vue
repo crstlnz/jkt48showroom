@@ -706,11 +706,11 @@ defineExpose({ stop, rotate, syncLive, calculateVideoSize, isPlaying, isMuted, r
         <Icon name="ic:round-play-arrow" class="text-white/60" size="3rem" />
       </div>
       <div v-if="isMobile && isPlaying && showControl && !isLoading" class="z-10 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/50 p-1" @click="togglePlay">
-        <Icon name="ic:round-pause" class="text-white/60" size="3rem" />
+        <Icon name="ic:round-pause" class="text-white/60 max-w-[15%]" size="3rem" />
       </div>
 
       <div v-if="isLoading" id="loading-spinner" class="absolute inset-0 z-0 flex items-center justify-center bg-black/30 text-black">
-        <Icon name="svg-spinners:270-ring-with-bg" class="h-[15%] w-[15%] text-white" />
+        <Icon name="svg-spinners:270-ring-with-bg" class="text-white max-w-[15%]" size="3rem" />
       </div>
 
       <div id="control" ref="videoControl" :class="{ 'opacity-100': showControl || isFocusControl || isHoverControl }" class="absolute inset-x-0 bottom-0 z-10 text-slate-200 opacity-0 duration-200 ease-in-out" @click="setShowControl(true)">

@@ -38,7 +38,7 @@ export const useIDNLives = defineStore('useIDNLives', () => {
   async function getIDNLives(): Promise<IDNLives[]> {
     if (!members.value) members.value = await getMembers().catch(_ => [])
     const idnUsernames: string[] = members.value?.filter(i => i.idn_username).map(i => i.idn_username) as string[] || []
-    if (idnUsernames?.length) {
+    if (!idnUsernames?.length) {
       return await $apiFetch<IDNLives[]>(`/api/idn_lives`).catch((_) => {
         addNotif({
           type: 'danger',
