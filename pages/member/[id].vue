@@ -204,7 +204,7 @@ useHead({
                     {{ $d(birth.date, 'birthdate') }}
                   </div>
                 </div>
-                <div v-if="birth" class="flex flex-col gap-1 px-4 py-3 md:gap-2 max-xl:flex-[40%]">
+                <div v-if="birth && !member.is_group" class="flex flex-col gap-1 px-4 py-3 md:gap-2 max-xl:flex-[40%]">
                   <div class="flex items-center gap-1.5 text-xs md:text-sm">
                     <Icon :name="`emojione:${birth.horoscope.toLowerCase()}`" />
                     <span>{{ $t("horoscope.title") }}</span>

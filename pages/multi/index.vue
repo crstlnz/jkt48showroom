@@ -153,6 +153,11 @@ watch(livesIds, (ids) => {
     for (const v of videoPlayers.value.values()) {
       if (!ids.includes(v.id)) {
         v.remove()
+        addNotif({
+          type: 'info',
+          title: t('notif.live.ended'),
+          message: `${v.data.name} Room`,
+        })
       }
     }
   }
@@ -210,6 +215,10 @@ const description = computed(() => {
 watch(rowCount, () => {
   for (const v of videoPlayers.value.values()) {
     v.video?.calculateVideoSize()
+  }
+
+  for (const v of videos.value) {
+    if (v.space > rowCount.value) v.space = rowCount.value
   }
 })
 
@@ -272,12 +281,17 @@ function openMediaControl() {
               v-for="[idx, video] in videos.entries()"
               :ref="(ref) => applyVideoRefs(ref, video)"
               :key="video.id"
-              :style="{ flex: `0 0 ${100 / (rowCount || 4)}%` }"
+              :style="{ flex: `0 0 ${100 / ((rowCount || 4) - (video.space - 1))}%` }"
               :class="{ 'transition-all duration-300': videos.length === 1 }"
               :index="idx"
+              :data-space="video.space"
+              :data-size="(rowCount || 4) - (video.space - 1)"
               :videos-length="videos.length"
               :video="video"
               :show-video-control="showVideoControl"
+              @space-change="(space) => {
+                video.space = Math.max(1, Math.min(space, rowCount))
+              }"
               @delete="(reason) => deleteVideo(video, reason)"
               @source-not-found="() => checkLive(video)"
               @move-next="() => moveNext(idx)"

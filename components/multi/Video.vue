@@ -9,7 +9,7 @@ const props = defineProps<{
   showVideoControl: boolean
 }>()
 
-const emit = defineEmits<{ (e: 'moveNext'): void, (e: 'movePrevious'): void, (e: 'delete', reason?: string): void, (e: 'sourceNotFound'): void }>()
+const emit = defineEmits<{ (e: 'spaceChange', space: number): void, (e: 'moveNext'): void, (e: 'movePrevious'): void, (e: 'delete', reason?: string): void, (e: 'sourceNotFound'): void }>()
 const autoRemove = useLocalStorage('auto_remove_player', () => true)
 const videoElement = ref<InstanceType<typeof WatchVideo>>()
 
@@ -85,7 +85,17 @@ function rotate() {
   }
 }
 const enableRotate = useLocalStorage<boolean>('rotate_feature_v1', () => false)
-defineExpose({ refresh, video: videoElement, data: props.video, remove, id: props.video.id })
+const useSpace = ref(1)
+
+function expandSpace() {
+  emit('spaceChange', props.video.space + 1)
+}
+
+function reduceSpace() {
+  emit('spaceChange', props.video.space - 1)
+}
+const rowCount = useLocalStorage('multiRowCount', 4, { deep: true })
+defineExpose({ refresh, video: videoElement, data: props.video, remove, id: props.video.id, useSpace })
 </script>
 
 <template>
@@ -135,9 +145,25 @@ defineExpose({ refresh, video: videoElement, data: props.video, remove, id: prop
           <button type="button" class="bg-blue-500 text-white h-6 w-6 md:w-7 md:h-7 flex justify-center items-center rounded-md text-sm" @click="refresh">
             <Icon name="material-symbols:refresh-rounded" class="w-full h-full p-1" />
           </button>
-          <NuxtLink :to="video.original_url" target="_blank" :external="true" no-prefetch type="button" class="bg-blue-500 flex items-center h-6 w-6 md:w-7 md:h-7 justify-center  text-white rounded-md text-sm">
+          <button
+            type="button"
+            class="bg-blue-500 text-white h-6 w-6 md:w-7 md:h-7 flex justify-center items-center rounded-md text-sm disabled:opacity-45 disabled:cursor-not-allowed"
+            :disabled="video.space <= 1"
+            @click="reduceSpace"
+          >
+            <Icon name="iconoir:arrow-union" class="w-full h-full p-1" />
+          </button>
+          <button
+            type="button"
+            class="bg-blue-500 text-white h-6 w-6 md:w-7 md:h-7 flex justify-center items-center rounded-md text-sm disabled:opacity-45 disabled:cursor-not-allowed"
+            :disabled="video.space >= rowCount"
+            @click="expandSpace"
+          >
+            <Icon name="iconoir:arrow-separate" class="w-full h-full p-1" />
+          </button>
+          <!-- <NuxtLink :to="video.original_url" target="_blank" :external="true" no-prefetch type="button" class="bg-blue-500 flex items-center h-6 w-6 md:w-7 md:h-7 justify-center  text-white rounded-md text-sm">
             <Icon name="octicon:link-external-16" class="w-full h-full p-1.5" />
-          </NuxtLink>
+          </NuxtLink> -->
           <button type="button" class="bg-red-500 text-white h-6 w-6 md:w-7 md:h-7 flex justify-center items-center rounded-md text-sm" @click="$emit('delete')">
             <Icon name="heroicons:trash" class="w-full h-full p-1.5" />
           </button>
