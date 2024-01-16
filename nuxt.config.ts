@@ -38,7 +38,6 @@ export default defineNuxtConfig({
       crossOriginEmbedderPolicy: false,
       contentSecurityPolicy: !isDev
         ? {
-            'default-src': ['\'self\''],
             'base-uri': ['\'none\''],
             'font-src': ['*', 'https:', 'data:'],
             'form-action': ['\'self\''],
