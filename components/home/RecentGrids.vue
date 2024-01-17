@@ -38,7 +38,7 @@ const { locale } = useI18n()
       </div>
     </div>
     <div
-      v-if="data?.recents"
+      v-else-if="data?.recents"
       key="hasdata"
       class="grid grid-cols-1 grid-rows-1 gap-4 sm:grid-cols-2 xl:grid-cols-3"
     >
