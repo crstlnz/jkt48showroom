@@ -60,12 +60,12 @@ const titleSeo = computed(() => `${data.value?.type === 'showroom' ? 'Live Showr
 useSeoMeta({
   title: () => titleSeo.value,
   ogTitle: () => titleSeo.value,
+  twitterTitle: () => titleSeo.value,
   description,
-  ogImage: () => data.value?.room_info?.img || '',
   ogDescription: description,
   twitterDescription: description,
-  twitterTitle: () => titleSeo.value,
   twitterSite: '@crstlnz',
+  ogImage: () => data.value?.room_info?.img || '',
   twitterImage: () => data.value?.room_info?.img || '',
   twitterCard: 'summary_large_image',
 })

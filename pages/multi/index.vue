@@ -209,7 +209,7 @@ useHeadSafe({
 })
 
 const description = computed(() => {
-  return `Multi viewer for ${getGroupTitle(group)} Live Streams!`
+  return `Multi viewer adalah aplikasi yang memungkinkan kamu untuk menonton member ${getGroupTitle(group)} favoritmu sercara bersamaan!`
 })
 
 watch(rowCount, () => {
@@ -225,7 +225,9 @@ watch(rowCount, () => {
 useSeoMeta({
   description,
   ogDescription: () => description.value,
-
+  twitterDescription: () => description.value,
+  keywords: 'jkt48 multi viewer, jkt48 multi stream, jkt48 live multi stream, nonton jkt48, nonton jkt48 bersamaan',
+  twitterCard: 'summary',
 })
 const mediaControl = ref<InstanceType<typeof MultiMediaControl>>()
 function openMediaControl() {

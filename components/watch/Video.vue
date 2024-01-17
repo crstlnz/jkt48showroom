@@ -684,7 +684,6 @@ defineExpose({ stop, rotate, syncLive, calculateVideoSize, isPlaying, isMuted, r
       <video
         ref="video"
         playsinline
-        webkit-playsinline
         :controls="!(!useDefaultControl || enableRotate || hideControl)"
         :class="{
           'object-cover': !isFullscreen,
