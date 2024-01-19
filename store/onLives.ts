@@ -31,10 +31,10 @@ export const useOnLives = defineStore('onLives', () => {
   async function getShowroomLives(): Promise<IRoomLive[]> {
     try {
       if (!config.public.isDev) {
-        return await $apiFetch(`/api/now_live`, { query: { group: settings.group } })
+        return await $apiFetch<IRoomLive[]>(`/api/now_live`, { query: { group: settings.group } }).catch(_ => [])
       }
       else {
-        const data: any = await $apiFetch(`/api/showroom/onlives`)
+        const data: any = await $apiFetch(`/api/showroom/onlives`).catch(_ => null)
         const re = (data?.onlives[0]?.lives ?? []).splice(0, 4).map((i: any) => {
           return {
             name: i.main_name ?? 'Test name',

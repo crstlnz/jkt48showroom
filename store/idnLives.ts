@@ -80,7 +80,7 @@ export const useIDNLives = defineStore('useIDNLives', () => {
         view_count: i.view_count,
         live_at: new Date(i.live_at).toISOString(),
       }
-    })
+    }) || []
 
     const additionalUsername = ['jkt48-official']
     idnUsernames.push(...additionalUsername)

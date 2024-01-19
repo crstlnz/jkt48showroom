@@ -41,7 +41,7 @@ const { data: idnData, pending: idnPending, liveCount: idnCount, hasLives: idnHa
       <template #fallback>
         <div class="pulse-color h-4 w-20 animate-pulse rounded-xl md:h-5" />
       </template>
-      <div v-if="pending || idnPending || (data == null && idnData == null)" key="loading">
+      <div v-if="(pending && idnPending) && (data == null && idnData == null)" key="loading">
         <div class="pulse-color h-4 w-20 animate-pulse rounded-xl md:h-5" />
       </div>
       <div v-else key="data" class="text-xs opacity-60 md:text-sm">
@@ -67,7 +67,7 @@ const { data: idnData, pending: idnPending, liveCount: idnCount, hasLives: idnHa
         {{ $t("data.failed") }}
       </div>
       <div
-        v-else-if="pending || idnPending || (data == null && idnData == null)"
+        v-else-if="(pending && idnPending) && (data == null && idnData == null)"
         class="bg-container grid-live-now gap-4 rounded-xl p-4"
       >
         <PulseLiveCard />
