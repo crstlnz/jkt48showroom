@@ -52,7 +52,7 @@ const maxDots = computed(() => {
       </div>
 
       <ClientOnly>
-        <div v-if="!error" class="float-right m-3 w-[400px] max-w-[95vw] self-end md:m-4">
+        <div v-if="!error" class="float-right m-3 min-w-[100px max-w-[95vw] self-end md:m-4">
           <PulsePaginationControl v-if="pending || !data" :max-dots="maxDots" />
           <PaginationControl
             v-else-if="!error"

@@ -158,6 +158,13 @@ interface IApiRecents {
   total_count: number
 }
 
+interface IBookmarks {
+  bookmarks: IRecent[]
+  page: number
+  perpage: number
+  total_count: number
+}
+
 type HistoryType = 'top100' | 'top50' | 'top13' | 'gifter'
 interface IHistoryRecents {
   recents: (IRecent & { type: HistoryType, user?: Database.UserData & { giftSpent: number } })[]

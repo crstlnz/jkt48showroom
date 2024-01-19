@@ -42,7 +42,7 @@ const submitDisabled = computed(() => {
   return loading.value
   // return loading.value || session.value?.csrf_token == null
 })
-const username = ref('')
+const username = useSessionStorage('username-form', () => '')
 const password = ref('')
 const captcha = ref('')
 const usernameError = ref('')

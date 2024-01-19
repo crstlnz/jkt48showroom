@@ -71,7 +71,7 @@ function changePage(val: number) {
 </script>
 
 <template>
-  <div class="flex w-full justify-between">
+  <div class="flex w-full justify-between gap-2">
     <button
       aria-label="Previous Page"
       type="button"
