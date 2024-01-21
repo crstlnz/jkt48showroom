@@ -5,58 +5,88 @@ import { useFuse } from '@vueuse/integrations/useFuse'
 import { useSettings } from '~~/store/settings'
 
 const { t: $t } = useI18n()
-
+const { group } = useSettings()
 const settings = useSettings()
 const { data: raw, pending, error } = await useApiFetch<IMember[]>('/api/member', { query: { group: settings.group }, key: `member-${settings.group}` })
 const route = useRoute()
 const router = useRouter()
-let filterOptions: Ref< {
+// let filterOptions: Ref< {
+//   generation: string[]
+//   graduate: boolean
+//   active: boolean
+// }> = useSessionStorage('filter-member', () => {
+//   return {
+//     generation: [],
+//     graduate: false,
+//     active: true,
+//   }
+// })
+const defaultFilter = {
+  generation: [],
+  graduate: false,
+  active: true,
+}
+
+interface FilterOptions {
   generation: string[]
   graduate: boolean
   active: boolean
-}>
-let search: Ref<string>
-if (route.query?.s) {
-  search = ref(String(route.query?.s || ''))
-  filterOptions = ref<{
-    generation: string[]
-    graduate: boolean
-    active: boolean
-  }>({
-    generation: [],
-    graduate: true,
-    active: true,
+}
+
+console.log(getFilterFromQuery())
+
+const filterOptions = ref<FilterOptions>(getFilterFromQuery())
+
+function getFilterFromQuery() {
+  const query = route.query
+  const generation = !query.gen ? [] : String(query.gen || '')?.split(',').map(i => `${i}-${group}`)
+  const graduate = !query.graduate ? defaultFilter.graduate : String(query.graduate) === 'true'
+  const active = !query.active ? defaultFilter.active : String(query.graduate) === 'true'
+
+  return {
+    generation: generation || [],
+    graduate,
+    active,
+  }
+}
+
+function generateRouteQuery(opts: FilterOptions) {
+  const generation = opts.generation?.map(i => i.split('-')?.[0]?.trim())?.join(',') || ''
+  const graduate = opts.graduate
+  const active = opts.active
+
+  return {
+    gen: generation,
+    graduate: String(graduate),
+    active: String(active),
+  }
+}
+
+const search: Ref<string> = ref(route.query?.s ? String(route.query?.s) : '')
+watch(filterOptions, (opts) => {
+  const defaultquery = generateRouteQuery(defaultFilter)
+  const generated = generateRouteQuery(opts)
+  for (const key of Object.keys(defaultquery)) {
+    if (defaultquery[key as keyof FilterOptions] === generated[key as keyof FilterOptions]) {
+      delete generated[key as keyof FilterOptions]
+    }
+  }
+  router.push({
+    query: {
+      ...generated,
+      s: route.query.s,
+    },
   })
-}
-else {
-  search = useSessionStorage('member-page-search', '', { mergeDefaults: true })
-  if (route.query?.gen) {
-    filterOptions = ref<{
-      generation: string[]
-      graduate: boolean
-      active: boolean
-    }>({
-      generation: [String(route.query.gen)],
-      graduate: true,
-      active: true,
-    })
-  }
-  else {
-    filterOptions = useCookie<{
-      generation: string[]
-      graduate: boolean
-      active: boolean
-    }>('filterOption', {
-      default: () => {
-        return {
-          generation: [],
-          graduate: false,
-          active: true,
-        }
-      },
-    })
-  }
-}
+}, { deep: true })
+
+watch(search, (s) => {
+  router.push({
+    query: {
+      ...route.query,
+      s: s || undefined,
+    },
+  })
+})
 
 watch(search, () => {
   if (route.query.s) {
@@ -64,7 +94,6 @@ watch(search, () => {
   }
 })
 
-const { group } = useSettings()
 const generations = computed(() => {
   const gen = generateGen()
   return gen[group]
