@@ -164,6 +164,7 @@ const { data: idnData } = storeToRefs(idnLives)
 // })
 
 function checkLive(video: Multi.Video) {
+  if (video.is_mockup) return true
   const showroomLives = data.value ?? []
   const idnLives = idnData.value ?? []
   const showroomRoom = showroomLives.find(i => video.id === String(i.room_id))

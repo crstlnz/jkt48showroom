@@ -8,9 +8,9 @@ import { convertShowroom } from '~/utils/multi'
 const props = defineProps<{
   selected: Map<string, Multi.Video>
 }>()
-
 const emit = defineEmits<{ (e: 'select', id: Multi.Video): void }>()
-
+const route = useRoute()
+const isMockup = ref(route.query.mockup != null)
 function select(video: Omit<Multi.Video, 'order'>) {
   emit('select', {
     ...video,
@@ -24,6 +24,16 @@ const { data, pending } = storeToRefs(onLives)
 const idnLives = useIDNLives()
 const { data: idnData, pending: idnPending } = storeToRefs(idnLives)
 
+const mockupVideos = [
+  { src: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', title: 'Big Buck Bunny' },
+  { src: 'https://cdn.jwplayer.com/manifests/pZxWPRg4.m3u8', title: 'FDR CDN 1080p' },
+  { src: 'https://test-streams.mux.dev/x36xhzz/url_6/193039199_mp4_h264_aac_hq_7.m3u8', title: 'Big Buck Bunny 480p' },
+  { src: 'https://playertest.longtailvideo.com/adaptive/captions/playlist.m3u8', title: 'CNN Special Report' },
+  { src: 'https://test-streams.mux.dev/dai-discontinuity-deltatre/manifest.m3u8', title: 'Ad insertion in event stream' },
+  { src: 'https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s-fmp4/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8', title: 'HLS by Bitmovin' },
+  { src: 'https://mtoczko.github.io/hls-test-streams/test-group/playlist.m3u8', title: '1080p' },
+]
+
 const lives = computed<Omit< Multi.Video, 'order'>[]>(() => {
   const showroomLive = data.value || []
   const idnLives = idnData.value || []
@@ -35,6 +45,26 @@ const lives = computed<Omit< Multi.Video, 'order'>[]>(() => {
 
   for (const live of idnLives) {
     result.push(convertIDNLive(live))
+  }
+
+  if (isMockup.value) {
+    for (const vid of mockupVideos) {
+      result.push(
+        {
+          id: vid.title,
+          name: vid.title,
+          poster: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Aspect-ratio-16x9.svg/2560px-Aspect-ratio-16x9.svg.png',
+          image: 'https://www.aandmedu.in/wp-content/uploads/2021/11/4-5-Aspect-Ratio-819x1024.jpg',
+          landscape: true,
+          original_url: vid.src,
+          icon: 'https://cdn1.iconfinder.com/data/icons/logotypes/32/youtube-512.png',
+          stream_url: vid.src,
+          space: 1,
+          is_mockup: true,
+          type: 'showroom',
+        },
+      )
+    }
   }
 
   return result

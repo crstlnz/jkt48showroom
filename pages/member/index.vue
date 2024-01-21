@@ -66,9 +66,9 @@ const search: Ref<string> = ref(route.query?.s ? String(route.query?.s) : '')
 watch(filterOptions, (opts) => {
   const defaultquery = generateRouteQuery(defaultFilter)
   const generated = generateRouteQuery(opts)
-  for (const key of Object.keys(defaultquery)) {
-    if (defaultquery[key as keyof FilterOptions] === generated[key as keyof FilterOptions]) {
-      delete generated[key as keyof FilterOptions]
+  for (const key of Object.keys(defaultquery) as (keyof typeof defaultquery)[]) {
+    if (defaultquery[key] === generated[key]) {
+      delete generated[key]
     }
   }
   router.push({

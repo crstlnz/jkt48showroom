@@ -110,7 +110,7 @@ defineExpose({ refresh, video: videoElement, data: props.video, remove, id: prop
         <WatchVideo
           ref="videoElement"
           :key="`video-${video.id}`"
-          poster=""
+          :poster="video.poster"
           :sources="sourceURLs"
           class="flex-1 w-full object-fill"
           :use-shortcut="false"

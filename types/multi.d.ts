@@ -2,6 +2,7 @@ declare namespace Multi {
   interface Video {
     id: string
     name: string
+    poster: string
     image: string
     stream_url: string
     landscape: boolean
@@ -10,5 +11,6 @@ declare namespace Multi {
     icon: string
     space: number
     type: 'idn' | 'showroom'
+    is_mockup: boolean
   }
 }
