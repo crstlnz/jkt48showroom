@@ -4,11 +4,16 @@ import { NuxtLink } from '#components'
 const props = defineProps<{
   member: IMemberBirthDay
 }>()
+
+const dayjs = useDayjs()
+const date = dayjs()
+
 const isToday = computed(() => {
-  return new Date(props.member.birthdate).getDate() === new Date().getDate()
+  return dayjs(props.member.birthdate).year(date.year()).diff(date, 'day') === 0
 })
+
 const isTomorrow = computed(() => {
-  return (new Date(props.member.birthdate).getDate() - new Date().getDate()) === 1
+  return dayjs(props.member.birthdate).year(date.year()).diff(date, 'day') === 1
 })
 
 const { locale } = useI18n()
