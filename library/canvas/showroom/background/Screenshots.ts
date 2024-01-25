@@ -55,10 +55,10 @@ class ScreenshotManager {
   }
 
   set(screenshots: Database.IScreenshot) {
-    this.folder = screenshots.folder
-    this.format = screenshots.format
+    this.folder = screenshots?.folder || ''
+    this.format = screenshots?.format || 'jpg'
     this.list.clear()
-    this.ids = [...screenshots.list]
+    this.ids = [...(screenshots?.list || [])]
     if (this.showScreenshot) this.loadScreenshots()
   }
 
