@@ -190,7 +190,7 @@ follow:
 follower: Follower
 room_level: Room level
 watch_count: Watch count
-watch_count_info: You have watched this member {count} times
+watch_count_info: You have watched this member showroom {count} times
 times: x
 pleaselogin: Login!
 loginwithshowroom: Login with Showroom
@@ -223,3 +223,4 @@ menu:
   report_bugs: Report Bugs
   about: About
 known_issues: Known Issues
+open_original: Open original

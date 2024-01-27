@@ -190,7 +190,7 @@ follow:
 follower: Pengikut
 room_level: Room level
 watch_count: Jumlah Nonton
-watch_count_info: Kamu telah menonton member ini sebanyak {count} kali
+watch_count_info: Kamu telah menonton showroom member ini sebanyak {count} kali
 times: kali
 pleaselogin: Login!
 loginwithshowroom: Login with Showroom
@@ -223,3 +223,4 @@ menu:
   report_bugs: Lapor Bug
   about: Tentang
 known_issues: Masalah yang diketahui
+open_original: Buka web asli

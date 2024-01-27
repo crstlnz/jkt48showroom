@@ -29,7 +29,7 @@ useSeoMeta({
     <ClientOnly>
       <template #fallback>
         <div class="flex h-[100vh] w-[100vw] items-center justify-center">
-          <img class="h-20 w-20" :src="getIcon(group)" alt="Logo">
+          <NuxtImg class="h-20 w-20" :src="getIcon(group)" alt="Logo" />
         </div>
       </template>
       <template #default>

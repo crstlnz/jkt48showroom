@@ -29,7 +29,7 @@ export function useAuth() {
     payload.data.auth.pending = true
     pending.value = true
     try {
-      if (cookie?.includes('_st=')) {
+      if (cookie?.includes('_st=') || cookie?.includes('_rt=')) {
         data.value = await $apiFetch<ShowroomLogin.User>('/api/user')
       }
       payload.data.auth.user = data.value
@@ -45,7 +45,7 @@ export function useAuth() {
     if (process.server) return
     if (authenticated.value) return
     const cookie = document.cookie
-    if (!cookie.includes('_st=')) return
+    if (!cookie.includes('_st=') && !cookie?.includes('_rt=')) return
     pending.value = true
     error.value = null
     try {

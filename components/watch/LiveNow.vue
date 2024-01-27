@@ -55,7 +55,7 @@ const data = computed(() => {
           class="bg-container flex w-full flex-col items-center justify-center rounded-xl shadow-sm"
         >
           <div class="flex h-[245.5px] flex-col items-center justify-center gap-2 text-center text-xs max-sm:aspect-square sm:h-[230.88px] md:h-[250px] md:gap-3 md:text-sm lg:h-[270.55px] xl:h-[349.2px] 2xl:h-[318px]">
-            <img class="mx-auto w-72 max-w-[80%]" alt="No member onlive" :src="`${$cloudinaryURL}/assets/svg/web/space.svg`">
+            <img class="mx-auto w-72 max-w-[80%]" alt="No member onlive" :src="`${$cloudinaryURL}/assets/svg/web/space_copy.svg`">
             <span class="mt-5">{{ $t("nolive") }}</span>
           </div>
         </div>

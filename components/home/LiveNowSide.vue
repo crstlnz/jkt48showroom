@@ -29,7 +29,7 @@ const { data, pending, error } = storeToRefs(onLives)
       class="aspect-[10/9]"
     >
       <div class="pt-2 text-center">
-        <NuxtImg class="mx-auto aspect-square w-72 max-w-[65%]" alt="No member onlive" :src="`${$cloudinaryURL}/assets/svg/web/space.svg`" />
+        <NuxtImg class="mx-auto aspect-square w-72 max-w-[65%]" alt="No member onlive" :src="`${$cloudinaryURL}/assets/svg/web/space_copy.svg`" />
         <span>{{ $t("nolive") }}</span>
       </div>
     </div>

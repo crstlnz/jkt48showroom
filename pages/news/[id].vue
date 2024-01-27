@@ -55,6 +55,12 @@ useHead({
             />
             <span class="text-sm"> {{ $dayjs(data?.date).locale(locale).format("DD MMMM YYYY") }}</span>
           </div>
+          <div class="flex mb-3">
+            <NuxtLink :to="`https://jkt48.com/news/detail/id/${data.id}`" :external="true" class="flex items-center gap-1.5 bg-red-500 px-2 rounded-md py-1 self-start">
+              <Icon name="pepicons-pencil:internet" class="text-white" />
+              <span class="text-white"> {{ $t('open_original') }}</span>
+            </NuxtLink>
+          </div>
           <div id="content" class="overflow-x-auto pb-20 !font-serif" v-html="content" />
         </div>
       </template>
