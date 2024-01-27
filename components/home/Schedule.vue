@@ -39,11 +39,11 @@ const { locale } = useI18n()
       <Icon name="svg-spinners:ring-resize" size="2rem" />
     </div>
     <div v-else-if="error && !data" class="aspect-[4/2] flex items-center justify-center mb-7 pt-5 flex-col gap-5">
-      <img :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" class="w-[220px] max-w-[80%]">
+      <NuxtImg :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" class="w-[220px] max-w-[80%]" />
       <div>{{ $t("error.unknown") }}</div>
     </div>
     <div v-else-if="!data?.length" class="flex flex-col items-center pb-4">
-      <img :src="`${$cloudinaryURL}/assets/img/web/empty-box.png`" alt="" class="w-52 h-40 mb-2 object-contain">
+      <NuxtImg :src="`${$cloudinaryURL}/assets/img/web/empty-box.png`" alt="" class="w-52 h-40 mb-2 object-contain" />
       {{ $t("data.nodata") }}
     </div>
     <table v-else class="w-full border-t-2 border-black/5 dark:border-white/5 [&_*]:border-black/10 dark:[&_*]:border-white/10">

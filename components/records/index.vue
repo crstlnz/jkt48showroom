@@ -2,7 +2,7 @@
 import { useSettings } from '~~/store/settings'
 
 const { group } = useSettings()
-const { data, pending, error } = await useCachedFetch<ShowroomRecord[]>('/api/records', { params: { group }, expireIn : 3600000 * 12})
+const { data, pending, error } = await useCachedFetch<ShowroomRecord[]>('/api/records', { params: { group }, expireIn: 3600000 * 12 })
 </script>
 
 <template>
@@ -12,7 +12,7 @@ const { data, pending, error } = await useCachedFetch<ShowroomRecord[]>('/api/re
       <span>{{ $t('mostrecords') }}</span>
     </div>
     <div v-if="error" class="flex aspect-[6/5] flex-col items-center justify-center gap-5">
-      <img class="mx-auto w-72 max-w-[65%]" :src="`${$cloudinaryURL}/assets/svg/web/error.svg`">
+      <NuxtImg class="mx-auto w-72 max-w-[65%]" :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" />
       <span class="mt-5">{{ $t("data.failed") }}</span>
     </div>
     <div v-else-if="pending" class="mr-2 flex flex-col gap-10 px-1 py-3 sm:p-3">
@@ -28,7 +28,7 @@ const { data, pending, error } = await useCachedFetch<ShowroomRecord[]>('/api/re
       </div>
     </div>
     <div v-else-if="!data?.length" class="flex aspect-[6/5] flex-col items-center justify-center gap-2">
-      <img class="mx-auto w-72 max-w-[80%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`">
+      <NuxtImg class="mx-auto w-72 max-w-[80%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`" />
       <span>{{ $t("data.nodata") }}</span>
     </div>
     <div v-else class="mr-2 flex flex-col gap-10 px-1 py-3 sm:p-3">

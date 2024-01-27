@@ -95,7 +95,7 @@ const showCommentForm = useLocalStorage('show_comment_form', true)
       <template v-if="!comments.length" #empty>
         <div class="flex aspect-[9/8] items-center justify-center">
           <div class="flex flex-col">
-            <img class="mx-auto h-auto w-[300px] max-w-[70%] max-lg:hidden" :alt="$t('commentempty')" :src="`${$cloudinaryURL}/assets/img/web/empty-box.png`">
+            <NuxtImg class="mx-auto h-auto w-[300px] max-w-[70%] max-lg:hidden" :alt="$t('commentempty')" :src="`${$cloudinaryURL}/assets/img/web/empty-box.png`" />
             <div class="mt-3 text-center font-bold">
               {{ $t("commentempty") }}
             </div>

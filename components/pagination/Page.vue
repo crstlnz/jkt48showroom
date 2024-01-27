@@ -62,8 +62,8 @@ const showDuration = ref(false)
               <div class="flex flex-col justify-center pt-4 text-center">
                 <div class="space-y-5">
                   <div class="mx-auto w-4/5 lg:w-[350px]">
-                    <img v-if="error" :src="`${$cloudinaryURL}/assets/img/web/security-error.png`" alt="An Error Occured!" class="mx-auto w-full">
-                    <img v-else :src="`${$cloudinaryURL}/assets/img/web/empty-box.png`" alt="Empty!" class="mx-auto w-full">
+                    <NuxtImg v-if="error" :src="`${$cloudinaryURL}/assets/img/web/security-error.png`" alt="An Error Occured!" class="mx-auto w-full" />
+                    <NuxtImg v-else :src="`${$cloudinaryURL}/assets/img/web/empty-box.png`" alt="Empty!" class="mx-auto w-full" />
                   </div>
                   <div>
                     <h2 v-if="error" class="mb-1 text-xl lg:text-3xl">

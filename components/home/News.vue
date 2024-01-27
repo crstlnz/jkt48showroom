@@ -8,7 +8,7 @@ const { locale } = useI18n()
   <HomeContainer :title="$t('news')" icon-class="bg-blue-500" more="/news" more-screen-reader-only="News" class="relative" :more-text="$t('more')">
     <div class="pt-1 pb-1.5 relative">
       <div v-if="error" class="flex flex-col items-center pb-4">
-        <img :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" alt="" class="p-5">
+        <NuxtImg :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" alt="" class="p-5" />
         {{ $t("error.unknown") }}
       </div>
       <div v-else-if="pending" class="flex flex-col gap-3.5">

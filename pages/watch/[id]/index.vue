@@ -312,7 +312,7 @@ onComment((comment) => {
               </div>
               <div v-if="!isLive" class="flex h-full w-full items-center justify-center">
                 <div class="space-y-4 md:space-y-6 lg:space-y-10">
-                  <img :src="`${$cloudinaryURL}/assets/svg/web/video_files.svg`" class="mx-auto w-[250px] max-w-[70%] dark:brightness-90" alt="">
+                  <NuxtImg :src="`${$cloudinaryURL}/assets/svg/web/video_files.svg`" class="mx-auto w-[250px] max-w-[70%] dark:brightness-90" alt="" />
                   <div class="text-center text-xl font-semibold">
                     {{ $t('streamoffline') }}
                   </div>

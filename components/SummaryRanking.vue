@@ -23,14 +23,14 @@ watch(() => props.roomId, (roomId) => {
       <span>Summary Ranking</span>
     </div>
     <div v-if="rankingError" class="flex aspect-square flex-col items-center justify-center gap-5">
-      <img class="aspect-square w-72 mx-auto max-w-[65%]" :src="`${$cloudinaryURL}/assets/svg/web/error.svg`">
+      <NuxtImg class="aspect-square w-72 mx-auto max-w-[65%]" :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" />
       <span>{{ $t("data.failed") }}</span>
     </div>
     <div v-else-if="rankingPending" class="flex aspect-square items-center justify-center">
       <Icon name="svg-spinners:ring-resize" size="2.5rem" />
     </div>
     <div v-else-if="!rankings" class="flex aspect-square flex-col items-center justify-center gap-2">
-      <img class="mx-auto aspect-square w-72 max-w-[80%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`">
+      <NuxtImg class="mx-auto aspect-square w-72 max-w-[80%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`" />
       <span>{{ $t("data.nodata") }}</span>
     </div>
     <div v-else class="flex flex-col gap-3">

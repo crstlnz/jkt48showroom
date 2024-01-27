@@ -129,7 +129,7 @@ useHead({
       <template #default>
         <div>
           <div v-if="!member" class="flex aspect-video w-full flex-col items-center justify-center">
-            <img class="mx-auto aspect-square w-72 max-w-[80%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`">
+            <NuxtImg class="mx-auto aspect-square w-72 max-w-[80%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`" />
             <span>{{ $t("data.nodata") }}</span>
           </div>
           <div v-else class="flex flex-col gap-3 md:gap-4">
@@ -268,7 +268,7 @@ useHead({
                       <Icon name="solar:ranking-bold-duotone" class="text-yellow-500" />
                       <span>Summary Ranking</span>
                     </div>
-                    <img class="mx-auto aspect-square w-72 max-w-[80%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`">
+                    <NuxtImg class="mx-auto aspect-square w-72 max-w-[80%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`" />
                     <span>{{ $t("data.nodata") }}</span>
                   </div>
                   <SummaryRanking v-else :room-id="member?.room_id" class="xl:mt-5" />
@@ -300,7 +300,7 @@ useHead({
                 <Icon name="solar:ranking-bold-duotone" class="text-yellow-500" />
                 <span>Summary Ranking</span>
               </div>
-              <img class="mx-auto aspect-square w-72 max-w-[80%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`">
+              <NuxtImg class="mx-auto aspect-square w-72 max-w-[80%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`" />
               <span>{{ $t("data.nodata") }}</span>
             </div>
             <SummaryRanking v-else :room-id="member?.room_id" />

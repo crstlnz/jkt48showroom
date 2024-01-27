@@ -160,7 +160,7 @@ export default defineNuxtConfig({
   },
   image: {
     cloudinary: {
-      baseURL: 'https://res.cloudinary.com/dy1ypevxw/image/fetch/',
+      baseURL: 'https://res.cloudinary.com/daynklzzg/image/fetch/',
     },
     quality: 80,
     placeholder: 10,

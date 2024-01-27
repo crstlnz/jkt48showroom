@@ -12,14 +12,14 @@ const { data, pending, error } = await useCachedFetch<IMemberBirthDay[]>('/api/n
       <span>{{ $t('birthday.next') }}</span>
     </div>
     <div v-if="error" class="flex flex-col items-center justify-center gap-5 py-8">
-      <img class="mx-auto w-72 max-w-[65%]" :src="`${$cloudinaryURL}/assets/svg/web/error.svg`">
+      <NuxtImg class="mx-auto w-72 max-w-[65%]" :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" />
       <span>{{ $t("data.failed") }}</span>
     </div>
     <div v-else-if="pending" class="flex h-[196px] items-center justify-center md:h-[212px] lg:h-[232px]">
       <Icon name="svg-spinners:ring-resize" size="2.5rem" />
     </div>
     <div v-else-if="!data" class="flex flex-col items-center justify-center gap-2 py-8">
-      <img class="mx-auto w-72 max-w-[80%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`">
+      <NuxtImg class="mx-auto w-72 max-w-[80%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`" />
       <span>{{ $t("birthday.empty") }}</span>
     </div>
     <div v-else class="grid grid-cols-2 lg:grid-cols-3 md:py-4 gap-5 md:gap-6 max-sm:mt-2 max-sm:px-1.5">

@@ -15,7 +15,7 @@ const { data, pending, error } = await useApiFetch<{ jpy_rates: number, fans: Da
         <Icon name="svg-spinners:ring-resize" size="2.5rem" />
       </div>
       <div v-else-if="!data" class="flex aspect-video flex-col items-center justify-center gap-2">
-        <img class="mx-auto w-72 max-w-[80%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`">
+        <NuxtImg class="mx-auto w-72 max-w-[80%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`" />
         <span>{{ $t("data.nodata") }}</span>
       </div>
       <div v-else class="flex flex-col gap-3">
