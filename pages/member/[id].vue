@@ -257,7 +257,7 @@ useHead({
                   </h2>
                 </div>
                 <div class="md:pt-1 grid grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4">
-                  <TheaterCard v-for="theater in member.recentTheater.slice(0, 4)" :key="theater.url" :theater="theater" />
+                  <TheaterCard v-for="theater in member.recentTheater" :key="theater.url" :theater="theater" />
                 </div>
               </div>
               <!-- <HomeStats v-if="member?.room_id" :room-id="member?.room_id" /> -->
