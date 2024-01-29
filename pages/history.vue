@@ -267,9 +267,9 @@ const recentHeight = computed(() => {
               page-mode
             >
               <template #default="{ item }">
-                <div class="pb-3 md:pb-4 relative">
+                <div class="pb-3 md:pb-4 px-1 relative">
                   <NuxtLink :to="`/recent/${item.data_id}`" class="flex gap-3 md:gap-4 bg-container rounded-xl p-3 md:p-4">
-                    <div v-if="item.user" class="flex flex-col justify-center items-center gap-2">
+                    <div v-if="item.user" class="flex flex-col justify-center items-center gap-2 max-w-[80px] md:max-w-[100px] xl:max-w-[200px]">
                       <div v-if="item.type === 'top100'" class="bg-orange-600 px-1.5 text-sm md:text-base md:px-2 rounded-md">
                         Top 100
                       </div>
@@ -283,9 +283,11 @@ const recentHeight = computed(() => {
                         Gifter
                       </div>
                       <img :src="$avatarURL(item.user?.avatar_id)" alt="" class="w-16 md:w-20 aspect-square">
-                      <div>{{ item.user.name }}</div>
+                      <div class="truncate w-full text-center text-sm md:text-base">
+                        {{ item.user.name }}
+                      </div>
                     </div>
-                    <div class="flex-1 flex justify-end gap-3 md:gap-4">
+                    <div class="flex-1 flex justify-end gap-3 md:gap-4 shrink-0">
                       <div class="flex-1 flex flex-col gap-1 md:gap-2">
                         <div class="flex flex-col">
                           <div class="flex">
