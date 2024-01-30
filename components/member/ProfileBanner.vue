@@ -3,7 +3,7 @@ import { useOnLives } from '~/store/onLives'
 import { useSettings } from '~/store/settings'
 
 const props = defineProps<{
-  member: Database.IMemberBasicData | IMemberProfileAPI
+  member: Database.IMemberBasicData
   roomId: number
   shareUrl?: string
 }>()
