@@ -14,34 +14,21 @@ const isShowroomExists = computed(() => {
   return data?.value?.showroom_exists ?? true
 })
 
+const miniPending = ref(true)
 async function fetchProfile(room_id: string) {
-  profile.value = await $apiFetch<IMiniRoomProfile>(`/api/profile`, {
-    query: {
-      room_id,
-    },
-  })
-  isFollow.value = profile.value.is_follow
-  // const data = await $fetch<ShowroomAPI.Profile>(`https://api.codetabs.com/v1/proxy/?quest=https://www.showroom-live.com/api/room/profile?room_id=${room_id}`, {
-  //   headers: {
-  //     Cookie: `sr_id=${user.value?.sr_id}`,
-  //   },
-  // })
+  miniPending.value = true
+  try {
+    profile.value = await $apiFetch<IMiniRoomProfile>(`/api/profile`, {
+      query: {
+        room_id,
+      },
+    })
+    isFollow.value = profile.value.is_follow
+  }
+  catch (e) {
 
-  // profile.value = {
-  //   follower: data.follower_num,
-  //   is_follow: data.is_follow,
-  //   visit_count: data.visit_count,
-  //   room_level: data.room_level,
-  // }
-
-  // isFollow.value = data.is_follow
-
-  // return {
-  //   follower: data.follower_num,
-  //   is_follow: data.is_follow,
-  //   visit_count: data.visit_count,
-  //   room_level: data.room_level,
-  // }
+  }
+  miniPending.value = false
 }
 
 const { t } = useI18n()
@@ -133,8 +120,11 @@ useHead({
             <span>{{ $t("data.nodata") }}</span>
           </div>
           <div v-else class="flex flex-col gap-3 md:gap-4">
-            <MemberProfileBanner :member="member as Database.IMemberBasicData" :room-id="member.room_id" />
-            <div v-if="isShowroomExists" class="flex-1 flex gap-3 bg-container rounded-xl p-3 md:p-4 text-center py-4 mx-3 md:mx-4">
+            <MemberProfileBanner :member="member" :room-id="member.room_id" />
+            <div v-if="isShowroomExists && miniPending" class="bg-container rounded-xl mx-3 md:mx-4 p-3 md:p-4 text-center py-4 animate-pulse">
+              <div class="h-[42px] md:h-[54px]" />
+            </div>
+            <div v-else-if="isShowroomExists" class="flex-1 flex gap-3 bg-container rounded-xl p-3 md:p-4 text-center py-4 mx-3 md:mx-4">
               <div class="flex flex-1 flex-col gap-0.5 md:gap-1.5">
                 <div class="text-xs md:text-sm">
                   {{ $t("watch_count") }}
@@ -162,6 +152,43 @@ useHead({
                   <Icon name="icon-park-solid:ranking-list" class="text-blue-500" />
                   <span> {{ $n(profile?.room_level || 0) }}</span>
                 </div>
+              </div>
+            </div>
+            <div v-if="data?.stats" class="max-md:p-3 max-md:bg-container max-md:rounded-xl mx-3 md:mx-4 grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
+              <div class="md:bg-container md:rounded-xl md:p-5 flex flex-col md:items-center gap-1.5 md:gap-3 relative">
+                <Icon v-tooltip="$t('data_disclaimer')" name="heroicons:information-circle" class="absolute right-0 top-0.5 md:right-3 md:top-3 text-lg outline-none" />
+                <div class="flex items-center gap-1.5 md:gap-2 md:text-xl">
+                  <Icon name="solar:folder-with-files-bold-duotone" class="text-blue-500" />
+                  <span>Total Live</span>
+                </div>
+                <div class="max-md:bg-container-2 max-md:p-3 max-md:rounded-xl w-full md:px-3 md:space-y-2">
+                  <div class="flex justify-between">
+                    <span>Showroom</span>
+                    <span>{{ data?.stats?.total_live?.showroom }}</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span>IDN Live</span>
+                    <span>{{ data?.stats?.total_live?.idn || $t('data.nodata') }}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="md:bg-container md:rounded-xl md:p-5 flex md:flex-col max-md:justify-between items-center gap-1.5 md:gap-3">
+                <NuxtLink :to="`/recent/${data?.stats?.most_gift?.id}`" class="flex items-center gap-1.5 md:gap-2 md:text-xl">
+                  <Icon name="solar:gift-bold-duotone" class="text-yellow-500" />
+                  <span>{{ $t('mostgifts') }}</span>
+                </NuxtLink>
+                <NuxtLink :to="`/recent/${data?.stats?.most_gift?.id}`" class="md:px-3 space-y-2 text-sm md:text-lg md:font-semibold md:flex-1 md:flex md:items-center md:justify-center">
+                  {{ $n(data?.stats?.most_gift?.gift ?? 0, 'currency', 'id-ID') }}
+                </NuxtLink>
+              </div>
+              <div class="md:bg-container md:rounded-xl md:p-5 flex md:flex-col max-md:justify-between items-center gap-1.5 md:gap-3">
+                <NuxtLink :to="`/recent/${data?.stats?.longest_live?.id}`" class="flex items-center gap-1.5 md:gap-2 md:text-xl">
+                  <Icon name="material-symbols:clock-loader-60" class="text-green-500" />
+                  <span>{{ $t('longestlive') }}</span>
+                </NuxtLink>
+                <NuxtLink :to="`/recent/${data?.stats?.longest_live?.id}`" class="md:px-3 space-y-2 text-sm md:text-lg md:font-semibold md:flex-1 md:flex md:items-center md:justify-center">
+                  {{ formatDuration(data?.stats?.longest_live?.duration ?? 0) }}
+                </NuxtLink>
               </div>
             </div>
             <div v-if="member.jikosokai" class="bg-container mx-3 flex flex-col gap-2 rounded-xl p-4 md:mx-4">
