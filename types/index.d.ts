@@ -405,7 +405,23 @@ interface ITheaterAPI extends Database.ITheater {
   poster?: string
 }
 
+interface MemberStats {
+  total_live: {
+    idn: number
+    showroom: number
+  }
+  most_gift?: {
+    id: string
+    gift: number
+  }
+  longest_live?: {
+    id: string
+    duration: number
+  }
+}
+
 interface IMemberProfileAPI extends IMemberBasicData {
+  stats: MemberStats
   name: string
   nickname?: string
   fullname: string
