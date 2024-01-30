@@ -28,5 +28,5 @@ export const useNotifications = defineStore('notifications', () => {
 })
 
 if (import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(useNotifications as any, import.meta.hot))
+  import.meta.hot.accept(acceptHMRUpdate(useNotifications, import.meta.hot))
 }

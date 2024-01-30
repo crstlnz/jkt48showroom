@@ -36,7 +36,7 @@ export const useIDNLives = defineStore('useIDNLives', () => {
   }
 
   async function getIDNLives(): Promise<IDNLives[]> {
-    if (!members.value) members.value = await getMembers().catch(_ => [])
+    if (!members.value) members.value = await getMembers().catch(() => [])
     const idnUsernames: string[] = members.value?.filter(i => i.idn_username).map(i => i.idn_username) as string[] || []
     if (!idnUsernames?.length) {
       return await $apiFetch<IDNLives[]>(`/api/idn_lives`).catch((_) => {
@@ -109,5 +109,5 @@ export const useIDNLives = defineStore('useIDNLives', () => {
 })
 
 if (import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(useIDNLives as any, import.meta.hot))
+  import.meta.hot.accept(acceptHMRUpdate(useIDNLives, import.meta.hot))
 }

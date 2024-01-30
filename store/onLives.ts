@@ -31,10 +31,10 @@ export const useOnLives = defineStore('onLives', () => {
   async function getShowroomLives(): Promise<IRoomLive[]> {
     try {
       if (!config.public.isDev) {
-        return await $apiFetch<IRoomLive[]>(`/api/now_live`, { query: { group: settings.group } }).catch(_ => [])
+        return await $apiFetch<IRoomLive[]>(`/api/now_live`, { query: { group: settings.group } }).catch(() => [])
       }
       else {
-        const data: any = await $apiFetch(`/api/showroom/onlives`).catch(_ => null)
+        const data: any = await $apiFetch(`/api/showroom/onlives`).catch(() => null)
         const re = (data?.onlives[0]?.lives ?? []).splice(0, 4).map((i: any) => {
           return {
             name: i.main_name ?? 'Test name',
@@ -77,5 +77,5 @@ export const useOnLives = defineStore('onLives', () => {
 })
 
 if (import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(useOnLives as any, import.meta.hot))
+  import.meta.hot.accept(acceptHMRUpdate(useOnLives, import.meta.hot))
 }

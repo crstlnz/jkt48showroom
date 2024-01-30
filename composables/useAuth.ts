@@ -25,7 +25,7 @@ export function useAuth() {
   async function checkAuthOnServer() {
     if (process.client) return
     const event = useRequestEvent()
-    const cookie = event.headers.get('Cookie')
+    const cookie = event?.headers?.get('Cookie')
     payload.data.auth.pending = true
     pending.value = true
     try {
@@ -56,12 +56,12 @@ export function useAuth() {
         data.value = await $apiFetch<ShowroomLogin.User>('/api/user')
       }
     }
-    catch (e: any) {
+    catch (e: unknown) {
       if ((e as FetchError).statusCode === 401) {
         data.value = null
       }
       else {
-        error.value = e
+        error.value = e as Error
       }
     }
 

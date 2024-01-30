@@ -52,7 +52,7 @@ function setVideoLandscape(val: boolean) {
     </div>
     <div v-else-if="!data?.is_live" class="flex flex-col gap-6">
       <div class="flex flex-col gap-5 items-center flex-1 bg-container py-7 md:py-16 px-10">
-        <img :src="`${$cloudinaryURL}/assets/svg/web/video_files.svg`" class="mx-auto w-[450px] max-w-[70%] dark:brightness-90" alt="">
+        <NuxtImg :src="`${$cloudinaryURL}/assets/svg/web/video_files.svg`" class="mx-auto w-[450px] max-w-[70%] dark:brightness-90" alt="" />
         <div>{{ $t('streamoffline') }}</div>
       </div>
       <div class="flex gap-3 mx-6">
@@ -110,7 +110,11 @@ function setVideoLandscape(val: boolean) {
               @is-landscape="setVideoLandscape"
               @fullsceen="(isFullscreen) => {
               }"
-            />
+            >
+              <ClientOnly>
+                <WatchIDNComment v-if="data" :idn-data="data" class="absolute inset-x-0 bottom-0 pb-10 h-[300px]" />
+              </ClientOnly>
+            </LazyWatchVideo>
           </Suspense>
           <!-- <div id="comment-section" class="bottom-0 inset-x-0 absolute bg-blue-500/50 p-3 text-sm max-h-[180px] overflow-y-auto overscroll-contain">
             <div>

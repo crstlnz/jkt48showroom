@@ -9,7 +9,6 @@ const props = defineProps<{
 defineEmits(['toggleDark'])
 const isOpen = ref(false)
 const route = useRoute()
-const router = useRouter()
 
 watch(() => route.path, () => {
   isOpen.value = false
@@ -40,7 +39,6 @@ watch(isOpen, (open) => {
   isLocked.value = open
 })
 
-const hashMenu = '#menu'
 function openMenu() {
   window.history.pushState({ isOpen: true }, 'Menu Nav')
   isOpen.value = true
@@ -50,23 +48,6 @@ function closeMenu() {
   window.history.back()
   isOpen.value = false
 }
-
-watch(() => route.fullPath, (p, oP) => {
-  if (process.server) return
-  const hash = `#${p.split('#')?.[1] || ''}`
-  const path = (p.split('#')?.[0])?.split('?')?.[0] || ''
-  const oldPath = (oP?.split('#')?.[0])?.split('?')?.[0]
-  if (oldPath != null && path !== oldPath) {
-    if (hash === hashMenu && oldPath) {
-      router.back()
-    }
-  }
-  else {
-    nextTick(() => {
-      isOpen.value = hash === hashMenu
-    })
-  }
-}, { immediate: true })
 
 const hiddenUsername = useCookie('_h_usrnme', {
   default: () => true,
@@ -94,10 +75,10 @@ const hiddenUsername = useCookie('_h_usrnme', {
         <button class="relative flex min-w-0 flex-1 flex-col items-center" @click="openMenu">
           <div class="absolute left-1/2 top-1/2 flex aspect-square -translate-x-1/2 -translate-y-1/2 cursor-pointer flex-col items-center justify-center rounded-full p-5">
             <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full p-1">
-              <Icon name="ic:round-settings" class="h-full w-full" />
+              <Icon name="ph:list-fill" class="h-full w-full" />
             </div>
             <div class="shrink-0 text-xs">
-              Settings
+              Menu
             </div>
           </div>
         </button>

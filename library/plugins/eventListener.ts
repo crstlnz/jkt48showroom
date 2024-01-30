@@ -1,18 +1,18 @@
 class EventListener extends Map {
-  el: any
-  constructor(element: unknown) {
+  el: HTMLElement
+  constructor(element: HTMLElement) {
     super()
     this.el = element
   }
 
-  add(event: unknown, fun: (...args: any) => any, useCapture = false) {
+  add(event: keyof HTMLElementEventMap, fun: (...args: any) => any, useCapture = false) {
     if (this.has(event)) this.remove(event)
     this.set(event, { fun, useCapture })
     this.el.addEventListener(event, fun, useCapture)
     return this
   }
 
-  remove(event: unknown) {
+  remove(event: keyof HTMLElementEventMap) {
     const e = this.get(event)
     if (e) {
       this.el.removeEventListener(event, e.fun, e.useCapture)

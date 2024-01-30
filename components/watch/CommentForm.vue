@@ -38,6 +38,9 @@ function submit() {
   sendComment()
 }
 
+const commentInput = ref()
+const { focused } = useFocus(commentInput)
+
 const { t } = useI18n()
 async function sendComment() {
   loading.value = true
@@ -54,6 +57,7 @@ async function sendComment() {
     emit('comment', comment.value)
     loading.value = false
     comment.value = ''
+    focused.value = true
   }
   catch (e: any) {
     loading.value = false
@@ -73,7 +77,7 @@ async function sendComment() {
       Please login to comment!
     </NuxtLink>
     <div class="w-full" :class="{ 'opacity-5': !authenticated, 'ring-2 ring-red-500': formError }">
-      <input v-model="comment" :disabled="!validForSubmit" type="text" class="h-full w-full truncate rounded-lg bg-black/5 px-2 py-1.5 outline-none disabled:cursor-not-allowed disabled:opacity-25 dark:bg-black/10 md:px-2.5" placeholder="Comment..." @keyup.enter="submit">
+      <input ref="commentInput" v-model="comment" :disabled="!validForSubmit" type="text" class="h-full w-full truncate rounded-lg bg-black/5 px-2 py-1.5 outline-none disabled:cursor-not-allowed disabled:opacity-25 dark:bg-black/10 md:px-2.5" placeholder="Comment..." @keyup.enter="submit">
     </div>
     <button type="button" :disabled="!validForSubmit" class="rounded-md px-2.5 py-1 transition-[background-color,color,transition] hover:bg-blue-500 hover:text-white/90 active:scale-90 disabled:cursor-not-allowed disabled:opacity-50" :class="{ 'opacity-5': !authenticated }" @click="submit">
       <Icon v-if="!loading" name="iconamoon:send-duotone" size="1.5rem" />

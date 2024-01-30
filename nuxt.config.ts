@@ -18,6 +18,7 @@ export default defineNuxtConfig({
   modules: [
     // '@nuxtjs/partytown',
     // '@vite-pwa/nuxt',
+    // 'nuxt-lazy-load',
     '@nuxtjs/fontaine',
     'floating-vue/nuxt',
     'nuxt-security',
@@ -31,6 +32,9 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@nuxt/image',
   ],
+  // lazyLoad: {
+  //   directiveOnly: true,
+  // },
   security: {
     nonce: !isDev,
     headers: {
@@ -153,7 +157,7 @@ export default defineNuxtConfig({
     componentIslands: true,
   },
   devtools: {
-    enabled: false,
+    enabled: true,
     timeline: {
       enabled: true,
     },

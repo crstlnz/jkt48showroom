@@ -34,7 +34,7 @@ const config = useAppConfig()
       />
     </div>
     <div v-else-if="!members?.length">
-      <Error message="Data not found :(" img-src="/svg/no_data.svg" />
+      <Error message="Data not found :(" :img-src="`${$cloudinaryURL}/assets/svg/web/no_data.svg`" />
     </div>
 
     <DynamicScroller

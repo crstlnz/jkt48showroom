@@ -3,9 +3,9 @@ import Listener from './eventListener'
 
 class DragListener extends EventEmitter {
   touchMode: boolean
-  el: unknown
+  el: HTMLElement
   listener: Listener
-  constructor(el: any, touchMode = true) {
+  constructor(el: HTMLElement, touchMode = true) {
     super()
     this.el = el
     this.touchMode = touchMode

@@ -17,7 +17,7 @@ export default function () {
       }
 
       for (const cookie of cookies) {
-        appendResponseHeader(event, 'set-cookie', cookie)
+        if (event) { appendResponseHeader(event, 'set-cookie', cookie) }
       }
     }
   }

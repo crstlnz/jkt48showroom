@@ -15,6 +15,22 @@ const screenshots = computed(() => {
   })
 })
 
+function loadImage(img: HTMLImageElement) {
+  if (img && !img.src && img.getAttribute('data-lazy') !== 'installed') {
+    img.setAttribute('data-lazy', 'installed')
+    img.classList.add('isLoading')
+    const _src = img.getAttribute('data-src')
+    const _img = new Image()
+    _img.onload = () => {
+      img.src = _src || ''
+      img.classList.add('isLoaded')
+      img.classList.remove('isLoading')
+    }
+    _img.src = _src || ''
+  }
+}
+
+let unsubscribe: () => boolean | null
 onMounted(() => {
   if (screenshots.value.length <= 3) return
   blaze.value = new BlazeSlider(slider.value, {
@@ -34,10 +50,29 @@ onMounted(() => {
       slidesToShow: 2,
     },
   })
+
+  const imgs = document.querySelectorAll<HTMLImageElement>('.blaze-track img')
+
+  for (let i = 0; i < blaze.value.config.slidesToShow; i++) {
+    const imgEl = imgs?.[i]
+    if (imgEl) loadImage(imgEl)
+  }
+
+  unsubscribe = blaze.value.onSlide(
+    (_, firstVisibleSlideIndex, lastVisibleSlideIndex) => {
+      for (let i = firstVisibleSlideIndex; i <= lastVisibleSlideIndex; i++) {
+        const img = imgs?.[i]
+        if (img) {
+          loadImage(img)
+        }
+      }
+    },
+  )
 })
 
 onBeforeUnmount(() => {
   blaze.value?.destroy()
+  if (unsubscribe) unsubscribe()
 })
 </script>
 
@@ -46,7 +81,9 @@ onBeforeUnmount(() => {
     <div v-if="screenshots.length > 3" class="blaze-container">
       <div class="blaze-track-container rounded-md overflow-hidden">
         <div class="blaze-track">
-          <img v-for="ss in screenshots" :key="ss" :src="ss" class="md:h-80 bg-container rounded-md object-cover aspect-[5/6.5]">
+          <div v-for="ss in screenshots" :key="ss" class="bg-container rounded-md overflow-hidden">
+            <img :data-src="ss" class="lazyLoad md:h-80  object-cover aspect-[5/6.5] !outline-none !ring-0">
+          </div>
         </div>
       </div>
 

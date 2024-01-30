@@ -30,5 +30,5 @@ export const useMembers = defineStore('members', () => {
 })
 
 if (import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(useMembers as any, import.meta.hot))
+  import.meta.hot.accept(acceptHMRUpdate(useMembers, import.meta.hot))
 }

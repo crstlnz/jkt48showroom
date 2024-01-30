@@ -86,7 +86,7 @@ function checkSubmit() {
 }
 
 const route = useRoute()
-const { refresh } = useCSRF()
+// const { refresh } = useCSRF()
 const router = useRouter()
 const redirectURL = computed<string>(() => {
   try {
@@ -110,7 +110,7 @@ async function signInHandler() {
   try {
     await signIn(body)
     session.value = null
-    refresh()
+    // refresh()
     return await navigateTo(redirectURL.value, { external: false })
   }
   catch (e: any) {

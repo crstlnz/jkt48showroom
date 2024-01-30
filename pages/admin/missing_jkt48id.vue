@@ -191,7 +191,7 @@ const editMember = ref<Admin.MissingJKT48ID | null>()
       <Error message="Error pak!" img-src="/svg/error.svg" url="/admin" />
     </div>
     <div v-else-if="!data || !data?.members?.length" class="flex justify-center aspect-video">
-      <Error message="Tidak ada yang missing :)" img-src="/svg/no_data.svg" url="/admin" />
+      <Error message="Tidak ada yang missing :)" :img-src="`${$cloudinaryURL}/assets/svg/web/no_data.svg`" url="/admin" />
     </div>
     <div v-else class="space-y-3 md:space-y-4">
       <AdminMissingJkt48id v-for="member in missingMembers" :key="member._id" :member="member" :jkt48members="data.jkt48members" @added="remove(member._id)" />

@@ -126,7 +126,7 @@ watch(shiftCtrlA, (v) => {
   }
 })
 
-useCSRF()
+// useCSRF()
 useAuth()
 // const { $pwa } = useNuxtApp()
 </script>

@@ -69,5 +69,5 @@ export const useSettings = defineStore('settings', () => {
 })
 
 if (import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(useSettings as any, import.meta.hot))
+  import.meta.hot.accept(acceptHMRUpdate(useSettings, import.meta.hot))
 }

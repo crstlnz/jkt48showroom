@@ -5,7 +5,7 @@ import { useOnLives } from '~~/store/onLives'
 
 export default defineNuxtPlugin(({ hook }) => {
   const route = useRoute()
-  const { refresh: refreshCSRF } = useCSRF()
+  // const { refresh: refreshCSRF } = useCSRF()
   const { authenticated } = useAuth()
   const { fetchFirstDate, group } = useSettings()
   watch(() => route.fullPath, (path) => {
@@ -50,9 +50,9 @@ export default defineNuxtPlugin(({ hook }) => {
     fetchFirstDate()
   })
 
-  hook('app:mounted', () => {
-    refreshCSRF()
-  })
+  // hook('app:mounted', () => {
+  //   refreshCSRF()
+  // })
 
   hook('page:start', () => { // when the page is change try refresh the state
     onLives.tryRefresh()

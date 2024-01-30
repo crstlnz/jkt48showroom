@@ -54,13 +54,13 @@ async function save(e: Event) {
     })
     isUploading.value = false
   }
-  catch (e: any) {
+  catch (e) {
     isUploading.value = false
     addNotif({
       type: 'danger',
       title: 'Error',
       duration: 1500,
-      message: e.message,
+      message: e instanceof Error ? e.message : String(e),
     })
   }
 }
