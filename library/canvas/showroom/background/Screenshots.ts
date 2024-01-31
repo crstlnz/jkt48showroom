@@ -133,7 +133,21 @@ class ScreenshotManager {
     this.parent.ctx!.fillStyle = 'white'
     this.parent.ctx!.textAlign = 'center'
     this.parent.ctx!.textBaseline = 'middle'
-    this.parent.ctx!.fillText('Screenshot not found!', x, y)
+    this.parent.ctx!.fillText('Screenshot not found!', x, y + 2)
+  }
+
+  drawLoading(x: number, y: number) {
+    this.parent.ctx!.beginPath()
+    this.parent.ctx!.fillStyle = 'rgba(0, 0, 0, 0.8)'
+    const height = 50
+    const width = 170
+    this.parent.ctx!.roundRect(x - width / 2, y - height / 2, width, height, 20)
+    this.parent.ctx!.fill()
+    this.parent.ctx!.font = '26px DM Sans'
+    this.parent.ctx!.fillStyle = 'white'
+    this.parent.ctx!.textAlign = 'center'
+    this.parent.ctx!.textBaseline = 'middle'
+    this.parent.ctx!.fillText('Loading...', x, y + 2)
   }
 
   draw() {
@@ -148,13 +162,18 @@ class ScreenshotManager {
 
     if (this.parent.ctx) {
       if (this.showScreenshot && this.screenshot) {
-        this.parent.ctx.drawImage(
-          this.screenshot,
-          pos.x,
-          pos.y,
-          size.width,
-          size.height,
-        )
+        if (!this.screenshot.complete) {
+          this.drawLoading(pos.x + size.width / 2, pos.y + size.height / 2)
+        }
+        else {
+          this.parent.ctx.drawImage(
+            this.screenshot,
+            pos.x,
+            pos.y,
+            size.width,
+            size.height,
+          )
+        }
       }
       else if (this.defaultImage) {
         this.parent.ctx.drawImage(
