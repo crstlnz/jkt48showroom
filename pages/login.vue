@@ -118,6 +118,13 @@ async function signInHandler() {
       errorData.value = e.data
     }
     else {
+      try {
+        document.cookie = ''
+        location.reload()
+      }
+      catch (e) {
+        console.error(e)
+      }
       errorData.value = {
         error: t('loginfailedinfo'),
       }
