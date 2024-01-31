@@ -193,12 +193,12 @@ export function parseCookieString(cookieString: string): { [key: string]: Parsed
 }
 
 interface RelativeTimeOpts {
-  year: boolean
-  month: boolean
-  day: boolean
-  hour: boolean
-  minute: boolean
-  second: boolean
+  year?: boolean
+  month?: boolean
+  day?: boolean
+  hour?: boolean
+  minute?: boolean
+  second?: boolean
 }
 
 const defaultOpts = {

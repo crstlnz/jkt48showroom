@@ -418,6 +418,13 @@ interface MemberStats {
     id: string
     duration: number
   }
+  last_live?: {
+    id: string
+    date: {
+      start: string
+      end: string
+    }
+  }
 }
 
 interface IMemberProfileAPI extends IMemberBasicData {

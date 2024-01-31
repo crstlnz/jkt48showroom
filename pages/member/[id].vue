@@ -154,14 +154,14 @@ useHead({
                 </div>
               </div>
             </div>
-            <div v-if="data?.stats" class="max-md:p-3 max-md:bg-container max-md:rounded-xl mx-3 md:mx-4 grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
-              <div class="md:bg-container md:rounded-xl md:p-5 flex flex-col md:items-center gap-1.5 md:gap-3 relative">
+            <div v-if="data?.stats" class="max-md:p-3 max-md:bg-container max-md:rounded-xl mx-3 md:mx-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4">
+              <div class="md:bg-container md:rounded-xl md:p-4 flex flex-col md:items-center gap-1.5 md:gap-2 relative">
                 <Icon v-tooltip="$t('data_disclaimer')" name="heroicons:information-circle" class="absolute right-0 top-0.5 md:right-3 md:top-3 text-lg outline-none" />
                 <div class="flex items-center gap-1.5 md:gap-2 md:text-xl">
                   <Icon name="solar:folder-with-files-bold-duotone" class="text-blue-500" />
                   <span>Total Live</span>
                 </div>
-                <div class="max-md:bg-container-2 max-md:p-3 max-md:rounded-xl w-full md:px-3 md:space-y-2">
+                <div class="max-md:bg-container-2 max-md:p-3 max-md:rounded-xl w-full md:space-y-1 text-sm">
                   <div class="flex justify-between">
                     <span>Showroom</span>
                     <span>{{ data?.stats?.total_live?.showroom }}</span>
@@ -172,22 +172,31 @@ useHead({
                   </div>
                 </div>
               </div>
-              <div class="md:bg-container md:rounded-xl md:p-5 flex md:flex-col max-md:justify-between items-center gap-1.5 md:gap-3">
+              <div class="md:bg-container md:rounded-xl md:p-4 flex md:flex-col max-md:justify-between gap-1.5 md:gap-3 items-center">
                 <NuxtLink :to="`/recent/${data?.stats?.most_gift?.id}`" class="flex items-center gap-1.5 md:gap-2 md:text-xl">
                   <Icon name="solar:gift-bold-duotone" class="text-yellow-500" />
                   <span>{{ $t('mostgifts') }}</span>
                 </NuxtLink>
-                <NuxtLink :to="`/recent/${data?.stats?.most_gift?.id}`" class="md:px-3 space-y-2 text-sm md:text-lg md:font-semibold md:flex-1 md:flex md:items-center md:justify-center">
+                <NuxtLink :to="`/recent/${data?.stats?.most_gift?.id}`" class="space-y-2 text-sm md:text-base md:flex-1 md:flex md:items-center md:justify-center">
                   {{ $n(data?.stats?.most_gift?.gift ?? 0, 'currency', 'id-ID') }}
                 </NuxtLink>
               </div>
-              <div class="md:bg-container md:rounded-xl md:p-5 flex md:flex-col max-md:justify-between items-center gap-1.5 md:gap-3">
+              <div class="md:bg-container md:rounded-xl md:p-4 flex md:flex-col max-md:justify-between gap-1.5 md:gap-3 items-center">
                 <NuxtLink :to="`/recent/${data?.stats?.longest_live?.id}`" class="flex items-center gap-1.5 md:gap-2 md:text-xl">
                   <Icon name="material-symbols:clock-loader-60" class="text-green-500" />
                   <span>{{ $t('longestlive') }}</span>
                 </NuxtLink>
-                <NuxtLink :to="`/recent/${data?.stats?.longest_live?.id}`" class="md:px-3 space-y-2 text-sm md:text-lg md:font-semibold md:flex-1 md:flex md:items-center md:justify-center">
-                  {{ formatDuration(data?.stats?.longest_live?.duration ?? 0) }}
+                <NuxtLink :to="`/recent/${data?.stats?.longest_live?.id}`" class="space-y-2 text-sm md:text-base md:flex-1 md:flex md:items-center md:justify-center">
+                  {{ formatDuration(data?.stats?.longest_live?.duration ?? 0, { second: false }) }}
+                </NuxtLink>
+              </div>
+              <div class="md:bg-container md:rounded-xl md:p-4 flex md:flex-col max-md:justify-between gap-1.5 md:gap-3 items-center">
+                <NuxtLink :to="`/recent/${data?.stats?.longest_live?.id}`" class="flex items-center gap-1.5 md:gap-2 md:text-xl">
+                  <Icon name="material-symbols:videocam-rounded" class="text-red-500" />
+                  <span>{{ $t('last_live') }}</span>
+                </NuxtLink>
+                <NuxtLink :to="`/recent/${data?.stats?.last_live?.id}`" class="space-y-2 text-sm md:text-base md:flex-1 md:flex md:items-center md:justify-center">
+                  {{ $d(new Date(data?.stats?.last_live?.date?.start ?? ''), 'short') }}
                 </NuxtLink>
               </div>
             </div>

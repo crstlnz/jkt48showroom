@@ -87,7 +87,7 @@ const shareUrl = computed(() => {
             <AdminEditMemberButton :room-id="roomId" class="h-7 md:h-9" />
           </div>
         </div>
-        <div class="flex min-w-0 self-start flex-1 items-start justify-end flex-col mb-3">
+        <div class="flex min-w-0 self-start flex-1 items-start justify-end flex-col mb-0.5">
           <div class="font-semibold flex gap-3 md:gap-4 self-stretch">
             <div class="flex-1 text-2xl md:text-3xl">
               {{ (member.nickname || member.name)?.split("-")?.[0] }}
