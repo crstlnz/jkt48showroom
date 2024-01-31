@@ -45,6 +45,12 @@ declare namespace Database {
     height?: string
     showroom_id?: number
     idn_username?: string
+    live_data?: {
+      missing: {
+        showroom: number
+        idn: number
+      }
+    }
   }
 
   interface IShowroomGift {

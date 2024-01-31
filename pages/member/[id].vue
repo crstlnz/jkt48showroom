@@ -6,7 +6,7 @@ import { useSettings } from '~/store/settings'
 const route = useRoute()
 const { addNotif } = useNotifications()
 const { data, pending, error } = await useApiFetch<IMemberProfileAPI>(`/api/member/${route.params.id}`)
-const { status, user } = useAuth()
+const { status } = useAuth()
 const isFollow = ref(false)
 const profile = ref<IMiniRoomProfile | null>()
 
@@ -31,7 +31,7 @@ async function fetchProfile(room_id: string) {
   miniPending.value = false
 }
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 async function follow() {
   try {
@@ -164,11 +164,11 @@ useHead({
                 <div class="max-md:bg-container-2 max-md:p-3 max-md:rounded-xl w-full md:space-y-1 text-sm">
                   <div class="flex justify-between">
                     <span>Showroom</span>
-                    <span>{{ data?.stats?.total_live?.showroom }}</span>
+                    <span>{{ ((data?.stats?.total_live?.showroom || 0) + (data?.stats?.missing?.showroom || 0)) || $t('data.nodata') }}</span>
                   </div>
                   <div class="flex justify-between">
                     <span>IDN Live</span>
-                    <span>{{ data?.stats?.total_live?.idn || $t('data.nodata') }}</span>
+                    <span>{{ ((data?.stats?.total_live?.idn || 0) + (data?.stats?.missing?.idn || 0)) || $t('data.nodata') }}</span>
                   </div>
                 </div>
               </div>
@@ -196,7 +196,9 @@ useHead({
                   <span>{{ $t('last_live') }}</span>
                 </NuxtLink>
                 <NuxtLink :to="`/recent/${data?.stats?.last_live?.id}`" class="space-y-2 text-sm md:text-base md:flex-1 md:flex md:items-center md:justify-center">
-                  {{ $d(new Date(data?.stats?.last_live?.date?.start ?? ''), 'short') }}
+                  {{
+                    $dayjs(data?.stats?.last_live?.date?.start ?? '').diff($dayjs(), 'week') > 1 ? $d(new Date(data?.stats?.last_live?.date?.start ?? ''), 'short') : $dayjs(data?.stats?.last_live?.date?.start ?? '').locale(locale).fromNow()
+                  }}
                 </NuxtLink>
               </div>
             </div>

@@ -4,6 +4,18 @@ defineProps<{
   keys: string[]
   data?: any
 }>()
+
+const emit = defineEmits<(e: 'change', data: Record<string, string | number>) => void>()
+const inputData = ref<HTMLInputElement[]>()
+function save() {
+  const data: Record<string, string> = {}
+  if (inputData.value) {
+    for (const form of inputData.value) {
+      data[form.getAttribute('data-id' || '') || ''] = form.value
+    }
+  }
+  emit('change', data)
+}
 </script>
 
 <template>
@@ -15,9 +27,9 @@ defineProps<{
       <div class="w-[40px] md:w-[45px] truncate">
         {{ key[0].toUpperCase() + key.slice(1, key.length) }}
       </div>
-      <input :id="key" type="text" :name="key" :value="data?.[key]" class="bg-container-2 px-2.5 py-0.5 md:py-1 rounded-md outline-none">
+      <input :id="key" ref="inputData" :data-id="key" type="text" :name="key" :value="data?.[key]" class="bg-container-2 px-2.5 py-0.5 md:py-1 rounded-md outline-none">
     </div>
-    <button type="button" class="px-2 md:px-3 py-0.5 md:py-1 bg-blue-500 self-end rounded-md text-xs md:text-sm">
+    <button type="button" class="px-2 md:px-3 py-0.5 md:py-1 bg-blue-500 self-end rounded-md text-xs md:text-sm" @click="save">
       {{ data ? 'Save' : 'Add' }}
     </button>
   </div>

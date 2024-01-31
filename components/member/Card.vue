@@ -24,7 +24,6 @@ watch(openMenu, (isOpen) => {
   >
     <div class="h-24 w-24 self-center overflow-hidden rounded-full">
       <NuxtLink :to="`/member/${member.url}`">
-        <!-- <LazyImage class="h-full w-full" :src="$fixCloudinary(member.img_alt ?? member.img ?? config.errorPicture)" :alt="`${member.name} Profile Picture`" /> -->
         <NuxtImg
           class="h-full w-full"
           :src="member.img_alt ?? member.img ?? config.errorPicture"
@@ -41,9 +40,9 @@ watch(openMenu, (isOpen) => {
       </NuxtLink>
     </div>
     <div class="text-center">
-      <div class="truncate text-xl font-bold">
+      <NuxtLink :to="`/member/${member.url}`" class="truncate text-xl font-bold">
         {{ member.nicknames[0] || member.name }}
-      </div>
+      </NuxtLink>
       <div class="text-base" :class="member.is_group ? 'text-blue-500' : (member.is_graduate ? 'text-red-500' : 'text-green-500')">
         {{ member.is_group ? "Official" : (member.is_graduate ? "Graduated" : "Active") }}
       </div>

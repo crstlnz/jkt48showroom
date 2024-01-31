@@ -69,18 +69,18 @@ function generateForm() {
         return props.memberData?.group === data
       },
     },
-    // {
-    //   title: 'Social Media',
-    //   id: 'socials',
-    //   component: 'arrayobject',
-    //   data: props.memberData?.socials,
-    //   keys: ['title', 'url'],
-    //   titleKey: 'title',
-    //   options: group,
-    //   check: (data: any): boolean => {
-    //     return props.memberData.socials === data
-    //   },
-    // },
+    {
+      title: 'Social Media',
+      id: 'socials',
+      component: 'arrayobject',
+      data: props.memberData?.socials,
+      keys: ['title', 'url'],
+      titleKey: 'title',
+      options: group,
+      check: (data: any): boolean => {
+        return props.memberData.socials === data
+      },
+    },
     {
       title: 'Nicknames',
       id: 'nicknames',
@@ -148,6 +148,26 @@ function generateForm() {
       component: 'text',
       check: (data: any): boolean => {
         return props.memberData.idn_username === data
+      },
+    },
+    {
+      title: 'Missing Showroom',
+      placeholder: 'Missing Showroom',
+      id: 'live_data.missing.showroom',
+      data: props.memberData?.live_data?.missing?.showroom,
+      component: 'number',
+      check: (data: any): boolean => {
+        return props.memberData?.live_data?.missing?.showroom === data
+      },
+    },
+    {
+      title: 'Missing IDN',
+      placeholder: 'Missing IDN',
+      id: 'live_data.missing.idn',
+      data: props.memberData?.live_data?.missing?.idn,
+      component: 'number',
+      check: (data: any): boolean => {
+        return props.memberData?.live_data?.missing?.idn === data
       },
     },
   ]
