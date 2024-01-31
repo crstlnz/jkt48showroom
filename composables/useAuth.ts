@@ -34,7 +34,7 @@ export function useAuth() {
       }
       payload.data.auth.user = data.value
     }
-    catch (e: any) {
+    catch (e) {
       payload.data.auth.error = e
     }
     payload.data.auth.pending = false

@@ -16,6 +16,7 @@ html {
 
 :root {
   --viewport-height: 100%;
+  --tooltipColor : #3f3f3f;
 }
 
 input:-webkit-autofill,
@@ -110,6 +111,7 @@ body {
 }
 
 .dark {
+  --tooltipColor : #0c0d0f;
   ::-webkit-scrollbar-thumb {
     background: rgb(85, 85, 85);
   }
@@ -330,13 +332,6 @@ a {
 
 .bg-card {
   background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
-}
-
-:root{
-  --tooltipColor : #3f3f3f;
-}
-.dark {
-  --tooltipColor : #0c0d0f;
 }
 
 .v-popper--theme-tooltip {

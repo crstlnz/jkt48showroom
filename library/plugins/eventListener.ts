@@ -5,7 +5,7 @@ class EventListener extends Map {
     this.el = element
   }
 
-  add(event: keyof HTMLElementEventMap, fun: (...args: any) => any, useCapture = false) {
+  add(event: keyof HTMLElementEventMap, fun: (...args: unknown[]) => unknown, useCapture = false) {
     if (this.has(event)) this.remove(event)
     this.set(event, { fun, useCapture })
     this.el.addEventListener(event, fun, useCapture)

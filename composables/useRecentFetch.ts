@@ -132,8 +132,8 @@ export default async function (opts: RecentFetchOpts | null = null, q: RecentsQu
   function buildQuery(query: RecentsQuery | null = null): RecentsQuery {
     const reqQuery = query ?? urlroute.query
     const q: RecentsQuery = { ...defaultQuery }
-    for (const key of (Object.keys(reqQuery) as (keyof typeof q)[])) q[key as keyof RecentsQuery] = reqQuery[key] as any
-    if (!config.isSort(q.sort)) q.sort = 'date'
+    for (const key of Object.keys(reqQuery) as (keyof RecentsQuery)[]) q[key] = reqQuery[key] as undefined // for type error
+    if (!config.isSort(q.sort || '')) q.sort = 'date'
     q.page = Number(q.page) ?? 1
     if (q.page < 1) q.page = 1
 

@@ -43,7 +43,7 @@ interface CompareManager {
   sorted: RanksCompare
 }
 
-function getRandomFromArray(array: any[]) {
+function getRandomFromArray(array: string[]) {
   return array[Math.floor(Math.random() * array.length)]
 }
 
@@ -256,7 +256,7 @@ export default function () {
     if (undoData) {
       const fillData = undoData.check?.data
       if (fillData != null) {
-        if ((fillData as any).rankCursor == null) {
+        if ((fillData as FillTypeTwo).rankCursor == null) {
           const data = fillData as FillTypeOne
           compare.value.one = data.one
           compare.value.two = data.two
@@ -302,9 +302,9 @@ export default function () {
     state.value = s
   }
 
-  function setSelectedMember(data : ISortMember[]){
+  function setSelectedMember(data: ISortMember[]) {
     members.value = data
   }
 
-  return { start, stop, state, GameState, cardOne, cardTwo, pick, result, undo, reset, progress, setState ,setSelectedMember}
+  return { start, stop, state, GameState, cardOne, cardTwo, pick, result, undo, reset, progress, setState, setSelectedMember }
 }

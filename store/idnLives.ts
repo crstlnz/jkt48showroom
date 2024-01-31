@@ -39,7 +39,7 @@ export const useIDNLives = defineStore('useIDNLives', () => {
     if (!members.value) members.value = await getMembers().catch(() => [])
     const idnUsernames: string[] = members.value?.filter(i => i.idn_username).map(i => i.idn_username) as string[] || []
     if (!idnUsernames?.length) {
-      return await $apiFetch<IDNLives[]>(`/api/idn_lives`).catch((_) => {
+      return await $apiFetch<IDNLives[]>(`/api/idn_lives`).catch(() => {
         addNotif({
           type: 'danger',
           message: 'Failed to get IDN Lives Data!',
@@ -57,7 +57,7 @@ export const useIDNLives = defineStore('useIDNLives', () => {
         query:
               'query SearchLivestream { searchLivestream(query: "", limit: 1000) { next_cursor result { slug title image_url view_count playback_url room_identifier status live_at end_at scheduled_at gift_icon_url category { name slug } creator { uuid username name avatar bio_description following_count follower_count is_follow } } }}',
       }),
-    }).catch((_) => {
+    }).catch(() => {
       addNotif({
         type: 'danger',
         message: 'Failed to get IDN Lives Data!',

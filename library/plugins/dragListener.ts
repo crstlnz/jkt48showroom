@@ -31,34 +31,34 @@ class DragListener extends EventEmitter {
     this.emit('start', { x, y, e })
   }
 
-  onMove(e: any) {
+  onMove(e: unknown) {
     let x, y
     if (this.touchMode) {
-      const touch = e.touches[0] || e.changedTouches[0]
+      const touch = (e as TouchEvent).touches[0] || (e as TouchEvent).changedTouches[0]
       x = touch.clientX
       y = touch.clientY
     }
     else {
-      x = e.clientX
-      y = e.clientY
+      x = (e as MouseEvent).clientX
+      y = (e as MouseEvent).clientY
     }
     this.emit('move', { x, y, e })
   }
 
-  onEnd(e: any) {
+  onEnd(e: unknown) {
     let x, y
     if (this.touchMode) {
       this.listener.remove('touchmove')
       this.listener.remove('touchend')
-      const touch = e.touches[0] || e.changedTouches[0]
+      const touch = (e as TouchEvent).touches[0] || (e as TouchEvent).changedTouches[0]
       x = touch.clientX
       y = touch.clientY
     }
     else {
       this.listener.remove('mousemove')
       this.listener.remove('mouseup')
-      x = e.clientX
-      y = e.clientY
+      x = (e as MouseEvent).clientX
+      y = (e as MouseEvent).clientY
     }
     this.emit('end', { x, y, e })
   }
