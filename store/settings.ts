@@ -17,16 +17,16 @@ export const useSettings = defineStore('settings', () => {
   const subDomain = ref('')
 
   // const firstDate = computed(() => firstDateString.value ? new Date(firstDateString.value) : undefined)
-  const firstDate = ref()
+  const firstDate = ref('2020-11-01T09:59:57.810Z')
 
-  async function fetchFirstDate() {
-    try {
-      firstDate.value = (await $apiFetch<{ date: string }>(`/api/first_data`)).date
-    }
-    catch (e) {
-      console.log(e)
-    }
-  }
+  // async function fetchFirstDate() {
+  //   try {
+  //     firstDate.value = (await $apiFetch<{ date: string }>(`/api/first_data`)).date
+  //   }
+  //   catch (e) {
+  //     console.log(e)
+  //   }
+  // }
 
   const group = computed(() => {
     switch (subDomain.value) {
@@ -65,7 +65,7 @@ export const useSettings = defineStore('settings', () => {
   watch(() => route.fullPath, (p) => {
     path.value = p
   })
-  return { domain, setDomain, currentURL, getWebTitle, group, csrfToken, firstDate, session: skipHydrate(session), fetchFirstDate }
+  return { domain, setDomain, currentURL, getWebTitle, group, csrfToken, firstDate, session: skipHydrate(session) }
 })
 
 if (import.meta.hot) {

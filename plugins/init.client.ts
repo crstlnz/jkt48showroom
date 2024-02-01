@@ -7,7 +7,7 @@ export default defineNuxtPlugin(({ hook }) => {
   const route = useRoute()
   // const { refresh: refreshCSRF } = useCSRF()
   const { authenticated } = useAuth()
-  const { fetchFirstDate, group } = useSettings()
+  const { group } = useSettings()
   watch(() => route.fullPath, (path) => {
     createGtagEvent('path_view', {
       path,
@@ -28,7 +28,6 @@ export default defineNuxtPlugin(({ hook }) => {
     if (group === 'jkt48') {
       idnLives.tryRefresh()
     }
-    fetchFirstDate()
   }, 15000, { immediate: true })
 
   onUnfocus(() => {
@@ -47,12 +46,7 @@ export default defineNuxtPlugin(({ hook }) => {
     if (group === 'jkt48') {
       idnLives.tryRefresh()
     }
-    fetchFirstDate()
   })
-
-  // hook('app:mounted', () => {
-  //   refreshCSRF()
-  // })
 
   hook('page:start', () => { // when the page is change try refresh the state
     onLives.tryRefresh()
