@@ -40,7 +40,7 @@ defineProps<{
     </div>
     <div v-else-if="error">
       <div class="pb-5 pt-2 text-center">
-        <img class="mx-auto aspect-square w-72 max-w-[65%]" :src="`${$cloudinaryURL}/assets/svg/web/error.svg`">
+        <img class="mx-auto aspect-square w-72 max-w-[65%] object-contain" :src="`${$cloudinaryURL}/assets/svg/web/error.svg`">
         <span>{{ $t("data.failed") }}</span>
       </div>
     </div> -->
