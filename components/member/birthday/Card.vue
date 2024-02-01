@@ -44,10 +44,10 @@ const { locale } = useI18n()
       <div class="text-base opacity-80 mb-1.5">
         {{ $dayjs(member.birthdate).locale(locale).format("DD MMMM YYYY") }}
       </div>
-      <div v-if="isToday" class="self-start whitespace-nowrap rounded-xl bg-red-500 px-1.5 md:px-3 text-sm font-bold text-white">
+      <div v-if="$dayjs(props.member.birthdate).isToday()" class="self-start whitespace-nowrap rounded-xl bg-red-500 px-1.5 md:px-3 text-sm font-bold text-white">
         {{ $t('today') }}
       </div>
-      <div v-if="isTomorrow" class="self-start whitespace-nowrap rounded-xl bg-red-500 px-1.5 md:px-3 text-sm font-bold text-white">
+      <div v-else-if="$dayjs(props.member.birthdate).isTomorrow()" class="self-start whitespace-nowrap rounded-xl bg-red-500 px-1.5 md:px-3 text-sm font-bold text-white">
         {{ $t('tomorrow') }}
       </div>
     </div>
