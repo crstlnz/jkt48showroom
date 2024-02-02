@@ -27,10 +27,9 @@ const freeGifts = computed(() => {
         {{ $n(totalAllGifts) }} pts
       </div>
     </div>
-    <div class="relative h-2 rounded-full overflow-hidden">
-      <div class="bg-yellow-400 h-full w-full absolute text-base" />
+    <div class="bg-yellow-400 h-2 rounded-full overflow-hidden">
       <div
-        class="bg-red-400 h-full absolute text-base" :style="{
+        class="bg-red-400 h-full text-base" :style="{
           width: `${paidGifts / totalAllGifts * 100}%`,
         }"
       />
