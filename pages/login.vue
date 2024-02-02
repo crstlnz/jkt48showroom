@@ -111,7 +111,7 @@ async function signInHandler() {
     await signIn(body)
     session.value = null
     // refresh()
-    return await navigateTo(redirectURL.value, { external: false })
+    return await navigateTo(redirectURL.value, { external: true })
   }
   catch (e: any) {
     if (e.data?.error) {
