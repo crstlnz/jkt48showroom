@@ -183,6 +183,9 @@ async function signInHandler() {
                 <span :class="{ 'opacity-0': loading }">Login</span>
               </ButtonText>
             </div>
+            <div class="text-red-500 text-sm">
+              Sedang ada perbaikan!
+            </div>
             <div class="text-orange-500 text-sm">
               {{ $t('logininfo') }}
             </div>
