@@ -1,3 +1,4 @@
+import { deepCompare } from '~/utils'
 import { useSettings } from '~~/store/settings'
 
 interface RecentFetchOpts {
@@ -60,7 +61,11 @@ export default async function (opts: RecentFetchOpts | null = null, q: RecentsQu
   /// FUNCTIONS
   watch(
     () => urlroute.query,
-    () => onRouteChange(),
+    (p, p2) => {
+      if (!deepCompare(p, p2)) {
+        onRouteChange()
+      }
+    },
   )
 
   function onRouteChange() {

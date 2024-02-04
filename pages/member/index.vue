@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { Switch, SwitchGroup, SwitchLabel } from '@headlessui/vue'
 import { useFuse } from '@vueuse/integrations/useFuse'
+import { deepCompare } from '~/utils'
 
 import { useSettings } from '~~/store/settings'
 
@@ -145,53 +146,6 @@ const members = computed(() => {
 })
 
 const id = ref(0)
-
-function deepCompare(obj1: any, obj2: any): boolean {
-  try {
-    if (!obj1 || !obj2) return false
-    if (typeof obj1 !== typeof obj2) {
-      return false
-    }
-
-    // Compare arrays recursively
-    if (Array.isArray(obj1) && Array.isArray(obj2)) {
-      if (obj1.length !== obj2.length) {
-        return false
-      }
-      for (let i = 0; i < obj1.length; i++) {
-        if (!deepCompare(obj1[i], obj2[i])) {
-          return false
-        }
-      }
-      return true
-    }
-
-    // Compare objects recursively
-    if (typeof obj1 === 'object' && typeof obj2 === 'object') {
-      const keys1 = Object.keys(obj1)
-      const keys2 = Object.keys(obj2)
-
-      if (keys1.length !== keys2.length) {
-        return false
-      }
-
-      for (const key of keys1) {
-        if (!deepCompare(obj1[key], obj2[key])) {
-          return false
-        }
-      }
-
-      return true
-    }
-
-    // Compare primitive types
-    return obj1 === obj2
-  }
-  catch (e) {
-    console.log(e)
-    return false
-  }
-}
 
 watch(members, (v, old) => {
   if (!deepCompare(v, old)) {
