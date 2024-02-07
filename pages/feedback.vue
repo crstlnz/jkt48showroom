@@ -89,6 +89,9 @@ useEventListener(feedbackForm, 'submit', async (e) => {
           {{ $t('known_issues') }}
         </h4>
         <div class="mt-2.5">
+          <Accordion title="Mendapatkan notifikasi" class="mt-2">
+            Untuk mendapatkan notifikasi pada wots48 tidak memerlukan login dan jika tidak mendapatkan notifikasi, pastikan aplikasi tidak dalam mode Battery Optimization atau bisa coba untuk menginstall ulang aplikasi.
+          </Accordion>
           <Accordion title="Layar hitam saat menonton live member" class="mt-2">
             Untuk sementara, coba nonaktifkan fitur rotasi layar. (Lihat gambar di bawah untuk langkah-langkahnya.) Jika masalah tetap ada dan kamu menggunakan aplikasi Wots48, coba akses website ini menggunakan browser di alamat
             <NuxtLink to="https://dc.crstlnz.my.id" class="text-red-500">

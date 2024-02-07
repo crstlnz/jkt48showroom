@@ -1,6 +1,5 @@
 const isDev = process.env.NODE_ENV === 'development'
 console.log('API', process.env.API)
-console.log('API UTILS', process.env.API_UTILS)
 export default defineNuxtConfig({
   app: {
     rootId: 'app',
@@ -164,7 +163,7 @@ export default defineNuxtConfig({
   },
   image: {
     cloudinary: {
-      baseURL: 'https://res.cloudinary.com/daynklzzg/image/fetch/',
+      baseURL: process.env.CLOUDINARY_BASE_URL,
     },
     quality: 80,
     placeholder: 10,
