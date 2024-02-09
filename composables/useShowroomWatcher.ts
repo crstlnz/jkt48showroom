@@ -6,8 +6,10 @@ export default function (data: Ref<Watch.WatchData | null>) {
   const gift = createEventHook<ShowroomAPI.GiftLogItem>()
   const onTelops = createEventHook<Watch.Telops | null>()
 
-  watch(data, () => {
-    createSocket()
+  onMounted(() => {
+    watch(data, () => {
+      createSocket()
+    }, { immediate: true })
   })
 
   function createSocket() {

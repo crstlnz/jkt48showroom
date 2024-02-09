@@ -7,8 +7,8 @@ const defaultRecentQuery: RecentsQuery = {
   order: -1,
 }
 
-function isSort(s: any): s is sortType {
-  const sort: sortType[] = ['date', 'gift', 'views', 'duration']
+function isSort(s: string): s is sortType {
+  const sort: string[] = ['date', 'gift', 'views', 'duration']
   return sort.includes(s)
 }
 
@@ -70,14 +70,8 @@ export default {
   // group: 'hinatazaka46', // jkt48, hinatazaka or all
   ...urls,
   getTheaterId(url: string) {
-    const regex = /\/theater\/schedule\/id\/(\d+)\?lang=id/
-    const match = url.match(regex)
-    if (match && match[1]) {
-      return match[1]
-    }
-    else {
-      return null
-    }
+    const match = url.match(/\/(\d+)\?/)
+    return match ? match[1] : null
   },
   gift_perpage: 20,
   sortList: SortList,
