@@ -111,7 +111,7 @@ useHead({
     <div v-if="pending" class="flex min-h-[100vh] w-full flex-1 items-center justify-center">
       <Icon name="svg-spinners:ring-resize" size="2.5rem" />
     </div>
-    <Error v-else-if="error || !member" :message="error ? (error.statusCode === 404 ? $t('error.pagenotfound') : $t('error.unknown')) : $t('error.pagenotfound')" :img-src="!member || error?.statusCode === 404 ? '/svg/404.svg' : '/svg/error.svg'" />
+    <Error v-else-if="error || !member" :message="error ? (error.statusCode === 404 ? $t('error.pagenotfound') : $t('error.unknown')) : $t('error.pagenotfound')" :img-src="!member || error?.statusCode === 404 ? `${$cloudinaryURL}/assets/svg/web/404.svg` : `${$cloudinaryURL}/assets/svg/web/error.svg`" />
     <LayoutRow v-else :title="member?.fullname ?? member?.name ?? ''">
       <template #default>
         <div>

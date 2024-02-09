@@ -58,7 +58,7 @@ export default function (data: Ref<Watch.WatchData | null>) {
             }
           }
           catch (e) {
-            console.log(e)
+            console.error(e)
             onTelops.trigger(null)
           }
         }
@@ -84,7 +84,7 @@ export default function (data: Ref<Watch.WatchData | null>) {
         }
       }
       catch (e) {
-        console.log(e)
+        console.error(e)
       }
     }
 

@@ -51,7 +51,7 @@ useHead({
     <div v-if="pending" class="relative min-h-[100vh] w-full">
       <Icon name="eos-icons:loading" size="3rem" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 " />
     </div>
-    <Error v-else-if="error || !data" :message="error ? (error.statusCode === 404 ? $t('error.pagenotfound') : $t('error.unknown')) : $t('error.pagenotfound')" :img-src="!data || error?.statusCode === 404 ? '/svg/404.svg' : '/svg/error.svg'" />
+    <Error v-else-if="error || !data" :message="error ? (error.statusCode === 404 ? $t('error.pagenotfound') : $t('error.unknown')) : $t('error.pagenotfound')" :img-src="!data || error?.statusCode === 404 ? `${$cloudinaryURL}/assets/svg/web/404.svg` : `${$cloudinaryURL}/assets/svg/web/error.svg`" />
     <LayoutSingleRow v-else :title="`${title} - ${$dayjs(data?.date).locale(locale).format('DD MMMM YYYY')}`">
       <div v-if="data.shows?.length" class="px-4 md:px-5 space-y-10">
         <div v-for="[idx, theater] in data.shows.entries()" :key="theater.id" class="space-y-4 md:space-y-5 border-b-4 border-dashed border-white/10 pb-10">
