@@ -1,6 +1,43 @@
 <script setup lang="ts">
+import { useIDNLives } from '~/store/idnLives'
+import { useMembers } from '~/store/members'
+
 const route = useRoute()
-const { data, pending, error } = await useApiFetch<IDNLivesDetail>(`/api/watch/${route.params.id}/idn`)
+// const { data, pending, error } = await useApiFetch<IDNLivesDetail>(`/api/watch/${route.params.id}/idn`)
+const { data: lives } = useIDNLives()
+const { members, tryRefresh } = useMembers()
+const { data, pending, error } = await useAsyncData<IDNLivesDetail>(
+  `idn-${route.params.id}`,
+  async () => {
+    const live = lives?.find(i => i.user.username === route.params.id)
+    await tryRefresh()
+    const member = members?.find(i => i.idn_username === route.params.id)
+    const member_info = member
+      ? {
+          name: member.name,
+          img: member.img_alt || member.img,
+          room_id: member.room_id,
+          key: member.url,
+        }
+      : undefined
+
+    if (live) {
+      return {
+        ...live,
+        is_live: true,
+        member_info,
+      }
+    }
+    else {
+      return {
+        is_live: false,
+        member_info,
+      }
+    }
+  },
+  { server: false },
+)
+
 const title = computed(() => {
   const name = data.value?.user?.name
   return name ? `${name} - IDN Live` : ''
@@ -29,47 +66,73 @@ useHead({
   title: () => title.value,
 })
 
-// useIDNComment(data)
-
 const videoIsLandscape = ref(true)
 const { isMobile } = useDevice()
 
 function setVideoLandscape(val: boolean) {
-  console.log(val)
   videoIsLandscape.value = val
 }
 </script>
 
 <template>
   <div class="h-full">
-    <div v-if="pending" class="flex justify-center items-center w-full aspect-video">
+    <div
+      v-if="pending"
+      class="flex justify-center items-center w-full aspect-video"
+    >
       <div class="aspect-video w-20 max-w-[40%]">
         <Icon name="svg-spinners:ring-resize" class="w-full h-full" />
       </div>
     </div>
     <div v-else-if="error">
-      <Error :message="error.statusMessage || ''" :img-src="error.statusCode === 404 ? `${$cloudinaryURL}/assets/svg/web/404.svg` : `${$cloudinaryURL}/assets/svg/web/error.svg`" />
+      <Error
+        :message="error.statusMessage || ''"
+        :img-src="
+          error.statusCode === 404
+            ? `${$cloudinaryURL}/assets/svg/web/404.svg`
+            : `${$cloudinaryURL}/assets/svg/web/error.svg`
+        "
+      />
     </div>
     <div v-else-if="!data?.is_live" class="flex flex-col gap-6">
-      <div class="flex flex-col gap-5 items-center flex-1 bg-container py-7 md:py-16 px-10">
-        <NuxtImg :src="`${$cloudinaryURL}/assets/svg/web/video_files.svg`" class="mx-auto w-[450px] max-w-[70%] dark:brightness-90" alt="" />
+      <div
+        class="flex flex-col gap-5 items-center flex-1 bg-container py-7 md:py-16 px-10"
+      >
+        <NuxtImg
+          :src="`${$cloudinaryURL}/assets/svg/web/video_files.svg`"
+          class="mx-auto w-[450px] max-w-[70%] dark:brightness-90"
+          alt=""
+        />
         <div>{{ $t('streamoffline') }}</div>
       </div>
       <div class="flex gap-3 mx-6">
-        <NuxtLink :to="`/member/${data?.member_info?.key}`" class="w-28 md:w-36 max-w-[40%]">
-          <NuxtImg :src="data?.member_info?.img || $errorPicture" size="64px" class="w-full aspect-[5/6] object-cover rounded-xl" />
+        <NuxtLink
+          :to="`/member/${data?.member_info?.key}`"
+          class="w-28 md:w-36 max-w-[40%]"
+        >
+          <NuxtImg
+            :src="data?.member_info?.img || $errorPicture"
+            size="64px"
+            class="w-full aspect-[5/6] object-cover rounded-xl"
+          />
         </NuxtLink>
         <div>
           <div class="text-xl font-semibold">
             {{ data?.member_info?.name }}
           </div>
-          <NuxtLink :to="`/member/${data?.member_info?.key}`" class="text-red-500">
+          <NuxtLink
+            :to="`/member/${data?.member_info?.key}`"
+            class="text-red-500"
+          >
             Open profile
           </NuxtLink>
         </div>
       </div>
     </div>
-    <div v-else class="max-md:w-full md:max-h-[100vh] flex flex-col items-center mx-auto relative overflow-hidden">
+    <div
+      v-else
+      class="max-md:w-full md:max-h-[100vh] flex flex-col items-center mx-auto relative overflow-hidden"
+    >
       <ClientOnly>
         <div
           class="relative flex flex-col gap-3 overflow-hidden transition-all duration-300"
@@ -80,17 +143,35 @@ function setVideoLandscape(val: boolean) {
             'aspect-[9/16]': !videoIsLandscape && !isMobile,
           }"
         >
-          <NuxtLink :to="$idnLiveUrl(data?.user?.username || '', data?.slug || '')" target="_blank" :external="true" no-prefetch class="absolute top-0 left-0 z-20 p-4 mt-0.5">
-            <NuxtImg src="https://upload.wikimedia.org/wikipedia/commons/b/ba/IDN_Live.svg" size="64px" class="w-20 md:w-24" />
+          <NuxtLink
+            :to="$idnLiveUrl(data?.user?.username || '', data?.slug || '')"
+            target="_blank"
+            :external="true"
+            no-prefetch
+            class="absolute top-0 left-0 z-20 p-4 mt-0.5"
+          >
+            <NuxtImg
+              src="https://upload.wikimedia.org/wikipedia/commons/b/ba/IDN_Live.svg"
+              size="64px"
+              class="w-20 md:w-24"
+            />
           </NuxtLink>
-          <div class="absolute right-0 top-0 px-2 md:px-3 py-1 text-base font-semibold text-white z-20 bg-black/40 rounded-xl m-3">
+          <div
+            class="absolute right-0 top-0 px-2 md:px-3 py-1 text-base font-semibold text-white z-20 bg-black/40 rounded-xl m-3"
+          >
             {{ data?.user?.name }}
           </div>
           <Suspense>
             <template #fallback>
               <div
                 class="max-h-[100vh] bg-black/50 flex-1 bg-container"
-                :class="(videoIsLandscape && isLandscape) ? 'w-full' : isMobile ? 'h-[calc(100dvh_-_60px)]' : 'h-[100dvh] max-h-[1200px]'"
+                :class="
+                  videoIsLandscape && isLandscape
+                    ? 'w-full'
+                    : isMobile
+                      ? 'h-[calc(100dvh_-_60px)]'
+                      : 'h-[100dvh] max-h-[1200px]'
+                "
               />
             </template>
             <LazyWatchVideo
@@ -108,11 +189,14 @@ function setVideoLandscape(val: boolean) {
               :sources="streamURLs"
               rotate-fill="height"
               @is-landscape="setVideoLandscape"
-              @fullsceen="(isFullscreen) => {
-              }"
+              @fullsceen="isFullscreen => {}"
             >
               <ClientOnly>
-                <WatchIDNComment v-if="data" :idn-data="data" class="absolute inset-x-0 bottom-0 pb-10 h-[300px]" />
+                <WatchIDNComment
+                  v-if="data"
+                  :idn-data="data"
+                  class="absolute inset-x-0 bottom-0 pb-10 h-[300px]"
+                />
               </ClientOnly>
             </LazyWatchVideo>
           </Suspense>
@@ -128,7 +212,11 @@ function setVideoLandscape(val: boolean) {
             </div>
           </div> -->
           <div class="flex justify-end pr-3 md:pr-0 w-full">
-            <NuxtLink target="_blank" :to="$idnLiveUrl(data?.user?.username || '', data?.slug || '')" class="mb-3 text-sm bg-red-500 self-end h-7 flex items-center text-white px-3 py-1 rounded-md">
+            <NuxtLink
+              target="_blank"
+              :to="$idnLiveUrl(data?.user?.username || '', data?.slug || '')"
+              class="mb-3 text-sm bg-red-500 self-end h-7 flex items-center text-white px-3 py-1 rounded-md"
+            >
               {{ $t('watch_on') }} IDN
             </NuxtLink>
           </div>
@@ -140,10 +228,13 @@ function setVideoLandscape(val: boolean) {
 
 <style lang="scss">
 #comment-section {
-  --mask: linear-gradient(to top,
-      rgba(0,0,0, 1) 0,   rgba(0,0,0, 1) 70%,
-      rgba(0,0,0, 0) 100%
-  ) 100% 50% / 100% 100% repeat-x;
+  --mask: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 1) 0,
+      rgba(0, 0, 0, 1) 70%,
+      rgba(0, 0, 0, 0) 100%
+    )
+    100% 50% / 100% 100% repeat-x;
   -webkit-mask: var(--mask);
   mask: var(--mask);
 

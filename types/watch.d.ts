@@ -76,6 +76,7 @@ declare namespace Watch {
     gift_list: ShowroomAPI.Gift[]
     gift_log: ShowroomAPI.GiftLogItem[]
     comments: Comment[]
+    premium_room_type: number
     image: string
   }
 

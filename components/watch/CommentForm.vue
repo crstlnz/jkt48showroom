@@ -39,7 +39,6 @@ function submit() {
 }
 
 const commentInput = ref()
-const { focused } = useFocus(commentInput)
 
 const { t } = useI18n()
 async function sendComment() {
@@ -57,15 +56,36 @@ async function sendComment() {
     emit('comment', comment.value)
     loading.value = false
     comment.value = ''
-    focused.value = true
+    commentInput.value?.focus()
+    // focused.value = true
   }
   catch (e: any) {
     loading.value = false
-    addNotif({
-      message: t(e?.data?.statusMessage === 'SMS not authenticated!' ? 'form.error.commentsms' : 'form.error.commentretry'),
-      duration: 4500,
-      type: 'danger',
-    })
+    if (e?.data?.status === 503) {
+      addNotif({
+        message: t('server_busy'),
+        duration: 4500,
+        type: 'danger',
+      })
+    }
+    else if (e?.data?.status === 429) {
+      addNotif({
+        message: t('comment_too_many_request'),
+        duration: 4500,
+        type: 'danger',
+      })
+    }
+    else {
+      addNotif({
+        message: t(
+          e?.data?.statusMessage === 'SMS not authenticated!'
+            ? 'form.error.commentsms'
+            : 'form.error.commentretry',
+        ),
+        duration: 4500,
+        type: 'danger',
+      })
+    }
   }
 }
 </script>
@@ -73,13 +93,33 @@ async function sendComment() {
 <template>
   <div>
     <slot />
-    <NuxtLink v-if="!authenticated" to="/login" class="absolute inset-0 z-10 flex items-center justify-center bg-black/50">
+    <NuxtLink
+      v-if="!authenticated"
+      to="/login"
+      class="absolute inset-0 z-10 flex items-center justify-center bg-black/50"
+    >
       Please login to comment!
     </NuxtLink>
-    <div class="w-full" :class="{ 'opacity-5': !authenticated, 'ring-2 ring-red-500': formError }">
-      <input ref="commentInput" v-model="comment" :disabled="!validForSubmit" type="text" class="h-full w-full truncate rounded-lg bg-black/5 px-2 py-1.5 outline-none disabled:cursor-not-allowed disabled:opacity-25 dark:bg-black/10 md:px-2.5" placeholder="Comment..." @keyup.enter="submit">
+    <div
+      class="w-full"
+      :class="{ 'opacity-5': !authenticated, 'ring-2 ring-red-500': formError }"
+    >
+      <input
+        ref="commentInput"
+        v-model="comment"
+        type="text"
+        class="h-full w-full truncate rounded-lg bg-black/5 px-2 py-1.5 outline-none disabled:cursor-not-allowed disabled:opacity-25 dark:bg-black/10 md:px-2.5"
+        placeholder="Comment..."
+        @keyup.enter="submit"
+      >
     </div>
-    <button type="button" :disabled="!validForSubmit" class="rounded-md px-2.5 py-1 transition-[background-color,color,transition] hover:bg-blue-500 hover:text-white/90 active:scale-90 disabled:cursor-not-allowed disabled:opacity-50" :class="{ 'opacity-5': !authenticated }" @click="submit">
+    <button
+      type="button"
+      :disabled="!validForSubmit"
+      class="rounded-md px-2.5 py-1 transition-[background-color,color,transition] hover:bg-blue-500 hover:text-white/90 active:scale-90 disabled:cursor-not-allowed disabled:opacity-50"
+      :class="{ 'opacity-5': !authenticated }"
+      @click="submit"
+    >
       <Icon v-if="!loading" name="iconamoon:send-duotone" size="1.5rem" />
       <Icon v-else name="svg-spinners:ring-resize" size="1.5rem" />
     </button>

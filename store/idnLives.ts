@@ -1,3 +1,4 @@
+import { useMembers } from './members'
 import { useNotifications } from './notifications'
 import JSONSerializer from '~~/library/serializer/json'
 
@@ -8,7 +9,7 @@ export const useIDNLives = defineStore('useIDNLives', () => {
     serializer: new JSONSerializer<IDNLives[] | null>(null),
   })
 
-  const members = useLocalStorage<IMember[] | null>('JKT48Members', () => null, { serializer: new JSONSerializer<IMember[] | null>(null) })
+  const { members, tryRefresh: refreshMember } = useMembers()
 
   const hasLives = computed(() => {
     return (lives.value?.length || 0) > 0
@@ -27,17 +28,9 @@ export const useIDNLives = defineStore('useIDNLives', () => {
 
   const { addNotif } = useNotifications()
 
-  async function getMembers() {
-    return await $apiFetch<IMember[]>('/api/member', {
-      query: {
-        group: 'jkt48',
-      },
-    })
-  }
-
   async function getIDNLives(): Promise<IDNLives[]> {
-    if (!members.value) members.value = await getMembers().catch(() => [])
-    const idnUsernames: string[] = members.value?.filter(i => i.idn_username).map(i => i.idn_username) as string[] || []
+    await refreshMember()
+    const idnUsernames: string[] = members?.filter(i => i.idn_username).map(i => i.idn_username) as string[] || []
     if (!idnUsernames?.length) {
       return await $apiFetch<IDNLives[]>(`/api/idn_lives`).catch(() => {
         addNotif({

@@ -482,7 +482,7 @@ interface IDNLivesDetail {
   live_at?: string
   stream_url?: string
   is_live: boolean
-  member_info: {
+  member_info?: {
     name?: string
     img?: string
     room_id?: number

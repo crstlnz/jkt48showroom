@@ -227,3 +227,8 @@ known_issues: Masalah yang diketahui
 open_original: Buka web asli
 data_disclaimer: Data merupakan hasil rekaman bot, kesalahan dalam mengambil data mungkin saja terjadi.
 last_live: Live terakhir
+avg_duration: Durasi rata-rata
+live_count: Tidak ada live | 1 Live | {count} Live
+by_member: oleh 0 member | oleh {count} member
+server_busy: Server sedang sibuk, silahkan coba lagi nanti
+comment_too_many_request: Ups.. pelan2 komennya 😓

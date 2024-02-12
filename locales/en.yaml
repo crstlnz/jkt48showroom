@@ -227,3 +227,8 @@ known_issues: Known Issues
 open_original: Open original
 data_disclaimer: Data is the result of bot recording, errors in data collection may occur.
 last_live: Last live
+avg_duration: Average Duration
+live_count: No lives | 1 Live | {count} Lives
+by_member: by 0 members | by 1 member | by {count} members
+server_busy: Server is busy, please try again later
+comment_too_many_request: Too many request, please try again later
