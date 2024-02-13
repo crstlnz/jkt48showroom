@@ -102,10 +102,12 @@ const user = ref({
 
 const config = useRuntimeConfig()
 
-async function getPolling() {
+async function _getPolling() {
   try {
-    const poll = await $apiFetch<ShowroomAPI.Polling | ShowroomAPI.PollingLiveEnd>(`${config.public.api}/api/showroom/polling`, { params: { room_id: roomId.value } })
-    const current_user = await $apiFetch<ShowroomAPI.CurrentUser>(`${config.public.api}/api/showroom/current_user`, { params: { room_id: roomId.value } })
+    // const poll = await $apiFetch<ShowroomAPI.Polling | ShowroomAPI.PollingLiveEnd>(`${config.public.api}/api/showroom/polling`, { params: { room_id: roomId.value } })
+    // const current_user = await $apiFetch<ShowroomAPI.CurrentUser>(`${config.public.api}/api/showroom/current_user`, { params: { room_id: roomId.value } })
+    const poll = await getPolling(roomId.value)
+    const current_user = await getCurrentUser(roomId.value)
     user.value = {
       id: current_user.user_id,
       name: current_user.name,
@@ -137,7 +139,7 @@ useHead({
 
 const { pause, resume } = useIntervalFn(() => {
   if (roomId) {
-    getPolling()
+    _getPolling()
   }
 }, 120000, { immediate: false, immediateCallback: true })
 
@@ -200,7 +202,7 @@ const { t } = useI18n()
 
 function onStart() {
   if (roomId) {
-    getPolling()
+    _getPolling()
   }
   resume()
   refreshWatchData()
@@ -377,7 +379,7 @@ onComment((comment) => {
             </ClientOnly>
             <ClientOnly>
               <div
-                v-if="authenticated"
+                v-if="authenticated && user"
                 class="flex items-center gap-2 text-base transition-[visibility,opacity] duration-300 ease-in-out lg:gap-2 lg:text-sm"
                 :class="{
                   'bg-container-2 fixed left-1/2 top-1/2 z-notification -translate-x-1/2 -translate-y-1/2 rounded-xl p-8': !isLarge,

@@ -10,7 +10,7 @@ export default defineNuxtConfig({
     public: {
       isDev,
       api: process.env.API,
-      api_second: process.env.API_UTILS,
+      showroom_api: process.env.SHOWROOM_API,
     },
   },
   watch: ['~/assets/css/tailwindcss.css'],
