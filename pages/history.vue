@@ -81,7 +81,7 @@ watch(res, (val) => {
   else if (val?.recents && (val?.page || 0) <= dataset.value.page) {
     const newData = val.recents
     const oldData = dataset.value.data.slice(0, newData.length)
-    if (!deepEqual(newData, oldData)) {
+    if (!deepEqual(newData as [], oldData as [])) {
       dataset.value = {
         page: val?.page ?? 0,
         data: [...newData],

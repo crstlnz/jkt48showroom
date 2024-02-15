@@ -149,15 +149,32 @@ export function convertDurationToMs(durationString: string) {
   return durationMs
 }
 
-export function deepEqual(obj1: Record<string, string | number | Record<string, string | number>> | number | string, obj2: Record<string, string | number | Record<string, string | number>> | number | string): boolean {
-  if (obj1 === obj2) return true
-  if (typeof obj1 !== 'object' || obj1 === null || typeof obj2 !== 'object' || obj2 === null) return false
-  const keys1 = Object.keys(obj1)
-  const keys2 = Object.keys(obj2)
-  if (keys1.length !== keys2.length) return false
-  for (const key of keys1) {
-    if (!deepEqual(obj1[key], obj2[key])) return false
+type Deep = string | number | string[] | number[]
+interface DeepObject {
+  [key: string]: Deep | DeepObject
+}
+// type DeepObject = Record<string, Deep | Record<string, DeepObject>>
+type DeepData = DeepObject | DeepObject[] | Deep
+
+export function deepEqual(obj1: DeepData, obj2: DeepData): boolean {
+  if (typeof obj1 === 'number' || typeof obj1 === 'string') return obj1 === obj2
+  if (Array.isArray(obj1) || Array.isArray(obj2)) {
+    if (!Array.isArray(obj1) || !Array.isArray(obj2)) return false
+    if (obj1.length !== obj2.length) return false
+    for (const [idx, obj] of obj1.entries()) {
+      if (!deepEqual(obj, obj2[idx])) return false
+    }
   }
+  else {
+    if (typeof obj1 !== 'object' || obj1 === null || typeof obj2 !== 'object' || obj2 === null) return false
+    const keys1 = Object.keys(obj1)
+    const keys2 = Object.keys(obj2)
+    if (keys1.length !== keys2.length) return false
+    for (const key of keys1) {
+      if (!deepEqual(obj1[key], obj2[key])) return false
+    }
+  }
+
   return true
 }
 

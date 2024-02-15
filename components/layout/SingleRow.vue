@@ -55,7 +55,7 @@ onMounted(() => {
   <div class="relative min-h-[100dvh] min-w-0 flex-1 border-r dark:border-zinc-700 flex flex-col">
     <div ref="navBar" :class="{ '-translate-y-full': !navShow }" :style="{ top: 0 }" class="disable-highlight sticky top-0 z-nav flex h-14 md:h-16 w-full cursor-pointer items-center gap-3 transition-[transform] duration-500">
       <div class="bg-navbar absolute inset-0 -z-10 backdrop-blur-md" />
-      <LayoutRowTitle :show-back="showBack" :title="title" :sub-title="subTitle" class="z-10" :enable-search="enableSearch" @back="back" @scroll-top="scrollTop" @search="(val) => $emit('search', val)">
+      <LayoutRowTitle :show-back="showBack" :search="search" :title="title" :sub-title="subTitle" class="z-10" :enable-search="enableSearch" @back="back" @scroll-top="scrollTop" @search="(val) => $emit('search', val)">
         <template #actionSection>
           <slot name="actionSection" />
         </template>

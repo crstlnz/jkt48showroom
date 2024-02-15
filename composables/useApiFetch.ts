@@ -1,7 +1,6 @@
 import type { UseFetchOptions } from 'nuxt/app'
 import { defu } from 'defu'
 import syncServerCookies from './syncServerCookies'
-import { useSettings } from '~/store/settings'
 
 export function useApiFetch<T>(url: string | (() => string), options: UseFetchOptions<T> = {}) {
   const config = useRuntimeConfig()
@@ -25,15 +24,6 @@ export function useApiFetch<T>(url: string | (() => string), options: UseFetchOp
       if (typeof onRequest === 'function') onRequest(ctx)
       if (process.server) {
         ctx.options.headers = getHeaders()
-      }
-      else {
-        if (['post', 'delete', 'put'].includes(ctx.options.method?.toLowerCase() || '')) {
-          const settings = useSettings()
-          ctx.options.headers = {
-            ...ctx.options.headers,
-            'X-CSRF-TOKEN': settings.csrfToken,
-          }
-        }
       }
     },
   }

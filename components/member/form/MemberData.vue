@@ -34,6 +34,15 @@ function generateForm() {
       },
     },
     {
+      title: 'Tanggal Lahir',
+      id: 'birthdate',
+      component: 'date',
+      data: props.memberData?.birthdate,
+      check: (data: any): boolean => {
+        return props.memberData.birthdate === data
+      },
+    },
+    {
       title: 'Stage48',
       id: 'stage48',
       data: props.memberData?.stage48,

@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import dayjs from 'dayjs'
 import { NuxtLink } from '#components'
 
 const props = defineProps<{
@@ -33,10 +34,10 @@ const { locale } = useI18n()
       <div class="text-base opacity-80 mb-1.5">
         {{ $dayjs(member.birthdate).locale(locale).format("DD MMMM YYYY") }}
       </div>
-      <div v-if="$dayjs(props.member.birthdate).isToday()" class="self-start whitespace-nowrap rounded-xl bg-red-500 px-1.5 md:px-3 text-sm font-bold text-white">
+      <div v-if="$dayjs(props.member.birthdate).year(dayjs().year()).isToday()" class="self-start whitespace-nowrap rounded-xl bg-red-500 px-1.5 md:px-3 text-sm font-bold text-white">
         {{ $t('today') }}
       </div>
-      <div v-else-if="$dayjs(props.member.birthdate).isTomorrow()" class="self-start whitespace-nowrap rounded-xl bg-red-500 px-1.5 md:px-3 text-sm font-bold text-white">
+      <div v-else-if="$dayjs(props.member.birthdate).year(dayjs().year()).isTomorrow()" class="self-start whitespace-nowrap rounded-xl bg-red-500 px-1.5 md:px-3 text-sm font-bold text-white">
         {{ $t('tomorrow') }}
       </div>
     </div>

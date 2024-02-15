@@ -34,8 +34,6 @@ interface FilterOptions {
   active: boolean
 }
 
-console.log(getFilterFromQuery())
-
 const filterOptions = ref<FilterOptions>(getFilterFromQuery())
 
 function getFilterFromQuery() {
@@ -175,7 +173,9 @@ useHead({
 </script>
 
 <template>
-  <LayoutSingleRow :title="title" :search="search" :enable-search="true" @search="(v) => search = v">
+  <LayoutSingleRow
+    :title="title" :search="search" :enable-search="true" @search="(v) => search = v"
+  >
     <template #default>
       <MemberListView v-if="isMobile" :pending="pending" :error="error" :members="members" />
       <MemberGridView v-else :key-id="id" :pending="pending" :error="error" :members="members" :perpage="perpage" />

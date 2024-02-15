@@ -120,7 +120,7 @@ async function _getPolling() {
     }
   }
   catch (e) {
-    console.log(e)
+    console.error(e)
   }
 }
 
@@ -163,6 +163,8 @@ watch(data, (val) => {
   // sortedGift.value = sortGifts()
 
   isLive.value = val?.is_live ?? false
+}, {
+  immediate: true,
 })
 
 const telops = ref<Watch.Telops | null>(null)
@@ -180,7 +182,7 @@ async function fetchTelops() {
     }
   }
   catch (e) {
-    console.log(e)
+    console.error(e)
   }
 }
 
