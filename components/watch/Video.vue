@@ -128,7 +128,7 @@ function createHLS(url: string) {
       liveSyncDurationCount: 1,
       maxBufferSize: props.maxBufferSize ? props.maxBufferSize : 254 * 1000 * 1000,
       // maxMaxBufferLength: props.maxMaxBufferLength ? props.maxMaxBufferLength : 1800,
-      maxBufferLength: 5,
+      maxBufferLength: 30,
       // liveSyncDuration: 3,
       // liveMaxLatencyDuration: 5,
       // highBufferWatchdogPeriod: 1,
