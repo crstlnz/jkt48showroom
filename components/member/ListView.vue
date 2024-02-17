@@ -18,12 +18,12 @@ function getAllowedSocials(socials: SocialNetwork[]) {
     </div>
     <div
       v-else-if="pending"
-      class="flex flex-col gap-3"
+      class="flex flex-col gap-3 px-3"
     >
       <div
         v-for="i in 12"
         :key="i"
-        class="item pulse-color-2 h-[104px] mx-3"
+        class="item pulse-color-2 h-[104px]"
       />
     </div>
     <div v-else-if="!members?.length">
