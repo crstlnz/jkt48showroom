@@ -2,20 +2,13 @@
 defineProps<{
   error: Error | null
   pending: boolean
-  members: {
-    name: string
-    img: string
-    img_alt?: string | undefined
-    url: string
-    description?: string | undefined
-    group?: string | undefined
-    room_id: number
-    room_exists: boolean
-    is_graduate: boolean
-    is_group: boolean
-  }[]
+  members: IMember[]
 }>()
 const config = useAppConfig()
+const allowed = ['twitter.com', 'x.com', 'facebook.com', 'instagram.com', 'tiktok.com', 'showroom-live.com']
+function getAllowedSocials(socials: SocialNetwork[]) {
+  return socials.filter(i => allowed.some(u => i.url?.includes(u)))?.slice(0, 5)
+}
 </script>
 
 <template>
@@ -69,9 +62,9 @@ const config = useAppConfig()
               <NuxtLink :to="`/member/${member.url}`" class="font-semibold">
                 {{ member.nicknames[0] || member.name }}
               </NuxtLink>
-              <div class="flex flex-1 justify-between">
+              <div class="flex flex-col justify-between flex-1">
                 <div>
-                  <div class="flex justify-center gap-2 items-center">
+                  <div class="flex gap-2 items-center">
                     <div class="text-sm" :class="member.group === 'official' ? 'text-blue-500' : (member.is_graduate ? 'text-red-500' : 'text-green-500')">
                       {{ member.group === 'official' ? "Official" : (member.is_graduate ? "Graduated" : "Active") }}
                     </div>
@@ -81,8 +74,14 @@ const config = useAppConfig()
                     </div>
                   </div>
                 </div>
-                <div class="flex items-center gap-4 self-end text-base text-slate-700 dark:text-slate-400">
-                  <NuxtLink :to="$liveURL(member.url)" target="_blank" :aria-label="`${member.name} Live`">
+                <div class="flex items-center gap-4 self-end text-base">
+                  <NuxtLink v-for="[i, social] in getAllowedSocials(member.socials ?? []).entries()" :key="i" :to="social.url" target="_blank" class="h-6 w-6 hover:bg-blue-400/30 transition-colors duration-300 rounded-md">
+                    <Icon v-if="!social.url.includes('showroom-live')" :name="$getSocialIcon(social.url) ?? ''" class="size-full p-0.5 opacity-60" />
+                    <div v-else class="size-full">
+                      <img src="/svg/showroom.svg" alt="" class="size-full rounded-md opacity-60">
+                    </div>
+                  </NuxtLink>
+                  <!-- <NuxtLink :to="$liveURL(member.url)" target="_blank" :aria-label="`${member.name} Live`">
                     <Icon name="ic:round-videocam" size="1.6rem" />
                   </NuxtLink>
                   <NuxtLink :to="$profileURL(member.room_id)" target="_blank" :aria-label="`${member.name} Showroom Profile`">
@@ -90,7 +89,7 @@ const config = useAppConfig()
                   </NuxtLink>
                   <NuxtLink :to="`/member/${member.url}`">
                     <Icon name="mdi:card-account-details-outline" size="1.6rem" :aria-label="`${member.name} Profile`" />
-                  </NuxtLink>
+                  </NuxtLink> -->
                 </div>
               </div>
             </div>

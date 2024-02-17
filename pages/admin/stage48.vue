@@ -5,13 +5,13 @@ import { useSettings } from '~~/store/settings'
 
 definePageMeta({ middleware: 'admin' })
 
-const { data: stage48members, pending } = await useApiFetch<Admin.I48Member[]>('/api/admin/stage48')
+const { data: stage48members, pending } = await useApiFetch<Admin.IdolMemberWithID[]>('/api/admin/stage48')
 const { data: jkt48members } = await useApiFetch<JKT48.Member[]>('/api/admin/jkt48member')
 
-const membersRaw = ref<Admin.I48Member[]>([])
+const membersRaw = ref<Admin.IdolMemberWithID[]>([])
 
 watch(stage48members, (val) => {
-  membersRaw.value = val as unknown as Admin.I48Member[]
+  membersRaw.value = val as unknown as Admin.IdolMemberWithID[]
 }, { immediate: true })
 
 const filterOptions = useSessionStorage<{
@@ -27,22 +27,22 @@ const filterOptions = useSessionStorage<{
 const search = useSessionStorage('admin-memberListStage48', '')
 
 const el = ref<HTMLElement | null>(null)
-const editMember = ref<Admin.I48Member>()
+const editMember = ref<Admin.IdolMemberWithID>()
 
 onMounted(() => {
   el.value = document.body
 })
 
 const dataFiltered = computed(() => {
-  let members: Admin.I48Member[] = (membersRaw.value ?? [])
+  let members: Admin.IdolMemberWithID[] = (membersRaw.value ?? [])
   if (filterOptions.value.generation?.length) {
-    members = members.filter(i => filterOptions.value.generation.includes(i.generation ?? ''))
+    members = members.filter(i => filterOptions.value.generation.includes(i.info?.generation ?? ''))
   }
 
   if (filterOptions.value.active === filterOptions.value.graduate) {
     return members
   }
-  return members.filter(i => i.isGraduate === !filterOptions.value.active)
+  return members.filter(i => i.info?.is_graduate === !filterOptions.value.active)
 })
 
 const { results } = useFuse(search, dataFiltered, {
@@ -67,7 +67,7 @@ const { results } = useFuse(search, dataFiltered, {
   },
 })
 
-const members = computed(() => {
+const members = computed<Admin.IdolMemberWithID[]>(() => {
   return search.value === '' ? dataFiltered.value : results.value.map(i => i.item)
 })
 
@@ -80,7 +80,7 @@ function onDismiss() {
   editMember.value = undefined
 }
 
-function onUpdate(data: Admin.I48Member) {
+function onUpdate(data: Admin.IdolMemberWithID) {
   // editMember.value = data
   const keys = Array.from(Object.keys(data)).filter(i => i !== 'undefined')
   if (editMember.value) {
@@ -155,7 +155,7 @@ function toggleGen(key: string) {
                           format="webp"
                           :alt="item.room_name"
                           class="w-full h-full flex-1 object-cover rounded-xl"
-                          :src="item.member_data?.img || item.img || $errorPicture"
+                          :src="item?.info?.img || item.img || $errorPicture"
                         />
                       </NuxtLink>
                       <div class="flex flex-1 flex-col">

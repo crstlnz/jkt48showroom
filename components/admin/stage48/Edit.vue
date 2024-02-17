@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 const props = defineProps<{
-  stage48member: Admin.I48Member
+  stage48member: Admin.IdolMemberWithID
   jkt48members: JKT48.Member[]
 
 }>()
 const emit = defineEmits<{
   (e: 'onDismiss'): void
-  (e: 'onUpdateMember', data: Admin.I48Member): void
+  (e: 'onUpdateMember', data: Admin.IdolMemberWithID): void
 }>()
 
 const stage48member = ref(props.stage48member)
@@ -29,7 +29,7 @@ async function toggleGraduate(value: boolean) {
     },
     onResponse(ctx) {
       if (ctx.response.status === 200) {
-        stage48member.value.isGraduate = value
+        stage48member.value.info.is_graduate = value
       }
     },
   }).catch((e) => {
@@ -65,9 +65,9 @@ async function toggleGraduate(value: boolean) {
               form-id="image"
               class="aspect-square h-32 shrink-0 overflow-hidden rounded-full border-2 dark:border-dark-2 md:h-36 xl:h-40"
               image-class="h-full w-full object-cover"
-              :src="stage48member.img" :alt="stage48member.name"
+              :src="stage48member.info.img" :alt="stage48member.name"
               @uploaded="(url) => {
-                stage48member.img = url
+                stage48member.info.img = url
               }"
             />
             <MemberFormImage
@@ -75,9 +75,9 @@ async function toggleGraduate(value: boolean) {
               post-url="/api/admin/member/banner"
               :member-data-id="stage48member?._id ?? '0'"
               class="aspect-[15/5] h-32 shrink-0 overflow-hidden rounded-xl border-2 dark:border-dark-2 md:h-36 xl:h-40"
-              image-class="h-full w-full object-cover bg-container-2" :src="stage48member?.banner"
+              image-class="h-full w-full object-cover bg-container-2" :src="stage48member?.info?.banner"
               @uploaded="(url) => {
-                stage48member.banner = url
+                stage48member.info.banner = url
               }"
             />
           </div>
@@ -91,10 +91,10 @@ async function toggleGraduate(value: boolean) {
                   {{ stage48member.stage48 }}
                 </div>
               </div>
-              <button type="button" class="" @click="toggleGraduate(stage48member.isGraduate !== true)">
+              <button type="button" class="" @click="toggleGraduate(stage48member.info?.is_graduate !== true)">
                 <div class="flex items-center gap-1 text-xl">
-                  <div class="text-base" :class="stage48member?.isGraduate ? 'text-red-500' : 'text-green-500'">
-                    {{ stage48member?.isGraduate ? "Graduated" : "Active" }}
+                  <div class="text-base" :class="stage48member.info?.is_graduate ? 'text-red-500' : 'text-green-500'">
+                    {{ stage48member.info?.is_graduate ? "Graduated" : "Active" }}
                   </div>
                   <Icon name="humbleicons:exchange-horizontal" size="1.2rem" />
                 </div>
