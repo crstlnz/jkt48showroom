@@ -19,7 +19,7 @@ const isNew = computed(() => {
     <NuxtLink :title="rekor.name" :to="rekor.url" class="h-16 w-16 shrink-0 overflow-hidden rounded-full md:h-20 md:w-20">
       <NuxtImg
         class="h-full w-full"
-        :src="rekor.img"
+        :src="rekor.img || $errorPicture"
         :alt="rekor.name"
         loading="lazy"
         fit="fill"

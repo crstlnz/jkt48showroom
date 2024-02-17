@@ -12,7 +12,7 @@ const props = defineProps<{
   hasNextPage: boolean
   type: LogType
 }>()
-const search = ref('')
+const search = ref('wew')
 
 const giftList = computed<Map<string, LogDetail.BaseGift>>(() => {
   const gifts = new Map<string, LogDetail.BaseGift>()

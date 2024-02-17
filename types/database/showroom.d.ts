@@ -14,11 +14,6 @@ declare namespace Database {
     live: Database.IRecent[]
   }
 
-  interface SocialNetwork {
-    title: string
-    url: string
-  }
-
   interface Generation {
     title: string
     short_title: string
@@ -84,7 +79,7 @@ declare namespace Database {
     is_active: boolean
     is_group: boolean
     generation?: string
-    member_data?: I48Member
+    member_data?: IdolMember
   }
 
   interface ITheater {

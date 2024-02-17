@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { useOnLives } from '~/store/onLives'
-
 const props = defineProps<{
   error: Error | null
   pending: boolean
@@ -23,7 +21,6 @@ watch(keyId, () => {
     return [...(members.value ?? []).slice(num, num + pageSize)]
   }
 }, { immediate: true })
-const onLives = useOnLives()
 </script>
 
 <template>
@@ -53,7 +50,6 @@ const onLives = useOnLives()
             :data-id="member.name"
             class="shadow-sm aspect"
             :member="member"
-            :is-live="onLives.isLive(member.room_id)"
           />
         </div>
       </template>
@@ -74,7 +70,6 @@ const onLives = useOnLives()
             :data-id="item.name"
             class="shadow-sm aspect"
             :member="item"
-            :is-live="onLives.isLive(item.room_id)"
           />
         </template>
         <template #placeholder="{ index, style }">

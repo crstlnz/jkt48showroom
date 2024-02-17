@@ -2,13 +2,13 @@
 import { useNotifications } from '~~/store/notifications'
 
 const props = defineProps<{
-  memberData: Admin.I48Member
+  memberData: Admin.IdolMemberWithID
   jkt48members: JKT48.Member[]
 }>()
 
 const emit = defineEmits<{
   (e: 'onDismiss'): void
-  (e: 'onUpdate', data: Admin.I48Member): void
+  (e: 'onUpdate', data: Admin.IdolMemberWithID): void
 }>()
 
 const { addNotif } = useNotifications()
@@ -28,18 +28,18 @@ function generateForm() {
     {
       title: 'Image',
       id: 'img',
-      data: props.memberData?.img,
+      data: props.memberData?.info?.img,
       check: (data: any): boolean => {
-        return props.memberData.img === data
+        return props.memberData.info.img === data
       },
     },
     {
       title: 'Tanggal Lahir',
       id: 'birthdate',
       component: 'date',
-      data: props.memberData?.birthdate,
+      data: props.memberData?.info?.birthdate,
       check: (data: any): boolean => {
-        return props.memberData.birthdate === data
+        return props.memberData.info.birthdate === data
       },
     },
     {
@@ -54,18 +54,18 @@ function generateForm() {
     {
       title: 'Banner',
       id: 'banner',
-      data: props.memberData?.banner,
+      data: props.memberData?.info?.banner,
       check: (data: any): boolean => {
-        return props.memberData.banner === data
+        return props.memberData.info.banner === data
       },
     },
     {
       title: 'Jikosokai',
       id: 'jikosokai',
       component: 'textarea',
-      data: props.memberData?.jikosokai,
+      data: props.memberData?.info?.jikosokai,
       check: (data: any): boolean => {
-        return props.memberData.jikosokai === data
+        return props.memberData.info.jikosokai === data
       },
     },
     {
@@ -82,21 +82,21 @@ function generateForm() {
       title: 'Social Media',
       id: 'socials',
       component: 'arrayobject',
-      data: props.memberData?.socials,
+      data: props.memberData?.info?.socials,
       keys: ['title', 'url'],
       titleKey: 'title',
       options: group,
       check: (data: any): boolean => {
-        return props.memberData.socials === data
+        return props.memberData.info.socials === data
       },
     },
     {
       title: 'Nicknames',
       id: 'nicknames',
       component: 'arraystring',
-      data: props.memberData?.nicknames || [],
+      data: props.memberData?.info?.nicknames || [],
       check: (data: any): boolean => {
-        const pData = props.memberData?.nicknames || []
+        const pData = props.memberData?.info?.nicknames || []
         if (data.length !== pData.length) {
           return false
         }
@@ -138,7 +138,7 @@ function generateForm() {
       title: 'Generation',
       id: 'generation',
       component: 'select',
-      data: props.memberData?.generation,
+      data: props.memberData?.info?.generation,
       options: (generation as any)[props.memberData.group ?? '']?.map((i: any) => {
         return {
           title: i.title,
@@ -146,17 +146,17 @@ function generateForm() {
         }
       }),
       check: (data: any): boolean => {
-        return props.memberData.generation === data
+        return props.memberData?.info?.generation === data
       },
     },
     {
       title: 'IDN Username',
       placeholder: 'IDN Username',
       id: 'idn_username',
-      data: props.memberData?.idn_username,
+      data: props.memberData?.idn?.username,
       component: 'text',
       check: (data: any): boolean => {
-        return props.memberData.idn_username === data
+        return props.memberData.idn?.username === data
       },
     },
     {

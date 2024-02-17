@@ -169,11 +169,22 @@ export default {
       }
     }
   },
-  getLinkIconName(link: string): string | null {
+  getSocialColorIcon(link: string): string | null {
     if (link.includes('twitter.com')) return 'logos:twitter'
+    if (link.includes('x.com')) return 'logos:twitter'
+    if (link.includes('facebook.com')) return 'logos:facebook'
     if (link.includes('instagram.com')) return 'skill-icons:instagram'
     if (link.includes('tiktok.com')) return 'logos:tiktok-icon'
     if (link.includes('youtube.com')) return 'logos:youtube-icon'
+    return null
+  },
+  getSocialIcon(link: string): string | null {
+    if (link.includes('twitter.com')) return 'fa6-brands:twitter'
+    if (link.includes('x.com')) return 'fa6-brands:twitter'
+    if (link.includes('facebook.com')) return 'fa6-brands:facebook'
+    if (link.includes('instagram.com')) return 'fa6-brands:instagram'
+    if (link.includes('tiktok.com')) return 'fa6-brands:tiktok'
+    if (link.includes('youtube.com')) return 'fa6-brands:youtube'
     return null
   },
 }

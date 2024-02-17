@@ -37,6 +37,7 @@ declare namespace Admin {
   type Form = FormSelect | FormArrayText | FormSelect | FormMultipleSelect
 
   type I48Member = Database.I48Member & { _id: string | null }
+  type IdolMemberWithID = IdolMember & { _id: string | null }
   type IShowroomMember = Omit<Database.IShowroomMember, 'member_data'> & {
     _id: string
     member_data: null | I48Member
@@ -62,7 +63,7 @@ declare namespace Admin {
 
   interface ApiMemberEditData {
     member: IShowroomMember
-    stage48members: Database.I48Member[]
+    stage48members: IdolMember[]
     jkt48members: JKT48.Member[]
   }
 }

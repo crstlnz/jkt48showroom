@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-defineProps<{
+const props = defineProps<{
   member: IMember
-  isLive: boolean
 }>()
 const config = useAppConfig()
 const openMenu = ref(false)
@@ -14,6 +13,11 @@ watch(openMenu, (isOpen) => {
   else {
     listener?.value()
   }
+})
+
+const allowed = ['twitter.com', 'x.com', 'facebook.com', 'instagram.com', 'tiktok.com', 'showroom-live.com']
+const socials = computed(() => {
+  return (props.member?.socials ?? []).filter(i => allowed.some(u => i.url?.includes(u)))
 })
 </script>
 
@@ -43,12 +47,23 @@ watch(openMenu, (isOpen) => {
       <NuxtLink :to="`/member/${member.url}`" class="truncate text-xl font-bold">
         {{ member.nicknames[0] || member.name }}
       </NuxtLink>
-      <div class="text-base" :class="member.is_group ? 'text-blue-500' : (member.is_graduate ? 'text-red-500' : 'text-green-500')">
-        {{ member.is_group ? "Official" : (member.is_graduate ? "Graduated" : "Active") }}
+      <div class="flex justify-center gap-2 items-center">
+        <div class="text-base" :class="member.group === 'official' ? 'text-blue-500' : (member.is_graduate ? 'text-red-500' : 'text-green-500')">
+          {{ member.group === 'official' ? "Official" : (member.is_graduate ? "Graduated" : "Active") }}
+        </div>
+        <div class="bg-black/40 dark:bg-white/40 w-1.5 h-1.5 rounded-full" />
+        <div v-if="member.generation" class="text-sm opacity-60 font-semibold">
+          {{ parseGeneration(member.generation) || member.generation }}
+        </div>
       </div>
     </div>
-    <div class="line-clamp-3 text-center text-sm">
-      {{ member.description || $t('nodescription') }}
+    <div class="flex justify-center gap-3 text-xl flex-wrap px-5">
+      <NuxtLink v-for="[i, social] in socials.entries()" :key="i" :to="social.url" target="_blank" class="h-10 w-10 hover:bg-blue-400/30 transition-colors duration-300 rounded-md">
+        <Icon v-if="!social.url.includes('showroom-live')" :name="$getSocialIcon(social.url) ?? ''" class="size-full p-2" />
+        <div v-else class="size-full p-1.5">
+          <img src="/svg/showroom.svg" alt="" class="size-full rounded-md text-white">
+        </div>
+      </NuxtLink>
     </div>
     <div class="flex flex-1 items-end">
       <NuxtLink :to="`/member/${member.url.replace('/', '')}`" class="w-full rounded-full bg-blue-500 p-3 text-center text-white">

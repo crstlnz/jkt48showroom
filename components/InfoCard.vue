@@ -17,15 +17,15 @@ defineProps<{
         <div v-if="value" class="font-semibold text-sm xl:text-base">
           {{ value }}
         </div>
-        <div  class="font-semibold text-sm xl:text-base">
-          <slot/>
+        <div class="font-semibold text-sm xl:text-base">
+          <slot />
         </div>
 
         <div v-if="title" class="flex gap-1.5 justify-center text-xs xl:text-sm opacity-80">
           {{ title }}
         </div>
         <div class="flex gap-1.5 justify-center text-xs xl:text-sm opacity-80">
-         <slot name="title"/>
+          <slot name="title" />
         </div>
       </div>
     </div>

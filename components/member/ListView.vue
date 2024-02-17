@@ -37,61 +37,67 @@ const config = useAppConfig()
       <Error message="Data not found :(" :img-src="`${$cloudinaryURL}/assets/svg/web/no_data.svg`" />
     </div>
 
-    <DynamicScroller
+    <RecycleScroller
       v-else
       key="loaded"
       :prerender="10"
-      :min-item-size="104"
+      :min-item-size="116"
       :items="members"
-      key-field="room_id"
+      key-field="_id"
       class="px-3"
       page-mode
     >
-      <template #default="{ item, index, active }">
-        <DynamicScrollerItem :item="item" :active="active" :data-index="index">
-          <div class="pb-3">
-            <div class="bg-container flex gap-3 rounded-xl p-3">
-              <NuxtLink :key="item.room_id" :to="`/member/${item.url}`" class="h-20 w-20 overflow-hidden rounded-full">
-                <NuxtImg
-                  class="h-20 w-20 object-cover"
-                  :src="item.img_alt ?? item.img ?? config.errorPicture"
-                  :alt="`${item.name} Profile Picture`"
-                  fit="fill"
-                  :modifiers="{
-                    aspectRatio: 1,
-                    gravity: 'faceCenter',
-                  }"
-                  width="80px"
-                  :placeholder="[5, 5, 55, 100]"
-                  format="webp"
-                />
+      <template #default="{ item: member, index }">
+        <div :key="index" class="pb-3">
+          <div class="bg-container flex gap-3 rounded-xl p-3">
+            <NuxtLink :key="member.room_id" :to="`/member/${member.url}`" class="h-20 w-20 overflow-hidden rounded-full">
+              <NuxtImg
+                class="h-20 w-20 object-cover"
+                :src="member.img_alt ?? member.img ?? config.errorPicture"
+                :alt="`${member.name} Profile Picture`"
+                fit="fill"
+                :modifiers="{
+                  aspectRatio: 1,
+                  gravity: 'faceCenter',
+                }"
+                width="80px"
+                :placeholder="[5, 5, 55, 100]"
+                format="webp"
+              />
+            </NuxtLink>
+            <div class="flex flex-1 flex-col">
+              <NuxtLink :to="`/member/${member.url}`" class="font-semibold">
+                {{ member.nicknames[0] || member.name }}
               </NuxtLink>
-              <div class="flex flex-1 flex-col">
-                <NuxtLink :to="`/member/${item.url}`">
-                  {{ item.nicknames[0] || item.name }}
-                </NuxtLink>
-                <div class="flex flex-1 justify-between">
-                  <div class="text-base" :class="item.is_group ? 'text-blue-500' : (item.is_graduate ? 'text-red-500' : 'text-green-500')">
-                    {{ item.is_group ? "Official" : (item.is_graduate ? "Graduated" : "Active") }}
+              <div class="flex flex-1 justify-between">
+                <div>
+                  <div class="flex justify-center gap-2 items-center">
+                    <div class="text-sm" :class="member.group === 'official' ? 'text-blue-500' : (member.is_graduate ? 'text-red-500' : 'text-green-500')">
+                      {{ member.group === 'official' ? "Official" : (member.is_graduate ? "Graduated" : "Active") }}
+                    </div>
+                    <div class="bg-black/40 dark:bg-white/40 w-1.5 h-1.5 rounded-full" />
+                    <div v-if="member.generation" class="text-xs opacity-60 font-semibold">
+                      {{ parseGeneration(member.generation) || member.generation }}
+                    </div>
                   </div>
-                  <div class="flex items-center gap-4 self-end text-base text-slate-700 dark:text-slate-400">
-                    <NuxtLink :to="$liveURL(item.url)" target="_blank" :aria-label="`${item.name} Live`">
-                      <Icon name="ic:round-videocam" size="1.6rem" />
-                    </NuxtLink>
-                    <NuxtLink :to="$profileURL(item.room_id)" target="_blank" :aria-label="`${item.name} Showroom Profile`">
-                      <Icon name="ic:round-person" size="1.6rem" />
-                    </NuxtLink>
-                    <NuxtLink :to="`/member/${item.url}`">
-                      <Icon name="mdi:card-account-details-outline" size="1.6rem" :aria-label="`${item.name} Profile`" />
-                    </NuxtLink>
-                  </div>
+                </div>
+                <div class="flex items-center gap-4 self-end text-base text-slate-700 dark:text-slate-400">
+                  <NuxtLink :to="$liveURL(member.url)" target="_blank" :aria-label="`${member.name} Live`">
+                    <Icon name="ic:round-videocam" size="1.6rem" />
+                  </NuxtLink>
+                  <NuxtLink :to="$profileURL(member.room_id)" target="_blank" :aria-label="`${member.name} Showroom Profile`">
+                    <Icon name="ic:round-person" size="1.6rem" />
+                  </NuxtLink>
+                  <NuxtLink :to="`/member/${member.url}`">
+                    <Icon name="mdi:card-account-details-outline" size="1.6rem" :aria-label="`${member.name} Profile`" />
+                  </NuxtLink>
                 </div>
               </div>
             </div>
           </div>
-        </DynamicScrollerItem>
+        </div>
       </template>
-    </DynamicScroller>
+    </RecycleScroller>
   </div>
 </template>
 

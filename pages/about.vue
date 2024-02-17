@@ -70,19 +70,21 @@
       </div>
 
       <div class="flex flex-col gap-3 justify-between">
-        <div class="text-xl mb-2 flex gap-1.5 items-center"><Icon name="typcn:cloud-storage" class="text-blue-500 text-2xl"></Icon><span>Penyimpanan</span></div>
+        <div class="text-xl mb-2 flex gap-1.5 items-center">
+          <Icon name="typcn:cloud-storage" class="text-blue-500 text-2xl" /><span>Penyimpanan</span>
+        </div>
         <div class="flex gap-1 justify-between">
-        Screenshot
-        <a href="https://cloudinary.com/invites/lpov9zyyucivvxsnalc5/cptaluvo5krhxxhvpfky?t=default" class="bg-slate-200 p-2 rounded-xl" target="_blank">
-          <img class="h-7" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Cloudinary_logo.svg/2560px-Cloudinary_logo.svg.png" alt="Cloudinary logo">
-        </a>
-      </div>
-      <div class="flex gap-1 justify-between">
-        Data live history
-        <a href="https://www.mongodb.com/" target="_blank" class="bg-slate-200 p-2 rounded-xl">
-          <img class="h-7" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/MongoDB_Logo.svg/1280px-MongoDB_Logo.svg.png" alt="Cloudinary logo">
-        </a>
-      </div>
+          Screenshot
+          <a href="https://cloudinary.com/invites/lpov9zyyucivvxsnalc5/cptaluvo5krhxxhvpfky?t=default" class="bg-slate-200 p-2 rounded-xl" target="_blank">
+            <img class="h-7" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Cloudinary_logo.svg/2560px-Cloudinary_logo.svg.png" alt="Cloudinary logo">
+          </a>
+        </div>
+        <div class="flex gap-1 justify-between">
+          Data live history
+          <a href="https://www.mongodb.com/" target="_blank" class="bg-slate-200 p-2 rounded-xl">
+            <img class="h-7" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/MongoDB_Logo.svg/1280px-MongoDB_Logo.svg.png" alt="Cloudinary logo">
+          </a>
+        </div>
       </div>
     </div>
   </LayoutSingleRow>

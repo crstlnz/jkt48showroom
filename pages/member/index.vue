@@ -1,16 +1,22 @@
 <script lang="ts" setup>
 import { Switch, SwitchGroup, SwitchLabel } from '@headlessui/vue'
 import { useFuse } from '@vueuse/integrations/useFuse'
+import { useMembers } from '~/store/members'
 import { deepCompare } from '~/utils'
 
 import { useSettings } from '~~/store/settings'
 
 const { t: $t } = useI18n()
 const { group } = useSettings()
-const settings = useSettings()
-const { data: raw, pending, error } = await useApiFetch<IMember[]>('/api/member', { query: { group: settings.group }, key: `member-${settings.group}` })
+// const { data: raw, pending, error } = await useApiFetch<IMember[]>('/api/member', { query: { group: settings.group }, key: `member-${settings.group}` })
+const memberStore = useMembers()
+const { pending, error, members: raw } = storeToRefs(memberStore)
 const route = useRoute()
 const router = useRouter()
+
+onMounted(() => {
+  memberStore.tryRefresh()
+})
 // let filterOptions: Ref< {
 //   generation: string[]
 //   graduate: boolean

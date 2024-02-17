@@ -1,12 +1,10 @@
 import { useSettings } from './settings'
 
 export const useMembers = defineStore('members', () => {
-  const error = ref(false)
+  const error = ref<Error | null>(null)
   const loading = ref(false)
-  // const members = ref<IMember[]>([])
   const settings = useSettings()
-  const { data: members, trySet, isValid } = useExpiredLocalStorage<IMember[]>('JKT48Memberss', 86400000)
-
+  const { data: members, trySet, isValid } = useExpiredLocalStorage<IMember[]>(`membersv2-${settings.group}`, 86400000)
   async function fetch() {
     await trySet(async () => await $apiFetch('/api/member', { query: { group: settings.group } }))
   }
@@ -15,17 +13,17 @@ export const useMembers = defineStore('members', () => {
     try {
       loading.value = true
       await fetch()
-      error.value = false
+      error.value = null
       loading.value = false
     }
     catch (e) {
       loading.value = false
-      error.value = true
+      error.value = e as Error
     }
   }
 
   async function tryRefresh() {
-    if (!members.value && !isValid) {
+    if (!members.value && !isValid.value) {
       await fetch()
     }
   }

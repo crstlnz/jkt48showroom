@@ -14,7 +14,7 @@ const description = computed(() => {
 
 const title = computed(() => data.value?.title || 'News')
 const content = computed(() => {
-  return data.value?.content?.replaceAll('color: #333333', '')?.replaceAll('color: #1f1f1f;', '')?.replaceAll('color: blue', '')?.replaceAll('color: #000000', '')
+  return data.value?.content?.replaceAll('https://jkt48.com/upload', `${useRuntimeConfig().public.showroom_api}https://jkt48.com/upload`)?.replaceAll('color: #333333', '')?.replaceAll('color: #1f1f1f;', '')?.replaceAll('color: blue', '')?.replaceAll('color: #000000', '')
 })
 
 useSeoMeta({

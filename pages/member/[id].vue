@@ -8,35 +8,17 @@ const { addNotif } = useNotifications()
 const { data, pending, error } = await useApiFetch<IMemberProfileAPI>(`/api/member/${route.params.id}`)
 const { status } = useAuth()
 const isFollow = ref(false)
-const profile = ref<IMiniRoomProfile | null>()
 
 const isShowroomExists = computed(() => {
-  return data?.value?.showroom_exists ?? true
+  return data?.value?.showroom_exists ?? false
 })
-
-const miniPending = ref(true)
-async function fetchProfile(room_id: string) {
-  miniPending.value = true
-  try {
-    profile.value = await $apiFetch<IMiniRoomProfile>(`/api/profile`, {
-      query: {
-        room_id,
-      },
-    })
-    isFollow.value = profile.value.is_follow
-  }
-  catch (e) {
-
-  }
-  miniPending.value = false
-}
 
 const { t, locale } = useI18n()
 
 async function follow() {
   try {
     const form = new FormData()
-    form.set('room_id', String(data.value?.room_id))
+    form.set('room_id', String(data.value?.showroom_id))
     form.set('flag', String(isFollow.value ? 0 : 1))
     await $apiFetch('/api/user/follow', {
       method: 'POST',
@@ -50,7 +32,7 @@ async function follow() {
     })
   }
   catch (e) {
-    console.log(e)
+    console.error(e)
     addNotif({
       type: 'danger',
       message: t('follow.failed'),
@@ -59,11 +41,11 @@ async function follow() {
   }
 }
 
-watch(() => data.value, async (d) => {
-  if (process.client && d) {
-    fetchProfile(String(d.room_id))
-  }
-}, { immediate: true })
+// watch(() => data.value, async (d) => {
+//   if (process.client && d) {
+//     fetchProfile(String(d.room_id))
+//   }
+// }, { immediate: true })
 
 const member = computed(() => {
   return data.value
@@ -79,7 +61,6 @@ const birth = computed(() => {
     : null
 })
 
-const { authenticated } = useAuth()
 const { greaterOrEqual } = useResponsive()
 const isXL = greaterOrEqual('xl')
 const { $fixCloudinary } = useNuxtApp()
@@ -120,40 +101,8 @@ useHead({
             <span>{{ $t("data.nodata") }}</span>
           </div>
           <div v-else class="flex flex-col gap-3 md:gap-4">
-            <MemberProfileBanner :member="member" :room-id="member.room_id" />
-            <div v-if="isShowroomExists && miniPending" class="bg-container rounded-xl mx-3 md:mx-4 p-3 md:p-4 text-center py-4 animate-pulse">
-              <div class="h-[42px] md:h-[54px]" />
-            </div>
-            <div v-else-if="isShowroomExists" class="flex-1 flex gap-3 bg-container rounded-xl p-3 md:p-4 text-center py-4 mx-3 md:mx-4">
-              <div class="flex flex-1 flex-col gap-0.5 md:gap-1.5">
-                <div class="text-xs md:text-sm">
-                  {{ $t("watch_count") }}
-                </div>
-                <div v-tooltip="authenticated ? $t('watch_count_info', { count: profile?.visit_count || 0 }) : undefined" class="flex justify-center items-center gap-1.5 text-base md:text-lg font-semibold">
-                  <Icon name="material-symbols:auto-read-play" class="text-red-500" />
-                  <span v-if="authenticated"> {{ $n(profile?.visit_count || 0) }} {{ profile?.visit_count ? $t("times") : '' }}</span>
-                  <span v-else> {{ $t('pleaselogin') }}</span>
-                </div>
-              </div>
-              <div class="flex flex-1 flex-col gap-0.5 md:gap-1.5">
-                <div class="text-xs md:text-sm">
-                  {{ $t("follower") }}
-                </div>
-                <div class="flex justify-center items-center gap-1.5 text-base md:text-lg font-semibold">
-                  <Icon name="heroicons:user-plus-solid" class="text-pink-400" />
-                  <span> {{ $n(profile?.follower || 0) }}</span>
-                </div>
-              </div>
-              <div class="flex flex-1 flex-col gap-0.5 md:gap-1.5">
-                <div class="text-xs md:text-sm">
-                  {{ $t("room_level") }}
-                </div>
-                <div class="flex justify-center items-center gap-1.5 text-base md:text-lg font-semibold">
-                  <Icon name="icon-park-solid:ranking-list" class="text-blue-500" />
-                  <span> {{ $n(profile?.room_level || 0) }}</span>
-                </div>
-              </div>
-            </div>
+            <MemberProfileBanner :member="member" :room-id="member.showroom_id" />
+            <MemberShowroomInfo v-if="isShowroomExists" :room-id="member.showroom_id" @data="(data) => isFollow = data.is_follow" />
             <div v-if="data?.stats" class="max-md:p-3 max-md:bg-container max-md:rounded-xl mx-3 md:mx-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4">
               <div class="md:bg-container md:rounded-xl md:p-4 flex flex-col md:items-center gap-1.5 md:gap-2 relative">
                 <Icon v-tooltip="$t('data_disclaimer')" name="heroicons:information-circle" class="absolute right-0 top-0.5 md:right-3 md:top-3 text-lg outline-none" />
@@ -178,7 +127,7 @@ useHead({
                   <span>{{ $t('mostgifts') }}</span>
                 </NuxtLink>
                 <NuxtLink :to="`/recent/${data?.stats?.most_gift?.id}`" class="space-y-2 text-sm md:text-base md:flex-1 md:flex md:items-center md:justify-center">
-                  {{ $n(data?.stats?.most_gift?.gift ?? 0, 'currency', 'id-ID') }}
+                  {{ data?.stats?.most_gift?.gift ? $n(data?.stats?.most_gift?.gift ?? 0, 'currency', 'id-ID') : $t('data.nodata') }}
                 </NuxtLink>
               </div>
               <div class="md:bg-container md:rounded-xl md:p-4 flex md:flex-col max-md:justify-between gap-1.5 md:gap-3 items-center">
@@ -187,7 +136,7 @@ useHead({
                   <span>{{ $t('longestlive') }}</span>
                 </NuxtLink>
                 <NuxtLink :to="`/recent/${data?.stats?.longest_live?.id}`" class="space-y-2 text-sm md:text-base md:flex-1 md:flex md:items-center md:justify-center">
-                  {{ formatDuration(data?.stats?.longest_live?.duration ?? 0, { second: false }) }}
+                  {{ data?.stats?.longest_live?.duration ? formatDuration(data?.stats?.longest_live?.duration ?? 0, { second: false }) : $t('data.nodata') }}
                 </NuxtLink>
               </div>
               <div class="md:bg-container md:rounded-xl md:p-4 flex md:flex-col max-md:justify-between gap-1.5 md:gap-3 items-center">
@@ -197,7 +146,9 @@ useHead({
                 </NuxtLink>
                 <NuxtLink :to="`/recent/${data?.stats?.last_live?.id}`" class="space-y-2 text-sm md:text-base md:flex-1 md:flex md:items-center md:justify-center">
                   {{
-                    $dayjs(data?.stats?.last_live?.date?.start ?? '').diff($dayjs(), 'week') > 1 ? $d(new Date(data?.stats?.last_live?.date?.start ?? ''), 'short') : $dayjs(data?.stats?.last_live?.date?.start ?? '').locale(locale).fromNow()
+                    data?.stats?.last_live?.date?.start
+                      ? $dayjs(data?.stats?.last_live?.date?.start ?? '').diff($dayjs(), 'week') > 1 ? $d(new Date(data?.stats?.last_live?.date?.start ?? ''), 'short') : $dayjs(data?.stats?.last_live?.date?.start ?? '').locale(locale).fromNow()
+                      : $t('data.nodata')
                   }}
                 </NuxtLink>
               </div>
@@ -227,7 +178,7 @@ useHead({
                 </ClientOnly>
                 <div v-if="member.socials?.length" class="mt-7 flex flex-wrap gap-4">
                   <a v-for="social in member.socials" :key="social.url" class="flex items-center gap-1.5 text-blue-500 hover:text-blue-300" target="_blank" :href="social.url">
-                    <Icon v-if="$getLinkIconName(social.url)" :name="$getLinkIconName(social.url) || ''" />
+                    <Icon v-if="$getSocialColorIcon(social.url)" :name="$getSocialColorIcon(social.url) || ''" />
                     <span>{{ social.title }}</span>
                   </a>
                 </div>
@@ -298,10 +249,10 @@ useHead({
                   <TheaterCard v-for="theater in member.recentTheater" :key="theater.url" :theater="theater" />
                 </div>
               </div>
-              <!-- <HomeStats v-if="member?.room_id" :room-id="member?.room_id" /> -->
+              <!-- <HomeStats v-if="member?.showroom_id" :room-id="member?.showroom_id" /> -->
               <ClientOnly>
-                <div v-if="!isXL" class="px-3 md:px-4">
-                  <div v-if=" !member?.room_id" class="bg-container flex aspect-video w-full flex-col items-center justify-center rounded-xl p-4 xl:mt-5">
+                <div v-if="!isXL && isShowroomExists" class="px-3 md:px-4">
+                  <div v-if=" !member?.showroom_id" class="bg-container flex aspect-video w-full flex-col items-center justify-center rounded-xl p-4 xl:mt-5">
                     <div class="flex items-center gap-2 self-start text-2xl">
                       <Icon name="solar:ranking-bold-duotone" class="text-yellow-500" />
                       <span>Summary Ranking</span>
@@ -309,10 +260,10 @@ useHead({
                     <NuxtImg class="mx-auto aspect-square w-72 max-w-[80%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`" />
                     <span>{{ $t("data.nodata") }}</span>
                   </div>
-                  <SummaryRanking v-else :room-id="member?.room_id" class="xl:mt-5" />
+                  <SummaryRanking v-else :room-id="member?.showroom_id" class="xl:mt-5" />
                 </div>
               </ClientOnly>
-              <MemberInfiniteScroll v-if="member?.room_id" :room-id="member?.room_id" />
+              <MemberInfiniteScroll v-if="member?.showroom_id" :room-id="member?.showroom_id" />
             </div>
           </div>
         </div>
@@ -332,8 +283,8 @@ useHead({
             <div class="bg-container w-full aspect-[4/12] rounded-xl animate-pulse" />
           </template>
           <HomeLiveNowSide v-if="isXL" class="xl:mt-5" />
-          <div v-if="isXL">
-            <div v-if="!member?.room_id" class="bg-container flex aspect-video w-full flex-col items-center justify-center rounded-xl p-4">
+          <div v-if="isXL && isShowroomExists">
+            <div v-if="!member?.showroom_id" class="bg-container flex aspect-video w-full flex-col items-center justify-center rounded-xl p-4">
               <div class="flex items-center gap-2 self-start text-2xl">
                 <Icon name="solar:ranking-bold-duotone" class="text-yellow-500" />
                 <span>Summary Ranking</span>
@@ -341,7 +292,7 @@ useHead({
               <NuxtImg class="mx-auto aspect-square w-72 max-w-[80%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`" />
               <span>{{ $t("data.nodata") }}</span>
             </div>
-            <SummaryRanking v-else :room-id="member?.room_id" />
+            <SummaryRanking v-else :room-id="member?.showroom_id" />
           </div>
         </ClientOnly>
       </template>

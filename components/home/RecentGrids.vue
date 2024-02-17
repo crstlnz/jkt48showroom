@@ -47,7 +47,7 @@ const { locale } = useI18n()
           <NuxtImg v-if="recent.type === 'idn'" :src="$idnLiveIcon" size="64px" class="absolute left-2 top-2 mt-[4px] h-4 md:h-4 object-contain max-w-[90px]" />
           <NuxtImg
             provider="cloudinary"
-            :src="recent.member.img_alt ?? recent.member.img"
+            :src="recent.member.img_alt ?? recent.member.img ?? $errorPicture"
             :alt="`${recent.member.name} profile picture`"
             sizes="96px 2xl:112px"
             fit="fill"
