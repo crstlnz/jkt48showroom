@@ -125,7 +125,7 @@ function createHLS(url: string) {
     destroyVideo()
     hls.value = new Hls({
       enableWorker: true,
-      liveSyncDurationCount: 1,
+      liveSyncDurationCount: 2,
       maxBufferSize: props.maxBufferSize ? props.maxBufferSize : 254 * 1000 * 1000,
       // maxMaxBufferLength: props.maxMaxBufferLength ? props.maxMaxBufferLength : 1800,
       maxBufferLength: 30,
