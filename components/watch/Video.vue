@@ -128,7 +128,7 @@ function createHLS(url: string) {
       liveSyncDurationCount: 2,
       maxBufferSize: props.maxBufferSize ? props.maxBufferSize : 254 * 1000 * 1000,
       // maxMaxBufferLength: props.maxMaxBufferLength ? props.maxMaxBufferLength : 1800,
-      maxBufferLength: 30,
+      maxBufferLength: 60,
       // liveSyncDuration: 3,
       // liveMaxLatencyDuration: 5,
       // highBufferWatchdogPeriod: 1,
@@ -150,24 +150,16 @@ function createHLS(url: string) {
         switch (data.type) {
           case Hls.ErrorTypes.NETWORK_ERROR:
             // try to recover network error
-            console.log('fatal network error encountered, try to recover')
+            console.error('fatal network error encountered, try to recover')
             hls.value.startLoad()
             break
           case Hls.ErrorTypes.MEDIA_ERROR:
-            console.log('fatal media error encountered, try to recover')
-            hls.value.swapAudioCodec()
+            console.error('fatal media error encountered, try to recover')
             hls.value.recoverMediaError()
             break
           default:
-            console.log('cannot recover error')
-            // cannot recover
-            fatalError.value += 2
-            if (fatalError.value > 3) {
-              hls.value.destroy()
-            }
-            else {
-              reload()
-            }
+            console.error('cannot recover error')
+            reload()
             break
         }
       }

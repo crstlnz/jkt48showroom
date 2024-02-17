@@ -190,15 +190,7 @@ function setVideoLandscape(val: boolean) {
               rotate-fill="height"
               @is-landscape="setVideoLandscape"
               @fullsceen="isFullscreen => {}"
-            >
-              <ClientOnly>
-                <WatchIDNComment
-                  v-if="data"
-                  :idn-data="data"
-                  class="absolute inset-x-0 bottom-0 pb-10 h-[300px]"
-                />
-              </ClientOnly>
-            </LazyWatchVideo>
+            />
           </Suspense>
           <!-- <div id="comment-section" class="bottom-0 inset-x-0 absolute bg-blue-500/50 p-3 text-sm max-h-[180px] overflow-y-auto overscroll-contain">
             <div>
