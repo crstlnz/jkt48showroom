@@ -4,7 +4,7 @@ import { useSettings } from '~/store/settings'
 
 const props = defineProps<{
   member: Database.IMemberBasicData | IMemberProfileAPI
-  roomId: number
+  roomId?: number
   shareUrl?: string
 }>()
 const { isLive: checkLive } = useOnLives()

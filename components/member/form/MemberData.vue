@@ -160,6 +160,16 @@ function generateForm() {
       },
     },
     {
+      title: 'Slug',
+      placeholder: 'Slug',
+      id: 'slug',
+      data: props.memberData?.slug,
+      component: 'text',
+      check: (data: any): boolean => {
+        return props.memberData.slug === data
+      },
+    },
+    {
       title: 'Missing Showroom',
       placeholder: 'Missing Showroom',
       id: 'live_data.missing.showroom',

@@ -68,7 +68,7 @@ const dataFiltered = computed(() => {
   if (filterOptions.value.active === filterOptions.value.graduate) {
     return members
   }
-  return members.filter(i => i.member_data?.isGraduate === !filterOptions.value.active)
+  return members.filter(i => i.member_data?.info?.is_graduate === !filterOptions.value.active)
 })
 
 const { results } = useFuse(search, dataFiltered, {

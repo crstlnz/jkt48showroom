@@ -141,7 +141,7 @@ function toggleGen(key: string) {
                 <DynamicScrollerItem :item="item" :active="active" :data-index="index">
                   <div class="pb-3">
                     <div class="bg-container flex gap-3 rounded-xl p-3">
-                      <NuxtLink :to="`/member/${item.url}`" class="h-20 w-20 overflow-hidden rounded-full">
+                      <NuxtLink :to="`/member/${item.slug}`" class="h-20 w-20 overflow-hidden rounded-full">
                         <!-- <img :key="item._id" class="h-full w-full object-cover" :src="$fixCloudinary(item.member_data?.img || item.img || config.errorPicture)" alt="Profile picture"> -->
                         <NuxtImg
                           :key="item.room_id"
@@ -164,8 +164,8 @@ function toggleGen(key: string) {
                         </NuxtLink>
 
                         <div class="flex flex-1 justify-between">
-                          <div class="text-base" :class="item.is_group ? 'text-blue-500' : (item?.isGraduate ? 'text-red-500' : 'text-green-500')">
-                            {{ item.is_group ? "Official" : (item?.isGraduate ? "Graduated" : "Active") }}
+                          <div class="text-base" :class="item.is_group ? 'text-blue-500' : (item?.info?.is_graduate ? 'text-red-500' : 'text-green-500')">
+                            {{ item.is_group ? "Official" : (item?.info?.is_graduate ? "Graduated" : "Active") }}
                           </div>
                         </div>
                         <div class="space-x-4 self-end text-base text-slate-700 dark:text-slate-400">

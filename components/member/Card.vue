@@ -24,9 +24,9 @@ const socials = computed(() => {
 <template>
   <div
     ref="container"
-    class="bg-container flex flex-col items-stretch gap-3 overflow-hidden rounded-2xl p-8"
+    class="bg-container flex flex-col items-stretch gap-3 overflow-hidden rounded-2xl p-5 lg:p-8"
   >
-    <div class="h-24 w-24 self-center overflow-hidden rounded-full">
+    <div class="h-24 w-24 self-center overflow-hidden rounded-full shrink-0">
       <NuxtLink :to="`/member/${member.url}`">
         <NuxtImg
           class="h-full w-full"
@@ -57,10 +57,10 @@ const socials = computed(() => {
         </div>
       </div>
     </div>
-    <div class="flex justify-center gap-3 text-xl flex-wrap px-5">
-      <NuxtLink v-for="[i, social] in socials.entries()" :key="i" :to="social.url" target="_blank" class="h-10 w-10 hover:bg-blue-400/30 transition-colors duration-300 rounded-md">
-        <Icon v-if="!social.url.includes('showroom-live')" :name="$getSocialIcon(social.url) ?? ''" class="size-full p-2" />
-        <div v-else class="size-full p-1.5">
+    <div class="flex justify-center gap-3 text-xl px-5">
+      <NuxtLink v-for="[i, social] in socials.entries()" :key="i" :to="social.url" target="_blank" class="w-8 h-8 lg:h-10 lg:w-10 hover:bg-blue-400/30 transition-colors duration-300 rounded-md">
+        <Icon v-if="!social.url.includes('showroom-live')" :name="$getSocialIcon(social.url) ?? ''" class="size-full p-1 lg:p-2" />
+        <div v-else class="size-full p-0.5 lg:p-1.5">
           <img src="/svg/showroom.svg" alt="" class="size-full rounded-md text-white">
         </div>
       </NuxtLink>
