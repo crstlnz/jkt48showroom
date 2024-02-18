@@ -144,7 +144,7 @@ const recentHeight = computed(() => {
             <div class="group bg-container flex items-center gap-4 rounded-full px-4 ring-blue-500 focus-within:ring-2">
               <Icon name="uil:search" class="ml-1 h-5 w-5 shrink-0" />
               <input
-                id="search"
+                id="search_shortcut"
                 ref="searchinput"
                 v-model="search"
                 :aria-label="$t('search')"

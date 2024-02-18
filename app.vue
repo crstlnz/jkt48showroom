@@ -105,7 +105,7 @@ if (typeof window !== 'undefined') {
 const keys = useMagicKeys({
   passive: false,
   onEventFired(e) {
-    if (e.code === 'Escape' && e.type === 'keydown' && document.activeElement?.id === 'search') {
+    if (e.code === 'Escape' && e.type === 'keydown' && document.activeElement?.id === 'search_shortcut') {
       if ((document.activeElement as HTMLInputElement | null)?.value !== '') {
         (document.activeElement as HTMLInputElement).value = '';
         (document.activeElement as HTMLInputElement).blur()
@@ -121,7 +121,7 @@ const shiftCtrlA = keys['Ctrl+K']
 
 watch(shiftCtrlA, (v) => {
   if (v) {
-    const input = document.querySelector('input#search') as HTMLElement | null
+    const input = document.querySelector('input#search_shortcut') as HTMLElement | null
     input?.focus()
   }
 })

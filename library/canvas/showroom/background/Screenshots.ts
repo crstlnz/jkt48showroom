@@ -103,7 +103,7 @@ class ScreenshotManager {
     for (let i = 0; i < num; i++) {
       if (this.processId !== processId) return
       if (this.ids[i] <= date) {
-        if (Math.abs(this.ids[i] - date) <= 60000 * 3) {
+        if (Math.abs(this.ids[i] - date) <= 60000 * 4.5) {
           this.id = this.ids[i]
           const screenshotContainer = this.list.get(this.id)
           if (screenshotContainer) {

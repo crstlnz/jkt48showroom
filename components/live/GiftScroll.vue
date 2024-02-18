@@ -12,8 +12,8 @@ const props = defineProps<{
   hasNextPage: boolean
   type: LogType
 }>()
-const search = ref('wew')
 
+const search = ref('')
 const giftList = computed<Map<string, LogDetail.BaseGift>>(() => {
   const gifts = new Map<string, LogDetail.BaseGift>()
   if (!props.giftList) return gifts
@@ -37,7 +37,7 @@ const bufferSize = computed(() => {
   return height.value
 })
 
-const searchInput = ref()
+const searchEl = ref()
 const isEnded = ref(!(props.hasNextPage ?? true))
 const pending = ref(false)
 const error = ref(false)
@@ -154,8 +154,8 @@ watch(search, () => {
           </div>
           <div class="pointer-events-none inset-x-0 mx-3 max-sm:absolute">
             <div class="pointer-events-auto float-right flex items-center rounded-2xl bg-slate-100 p-1.5 text-sm ring-blue-500 focus-within:ring-2 dark:bg-dark-2 max-sm:focus-within:w-full max-sm:focus-within:pl-3" :class="{ 'pl-3 max-sm:w-full': search.length !== 0 }">
-              <input id="search" ref="searchInput" v-model="search" class="flex-1 truncate bg-transparent outline-none focus-visible:!outline-none max-sm:w-0 sm:ml-3" placeholder="Search...">
-              <button v-if="search.length === 0" aria-label="Search" class="group flex h-7 w-7 items-center justify-center rounded-xl p-1 sm:hover:bg-blue-500" @click="searchInput?.focus()">
+              <input id="search_shortcut" ref="searchEl" v-model="search" class="flex-1 truncate bg-transparent outline-none focus-visible:!outline-none max-sm:w-0 sm:ml-3" placeholder="Search...">
+              <button v-if="search.length === 0" aria-label="Search" class="group flex h-7 w-7 items-center justify-center rounded-xl p-1 sm:hover:bg-blue-500" @click="searchEl?.focus()">
                 <Icon name="uil:search" class="h-full w-full text-slate-800  dark:text-white/50 dark:group-hover:text-white" />
               </button>
               <button v-else aria-label="Close" class="group flex h-7 w-7 items-center justify-center rounded-xl p-1 sm:hover:bg-blue-500" @click="search = ''">

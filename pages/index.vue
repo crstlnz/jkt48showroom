@@ -69,7 +69,7 @@ const searchInput = ref()
       <div class="max-xl:hidden group bg-container flex items-center gap-4 rounded-full px-4 ring-blue-500 focus-within:ring-2 xl:mt-4">
         <Icon name="uil:search" class="ml-1 h-5 w-5 shrink-0" />
         <input
-          id="search"
+          id="search_shortcut"
           v-model="search"
           :aria-label="$t('search')"
           :placeholder="`${$t('search')}...`"
