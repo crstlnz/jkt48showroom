@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { NuxtLink } from '#components'
 
-const { data, pending, error, date, refresh } = useCachedFetch<JKT48.Schedule[]>('/api/next_schedule', { expireIn: 600000 })
+const { data, pending, error, date, refresh } = useCachedFetch<JKT48.Schedule[]>('/api/next_schedule', { expireIn: 1800000 })
 const dayjs = useDayjs()
 const groupedSchedule = computed<{ today: boolean, date: string, events: JKT48.Schedule[] }[]>(() => {
   if (!data.value) return []
