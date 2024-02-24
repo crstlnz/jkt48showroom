@@ -11,7 +11,7 @@ export const useSettings = defineStore('settings', () => {
   })
 
   const session = useSessionStorage<{ csrf_token: string, cookie: string } | null>('showroom_session', null, {
-    serializer: new ExpiredSerializer(null, authenticated.value ? 1000 * 60 * 15 : 1000 * 60 * 5),
+    serializer: new ExpiredSerializer<{ csrf_token: string, cookie: string } | null>(null, authenticated.value ? 1000 * 60 * 15 : 1000 * 60 * 5),
   })
 
   const subDomain = ref('')

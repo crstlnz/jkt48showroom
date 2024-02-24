@@ -1,12 +1,23 @@
 <script lang="ts" setup>
-import { useSettings } from '~~/store/settings'
+import { useMembers } from '~/store/members'
 
 definePageMeta({
   layout: 'sorter',
 })
 
-const { group } = useSettings()
-const { data, pending, error } = await useApiFetch<ISortMember[]>('/api/48/member', { params: { group } })
+const membersStore = await useMembers()
+const { members, pending, error } = storeToRefs(membersStore)
+const data = computed<ISortMember[]>(() => {
+  return members.value?.map<ISortMember>((i) => {
+    return {
+      id: (i as IMember & { _id: string })._id,
+      img: i.img_alt || i.img,
+      name: i.nicknames?.[0] || i.name,
+      generation: i.generation,
+      is_graduate: i.is_graduate,
+    }
+  }) ?? []
+})
 </script>
 
 <template>

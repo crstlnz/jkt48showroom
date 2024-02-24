@@ -37,7 +37,7 @@ class ExtendedSerializer<T> implements Serializer<DataValue<T> | null> {
     }
   }
 
-  write(value: DataValue<T>): string {
+  write(value: { data: T, created_at: any } | null): string {
     if (value === null) return ''
     return JSON.stringify({ data: this.serializer.write(value.data), created_at: value.created_at })
   }
@@ -66,7 +66,7 @@ export default function<T> (
   const customIsExpired = opts?.isExpired
 
   const data: Ref<DataValue<T> | null> = useLocalStorage<DataValue<T> | null>(`d-${id}`, null, {
-    serializer: serializer ? new ExtendedSerializer<T>(serializer) : new JSONSerializer(null),
+    serializer: serializer ? new ExtendedSerializer<T>(serializer) : new JSONSerializer<DataValue<T> | null>(null),
   })
 
   const dataValue = computed(() => data.value?.data)

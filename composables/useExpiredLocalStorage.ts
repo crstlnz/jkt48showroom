@@ -1,10 +1,12 @@
 import JSONSerializer from '~/library/serializer/json'
 
+interface DataJSON<T> {
+  data: T
+  timestamp: number
+}
+
 export default function<T> (key: string, expiredIn: number) {
-  const data = useLocalStorage<{
-    data: T
-    timestamp: number
-  } | null>(key, null, { serializer: new JSONSerializer(null) })
+  const data = useLocalStorage< DataJSON<T> | null>(key, null, { serializer: new JSONSerializer<DataJSON<T> | null>(null) })
 
   const isValid = computed(() => {
     if (data.value) {

@@ -7,6 +7,11 @@ interface CachedFetchOptions {
   expireIn?: number
 }
 
+interface DataJSON<T> {
+  data: T
+  timestamp: number
+}
+
 export default function useCachedFetch<DataT>(url: string, options?: CachedFetchOptions) {
   const expireIn = ref(options?.expireIn ?? 3600000)
   const pending = ref(true)
@@ -15,10 +20,7 @@ export default function useCachedFetch<DataT>(url: string, options?: CachedFetch
   const data = ref<DataT | null>(null) as Ref<DataT | null>
   const date = ref<number | null>(null)
   const config = useRuntimeConfig()
-  const cache = useLocalStorage<{
-    data: DataT
-    timestamp: number
-  } | null>(url, null, { serializer: new JSONSerializer(null) })
+  const cache = useLocalStorage<DataJSON<DataT> | null>(url, null, { serializer: new JSONSerializer<DataJSON<DataT> | null>(null) })
 
   function isValid(): boolean {
     if (cache.value) {

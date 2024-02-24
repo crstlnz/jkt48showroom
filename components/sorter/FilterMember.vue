@@ -6,7 +6,6 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{ (e: 'filtered', members: ISortMember[], filterList: string[]): void }>()
-console.log(props.members.length)
 const filteredMembers = useSessionStorage<ISortMember[]>('sorter-members', [])
 const filterList = useSessionStorage<string[]>('sorter-filterlist', [], { deep: true, listenToStorageChanges: true })
 
