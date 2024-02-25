@@ -23,22 +23,6 @@ useHead({
     lang: i18nHead.value.htmlAttrs?.lang,
     dir: i18nHead.value.htmlAttrs?.dir,
   },
-  script: [
-    {
-      async: true,
-      src: 'https://www.googletagmanager.com/gtag/js?id=G-C92JVM8CR4',
-      // type: 'text/partytown',
-    },
-    {
-      children: `
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-C92JVM8CR4', { 'debug_mode' : ${config.public.isDev} });
-        window.gtag = gtag
-      `,
-    },
-  ],
   noscript: [
     {
       children: 'JavaScript is required',

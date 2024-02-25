@@ -6,14 +6,14 @@ const route = useRoute()
 const settings = useSettings()
 const { getTitle } = useAppConfig()
 const { data, error, pending } = await useApiFetch<LogDetail.Live>(`/api/recent/${route.params.id}`)
-const { data: likeData } = await useApiFetch<Database.IsLike>('/api/user/like', { query: { data_id: route.params.id } })
+const { status, user } = useAuth()
+const { data: likeData } = await useApiFetch<Database.IsLike>('/api/user/like', { query: { data_id: route.params.id }, immediate: status.value === 'authenticated' })
 const liked = ref(false)
 
 watch(likeData, (val) => {
   liked.value = val?.is_liked || false
 }, { immediate: true })
 
-const { status, user } = useAuth()
 const { addNotif } = useNotifications()
 
 function setLike() {
