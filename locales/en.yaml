@@ -232,3 +232,4 @@ live_count: No lives | 1 Live | {count} Lives
 by_member: by 0 members | by 1 member | by {count} members
 server_busy: Server is busy, please try again later
 comment_too_many_request: Too many request, please try again later
+offline: Oopps, you are offline 😭

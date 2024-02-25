@@ -41,7 +41,7 @@
     "@nuxtjs/partytown": "^1.4.0",
     "@nuxtjs/tailwindcss": "^6.8.0",
     "@pinia/nuxt": "^0.5.1",
-    "@vite-pwa/nuxt": "^0.4.0",
+    "@vite-pwa/nuxt": "^0.5.0",
     "@vuepic/vue-datepicker": "^8.1.1",
     "@vueuse/components": "^10.8.0",
     "@vueuse/core": "^10.8.0",

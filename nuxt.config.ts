@@ -1,4 +1,5 @@
 const isDev = process.env.NODE_ENV === 'development'
+const sw = process.env.SW !== 'false'
 console.log('API', process.env.API)
 export default defineNuxtConfig({
   app: {
@@ -16,7 +17,7 @@ export default defineNuxtConfig({
   watch: ['~/assets/css/tailwindcss.css'],
   modules: [
     // '@nuxtjs/partytown',
-    // '@vite-pwa/nuxt',
+    '@vite-pwa/nuxt',
     // 'nuxt-lazy-load',
     '@nuxtjs/fontaine',
     'floating-vue/nuxt',
@@ -67,52 +68,82 @@ export default defineNuxtConfig({
     defaultLocale: 'en',
     defaultTimezone: 'Asia/Jakarta',
   },
-  // pwa: {
-  //   strategies: 'injectManifest',
-  //   srcDir: './assets/worker',
-  //   filename: 'sw.ts',
-  //   registerType: 'prompt',
-  //   manifest: {
-  //     name: 'JKT48 Showroom',
-  //     short_name: 'NgidolKuy',
-  //     theme_color: '#1e2124',
-  //     description: 'Fanmade JKT48 Live Portal',
-  //     orientation: 'portrait',
-  //     start_url: '/',
-  //     icons: [
-  //       {
-  //         src: 'img/192x192-logo.png',
-  //         sizes: '192x192',
-  //         type: 'image/png',
-  //       },
-  //       {
-  //         src: 'img/512x512-logo.png',
-  //         sizes: '512x512',
-  //         type: 'image/png',
-  //       },
-  //       {
-  //         src: 'img/512x512-masklogo.png',
-  //         sizes: '512x512',
-  //         type: 'image/png',
-  //         purpose: 'maskable',
-  //       },
-  //     ],
-  //   },
-  //   workbox: {
-  //     navigateFallback: undefined,
-  //     globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
-  //   },
-  //   client: {
-  //     installPrompt: true,
-  //     periodicSyncForUpdates: 3600,
-  //   },
-  //   devOptions: {
-  //     enabled: isDev,
-  //     suppressWarnings: true,
-  //     navigateFallbackAllowlist: [/^\/$/],
-  //     type: 'module',
-  //   },
-  // },
+  future: {
+    typescriptBundlerResolution: true,
+  },
+  experimental: {
+    payloadExtraction: true,
+    componentIslands: true,
+    asyncContext: true,
+    watcher: 'parcel',
+  },
+  pwa: {
+    injectRegister: 'auto',
+    registerType: 'autoUpdate',
+    manifest: {
+      name: 'JKT48 Showroom',
+      short_name: 'NgidolKuy',
+      theme_color: '#1e2124',
+      description: 'Fanmade JKT48 Live Portal',
+      orientation: 'portrait',
+      start_url: '/',
+      icons: [
+        {
+          src: 'img/192x192-logo.png',
+          sizes: '192x192',
+          type: 'image/png',
+        },
+        {
+          src: 'img/512x512-logo.png',
+          sizes: '512x512',
+          type: 'image/png',
+        },
+        {
+          src: 'img/512x512-masklogo.png',
+          sizes: '512x512',
+          type: 'image/png',
+          purpose: 'maskable',
+        },
+      ],
+    },
+    registerWebManifestInRouteRules: true,
+    workbox: {
+      navigateFallback: '/offline',
+      cleanupOutdatedCaches: true,
+      globPatterns: ['**/*.{json,ico,svg,ttf,woff,css,scss,js,html,txt,jpg,png,woff2,mjs,otf,ani}'],
+      runtimeCaching: [
+        {
+          urlPattern: '/',
+          handler: 'NetworkFirst',
+        },
+        {
+          urlPattern: '/member',
+          handler: 'NetworkFirst',
+        },
+        {
+          urlPattern: /^https:\/\/api\.crstlnz\.my\.id\/.*/i,
+          handler: 'NetworkFirst',
+          options: {
+            cacheName: 'api-cache',
+            cacheableResponse: {
+              statuses: [0, 200],
+            },
+          },
+        },
+      ],
+    },
+    client: {
+      installPrompt: true,
+      periodicSyncForUpdates: 3600,
+    },
+    devOptions: {
+      enabled: isDev,
+      suppressWarnings: true,
+      navigateFallback: '/offline',
+      navigateFallbackAllowlist: [/^\/$/],
+      type: 'module',
+    },
+  },
   css: ['~/assets/css/style.scss', '~/assets/css/transition.scss'],
   colorMode: {
     preference: 'dark',
@@ -151,10 +182,6 @@ export default defineNuxtConfig({
     compressPublicAssets: {
       brotli: true,
     },
-  },
-  experimental: {
-    componentIslands: true,
-    asyncContext: true,
   },
   devtools: {
     enabled: true,

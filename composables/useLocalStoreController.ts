@@ -81,7 +81,9 @@ export default function<T> (
     return new Date().getTime() - (data.value?.created_at ?? 0) > expiredIn
   }
 
+  const isOnline = useOnline()
   async function tryRefresh(...args: unknown[]) {
+    if (!isOnline.value) return
     if (!fetchData) throw new Error('Fetch function required!')
     if (!isExpired()) {
       pending.value = false

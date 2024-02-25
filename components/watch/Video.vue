@@ -116,6 +116,8 @@ const fatalError = ref(0)
 
 useScriptTag('https://cdn.jsdelivr.net/npm/hls.js@1.5.6', () => {
   createHLS(currentSource.value.url)
+}, {
+  defer: true,
 })
 
 function createHLS(url: string) {

@@ -26,6 +26,8 @@ const streamingURL = computed(() => {
 
 useScriptTag(useAppConfig().hlsUrl, () => {
   isSupported.value = Hls.isSupported()
+}, {
+  defer: true,
 })
 
 watch(openMenu, (isOpen) => {
