@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import Hls from 'hls.js/dist/hls.min.js'
 import { useElementHover, useTimeoutFn } from '@vueuse/core'
 import type { PreviewVideo } from '#components'
 import { LazyImage } from '#components'
@@ -13,10 +12,14 @@ const listener = ref<(() => void)>()
 const hover = ref(null)
 const isPreview = ref(false)
 const isHovered = useElementHover(hover)
-const isSupported = ref(Hls.isSupported())
+const isSupported = ref(false)
 const playing = ref(false)
 const preview = ref<typeof PreviewVideo>()
 const streamingURL = computed(() => props.live.stream_url)
+
+useScriptTag(useAppConfig().hlsUrl, () => {
+  isSupported.value = Hls.isSupported()
+})
 
 watch(openMenu, (isOpen) => {
   if (isPreview.value) return
@@ -48,40 +51,41 @@ function closePreview() {
   preview.value?.stop()
 }
 
-if (isSupported.value) {
-  const isContainerHovered = useElementHover(container)
-  watch(isPreview, (preview) => {
-    if (preview) {
-      if (listener.value) listener.value()
-      listener.value = onClickOutside(container, () => {
-        openMenu.value = false
-        isHovered.value = false
-        closePreview()
-      })
-    }
-    else if (listener.value && !openMenu.value) listener.value()
-  })
-
-  watch(isContainerHovered, (hovered) => {
-    if (!hovered) {
+const isContainerHovered = useElementHover(container)
+watch(isPreview, (preview) => {
+  if (!isSupported.value) return
+  if (preview) {
+    if (listener.value) listener.value()
+    listener.value = onClickOutside(container, () => {
+      openMenu.value = false
+      isHovered.value = false
       closePreview()
-    }
-  })
+    })
+  }
+  else if (listener.value && !openMenu.value) listener.value()
+})
 
-  watch(isHovered, (hovered) => {
-    if (hovered) {
-      start()
-      startBuffer()
+watch(isContainerHovered, (hovered) => {
+  if (!isSupported.value) return
+  if (!hovered) {
+    closePreview()
+  }
+})
+
+watch(isHovered, (hovered) => {
+  if (!isSupported.value) return
+  if (hovered) {
+    start()
+    startBuffer()
+  }
+  else {
+    stop()
+    stopBuffer()
+    if (!isPreview.value && playing.value) {
+      preview.value?.stop()
     }
-    else {
-      stop()
-      stopBuffer()
-      if (!isPreview.value && playing.value) {
-        preview.value?.stop()
-      }
-    }
-  })
-}
+  }
+})
 </script>
 
 <template>

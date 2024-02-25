@@ -252,7 +252,7 @@ useHead({
               <!-- <HomeStats v-if="member?.showroom_id" :room-id="member?.showroom_id" /> -->
               <ClientOnly>
                 <div v-if="!isXL && isShowroomExists" class="px-3 md:px-4">
-                  <div v-if=" !member?.showroom_id" class="bg-container flex aspect-video w-full flex-col items-center justify-center rounded-xl p-4 xl:mt-5">
+                  <div v-if="!member?.showroom_id" class="bg-container flex aspect-video w-full flex-col items-center justify-center rounded-xl p-4 xl:mt-5">
                     <div class="flex items-center gap-2 self-start text-2xl">
                       <Icon name="solar:ranking-bold-duotone" class="text-yellow-500" />
                       <span>Summary Ranking</span>
@@ -260,7 +260,7 @@ useHead({
                     <NuxtImg class="mx-auto aspect-square w-72 max-w-[80%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`" />
                     <span>{{ $t("data.nodata") }}</span>
                   </div>
-                  <SummaryRanking v-else :room-id="member?.showroom_id" class="xl:mt-5" />
+                  <SummaryRanking v-else-if="member.showroom_id" :room-id="member?.showroom_id" class="xl:mt-5" />
                 </div>
               </ClientOnly>
               <MemberInfiniteScroll v-if="member?.showroom_id" :room-id="member?.showroom_id" />

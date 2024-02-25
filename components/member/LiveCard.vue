@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import Hls from 'hls.js/dist/hls.min.js'
 import { useElementHover, useTimeoutFn } from '@vueuse/core'
 import type { PreviewVideo } from '#components'
 import { LazyImage } from '#components'
@@ -18,11 +17,15 @@ const dateString = computed(() => dayjs(date.value).format('h:mm A'))
 const hover = ref(null)
 const isPreview = ref(false)
 const isHovered = useElementHover(hover)
-const isSupported = ref(Hls.isSupported())
+const isSupported = ref(false)
 const playing = ref(false)
 const preview = ref<typeof PreviewVideo>()
 const streamingURL = computed(() => {
   return (props.live.streaming_url_list.find(i => i.id === 3 || i.id === 4) ?? props.live.streaming_url_list[0])?.url ?? ''
+})
+
+useScriptTag(useAppConfig().hlsUrl, () => {
+  isSupported.value = Hls.isSupported()
 })
 
 watch(openMenu, (isOpen) => {
@@ -55,40 +58,42 @@ function closePreview() {
   preview.value?.stop()
 }
 
-if (isSupported.value) {
-  const isContainerHovered = useElementHover(container)
-  watch(isPreview, (preview) => {
-    if (preview) {
-      if (listener.value) listener.value()
-      listener.value = onClickOutside(container, () => {
-        openMenu.value = false
-        isHovered.value = false
-        closePreview()
-      })
-    }
-    else if (listener.value && !openMenu.value) listener.value()
-  })
-
-  watch(isContainerHovered, (hovered) => {
-    if (!hovered) {
+const isContainerHovered = useElementHover(container)
+watch(isPreview, (preview) => {
+  if (!isSupported.value) return
+  if (preview) {
+    if (listener.value) listener.value()
+    listener.value = onClickOutside(container, () => {
+      openMenu.value = false
+      isHovered.value = false
       closePreview()
-    }
-  })
+    })
+  }
+  else if (listener.value && !openMenu.value) listener.value()
+})
 
-  watch(isHovered, (hovered) => {
-    if (hovered) {
-      start()
-      startBuffer()
+watch(isContainerHovered, (hovered) => {
+  if (!isSupported.value) return
+  if (!hovered) {
+    closePreview()
+  }
+})
+
+watch(isHovered, (hovered) => {
+  if (!isSupported.value) return
+  if (hovered) {
+    start()
+    startBuffer()
+  }
+  else {
+    stop()
+    stopBuffer()
+    if (!isPreview.value && playing.value) {
+      preview.value?.stop()
     }
-    else {
-      stop()
-      stopBuffer()
-      if (!isPreview.value && playing.value) {
-        preview.value?.stop()
-      }
-    }
-  })
-}
+  }
+})
+
 const pending = ref(false)
 async function refreshDate() {
   pending.value = true
@@ -99,7 +104,7 @@ async function refreshDate() {
     pending.value = false
   }
   catch (e) {
-    // console.log(e)
+    console.error(e)
     pending.value = false
   }
 }

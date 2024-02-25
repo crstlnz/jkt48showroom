@@ -154,6 +154,7 @@ export default defineNuxtConfig({
   },
   experimental: {
     componentIslands: true,
+    asyncContext: true,
   },
   devtools: {
     enabled: true,

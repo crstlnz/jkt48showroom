@@ -1,10 +1,11 @@
 import type { FetchError } from 'ofetch'
 
 export function useAuth() {
-  const { payload } = useNuxtApp()
-  const data = useState<ShowroomLogin.User | null>('authUser', () => process.client ? payload.data.auth.user || null : null)
-  const pending = useState('authPending', () => process.client ? payload.data.auth.pending ?? true : false)
-  const error = useState('authError', () => process.client ? (payload.data.auth.error ? Error(payload.data.auth.error) : null) : null)
+  const nuxtApp = tryUseNuxtApp()
+  const payload = nuxtApp?.payload
+  const data = useState<ShowroomLogin.User | null>('authUser', () => process.client ? payload?.data?.auth?.user || null : null)
+  const pending = useState('authPending', () => process.client ? payload?.data?.auth?.pending ?? true : false)
+  const error = useState('authError', () => process.client ? (payload?.data?.auth?.error ? Error(payload?.data?.auth?.error) : null) : null)
 
   const status = computed<StatusLogin>(() => {
     if (pending.value) return 'loading'
@@ -14,8 +15,8 @@ export function useAuth() {
 
   const authenticated = computed(() => status.value === 'authenticated')
 
-  if (process.server) {
-    payload.data.auth = {
+  if (process.server && payload) {
+    nuxtApp.payload.data.auth = {
       user: null,
       pending: false,
       error: null,
@@ -26,18 +27,18 @@ export function useAuth() {
     if (process.client) return
     const event = useRequestEvent()
     const cookie = event?.headers?.get('Cookie')
-    payload.data.auth.pending = true
+    if (payload) payload.data.auth.pending = true
     pending.value = true
     try {
       if (cookie?.includes('_st=') || cookie?.includes('_rt=')) {
         data.value = await $apiFetch<ShowroomLogin.User>('/api/user')
       }
-      payload.data.auth.user = data.value
+      if (payload) payload.data.auth.user = data.value
     }
     catch (e) {
-      payload.data.auth.error = e
+      if (payload) payload.data.auth.error = e
     }
-    payload.data.auth.pending = false
+    if (payload) payload.data.auth.pending = false
     pending.value = false
   }
 
@@ -49,7 +50,7 @@ export function useAuth() {
     pending.value = true
     error.value = null
     try {
-      if (payload.data.auth.user) {
+      if (payload && payload.data.auth.user) {
         data.value = payload.data.auth.user
       }
       else {

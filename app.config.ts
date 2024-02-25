@@ -13,6 +13,7 @@ function isSort(s: string): s is sortType {
 }
 
 const urls = {
+  hlsUrl: 'https://cdn.jsdelivr.net/npm/hls.js@1.5.6',
   defaultIDNProfilePicture: 'https://cdn.idn.media/idnaccount/avatar/default.png',
   idnLiveIcon: 'https://upload.wikimedia.org/wikipedia/commons/b/ba/IDN_Live.svg',
   showroomIcon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/SHOWROOM_logo.svg/500px-SHOWROOM_logo.svg.png',

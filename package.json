@@ -1,7 +1,7 @@
 {
   "name": "jkt48showroom",
   "type": "module",
-  "version": "0.12.1",
+  "version": "0.12.2",
   "engines": {
     "node": "20.x.x"
   },
@@ -29,7 +29,6 @@
     "horoscope": "^2.0.1",
     "mongoose": "^7.6.3",
     "pinia": "^2.1.7",
-    "video.js": "^8.10.0",
     "vue-virtual-scroller": "2.0.0-beta.8"
   },
   "devDependencies": {
@@ -42,9 +41,8 @@
     "@nuxtjs/partytown": "^1.4.0",
     "@nuxtjs/tailwindcss": "^6.8.0",
     "@pinia/nuxt": "^0.5.1",
-    "@types/video.js": "^7.3.56",
     "@vite-pwa/nuxt": "^0.4.0",
-    "@vuepic/vue-datepicker": "^7.4.0",
+    "@vuepic/vue-datepicker": "^8.1.1",
     "@vueuse/components": "^10.8.0",
     "@vueuse/core": "^10.8.0",
     "@vueuse/integrations": "^10.8.0",

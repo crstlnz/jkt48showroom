@@ -1,12 +1,11 @@
 <script lang="ts" setup>
-import Hls, { Events } from 'hls.js/dist/hls.min.js'
-
 const props = defineProps<{ src: string }>()
 const video = ref<HTMLMediaElement>()
 
 const hls = ref()
 const videoLoaded = ref(false)
 const isMuted = ref(true)
+
 function buffer() {
   if (process.server) return
   if (Hls.isSupported() && video.value) {
@@ -17,7 +16,7 @@ function buffer() {
     })
     hls.value.attachMedia(video.value)
     hls.value.loadSource(props.src)
-    hls.value.on(Events.BUFFER_CREATED, () => {
+    hls.value.on(Hls.Events.BUFFER_CREATED, () => {
       videoLoaded.value = true
     })
 

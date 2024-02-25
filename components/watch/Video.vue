@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
-import Hls from 'hls.js'
 
 const props = withDefaults(
   defineProps<{
@@ -29,6 +28,7 @@ const props = withDefaults(
   },
 )
 const emit = defineEmits<{ (e: 'fullsceen', isFullscreen: boolean): void, (e: 'isLandscape', isLandscape: boolean): void, (e: 'sourceError'): void }>()
+
 const sources = ref(props.sources.filter(i => i.type === 'hls') ?? [])
 watch(() => props.sources, () => {
   sources.value = props.sources.filter(i => i.type === 'hls') ?? []
@@ -114,11 +114,11 @@ function setShowControl(show: boolean) {
 
 const fatalError = ref(0)
 
-const device = useDevice()
+useScriptTag('https://cdn.jsdelivr.net/npm/hls.js@1.5.6', () => {
+  createHLS(currentSource.value.url)
+})
 
 function createHLS(url: string) {
-  // const url = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8'
-  // const url = 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
   if (Hls.isSupported()) {
     fatalError.value = 0
     isLoading.value = true
@@ -639,7 +639,6 @@ onMounted(() => {
     else {
       mute()
     }
-    reload()
   })
 })
 
