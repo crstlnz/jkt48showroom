@@ -91,7 +91,7 @@ const calculatedGift = computed<RecentUserGifts[]>(() => {
             class="w-full h-full bg-container rounded-xl object-cover"
           />
         </div>
-        <div class="flex-1">
+        <div class="flex-1 overflow-hidden">
           <RecentIDNScreenshots v-if="data.live_info.screenshot?.list?.length" class="" :screenshots="data.live_info.screenshot" />
           <div v-else class="w-full h-full flex justify-center items-center bg-container rounded-xl p-3 md:p-4 max-md:aspect-square">
             Tidak ada screenshot

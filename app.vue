@@ -142,6 +142,10 @@ useAuth()
     <NuxtLayout>
       <NuxtPage
         :key="key"
+        :transition="{
+          name: 'page',
+          mode: 'out-in',
+        }"
       />
     </NuxtLayout>
     <!-- <Script type="text/partytown" src="https://www.googletagmanager.com/gtag/js?id=G-C92JVM8CR4" /> -->

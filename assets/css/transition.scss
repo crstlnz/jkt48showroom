@@ -160,7 +160,7 @@
 .page-enter-active,
 .page-leave-active {
     transition-property: opacity, filter;
-    transition-duration: 0s;
+    transition-duration: .2s;
     transition-timing-function: ease;
 }
 
@@ -205,4 +205,22 @@
    animations can be calculated correctly. */
 .multivideo-leave-active {
   position: fixed; 
+}
+
+.screenshot-slide,
+.screenshot-slide-enter-active,
+.screenshot-slide-leave-active {
+    transition: opacity 0.35s ease;
+}
+
+.screenshot-slide-enter-from,
+.screenshot-slide-leave-active {
+    opacity: 0;
+}
+
+.screenshot-slide-leave-active {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
 }

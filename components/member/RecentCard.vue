@@ -28,10 +28,10 @@ const { start, stop } = useTimeoutFn(async () => {
   if (nextIndex > screenshots.value.length - 1) {
     nextIndex = 0
   }
-  await preloadImage(screenshots.value[0])
+  await preloadImage(screenshots.value[nextIndex])
   ssIndex.value = nextIndex
   start()
-}, 1000, { immediate: false })
+}, 1600, { immediate: false })
 
 const scrolled = ref(false)
 
@@ -125,9 +125,10 @@ onMounted(() => {
       >
         <NuxtImg :src="recent.type === 'showroom' ? $showroomIcon : $idnLiveIcon" size="64px" class="h-3 md:h-4 xl:h-5 object-contain max-w-[90px] absolute z-10 left-2 bottom-1 md:bottom-1.5 xl:bottom-2 md:left-2.5 xl:left-3" />
         <div v-if="isHovered" :class="{ 'recentcardprogress': !finishLoading, 'progressfinish w-[100%]': showLoading && finishLoading }" class="absolute left-0 top-0 z-10 h-1 bg-blue-500/70" />
-        <img v-if="ss" :src="ss" alt="Screenshot's" class="w-full h-full object-cover">
+        <Transition name="screenshot-slide" mode="in-out">
+          <img v-if="ss" :key="ss" :src="ss" alt="Screenshot's" class="absolute z-10 w-full h-full object-cover">
+        </Transition>
         <NuxtImg
-          v-else
           :key="recent.room_id"
           loading="lazy"
           fit="fill"

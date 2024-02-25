@@ -81,8 +81,8 @@ onBeforeUnmount(() => {
     <div v-if="screenshots.length > 3" class="blaze-container">
       <div class="blaze-track-container rounded-md overflow-hidden">
         <div class="blaze-track">
-          <div v-for="ss in screenshots" :key="ss" class="bg-container rounded-md overflow-hidden">
-            <img :data-src="ss" class="lazyLoad md:h-80  object-cover aspect-[5/6.5] !outline-none !ring-0">
+          <div v-for="ss in screenshots" :key="ss" class="relative bg-container rounded-md overflow-hidden md:h-80 aspect-[5/6.5]">
+            <img :data-src="ss" class="lazyLoad object-cover size-full absolute inset-0 !outline-none !ring-0">
           </div>
         </div>
       </div>

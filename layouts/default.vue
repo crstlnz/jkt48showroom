@@ -99,14 +99,14 @@ const menus: MenuItem[] = [
     icon: 'material-symbols:shield-person-outline-rounded',
     activeIcon: 'material-symbols:shield-person-rounded',
   },
-  {
-    title: 'Lapor Bug',
-    url: '/feedback',
-    locale_id: 'menu.report_bugs',
-    mobile: false,
-    icon: 'fluent:person-feedback-16-regular',
-    activeIcon: 'fluent:person-feedback-16-filled',
-  },
+  // {
+  //   title: 'Lapor Bug',
+  //   url: '/feedback',
+  //   locale_id: 'menu.report_bugs',
+  //   mobile: false,
+  //   icon: 'fluent:person-feedback-16-regular',
+  //   activeIcon: 'fluent:person-feedback-16-filled',
+  // },
   {
     title: 'About',
     url: '/about',
