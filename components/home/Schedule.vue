@@ -64,7 +64,7 @@ const { locale } = useI18n()
         <td class="w-full p-3">
           <component :is="event.url.startsWith('/theater/schedule/id/') ? NuxtLink : 'div'" v-for="event in schedule.events" :key="event.id" :to="event.url.startsWith('/theater/schedule/id/') ? `/theater/${$getTheaterId(event.url)}` ?? undefined : undefined" class="flex gap-2">
             <NuxtImg
-              class="aspect-[56/19] h-4 self-center"
+              class="aspect-[56/19] w-14 object-cover self-center"
               :src="`${$cloudinaryURL}/assets/jkt48${event.label}`"
               alt="Label"
               loading="lazy"
@@ -73,7 +73,6 @@ const { locale } = useI18n()
               width="56px"
               format="webp"
             />
-
             <span>{{ event.title }}</span>
           </component>
         </td>

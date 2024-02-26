@@ -26,6 +26,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       isDev,
+      cloudinary: process.env.CLOUDINARY_BASE_URL,
       api: process.env.API,
       showroom_api: process.env.SHOWROOM_API,
     },
