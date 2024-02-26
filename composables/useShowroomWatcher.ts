@@ -90,7 +90,9 @@ export default function (data: Ref<Watch.WatchData | null>) {
 
     socket.onclose = (closeEvent) => {
       if (closeEvent.code === 3030) return
-      createSocket()
+      setTimeout(() => {
+        createSocket()
+      }, 1000)
     }
   }
 

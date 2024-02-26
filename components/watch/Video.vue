@@ -113,9 +113,19 @@ function setShowControl(show: boolean) {
 }
 
 const fatalError = ref(0)
-
+const createdVideo = ref(false)
 useScriptTag('https://cdn.jsdelivr.net/npm/hls.js@1.5.6', () => {
-  createHLS(currentSource.value.url)
+  if (!createdVideo.value) {
+    createdVideo.value = true
+    createHLS(currentSource.value.url)
+  }
+})
+
+onMounted(() => {
+  if (!createdVideo.value && typeof Hls !== 'undefined') {
+    createdVideo.value = true
+    createHLS(currentSource.value.url)
+  }
 })
 
 function createHLS(url: string) {
