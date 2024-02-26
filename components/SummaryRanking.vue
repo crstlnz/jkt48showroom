@@ -23,7 +23,7 @@ watch(() => props.roomId, (roomId) => {
       <span>Summary Ranking</span>
     </div>
     <div v-if="rankingError" class="flex aspect-square flex-col items-center justify-center gap-5">
-      <NuxtImg class="aspect-square w-72 mx-auto max-w-[65%] object-contain" :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" />
+      <NuxtImg class="aspect-square w-72 mx-auto max-w-[65%] object-contain" :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" sizes="320px" fit="fill" />
       <span>{{ $t("data.failed") }}</span>
     </div>
     <div v-else-if="rankingPending" class="flex aspect-square items-center justify-center">

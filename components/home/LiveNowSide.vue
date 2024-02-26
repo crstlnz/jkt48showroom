@@ -17,7 +17,7 @@ const { data, pending, error } = storeToRefs(onLives)
       class="aspect-[10/9]"
     >
       <div class="pt-2 text-center">
-        <NuxtImg class="aspect-square w-72 mx-auto max-w-[65%] object-contain" :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" />
+        <NuxtImg class="aspect-square w-72 mx-auto max-w-[65%] object-contain" :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" sizes="320px" fit="fill" />
         <span>{{ $t("data.failed") }}</span>
       </div>
     </div>
@@ -29,7 +29,7 @@ const { data, pending, error } = storeToRefs(onLives)
       class="aspect-[10/9]"
     >
       <div class="pt-2 text-center">
-        <NuxtImg class="mx-auto aspect-square w-72 max-w-[65%] object-contain" alt="No member onlive" :src="`${$cloudinaryURL}/assets/svg/web/space_copy.svg`" />
+        <NuxtImg class="mx-auto aspect-square w-72 max-w-[65%] object-contain" alt="No member onlive" :src="`${$cloudinaryURL}/assets/svg/web/space_copy.svg`" sizes="320px" fit="fill" />
         <span>{{ $t("nolive") }}</span>
       </div>
     </div>
