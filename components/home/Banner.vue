@@ -14,7 +14,7 @@ function generateIMGUrl(width: number) {
 function loadBanner() {
   const img = new Image()
   const windowWidth = window.innerWidth
-  const width = windowWidth > 1024 ? 1000 : (windowWidth > 768 ? 5 : (windowWidth > 640 ? 640 : 5))
+  const width = windowWidth > 1024 ? 1000 : (windowWidth > 768 ? 900 : (windowWidth > 640 ? 768 : 500))
   const imgSrc = generateIMGUrl(width)
   if (realImg.value !== imgSrc) {
     img.onload = () => {
