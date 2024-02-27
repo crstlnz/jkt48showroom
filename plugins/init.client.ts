@@ -1,4 +1,5 @@
 import { useIDNLives } from '~/store/idnLives'
+import { useNotifications } from '~/store/notifications'
 import { useSettings } from '~/store/settings'
 import { createGtagEvent } from '~/utils/gtag'
 import { useOnLives } from '~~/store/onLives'
@@ -17,6 +18,15 @@ export default defineNuxtPlugin(({ hook }) => {
 
   const onLives = useOnLives()
   const idnLives = useIDNLives()
+  const isOnline = useOnline()
+  watch(isOnline, (online) => {
+    if (!online) {
+      if (route.path !== '/') {
+        navigateTo('/')
+      }
+    }
+  })
+
   const { onFocus, onUnfocus } = useUserFocus({
     time: 1000,
     idleTime: 30000,

@@ -77,8 +77,8 @@ devDependencies:
     specifier: ^0.5.1
     version: 0.5.1(rollup@4.12.0)(typescript@5.3.3)(vue@3.4.19)
   '@vite-pwa/nuxt':
-    specifier: ^0.4.0
-    version: 0.4.0(rollup@4.12.0)(vite@5.1.4)(workbox-build@7.0.0)(workbox-window@7.0.0)
+    specifier: ^0.5.0
+    version: 0.5.0(rollup@4.12.0)(vite@5.1.4)(workbox-build@7.0.0)(workbox-window@7.0.0)
   '@vuepic/vue-datepicker':
     specifier: ^8.1.1
     version: 8.1.1(vue@3.4.19)

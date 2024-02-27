@@ -140,8 +140,11 @@ const DesktopLayout = resolveComponent('LayoutDesktop')
 
 <template>
   <main class="flex mx-auto max-w-[1630px]">
-    <Component :is="!isMobile ? DesktopLayout : MobileLayout" :menus="menus" @toggle-dark="toggleDark()">
+    <MobileLayout v-if="isMobile" :menus="menus" @toggle-dark="toggleDark()">
       <slot />
-    </Component>
+    </MobileLayout>
+    <DesktopLayout v-else :menus="menus" @toggle-dark="toggleDark()">
+      <slot />
+    </DesktopLayout>
   </main>
 </template>

@@ -1,3 +1,5 @@
+import { pwa } from './pwa.config'
+
 const isDev = process.env.NODE_ENV === 'development'
 console.log('API', process.env.API)
 export default defineNuxtConfig({
@@ -33,7 +35,7 @@ export default defineNuxtConfig({
   },
   watch: ['~/assets/css/tailwindcss.css'],
   modules: [
-    // '@vite-pwa/nuxt',
+    '@vite-pwa/nuxt',
     '@nuxtjs/fontaine',
     'floating-vue/nuxt',
     'nuxt-security',
@@ -80,52 +82,16 @@ export default defineNuxtConfig({
     defaultLocale: 'en',
     defaultTimezone: 'Asia/Jakarta',
   },
-  // pwa: {
-  //   strategies: 'injectManifest',
-  //   srcDir: './assets/worker',
-  //   filename: 'sw.ts',
-  //   registerType: 'prompt',
-  //   manifest: {
-  //     name: 'JKT48 Showroom',
-  //     short_name: 'NgidolKuy',
-  //     theme_color: '#1e2124',
-  //     description: 'Fanmade JKT48 Live Portal',
-  //     orientation: 'portrait',
-  //     start_url: '/',
-  //     icons: [
-  //       {
-  //         src: 'img/192x192-logo.png',
-  //         sizes: '192x192',
-  //         type: 'image/png',
-  //       },
-  //       {
-  //         src: 'img/512x512-logo.png',
-  //         sizes: '512x512',
-  //         type: 'image/png',
-  //       },
-  //       {
-  //         src: 'img/512x512-masklogo.png',
-  //         sizes: '512x512',
-  //         type: 'image/png',
-  //         purpose: 'maskable',
-  //       },
-  //     ],
-  //   },
-  //   workbox: {
-  //     navigateFallback: undefined,
-  //     globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
-  //   },
-  //   client: {
-  //     installPrompt: true,
-  //     periodicSyncForUpdates: 3600,
-  //   },
-  //   devOptions: {
-  //     enabled: isDev,
-  //     suppressWarnings: true,
-  //     navigateFallbackAllowlist: [/^\/$/],
-  //     type: 'module',
-  //   },
-  // },
+  future: {
+    typescriptBundlerResolution: true,
+  },
+  experimental: {
+    payloadExtraction: true,
+    componentIslands: true,
+    asyncContext: true,
+    watcher: 'parcel',
+  },
+  pwa,
   css: ['~/assets/css/style.scss', '~/assets/css/transition.scss'],
   colorMode: {
     preference: 'dark',
@@ -164,10 +130,6 @@ export default defineNuxtConfig({
     compressPublicAssets: {
       brotli: true,
     },
-  },
-  experimental: {
-    componentIslands: true,
-    asyncContext: true,
   },
   devtools: {
     enabled: true,

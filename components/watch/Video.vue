@@ -114,11 +114,10 @@ function setShowControl(show: boolean) {
 
 const fatalError = ref(0)
 const createdVideo = ref(false)
-useScriptTag('https://cdn.jsdelivr.net/npm/hls.js@1.5.6', () => {
-  if (!createdVideo.value) {
-    createdVideo.value = true
-    createHLS(currentSource.value.url)
-  }
+useScriptTag(useAppConfig().hlsUrl, () => {
+  createHLS(currentSource.value.url)
+}, {
+  defer: true,
 })
 
 onMounted(() => {

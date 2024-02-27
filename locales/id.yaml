@@ -232,3 +232,4 @@ live_count: Tidak ada live | 1 Live | {count} Live
 by_member: oleh 0 member | oleh {count} member
 server_busy: Server sedang sibuk, silahkan coba lagi nanti
 comment_too_many_request: Ups.. pelan2 komennya 😓
+offline: Oopps, internet kamu putus nih 😭
