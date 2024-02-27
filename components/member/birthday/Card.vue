@@ -11,9 +11,9 @@ const { locale } = useI18n()
 
 <template>
   <div class="flex max-sm:flex-col gap-1.5 md:gap-3">
-    <component :is="member.url_key ? NuxtLink : 'div'" :to="member.url_key ? `/member/${member.url_key}` : undefined" class="relative inline-block h-20 w-20 lg:h-24 lg:w-24">
+    <component :is="member.url_key ? NuxtLink : 'div'" :to="member.url_key ? `/member/${member.url_key}` : undefined" class="group relative inline-block h-20 w-20 lg:h-24 lg:w-24 rounded-xl md:rounded-full overflow-hidden">
       <NuxtImg
-        class="h-full w-full overflow-hidden rounded-xl md:rounded-full object-cover"
+        class="h-full w-full overflow-hidden object-cover group-hover:scale-110 transition-transform duration-500"
         :src="member.img"
         :alt="`${member.name} Profile Picture`"
         loading="lazy"

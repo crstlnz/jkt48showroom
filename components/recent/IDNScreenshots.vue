@@ -7,6 +7,7 @@ const props = defineProps<{
 }>()
 
 const slider = ref()
+const slideImgs = ref<HTMLElement[]>([])
 const blaze = ref<BlazeSlider>()
 const { cloudinaryURL } = useAppConfig()
 const screenshots = computed(() => {
@@ -51,8 +52,7 @@ onMounted(() => {
     },
   })
 
-  const imgs = document.querySelectorAll<HTMLImageElement>('.blaze-track img')
-
+  const imgs = slideImgs.value?.map(i => i.querySelector('img')) as HTMLImageElement[]
   for (let i = 0; i < blaze.value.config.slidesToShow; i++) {
     const imgEl = imgs?.[i]
     if (imgEl) loadImage(imgEl)
@@ -60,6 +60,7 @@ onMounted(() => {
 
   unsubscribe = blaze.value.onSlide(
     (_, firstVisibleSlideIndex, lastVisibleSlideIndex) => {
+      const imgs = slideImgs.value?.map(i => i.querySelector('img')) as HTMLImageElement[]
       for (let i = firstVisibleSlideIndex; i <= lastVisibleSlideIndex; i++) {
         const img = imgs?.[i]
         if (img) {
@@ -81,8 +82,8 @@ onBeforeUnmount(() => {
     <div v-if="screenshots.length > 3" class="blaze-container">
       <div class="blaze-track-container rounded-md overflow-hidden">
         <div class="blaze-track">
-          <div v-for="ss in screenshots" :key="ss" class="bg-container rounded-md overflow-hidden">
-            <img :data-src="ss" class="lazyLoad md:h-80  object-cover aspect-[5/6.5] !outline-none !ring-0">
+          <div v-for="ss in screenshots" ref="slideImgs" :key="ss" class="relative bg-container rounded-md overflow-hidden md:h-80 aspect-[5/6.5]">
+            <img :data-src="ss" class="lazyLoad object-cover size-full absolute inset-0 !outline-none !ring-0">
           </div>
         </div>
       </div>

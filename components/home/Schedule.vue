@@ -39,7 +39,7 @@ const { locale } = useI18n()
       <Icon name="svg-spinners:ring-resize" size="2rem" />
     </div>
     <div v-else-if="error && !data" class="aspect-[4/2] flex items-center justify-center mb-7 pt-5 flex-col gap-5">
-      <NuxtImg :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" class="w-[220px] max-w-[80%]" />
+      <NuxtImg :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" sizes="320px" fit="fill" class="w-[220px] max-w-[80%]" />
       <div>{{ $t("error.unknown") }}</div>
     </div>
     <div v-else-if="!data?.length" class="flex flex-col items-center pb-4">
@@ -64,7 +64,7 @@ const { locale } = useI18n()
         <td class="w-full p-3">
           <component :is="event.url.startsWith('/theater/schedule/id/') ? NuxtLink : 'div'" v-for="event in schedule.events" :key="event.id" :to="event.url.startsWith('/theater/schedule/id/') ? `/theater/${$getTheaterId(event.url)}` ?? undefined : undefined" class="flex gap-2">
             <NuxtImg
-              class="aspect-[56/19] h-4 self-center"
+              class="aspect-[56/19] w-14 object-cover self-center"
               :src="`${$cloudinaryURL}/assets/jkt48${event.label}`"
               alt="Label"
               loading="lazy"
@@ -73,7 +73,6 @@ const { locale } = useI18n()
               width="56px"
               format="webp"
             />
-
             <span>{{ event.title }}</span>
           </component>
         </td>

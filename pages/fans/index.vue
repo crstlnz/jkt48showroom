@@ -8,7 +8,7 @@ const { data, pending, error } = await useApiFetch<{ jpy_rates: number, fans: Da
   <LayoutRow title="Fans List">
     <div class="space-y-3 px-4">
       <div v-if="error" class="flex flex-col items-center justify-center gap-5">
-        <img class="mx-auto aspect-square w-72 max-w-[65%] object-contain" :src="`${$cloudinaryURL}/assets/svg/web/error.svg`">
+        <img class="mx-auto aspect-square w-72 max-w-[65%] object-contain" :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" sizes="320px" fit="fill">
         <span>{{ $t("data.failed") }}</span>
       </div>
       <div v-else-if="pending" class="flex aspect-video items-center justify-center">

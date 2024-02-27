@@ -6,14 +6,14 @@ const route = useRoute()
 const settings = useSettings()
 const { getTitle } = useAppConfig()
 const { data, error, pending } = await useApiFetch<LogDetail.Live>(`/api/recent/${route.params.id}`)
-const { data: likeData } = await useApiFetch<Database.IsLike>('/api/user/like', { query: { data_id: route.params.id } })
+const { status, user } = useAuth()
+const { data: likeData } = await useApiFetch<Database.IsLike>('/api/user/like', { query: { data_id: route.params.id }, immediate: status.value === 'authenticated' })
 const liked = ref(false)
 
 watch(likeData, (val) => {
   liked.value = val?.is_liked || false
 }, { immediate: true })
 
-const { status, user } = useAuth()
 const { addNotif } = useNotifications()
 
 function setLike() {
@@ -79,11 +79,11 @@ const isXL = greaterOrEqual('xl')
 
 <template>
   <div>
-    <div v-if="pending" class="relative min-h-[100vh] w-full">
-      <Icon name="eos-icons:loading" size="3rem" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 " />
+    <div v-if="pending" key="loading" class="relative min-h-[100vh] w-full">
+      <Spinner class="size-10 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
     </div>
-    <Error v-else-if="error || !data" :message="error ? (error.statusCode === 404 ? $t('error.pagenotfound') : $t('error.unknown')) : $t('error.pagenotfound')" :img-src="!data || error?.statusCode === 404 ? `${$cloudinaryURL}/assets/svg/web/404.svg` : `${$cloudinaryURL}/assets/svg/web/error.svg`" />
-    <LayoutRow v-else :title="title" :sub-title="`${data.type === 'idn' ? 'IDN' : 'Showroom'} Live - ${$dayjs(data.live_info?.date?.start).format('DD MMMM YYYY')}`">
+    <Error v-else-if="error || !data" key="error" :message="error ? (error.statusCode === 404 ? $t('error.pagenotfound') : $t('error.unknown')) : $t('error.pagenotfound')" :img-src="!data || error?.statusCode === 404 ? `${$cloudinaryURL}/assets/svg/web/404.svg` : `${$cloudinaryURL}/assets/svg/web/error.svg`" />
+    <LayoutRow v-else key="data" :title="title" :sub-title="`${data.type === 'idn' ? 'IDN' : 'Showroom'} Live - ${$dayjs(data.live_info?.date?.start).format('DD MMMM YYYY')}`">
       <template #default>
         <RecentShowroom v-if="data.type === 'showroom'" :data="data" />
         <RecentIDN v-else-if="data.type === 'idn'" :data="data" />

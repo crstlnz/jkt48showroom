@@ -3,13 +3,13 @@ import CookieParser from '@/library/cookieParser'
 
 export default function () {
   const event = useRequestEvent()
-  const app = useNuxtApp()
 
   function setCookie(headers: Headers) {
+    const app = tryUseNuxtApp()
     if (process.server) {
       const setCookie = headers.get('set-cookie')
       const cookies = (setCookie) ? setCookie.split(',') : []
-      if (app.ssrContext && cookies?.length) {
+      if (app?.ssrContext && cookies?.length) {
         if (!app.ssrContext.newCookie) app.ssrContext.newCookie = new CookieParser()
         for (const cookie of cookies) {
           app.ssrContext.newCookie.addCookies(cookie)
@@ -25,8 +25,9 @@ export default function () {
   }
 
   function getHeaders(): HeadersInit {
+    const app = tryUseNuxtApp()
     const headers = useRequestHeaders(['cookie'])
-    if (app.ssrContext?.newCookie) {
+    if (app?.ssrContext?.newCookie) {
       const newCookie = app.ssrContext.newCookie
       const headerCookie = new CookieParser(headers?.cookie || '')
       headerCookie.addCookies(newCookie.toString())

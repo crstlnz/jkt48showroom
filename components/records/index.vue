@@ -12,7 +12,7 @@ const { data, pending, error } = await useCachedFetch<ShowroomRecord[]>('/api/re
       <span>{{ $t('mostrecords') }}</span>
     </div>
     <div v-if="error" class="flex aspect-[6/5] flex-col items-center justify-center gap-5">
-      <NuxtImg class="mx-auto w-72 max-w-[65%]" :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" />
+      <NuxtImg class="mx-auto w-72 max-w-[65%]" :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" sizes="320px" fit="fill" />
       <span class="mt-5">{{ $t("data.failed") }}</span>
     </div>
     <div v-else-if="pending" class="mr-2 flex flex-col gap-10 px-1 py-3 sm:p-3">

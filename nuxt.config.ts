@@ -4,6 +4,23 @@ const isDev = process.env.NODE_ENV === 'development'
 console.log('API', process.env.API)
 export default defineNuxtConfig({
   app: {
+    head: {
+      script: [
+        {
+          async: true,
+          src: 'https://www.googletagmanager.com/gtag/js?id=G-C92JVM8CR4',
+        },
+        {
+          children: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-C92JVM8CR4', { 'debug_mode' : ${isDev} });
+            window.gtag = gtag
+          `,
+        },
+      ],
+    },
     rootId: 'app',
     layoutTransition: { name: 'layout', mode: 'out-in' },
     pageTransition: { name: 'page', mode: 'out-in' },
@@ -11,15 +28,14 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       isDev,
+      cloudinary: process.env.CLOUDINARY_BASE_URL,
       api: process.env.API,
       showroom_api: process.env.SHOWROOM_API,
     },
   },
   watch: ['~/assets/css/tailwindcss.css'],
   modules: [
-    // '@nuxtjs/partytown',
     '@vite-pwa/nuxt',
-    // 'nuxt-lazy-load',
     '@nuxtjs/fontaine',
     'floating-vue/nuxt',
     'nuxt-security',
@@ -33,9 +49,6 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@nuxt/image',
   ],
-  // lazyLoad: {
-  //   directiveOnly: true,
-  // },
   security: {
     nonce: !isDev,
     headers: {

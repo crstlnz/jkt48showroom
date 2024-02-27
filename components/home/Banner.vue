@@ -20,7 +20,9 @@ const banner = getBanner(settings.group)
           aspectRatio: 4.5 / 1,
         }"
         :placeholder="[45, 10, 75, 50]"
+        densities="x1"
         fit="fill"
+        preload
         format="webp"
         :alt="banner.title"
         class="w-full h-full object-cover"

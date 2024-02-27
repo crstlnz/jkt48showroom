@@ -261,7 +261,7 @@ onMounted(() => {
             </div>
           </div>
           <div v-else-if="error" class="w-[210px] space-y-10 px-5 mx-auto">
-            <NuxtImg :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" class="h-full px-2 pt-3" alt="Not found" />
+            <NuxtImg :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" sizes="320px" fit="fill" class="h-full px-2 pt-3" alt="Not found" />
             <div class="pb-5 text-center">
               {{ $t('data.notfound') }}
             </div>
