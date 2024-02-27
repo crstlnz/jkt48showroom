@@ -1,5 +1,6 @@
+import { pwa } from './pwa.config'
+
 const isDev = process.env.NODE_ENV === 'development'
-const sw = process.env.SW !== 'false'
 console.log('API', process.env.API)
 export default defineNuxtConfig({
   app: {
@@ -77,73 +78,7 @@ export default defineNuxtConfig({
     asyncContext: true,
     watcher: 'parcel',
   },
-  pwa: {
-    injectRegister: 'auto',
-    registerType: 'autoUpdate',
-    manifest: {
-      name: 'JKT48 Showroom',
-      short_name: 'NgidolKuy',
-      theme_color: '#1e2124',
-      description: 'Fanmade JKT48 Live Portal',
-      orientation: 'portrait',
-      start_url: '/',
-      icons: [
-        {
-          src: 'img/192x192-logo.png',
-          sizes: '192x192',
-          type: 'image/png',
-        },
-        {
-          src: 'img/512x512-logo.png',
-          sizes: '512x512',
-          type: 'image/png',
-        },
-        {
-          src: 'img/512x512-masklogo.png',
-          sizes: '512x512',
-          type: 'image/png',
-          purpose: 'maskable',
-        },
-      ],
-    },
-    registerWebManifestInRouteRules: true,
-    workbox: {
-      navigateFallback: '/offline',
-      cleanupOutdatedCaches: true,
-      globPatterns: ['**/*.{json,ico,svg,ttf,woff,css,scss,js,html,txt,jpg,png,woff2,mjs,otf,ani}'],
-      runtimeCaching: [
-        {
-          urlPattern: '/',
-          handler: 'NetworkFirst',
-        },
-        {
-          urlPattern: '/member',
-          handler: 'NetworkFirst',
-        },
-        {
-          urlPattern: /^https:\/\/api\.crstlnz\.my\.id\/.*/i,
-          handler: 'NetworkFirst',
-          options: {
-            cacheName: 'api-cache',
-            cacheableResponse: {
-              statuses: [0, 200],
-            },
-          },
-        },
-      ],
-    },
-    client: {
-      installPrompt: true,
-      periodicSyncForUpdates: 3600,
-    },
-    devOptions: {
-      enabled: isDev,
-      suppressWarnings: true,
-      navigateFallback: '/offline',
-      navigateFallbackAllowlist: [/^\/$/],
-      type: 'module',
-    },
-  },
+  pwa,
   css: ['~/assets/css/style.scss', '~/assets/css/transition.scss'],
   colorMode: {
     preference: 'dark',
