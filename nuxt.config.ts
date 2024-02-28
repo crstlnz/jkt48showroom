@@ -36,7 +36,6 @@ export default defineNuxtConfig({
   watch: ['~/assets/css/tailwindcss.css'],
   modules: [
     '@vite-pwa/nuxt',
-    '@nuxtjs/fontaine',
     'floating-vue/nuxt',
     'nuxt-security',
     'dayjs-nuxt',
@@ -48,6 +47,7 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     '@pinia/nuxt',
     '@nuxt/image',
+    '@nuxt/fonts',
   ],
   security: {
     nonce: !isDev,

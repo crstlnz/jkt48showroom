@@ -7,7 +7,7 @@ export const pwa: PwaModuleOptions = {
   strategies: 'generateSW',
   manifest: {
     name: 'JKT48 Showroom',
-    short_name: 'NgidolKuy',
+    short_name: 'JKT48',
     theme_color: '#1e2124',
     description: 'Fanmade JKT48 Live Portal',
     orientation: 'portrait',
@@ -33,7 +33,7 @@ export const pwa: PwaModuleOptions = {
   },
   workbox: {
     offlineGoogleAnalytics: true,
-    navigateFallback: '/offline',
+    navigateFallback: '/',
     navigateFallbackAllowlist: [/^\/$/],
     navigationPreload: true,
     skipWaiting: true,
@@ -123,14 +123,10 @@ export const pwa: PwaModuleOptions = {
       },
     ],
   },
-  //   client: {
-  //     installPrompt: true,
-  //     periodicSyncForUpdates: 3600,
-  //   },
   devOptions: {
     enabled: isDev,
     suppressWarnings: true,
-    navigateFallback: '/offline',
+    navigateFallback: '/',
     navigateFallbackAllowlist: [/^\/$/],
     type: 'module',
   },

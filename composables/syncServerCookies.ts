@@ -1,3 +1,4 @@
+import type { EventHandlerRequest, H3Event } from 'h3'
 import { appendResponseHeader } from 'h3'
 import CookieParser from '@/library/cookieParser'
 
@@ -18,7 +19,7 @@ export default function () {
 
       for (const cookie of cookies) {
         if (event) {
-          appendResponseHeader(event, 'set-cookie', cookie)
+          appendResponseHeader(event as unknown as H3Event<EventHandlerRequest>, 'set-cookie', cookie)
         }
       }
     }

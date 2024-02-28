@@ -7,7 +7,7 @@ const banner = getBanner(settings.group)
 </script>
 
 <template>
-  <div :title="banner.title" class="aspect-[3/1] overflow-hidden shadow-sm lg:aspect-[4.5/1]">
+  <div :title="banner.title" class="aspect-[3/1] overflow-hidden shadow-sm lg:aspect-[4.5/1] bg-container">
     <a
       aria-label="JKT48 Flying High MV"
       :href="banner.url"
