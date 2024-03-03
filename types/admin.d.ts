@@ -40,7 +40,7 @@ declare namespace Admin {
   type IdolMemberWithID = IdolMember & { _id: string | null }
   type IShowroomMember = Omit<Database.IShowroomMember, 'member_data'> & {
     _id: string
-    member_data: null | I48Member
+    member_data: null | IdolMemberWithID
   }
 
   interface MissingJKT48ID {

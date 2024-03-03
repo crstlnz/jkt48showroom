@@ -6,7 +6,9 @@
 html {
   padding: 0 !important;
   overflow: initial !important;
+  scrollbar-gutter: stable;
 }
+
 
 * {
   font-family: 'DM Sans', sans-serif, "Noto Serif JP";

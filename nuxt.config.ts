@@ -91,7 +91,7 @@ export default defineNuxtConfig({
     asyncContext: true,
     watcher: 'parcel',
   },
-  pwa,
+  pwa: !isDev ? pwa : undefined,
   css: ['~/assets/css/style.scss', '~/assets/css/transition.scss'],
   colorMode: {
     preference: 'dark',

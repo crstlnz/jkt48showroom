@@ -20,6 +20,7 @@
     "@headlessui/vue": "^1.7.19",
     "@nuxt/image": "^1.3.0",
     "@tanstack/vue-virtual": "^3.1.3",
+    "@use-gesture/vanilla": "^10.3.0",
     "blaze-slider": "^1.9.3",
     "cloudinary": "^1.41.0",
     "dayjs": "^1.11.10",
@@ -30,6 +31,7 @@
     "horoscope": "^2.0.1",
     "mongoose": "^7.6.3",
     "pinia": "^2.1.7",
+    "popmotion": "^11.0.5",
     "vue-virtual-scroller": "2.0.0-beta.8"
   },
   "devDependencies": {

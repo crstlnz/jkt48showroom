@@ -1,31 +1,35 @@
 <script lang="ts" setup>
 import { Switch, SwitchGroup, SwitchLabel } from '@headlessui/vue'
 import { useFuse } from '@vueuse/integrations/useFuse'
+import type { ObjectId } from 'mongoose'
 import { useSettings } from '~~/store/settings'
 
 definePageMeta({ middleware: 'admin' })
 
 const { pending, data } = await useApiFetch<Admin.IShowroomMember[]>('/api/admin/member')
-const { data: jkt48members } = await useApiFetch<Admin.I48Member[]>('/api/admin/jkt48member')
-const { data: stage48members, refresh: refreshStage48List } = await useApiFetch<JKT48.Member[]>('/api/admin/stage48?group=all')
+const { data: jkt48members } = await useApiFetch<JKT48.Member[]>('/api/admin/jkt48member')
+const { data: stage48members, refresh: refreshStage48List } = await useApiFetch<IdolMember[]>('/api/admin/stage48?group=all')
 
 const membersRaw = ref<Admin.IShowroomMember[]>([])
 
 watch(data, (val) => {
-  membersRaw.value = (val as unknown as Admin.IShowroomMember[] | null)?.map((i) => {
+  membersRaw.value = (val)?.map((i) => {
     if (!i.member_data) {
-      const memberData: Admin.I48Member = {
+      const memberData: Admin.IdolMemberWithID = {
         _id: null,
-        description: '',
-        group: '',
-        isGraduate: false,
-        nicknames: [],
         name: '',
-        img: '',
         stage48: '',
-        banner: '',
-        socials: [],
-        generation: '',
+        info: {
+          description: '',
+          nicknames: [] as string[],
+          img: '',
+          banner: '',
+          socials: [],
+          generation: '',
+          jikosokai: '',
+        },
+        group: 'jkt48',
+        slug: '',
       }
       i.member_data = memberData
     }

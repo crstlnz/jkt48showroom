@@ -2,7 +2,7 @@
 import { useNotifications } from '~/store/notifications'
 
 const props = defineProps<{
-  roomId: number
+  roomId?: number
 }>()
 
 const { user } = useAuth()

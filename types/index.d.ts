@@ -499,6 +499,11 @@ interface LiveData {
   idn: IDNLives[]
 }
 
+interface ImageViewerOptions {
+  src: string
+  alt: string
+}
+
 declare module 'vue-virtual-scroller'
 declare module 'cors'
 declare module 'vue-twitter-timeline'

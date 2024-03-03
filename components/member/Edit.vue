@@ -4,7 +4,7 @@ import { LazyImage } from '#components'
 
 const props = withDefaults(defineProps<{
   member?: Admin.IShowroomMember
-  stage48members?: Database.I48Member[]
+  stage48members?: IdolMember[]
   jkt48members?: JKT48.Member[]
   pending?: boolean
 }>(), {
@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{
   (e: 'onDismiss'): void
   (e: 'onUpdateShowroom', data: Admin.IShowroomMember): void
-  (e: 'onUpdateMember', data: Admin.I48Member): void
+  (e: 'onUpdateMember', data: Admin.IdolMemberWithID): void
 }>()
 
 const router = useRouter()
@@ -61,7 +61,7 @@ async function toggleGraduate(value: boolean) {
     onResponse(ctx) {
       if (ctx.response.status === 200) {
         if (member.value?.member_data) {
-          member.value.member_data.isGraduate = value
+          member.value.member_data.info.is_graduate = value
         }
       }
     },
@@ -84,7 +84,7 @@ async function applyMemberData() {
     onResponse(ctx) {
       if (ctx.response.status) {
         addNotif({ message: 'Success', type: 'success', duration: 1500 })
-        const data = props.stage48members?.find(i => (i as any)._id === memberDataId.value) as Database.I48Member & { _id: string } || null
+        const data = props.stage48members?.find(i => (i as any)._id === memberDataId.value) as IdolMember & { _id: string } || null
         if (member.value?.member_data) {
           member.value.member_data = data
         }
@@ -129,10 +129,10 @@ const tabList = ref([
               form-id="image"
               class="aspect-square h-full shrink-0 overflow-hidden rounded-full border-2 dark:border-dark-2"
               image-class="h-full w-full object-cover"
-              :src="member?.member_data?.img" :alt="member.name"
+              :src="member?.member_data?.info?.img" :alt="member.name"
               @uploaded="(url) => {
                 if (member?.member_data)
-                  member.member_data.img = url
+                  member.member_data.info.img = url
               }"
             />
             <div
@@ -147,10 +147,10 @@ const tabList = ref([
               post-url="/api/admin/member/banner"
               :member-data-id="member?.member_data?._id"
               class="aspect-[15/5] h-full shrink-0 overflow-hidden rounded-xl border-2 dark:border-dark-2"
-              image-class="h-full w-full object-cover bg-container-2" :src="member?.member_data?.banner"
+              image-class="h-full w-full object-cover bg-container-2" :src="member?.member_data?.info.banner"
               @uploaded="(url) => {
                 if (member?.member_data)
-                  member.member_data.banner = url
+                  member.member_data.info.banner = url
               }"
             />
             <div
@@ -170,10 +170,10 @@ const tabList = ref([
                   {{ member.url }}
                 </div>
               </div>
-              <button type="button" class="" @click="toggleGraduate(member?.member_data?.isGraduate !== true)">
+              <button type="button" class="" @click="toggleGraduate(member?.member_data?.info.is_graduate !== true)">
                 <div class="flex items-center gap-1 text-xl">
-                  <div class="text-sm md:text-base" :class="member.is_group ? 'text-blue-500' : (member?.member_data?.isGraduate ? 'text-red-500' : 'text-green-500')">
-                    {{ member.is_group ? "Official" : (member?.member_data?.isGraduate ? "Graduated" : "Active") }}
+                  <div class="text-sm md:text-base" :class="member.is_group ? 'text-blue-500' : (member?.member_data?.info.is_graduate ? 'text-red-500' : 'text-green-500')">
+                    {{ member.is_group ? "Official" : (member?.member_data?.info.is_graduate ? "Graduated" : "Active") }}
                   </div>
                   <Icon name="humbleicons:exchange-horizontal" size="1.2rem" />
                 </div>

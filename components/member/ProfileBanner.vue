@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { ImageViewer, NuxtLink } from '#components'
 import { useOnLives } from '~/store/onLives'
 import { useSettings } from '~/store/settings'
 
@@ -17,10 +18,25 @@ const shareUrl = computed(() => {
   if (props.shareUrl) return props.shareUrl
   return currentURL
 })
+
+const route = useRoute()
+
+const imageViewer = ref<typeof ImageViewer>()
+function openProfileImage() {
+  if (route.path === `/member/${props.member.url}` && imageViewer.value) {
+    imageViewer.value.open({
+      src: props.member.img_alt ?? props.member.img ?? useNuxtApp().$errorPicture,
+      alt: `${props.member.name} Profile Picture`,
+    })
+  }
+}
 </script>
 
 <template>
   <div class="flex flex-col relative">
+    <ImageViewer
+      ref="imageViewer"
+    />
     <NuxtImg
       sizes="500px sm:600px md:900px lg:1000px"
       :modifiers="{
@@ -36,46 +52,30 @@ const shareUrl = computed(() => {
     <div class="flex flex-col gap-3 px-3 lg:px-4">
       <div class="flex -mb-1.5 md:-mb-2 flex-col">
         <div class="flex gap-3 md:gap-4 justify-between">
-          <div class="-ml-1.5 md:-ml-2 bg-background relative mt-[-40px] h-[85px] w-[85px] sm:w-[100px] sm:h-[100px] shrink-0 rounded-full sm:mt-[-30px] md:mt-[-35px] 2xl:mt-[-56px] md:h-[120px] md:w-[120px] 2xl:h-[140px] 2xl:w-[140px]">
-            <ClientOnly>
-              <template #fallback>
-                <div class="relative m-1.5 block md:m-2">
-                  <NuxtImg
-                    class="aspect-square h-full w-full object-cover overflow-hidden rounded-full bg-container"
-                    :src="member.img_alt ?? member.img ?? $errorPicture"
-                    :alt="`${member.name} Profile Picture`"
-                    fit="fill"
-                    :modifiers="{
-                      aspectRatio: 1,
-                      gravity: 'faceCenter',
-                    }"
-                    sizes="90px sm:100px md:120px 2xl:140px"
-                    :placeholder="[10, 10, 75, 5]"
-                    format="webp"
-                  />
-                </div>
-              </template>
-              <NuxtLink :to="isLive ? `/watch/${member.url}` : `/member/${member.url}`" class="relative m-1.5 block md:m-2 rounded-full">
-                <div v-if="isLive" class="absolute bottom-[14.5%] right-[14.5%] z-10 h-[15%] w-[15%] translate-x-1/2 translate-y-1/2">
-                  <div class="absolute inset-0 z-10 rounded-full bg-red-500" />
-                  <div class="absolute inset-0 -z-10 animate-ping rounded-full bg-red-500" />
-                </div>
-                <NuxtImg
-                  class="aspect-square h-full w-full object-cover overflow-hidden rounded-full bg-container"
-                  :src="member.img_alt ?? member.img ?? $errorPicture"
-                  :alt="`${member.name} Profile Picture`"
-                  fit="fill"
-                  :modifiers="{
-                    aspectRatio: 1,
-                    gravity: 'faceCenter',
-                  }"
-                  sizes="90px sm:100px md:120px 2xl:140px"
-                  :placeholder="[10, 10, 75, 5]"
-                  format="webp"
-                />
-              </NuxtLink>
-            </ClientOnly>
-          </div>
+          <component
+            :is="route.path === `/member/${member.url}` ? 'button' : NuxtLink"
+            :to="isLive ? `/watch/${member.url}` : `/member/${member.url}`"
+            class="p-1.5 md:p-2 -ml-1.5 md:-ml-2 bg-background relative mt-[-40px] h-[85px] w-[85px] sm:w-[100px] sm:h-[100px] shrink-0 rounded-full sm:mt-[-30px] md:mt-[-35px] 2xl:mt-[-56px] md:h-[120px] md:w-[120px] 2xl:h-[140px] 2xl:w-[140px]"
+            @click="openProfileImage"
+          >
+            <div v-if="isLive" class="absolute bottom-[14.5%] right-[14.5%] z-10 h-[15%] w-[15%] translate-x-1/2 translate-y-1/2">
+              <div class="absolute inset-0 z-10 rounded-full bg-red-500" />
+              <div class="absolute inset-0 -z-10 animate-ping rounded-full bg-red-500" />
+            </div>
+            <NuxtImg
+              class="aspect-square size-full object-cover rounded-full"
+              :src="member.img_alt ?? member.img ?? $errorPicture"
+              :alt="`${member.name} Profile Picture`"
+              fit="fill"
+              :modifiers="{
+                aspectRatio: 1,
+                gravity: 'faceCenter',
+              }"
+              sizes="90px sm:100px md:120px 2xl:140px"
+              :placeholder="[10, 10, 75, 5]"
+              format="webp"
+            />
+          </component>
           <div class="flex gap-3 items-center">
             <NuxtLink target="_blank" :to="$liveURL(member.url)" class="rounded-full bg-blue-500 px-2.5 h-6 leading-6 md:leading-9 md:h-9 md:px-4 text-xs sm:text-sm text-white self-center flex items-center">
               Showroom
