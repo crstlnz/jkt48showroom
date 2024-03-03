@@ -100,20 +100,12 @@ const hiddenUsername = useCookie('_h_usrnme', {
         <div class="pb-5 border-b-2 border-black/10 dark:border-white/5">
           <NuxtLink :to="authenticated ? undefined : '/login'" class="flex items-center gap-3 rounded-full">
             <div class="h-11 w-11 bg-container-2 rounded-full overflow-hidden">
-              <NuxtImg
+              <img
                 v-if="authenticated && user?.image"
                 class="h-full w-full bg-slate-400 text-white dark:bg-dark-1 dark:text-slate-500/50"
                 :src="user?.image"
                 alt="User profile picture"
-                fit="fill"
-                :modifiers="{
-                  aspectRatio: 1,
-                  gravity: 'faceCenter',
-                }"
-                width="56px"
-                :placeholder="[4, 4, 75, 5]"
-                format="webp"
-              />
+              >
               <Icon v-else name="ic:baseline-person" size="1.5em" class="h-full w-full rounded-full p-2 text-white dark:text-slate-500/50" />
             </div>
             <div class="mr-3 flex flex-1 flex-col items-start">

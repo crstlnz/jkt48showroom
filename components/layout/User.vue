@@ -53,20 +53,12 @@ function toggleUsername(e: Event) {
           </div>
         </template>
         <div class="flex items-center gap-3 rounded-full hover:bg-hover 2xl:p-2 my-3">
-          <NuxtImg
+          <img
             v-if="user?.image"
             class="h-10 w-10 2xl:w-12 2xl:h-12 overflow-hidden rounded-full bg-slate-400 text-white dark:bg-dark-1 dark:text-slate-500/50"
             :src="user?.image"
             alt="User profile picture"
-            fit="fill"
-            :modifiers="{
-              aspectRatio: 1,
-              gravity: 'faceCenter',
-            }"
-            width="48px"
-            :placeholder="[4, 4, 75, 5]"
-            format="webp"
-          />
+          >
           <Icon v-else name="ic:baseline-person" size="1.5em" class="h-10 w-10 rounded-full bg-slate-400 p-2 text-white dark:bg-dark-1 dark:text-slate-500/50" />
           <div class="mr-3 flex flex-1 flex-col items-start max-2xl:hidden">
             <div class="text-base font-semibold leading-5">
