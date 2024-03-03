@@ -36,13 +36,29 @@ const isLocked = useScrollLock(windowEl)
 const ignore = ref<HTMLElement | null>(null)
 
 let setState: (_state: boolean) => void
-if ($device.isMobile) {
-  const { state: openState, setState: setFun } = useQueryState(props.id)
-  setState = setFun
-  watch(openState, (state) => {
-    if (state) openSheet()
-    else { closeSheet() }
+// if ($device.isMobile) {
+//   const { state: openState, setState: setFun } = useQueryState(props.id)
+//   setState = setFun
+//   watch(openState, (state) => {
+//     if (state) openSheet()
+//     else { closeSheet() }
+//   })
+// }
+const { onState, push, back } = usePopState<{ isOpen: boolean }>(props.id)
+onState((state) => {
+  isOpen.value = state?.isOpen ?? false
+})
+
+function open(el: HTMLElement | null = null) {
+  ignore.value = el
+  push({
+    isOpen: true,
   })
+  // isOpen.value = true
+}
+function close() {
+  // isOpen.value = false
+  back()
 }
 
 onMounted(() => {
@@ -166,23 +182,15 @@ function stopListener() {
   if (dragNavbar.value) dragNavbar.value.destroy()
 }
 
-function openSheet(el: HTMLElement | null = null) {
-  ignore.value = el
-  isOpen.value = true
-}
-function closeSheet() {
-  isOpen.value = false
-}
+// function open(el: HTMLElement | null = null) {
+//   if ($device.isMobile) setState(true)
+//   else { openSheet(el) }
+// }
 
-function open(el: HTMLElement | null = null) {
-  if ($device.isMobile) setState(true)
-  else { openSheet(el) }
-}
-
-function close() {
-  if ($device.isMobile) setState(false)
-  else { closeSheet() }
-}
+// function close() {
+//   if ($device.isMobile) setState(false)
+//   else { closeSheet() }
+// }
 
 defineExpose({ open, close, isOpen })
 </script>

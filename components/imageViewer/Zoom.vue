@@ -39,17 +39,28 @@ const imageElement = ref<HTMLElement>()
 const pos = ref({ x: 0, y: 0 })
 const rubberPos = ref({ x: 0, y: 0 })
 const zoomState = ref(1)
-let releaseAnimation: any
-let releaseZoomAnimation: any
 const gestureListener = ref<Gesture>()
 const bgOpacity = ref(1)
 const minZoom = 1
 const maxZoom = 5
 const isExit = ref(false)
+
 function getScaleFactor() {
   return Math.min(windowWidth.value / imageSize.value.width, windowHeight.value / imageSize.value.height)
 }
 
+function getBound() {
+  const scaleFactor = getScaleFactor()
+  const width = imageSize.value.width * scaleFactor * zoomState.value
+  const height = imageSize.value.height * scaleFactor * zoomState.value
+  return {
+    x: Math.max(0, (width - windowWidth.value) / 2 / zoomState.value),
+    y: Math.max(0, (height - windowHeight.value) / 2 / zoomState.value),
+  }
+}
+
+let releaseAnimation: any
+let releaseZoomAnimation: any
 onMounted(() => {
   if (!container.value) return
   // to prevent macbook trackpad pinch gesture
@@ -58,51 +69,14 @@ onMounted(() => {
   gestureListener.value = new Gesture(
     container.value,
     {
-      // onWheel(state) {
-      //   let velocity
-      //   if (zoomAnimation) {
-      //     velocity = zoomAnimation.velocity
-      //     console.log('NAH VELOCITY', velocity)
-      //     zoomAnimation.stop()
-      //   }
-      //   const scaleFactor = Math.min(windowWidth.value / imageSize.value.width, windowHeight.value / imageSize.value.height)
-      //   zoomState.value = Math.min(maxZoom, Math.max(minZoom, zoomState.value + state.delta[1] / 500))
-      //   const width = imageSize.value.width * scaleFactor * zoomState.value
-      //   const height = imageSize.value.height * scaleFactor * zoomState.value
-      //   const maxX = Math.max(0, (width - windowWidth.value) / 2 / zoomState.value)
-      //   const maxY = Math.max(0, (height - windowHeight.value) / 2 / zoomState.value)
-      //   console.log('zom', zoomState.value + state.delta[1] / 500)
-      //   console.log('zom2', zoomState.value)
-
-      //   pos.value.x = Math.min(maxX, Math.max(pos.value.x, -maxX))
-      //   pos.value.y = Math.min(maxY, Math.max(pos.value.y, -maxY))
-      //   rubberPos.value = {
-      //     ...pos.value,
-      //   }
-      //   // const target = Math.min(maxZoom, Math.max(minZoom, zoomState.value + state.delta[1]))
-      //   // console.log('Target', target, 'Scroll', zoomState.value + state.delta[1], state.delta[1])
-      //   // zoomAnimation = animate({
-      //   //   from: zoomState.value,
-      //   //   to: target,
-      //   //   restDelta: 0,
-      //   //   onUpdate(v) {
-      //   //     zoomState.value = v
-      //   //     console.log(zoomState.value)
-      //   //   },
-      //   // })
-      // },
       onPinch(state) {
-        const scaleFactor = getScaleFactor()
         if (releaseZoomAnimation) {
           releaseZoomAnimation.stop()
         }
-        // zoomState.value = Math.min(maxZoom, Math.max(minZoom, state.offset[0]))
         if (state.pinching) {
           zoomState.value = state.offset[0]
-          const width = imageSize.value.width * scaleFactor * zoomState.value
-          const height = imageSize.value.height * scaleFactor * zoomState.value
-          const maxX = Math.max(0, (width - windowWidth.value) / 2 / zoomState.value)
-          const maxY = Math.max(0, (height - windowHeight.value) / 2 / zoomState.value)
+          const bound = getBound()
+          const { x: maxX, y: maxY } = bound
           pos.value.x = Math.min(maxX, Math.max(pos.value.x, -maxX))
           pos.value.y = Math.min(maxY, Math.max(pos.value.y, -maxY))
           rubberPos.value = {
@@ -117,28 +91,17 @@ onMounted(() => {
               zoomState.value = v
             },
           })
-          console.log('wew')
         }
       },
       onDrag(state) {
         if (isExit.value) return
-        const scaleFactor = getScaleFactor()
-        const width = imageSize.value.width * scaleFactor * zoomState.value
-        const height = imageSize.value.height * scaleFactor * zoomState.value
-        const maxX = Math.max(0, (width - windowWidth.value) / 2 / zoomState.value)
-        const maxY = Math.max(0, (height - windowHeight.value) / 2 / zoomState.value)
+        const bound = getBound()
+        const { x: maxX, y: maxY } = bound
         const x = pos.value.x + state.delta[0] / zoomState.value
         const y = pos.value.y + state.delta[1] / zoomState.value
-        // state.event.preventDefault()
-        // const x = state.delta[0] === 0 ? pos.value.x : rubberbandIfOutOfBounds(pos.value.x + state.delta[0], 0, 0, 0.19)
-        // const y = state.delta[1] === 0 ? pos.value.y : rubberbandIfOutOfBounds(pos.value.y + state.delta[1], 0, 0, 0.19)
         if (state.down) {
-          // pos.value.x = Math.min(maxX, Math.max(pos.value.x + x, -maxX))
-          // pos.value.y = Math.min(maxY, Math.max(pos.value.y + y, -maxY))
           pos.value.x = x
           pos.value.y = y
-          // pos.value.x = pos.value.x + state.delta[0]
-          // pos.value.y = pos.value.y + state.delta[1]
           if (releaseAnimation) {
             releaseAnimation.stop()
           }
@@ -146,10 +109,6 @@ onMounted(() => {
             x: zoomState.value === 1 ? 0 : rubberbandIfOutOfBounds(pos.value.x, -maxX, maxX, 0.18),
             y: zoomState.value === 1 ? pos.value.y : rubberbandIfOutOfBounds(pos.value.y, -maxY, maxY, 0.18),
           }
-          // rubberPos.value = {
-          //   x: rubberbandIfOutOfBounds(pos.value.x, 0, 0, 0.16),
-          //   y: rubberbandIfOutOfBounds(pos.value.y, 0, 0, 0.19),
-          // }
         }
         else {
           const percentY = Math.abs(rubberPos.value.y / windowHeight.value * 100)
@@ -212,7 +171,6 @@ onMounted(() => {
         },
         pinchOnWheel: true,
         rubberband: true,
-        // preventDefault: true,
       },
       drag: {
         eventOptions: {
@@ -276,8 +234,5 @@ onBeforeUnmount(() => {
   background-position: center;
   background-repeat: no-repeat;
   background-size: contain;
-  // transition-property: scale;
-  // transition-duration: 0.3s;
-  // transition-timing-function: ease-out;
 }
 </style>

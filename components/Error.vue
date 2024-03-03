@@ -18,7 +18,14 @@ defineProps<{
         <h2 class="mb-1 text-xl font-semibold text-slate-800 dark:text-slate-100 md:text-2xl xl:text-4xl">
           {{ message }}
         </h2>
-        <NuxtLink class="md:text-md mt-4 inline-block text-xs hover:text-second-2 xl:text-base" :href="url ?? '/'">
+        <NuxtLink
+          class="md:text-md mt-4 inline-block text-xs hover:text-second-2 xl:text-base" :href="url ?? '/'" @click="(e) => {
+            e.preventDefault()
+            clearError({
+              redirect: url ?? '/',
+            })
+          }"
+        >
           {{
             !redirectMsg ? $t("redirectme") : redirectMsg
           }}

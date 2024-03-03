@@ -35,18 +35,25 @@ onMounted(() => {
     isOpen.value = !!event.state?.isPopup
   })
 })
+
 watch(isOpen, (open) => {
   isLocked.value = open
 })
 
+const { onState, push, back } = usePopState<{ isOpen: boolean }>('menu-nav')
+
+onState((state) => {
+  isOpen.value = state?.isOpen ?? false
+})
+
 function openMenu() {
-  window.history.pushState({ isOpen: true }, 'Menu Nav')
-  isOpen.value = true
+  push({
+    isOpen: true,
+  })
 }
 
 function closeMenu() {
-  window.history.back()
-  isOpen.value = false
+  back()
 }
 
 const hiddenUsername = useCookie('_h_usrnme', {

@@ -18,6 +18,6 @@ export default function (onload: () => any | Promise<any>, opts: InfiniteScrollO
       }
     }
   }
-  onMounted(() => checkTrigger())
+  onMounted(() => setTimeout(() => checkTrigger(), 500))
   return { checkTrigger }
 }
