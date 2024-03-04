@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 const route = useRoute()
 const { data, pending, error } = await useApiFetch<IApiTheaterDetailList>(`/api/theater/${route.params.id}`)
+
 const title = computed(() => {
   const shows = data.value?.shows
   if (shows?.length) {
@@ -18,7 +19,7 @@ const pic = 'https://res.cloudinary.com/haymzm4wp/image/upload/v1696626938/asset
 const config = useAppConfig()
 
 const description = computed(() => {
-  let str = data.value?.shows?.[0].setlist?.description ?? 'Tidak ada deskripsi.'
+  let str = data.value?.shows?.[0]?.setlist?.description ?? 'Tidak ada deskripsi.'
   if (str.split(' ').length > 25) {
     str = `${str.split(' ').slice(0, 25).join(' ')}...`
   }
@@ -26,7 +27,7 @@ const description = computed(() => {
 })
 
 const poster = computed(() => {
-  return data.value?.shows[0].setlist?.banner || data.value?.shows[0].setlist?.poster || undefined
+  return data.value?.shows[0]?.setlist?.banner || data.value?.shows[0]?.setlist?.poster || undefined
 })
 
 useSeoMeta({
@@ -55,7 +56,7 @@ useHead({
     <LayoutSingleRow v-else :title="`${title} - ${$dayjs(data?.date).locale(locale).format('DD MMMM YYYY')}`">
       <div v-if="data.shows?.length" class="px-4 md:px-5 space-y-10">
         <div v-for="[idx, theater] in data.shows.entries()" :key="theater.id" class="space-y-4 md:space-y-5 border-b-4 border-dashed border-white/10 pb-10">
-          <div class="flex flex-col gap-5 md:flex-row md:gap-4">
+          <div class="flex flex-col gap-5 md:flex-row md:gap-4 items-start">
             <NuxtImg
               class="bg-container aspect-[9/12] w-full shrink-0 overflow-hidden rounded-xl object-cover md:w-48 xl:w-80 sm"
               :src="theater.setlist?.poster ?? config.errorPicture"
@@ -93,76 +94,101 @@ useHead({
               </div>
 
               <table class="gap-2 pt-5 text-sm md:text-base font-light max-md:[&_td:first-child]:max-w-[120px] md:[&_td:first-child]:min-w-[150px] [&_td:first-child]:pr-5 [&_td:first-child]:font-light [&_td:first-child]:opacity-50 sm:[&_td:first-child]:min-w-[200px] xl:[&_td:first-child]:min-w-[270px] [&_td]:py-2">
-                <tr>
-                  <td>{{ $t("total_member") }}</td>
-                  <td>{{ theater.members?.length || '-' }}</td>
-                </tr>
+                <tbody>
+                  <tr>
+                    <td>{{ $t("total_member") }}</td>
+                    <td>{{ theater.members?.length || '-' }}</td>
+                  </tr>
 
-                <tr>
-                  <td>{{ $t("sort.date") }}</td>
-                  <td>{{ $dayjs(theater.date).format("DD MMMM YYYY - HH:mm") }}</td>
-                </tr>
+                  <tr>
+                    <td>{{ $t("sort.date") }}</td>
+                    <td>{{ $dayjs(theater.date).format("DD MMMM YYYY - HH:mm") }}</td>
+                  </tr>
+                </tbody>
               </table>
 
-              <div v-if="theater.seitansai?.length" class="flex flex-col gap-1.5">
-                <div class="font-semibold mt-2 flex items-center gap-2">
-                  <Icon name="twemoji:birthday-cake" /> <span>Seitansai</span>
-                </div>
-                <div class="grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(130px,1fr))] md:flex flex-wrap gap-4 md:gap-5">
-                  <NuxtImg
-                    v-for="member in theater.seitansai"
-                    :key="member.id"
-                    class="bg-container block aspect-[8/10] w-[100px] md:w-[120px] overflow-hidden rounded-xl object-cover"
-                    :src="member.img || pic"
-                    alt="Default member picture"
-                    fit="fill"
-                    :modifiers="{
-                      aspectRatio: 8 / 10,
-                      gravity: 'faceCenter',
-                    }"
-                    sizes="100px md:180px"
-                    :placeholder="[8, 10, 75, 5]"
-                    format="webp"
-                  />
-                </div>
-                <div class="text-sm md:text-base">
-                  {{ $t('seitansai_text') }}
-                  <div v-for="[i, member] in theater.seitansai.entries()" :key="member.id" class="inline">
-                    <NuxtLink class="text-red-500" :to="member.url_key ? `/member/${member.url_key}` : undefined">
-                      {{ member.name }}
-                    </NuxtLink>{{ i === theater.seitansai.length - 2 ? ' dan ' : (i === theater.seitansai.length - 1 ? '' : ', ') }}
+              <div class="flex gap-3 justify-end flex-col md:flex-row">
+                <div v-if="theater.seitansai?.length || theater.graduation?.length" class="flex-1">
+                  <div v-if="theater.seitansai?.length" class="flex flex-col gap-1.5">
+                    <div class="font-semibold mt-2 flex items-center gap-2">
+                      <Icon name="twemoji:birthday-cake" /> <span>Seitansai</span>
+                    </div>
+                    <div class="grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(130px,1fr))] md:flex flex-wrap gap-4 md:gap-5">
+                      <NuxtImg
+                        v-for="member in theater.seitansai"
+                        :key="member.id"
+                        class="bg-container block aspect-[8/10] w-[100px] md:w-[120px] overflow-hidden rounded-xl object-cover"
+                        :src="member.img || pic"
+                        alt="Default member picture"
+                        fit="fill"
+                        :modifiers="{
+                          aspectRatio: 8 / 10,
+                          gravity: 'faceCenter',
+                        }"
+                        sizes="100px md:180px"
+                        :placeholder="[8, 10, 75, 5]"
+                        format="webp"
+                      />
+                    </div>
+                    <div class="text-sm md:text-base">
+                      {{ $t('seitansai_text') }}
+                      <div v-for="[i, member] in theater.seitansai.entries()" :key="member.id" class="inline">
+                        <NuxtLink class="text-red-500" :to="member.url_key ? `/member/${member.url_key}` : undefined">
+                          {{ member.name }}
+                        </NuxtLink>{{ i === theater.seitansai.length - 2 ? ' dan ' : (i === theater.seitansai.length - 1 ? '' : ', ') }}
+                      </div>
+                    </div>
+                  </div>
+                  <div v-if="theater.graduation?.length" class="flex flex-col gap-1.5">
+                    <div class="font-semibold mt-2 flex items-center gap-2">
+                      <Icon name="game-icons:graduate-cap" class="text-red-500 w-5 h-5" /> <span>Graduation</span>
+                    </div>
+                    <div class="grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(130px,1fr))] md:flex flex-wrap gap-4 md:gap-5">
+                      <NuxtImg
+                        v-for="member in theater.graduation"
+                        :key="member.id"
+                        class="bg-container block aspect-[8/10] w-[100px] md:w-[120px] overflow-hidden rounded-xl object-cover"
+                        :src="member.img || pic"
+                        alt="Default member picture"
+                        fit="fill"
+                        :modifiers="{
+                          aspectRatio: 8 / 10,
+                          gravity: 'faceCenter',
+                        }"
+                        sizes="100px md:180px"
+                        :placeholder="[8, 10, 75, 5]"
+                        format="webp"
+                      />
+                    </div>
+                    <div class="text-sm md:text-base">
+                      {{ $t('graduation_text') }}
+                      <div v-for="[i, member] in theater.graduation.entries()" :key="member.id" class="inline">
+                        <NuxtLink class="text-red-500" :to="member.url_key ? `/member/${member.url_key}` : undefined">
+                          {{ member.name }}
+                        </NuxtLink>{{ i === theater.graduation.length - 2 ? ' dan ' : (i === theater.graduation.length - 1 ? '' : ', ') }}
+                      </div>,
+                      huhuhu 😭
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div v-if="theater.graduation?.length" class="flex flex-col gap-1.5">
-                <div class="font-semibold mt-2 flex items-center gap-2">
-                  <Icon name="game-icons:graduate-cap" class="text-red-500 w-5 h-5" /> <span>Graduation</span>
-                </div>
-                <div class="grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(130px,1fr))] md:flex flex-wrap gap-4 md:gap-5">
-                  <NuxtImg
-                    v-for="member in theater.graduation"
-                    :key="member.id"
-                    class="bg-container block aspect-[8/10] w-[100px] md:w-[120px] overflow-hidden rounded-xl object-cover"
-                    :src="member.img || pic"
-                    alt="Default member picture"
-                    fit="fill"
-                    :modifiers="{
-                      aspectRatio: 8 / 10,
-                      gravity: 'faceCenter',
-                    }"
-                    sizes="100px md:180px"
-                    :placeholder="[8, 10, 75, 5]"
-                    format="webp"
-                  />
-                </div>
-                <div class="text-sm md:text-base">
-                  {{ $t('graduation_text') }}
-                  <div v-for="[i, member] in theater.graduation.entries()" :key="member.id" class="inline">
-                    <NuxtLink class="text-red-500" :to="member.url_key ? `/member/${member.url_key}` : undefined">
-                      {{ member.name }}
-                    </NuxtLink>{{ i === theater.graduation.length - 2 ? ' dan ' : (i === theater.graduation.length - 1 ? '' : ', ') }}
-                  </div>,
-                  huhuhu 😭
+                <div class="flex flex-col gap-2 w-full md:w-[300px]">
+                  <div class="font-semibold mt-2 flex items-center gap-2">
+                    <Icon name="ep:ticket" class="text-yellow-500" />
+                    <span>{{ $t('theater_ticket') }}</span>
+                  </div>
+                  <NuxtLink :to="`https://jkt48.com/theater/schedule/id/${theater.id}?lang=id`" external target="_blank" class="p-3 aspect-[12/2.5] md:aspect-[12/3] flex justify-center gap-2 text-white bg-blue-500 rounded-xl items-center text-2xl">
+                    <Icon name="ep:ticket" class="text-white text-3xl" />
+                    <b>Offline Ticket</b>
+                  </NuxtLink>
+                  <NuxtLink v-if="theater.showroomTheater" :to="theater.showroomTheater.entrance_url" external target="_blank" class="p-3 aspect-[12/2.5] md:aspect-[12/3] text-white bg-red-500 rounded-xl flex flex-col justify-center items-center ">
+                    <div class="text-2xl flex gap-2 items-center">
+                      <Icon name="ep:ticket" class="text-white text-3xl" />
+                      <b>Online Ticket</b>
+                    </div>
+                    <div class="text-sm leading-3">
+                      at <b>Showroom</b>
+                    </div>
+                  </NuxtLink>
                 </div>
               </div>
             </div>

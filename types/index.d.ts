@@ -182,6 +182,19 @@ interface JKT48MemberExtend extends JKT48.Member {
   url_key?: string
 }
 
+interface ShowroomPremiumLive {
+  entrance_url?: string
+  room_url?: string
+  image?: string
+  premium_live_type?: number
+  is_onlive?: boolean
+  title?: string
+  paid_live_id?: number
+  room_id?: number
+  room_name?: string
+  start_at?: number
+}
+
 interface IApiTheaterDetail {
   id: string
   title: string
@@ -190,6 +203,7 @@ interface IApiTheaterDetail {
   members: JKT48MemberExtend[]
   seitansai: JKT48MemberExtend[]
   graduation: JKT48MemberExtend[]
+  showroomTheater?: ShowroomPremiumLive
   date: Date
   team: {
     id: string

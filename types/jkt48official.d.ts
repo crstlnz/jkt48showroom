@@ -26,6 +26,7 @@ declare namespace JKT48 {
       id: string
       img: string
     }
+    showroomTheater?: ShowroomPremiumLive
   }
 
   interface TheaterDetail {
@@ -40,6 +41,7 @@ declare namespace JKT48 {
       id: string
       img: string
     }
+    showroomTheater?: ShowroomPremiumLive
   }
 
   interface Song {
