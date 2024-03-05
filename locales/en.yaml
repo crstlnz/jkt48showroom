@@ -235,3 +235,8 @@ comment_too_many_request: Too many request, please try again later
 offline: Oopps, you are offline 😭
 get_theater_ticket: Get tickets to watch this theater at
 theater_ticket: Theater ticket
+official_link: Official Link
+ticket:
+  online: Online Ticket
+  offline: Offline Ticket
+at: at

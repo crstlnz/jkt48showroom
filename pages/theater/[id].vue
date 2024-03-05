@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import dayjs from 'dayjs'
+
 const route = useRoute()
 const { data, pending, error } = await useApiFetch<IApiTheaterDetailList>(`/api/theater/${route.params.id}`)
 
@@ -41,6 +43,21 @@ useSeoMeta({
   ogDescription: description,
 })
 
+type TheaterState = 'upcoming' | 'ongoing' | 'ended'
+function getTheaterState(_date: Date): TheaterState {
+  const now = dayjs()
+  const date = dayjs(_date)
+  const minuteDiff = date.diff(now, 'minute')
+  if (minuteDiff < 0) {
+    return 'upcoming'
+  }
+  else if (minuteDiff - 150 < 0) {
+    return 'ongoing'
+  }
+  else {
+    return 'ended'
+  }
+}
 const { locale } = useI18n()
 useHead({
   title,
@@ -173,20 +190,20 @@ useHead({
                 </div>
                 <div class="flex flex-col gap-2 w-full md:w-[300px]">
                   <div class="font-semibold mt-2 flex items-center gap-2">
-                    <Icon name="ep:ticket" class="text-yellow-500" />
-                    <span>{{ $t('theater_ticket') }}</span>
+                    <Icon :name="getTheaterState(theater.date) === 'ended' ? 'pepicons-pop:internet' : 'ep:ticket'" class="text-yellow-500" />
+                    <span>{{ $t(getTheaterState(theater.date) === 'ended' ? 'official_link' : 'theater_ticket') }}</span>
                   </div>
                   <NuxtLink :to="`https://jkt48.com/theater/schedule/id/${theater.id}?lang=id`" external target="_blank" class="p-3 aspect-[12/2.5] md:aspect-[12/3] flex justify-center gap-2 text-white bg-blue-500 rounded-xl items-center text-2xl">
-                    <Icon name="ep:ticket" class="text-white text-3xl" />
-                    <b>Offline Ticket</b>
+                    <Icon v-if="getTheaterState(theater.date) !== 'ended'" name="ep:ticket" class="text-white text-3xl" />
+                    <b>{{ getTheaterState(theater.date) === 'ended' ? 'JKT48 Official Web' : $t("ticket.online") }}</b>
                   </NuxtLink>
-                  <NuxtLink v-if="theater.showroomTheater" :to="theater.showroomTheater.entrance_url" external target="_blank" class="p-3 aspect-[12/2.5] md:aspect-[12/3] text-white bg-red-500 rounded-xl flex flex-col justify-center items-center ">
+                  <NuxtLink v-if="theater.showroomTheater && getTheaterState(theater.date) !== 'ended'" :to="theater.showroomTheater.entrance_url" external target="_blank" class="p-3 aspect-[12/2.5] md:aspect-[12/3] text-white bg-red-500 rounded-xl flex flex-col justify-center items-center ">
                     <div class="text-2xl flex gap-2 items-center">
                       <Icon name="ep:ticket" class="text-white text-3xl" />
-                      <b>Online Ticket</b>
+                      <b>{{ $t("ticket.offline") }}</b>
                     </div>
                     <div class="text-sm leading-3">
-                      at <b>Showroom</b>
+                      {{ $t('at') }} <b>Showroom</b>
                     </div>
                   </NuxtLink>
                 </div>

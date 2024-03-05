@@ -235,3 +235,8 @@ comment_too_many_request: Ups.. pelan2 komennya 😓
 offline: Oopps, internet kamu putus nih 😭
 get_theater_ticket: Dapatkan tiket theater ini di
 theater_ticket: Tiket theater
+official_link: Link Official
+ticket:
+  online: Tiket Online
+  offline: Tiket Offline
+at: di
