@@ -107,12 +107,12 @@ onMounted(() => {
           }
           rubberPos.value = {
             x: zoomState.value === 1 ? 0 : rubberbandIfOutOfBounds(pos.value.x, -maxX, maxX, 0.18),
-            y: zoomState.value === 1 ? pos.value.y : rubberbandIfOutOfBounds(pos.value.y, -maxY, maxY, 0.18),
+            y: rubberbandIfOutOfBounds(pos.value.y, -maxY, maxY, zoomState.value === 1 ? 0.165 : 0.18),
           }
         }
         else {
           const percentY = Math.abs(rubberPos.value.y / windowHeight.value * 100)
-          if (zoomState.value === 1 && percentY > 35) {
+          if (zoomState.value === 1 && percentY > 25) {
             isExit.value = true
             animate({
               from: 1,
@@ -121,11 +121,18 @@ onMounted(() => {
                 bgOpacity.value = v
               },
             })
+            animate({
+              from: zoomState.value,
+              to: 0.65,
+              onUpdate(val) {
+                zoomState.value = val
+              },
+            })
             releaseAnimation = animate({
               from: rubberPos.value,
               to: {
                 x: 0,
-                y: rubberPos.value.y > 0 ? windowHeight.value : -windowHeight.value,
+                y: 0,
               },
               velocity: state.velocity[1],
               onUpdate(val) {

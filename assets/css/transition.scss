@@ -224,3 +224,22 @@
     left: 0;
     right: 0;
 }
+
+.imageviewer-enter-active,
+.imageviewer-leave-active {
+    transition: 0.4s ease;
+
+    .imageElement{
+        transition: 0.4s ease;
+        transform: scale(1) !important;
+    }
+    
+}
+
+.imageviewer-enter-from,
+.imageviewer-leave-to {
+    opacity: 0!important;
+    .imageElement{
+        transform: scale(0.5) !important;
+    }
+}

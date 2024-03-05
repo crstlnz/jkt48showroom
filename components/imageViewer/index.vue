@@ -35,7 +35,7 @@ defineExpose({
 </script>
 
 <template>
-  <Transition name="fade">
+  <Transition name="imageviewer">
     <ImageViewerZoom v-if="isOpen && image" :image="image" @exit="close" />
   </Transition>
 </template>
