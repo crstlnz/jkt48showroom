@@ -4,13 +4,14 @@ import { useMembers } from '~/store/members'
 
 const route = useRoute()
 // const { data, pending, error } = await useApiFetch<IDNLivesDetail>(`/api/watch/${route.params.id}/idn`)
-const { data: lives } = useIDNLives()
+const { data: lives, tryRefresh: tryRefreshIdn } = useIDNLives()
 const { members, tryRefresh } = useMembers()
 const { data, pending, error } = await useAsyncData<IDNLivesDetail>(
   `idn-${route.params.id}`,
   async () => {
-    const live = lives?.find(i => i.user.username === route.params.id)
     await tryRefresh()
+    await tryRefreshIdn()
+    const live = lives?.find(i => i.user.username === route.params.id)
     const member = members?.find(i => i.idn_username === route.params.id)
     const member_info = member
       ? {
@@ -53,7 +54,7 @@ const streamURLs = computed(() => {
   return [
     {
       is_default: true,
-      url: `${useRuntimeConfig().public.proxy}${data.value.stream_url}`,
+      url: `${data.value.stream_url}`,
       type: 'hls',
       id: 1,
       label: 'Original',

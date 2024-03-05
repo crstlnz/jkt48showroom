@@ -113,6 +113,7 @@ function setShowControl(show: boolean) {
 }
 
 const fatalError = ref(0)
+const proxied = ref(false)
 const createdVideo = ref(false)
 useScriptTag(useAppConfig().hlsUrl, () => {
   createHLS(currentSource.value.url)
@@ -150,6 +151,10 @@ function createHLS(url: string) {
     })
 
     hls.value.on(Hls.Events.ERROR, (event: any, data: any) => {
+      if (data.response.code === 0 && data.type === Hls.ErrorTypes.NETWORK_ERROR && !proxied.value) {
+        proxied.value = true
+        return createHLS(useRuntimeConfig().public.proxy + url)
+      }
       emit('sourceError')
       // if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
       // }
