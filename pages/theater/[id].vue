@@ -195,12 +195,12 @@ useHead({
                   </div>
                   <NuxtLink :to="`https://jkt48.com/theater/schedule/id/${theater.id}?lang=id`" external target="_blank" class="p-3 aspect-[12/2.5] md:aspect-[12/3] flex justify-center gap-2 text-white bg-blue-500 rounded-xl items-center text-2xl">
                     <Icon v-if="getTheaterState(theater.date) !== 'ended'" name="ep:ticket" class="text-white text-3xl" />
-                    <b>{{ getTheaterState(theater.date) === 'ended' ? 'JKT48 Official Web' : $t("ticket.online") }}</b>
+                    <b>{{ getTheaterState(theater.date) === 'ended' ? 'JKT48 Official Web' : $t("ticket.offline") }}</b>
                   </NuxtLink>
                   <NuxtLink v-if="theater.showroomTheater && getTheaterState(theater.date) !== 'ended'" :to="theater.showroomTheater.entrance_url" external target="_blank" class="p-3 aspect-[12/2.5] md:aspect-[12/3] text-white bg-red-500 rounded-xl flex flex-col justify-center items-center ">
                     <div class="text-2xl flex gap-2 items-center">
                       <Icon name="ep:ticket" class="text-white text-3xl" />
-                      <b>{{ $t("ticket.offline") }}</b>
+                      <b>{{ $t("ticket.online") }}</b>
                     </div>
                     <div class="text-sm leading-3">
                       {{ $t('at') }} <b>Showroom</b>
@@ -216,20 +216,22 @@ useHead({
             <span>Daftar Member</span>
           </div>
           <div v-if="theater.members?.length" class="grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] gap-4 md:grid-cols-[repeat(auto-fill,minmax(130px,1fr))] md:gap-5">
-            <NuxtLink v-for="member in theater.members" :key="member.id" :to="member.url_key ? `/member/${member.url_key}` : undefined" class="flex flex-col space-y-2">
-              <NuxtImg
-                class="bg-container block aspect-[8/10] h-full w-full overflow-hidden rounded-xl object-cover"
-                :src="member.img ?? pic"
-                alt="Member picture"
-                fit="fill"
-                :modifiers="{
-                  aspectRatio: 8 / 10,
-                  gravity: 'faceCenter',
-                }"
-                sizes="100px md:180px"
-                :placeholder="[8, 10, 75, 5]"
-                format="webp"
-              />
+            <NuxtLink v-for="member in theater.members" :key="member.id" :to="member.url_key ? `/member/${member.url_key}` : undefined" class="flex flex-col space-y-2 group">
+              <div class="overflow-hidden rounded-xl">
+                <NuxtImg
+                  class="bg-container block aspect-[8/10] size-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  :src="member.img ?? pic"
+                  alt="Member picture"
+                  fit="fill"
+                  :modifiers="{
+                    aspectRatio: 8 / 10,
+                    gravity: 'faceCenter',
+                  }"
+                  sizes="100px md:180px"
+                  :placeholder="[8, 10, 75, 5]"
+                  format="webp"
+                />
+              </div>
               <div class="truncate text-sm md:text-base text-center">
                 {{ member.name }}
               </div>
