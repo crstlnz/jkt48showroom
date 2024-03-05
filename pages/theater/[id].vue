@@ -47,7 +47,7 @@ type TheaterState = 'upcoming' | 'ongoing' | 'ended'
 function getTheaterState(_date: Date): TheaterState {
   const now = dayjs()
   const date = dayjs(_date)
-  const minuteDiff = date.diff(now, 'minute')
+  const minuteDiff = now.diff(date, 'minute')
   if (minuteDiff < 0) {
     return 'upcoming'
   }

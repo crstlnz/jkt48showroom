@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { DragGesture, Gesture, rubberbandIfOutOfBounds } from '@use-gesture/vanilla'
-import { animate, spring } from 'popmotion'
+import { Gesture, rubberbandIfOutOfBounds } from '@use-gesture/vanilla'
+import { animate } from 'popmotion'
 
 const props = defineProps<{
   image: ImageViewerOptions
