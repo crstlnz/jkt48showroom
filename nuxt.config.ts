@@ -31,6 +31,7 @@ export default defineNuxtConfig({
       cloudinary: process.env.CLOUDINARY_BASE_URL,
       api: process.env.API,
       showroom_api: process.env.SHOWROOM_API,
+      proxy: process.env.PROXY,
     },
   },
   watch: ['~/assets/css/tailwindcss.css'],

@@ -53,7 +53,7 @@ const streamURLs = computed(() => {
   return [
     {
       is_default: true,
-      url: data.value.stream_url,
+      url: `${useRuntimeConfig().public.proxy}${data.value.stream_url}`,
       type: 'hls',
       id: 1,
       label: 'Original',
