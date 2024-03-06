@@ -150,11 +150,11 @@ export function convertDurationToMs(durationString: string) {
 }
 
 type Deep = string | number | string[] | number[]
-interface DeepObject {
-  [key: string]: Deep | DeepObject
+interface IDeepObject {
+  [key: string]: Deep | IDeepObject | IDeepObject[]
 }
-// type DeepObject = Record<string, Deep | Record<string, DeepObject>>
-type DeepData = DeepObject | DeepObject[] | Deep
+type DeepObject = Record<string, Deep | IDeepObject | IDeepObject[]>
+type DeepData = Deep | DeepObject | DeepObject[]
 
 export function deepEqual(obj1: DeepData, obj2: DeepData): boolean {
   if (typeof obj1 === 'number' || typeof obj1 === 'string') return obj1 === obj2
