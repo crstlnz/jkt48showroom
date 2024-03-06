@@ -73,9 +73,9 @@ useHead({
     <LayoutSingleRow v-else :title="`${title} - ${$dayjs(data?.date).locale(locale).format('DD MMMM YYYY')}`">
       <div v-if="data.shows?.length" class="px-4 md:px-5 space-y-10">
         <div v-for="[idx, theater] in data.shows.entries()" :key="theater.id" class="space-y-4 md:space-y-5 border-b-4 border-dashed border-white/10 pb-10">
-          <div class="flex flex-col gap-5 md:flex-row md:gap-4 items-start">
+          <div class="flex flex-col gap-5 md:flex-row md:gap-4">
             <NuxtImg
-              class="bg-container aspect-[9/12] w-full shrink-0 overflow-hidden rounded-xl object-cover md:w-48 xl:w-80 sm"
+              class="bg-container aspect-[9/12] w-full shrink-0 overflow-hidden rounded-xl object-cover md:w-48 xl:w-80 sm self-start"
               :src="theater.setlist?.poster ?? config.errorPicture"
               alt="Theater Poster"
               :modifiers="{
@@ -124,7 +124,7 @@ useHead({
                 </tbody>
               </table>
 
-              <div class="flex gap-3 justify-end flex-col md:flex-row">
+              <div class="flex gap-3 justify-end md:items-end flex-col md:flex-row">
                 <div v-if="theater.seitansai?.length || theater.graduation?.length" class="flex-1">
                   <div v-if="theater.seitansai?.length" class="flex flex-col gap-1.5">
                     <div class="font-semibold mt-2 flex items-center gap-2">

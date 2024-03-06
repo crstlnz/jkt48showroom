@@ -128,7 +128,8 @@ onMounted(() => {
   }
 })
 
-function createHLS(url: string) {
+function createHLS(_url: string) {
+  const url = `${proxied.value ? useRuntimeConfig().public.proxy : ''}${_url}`
   if (Hls.isSupported()) {
     fatalError.value = 0
     isLoading.value = true
@@ -153,7 +154,7 @@ function createHLS(url: string) {
     hls.value.on(Hls.Events.ERROR, (event: any, data: any) => {
       if (data.response.code === 0 && data.type === Hls.ErrorTypes.NETWORK_ERROR && !proxied.value) {
         proxied.value = true
-        return createHLS(useRuntimeConfig().public.proxy + url)
+        return createHLS(url)
       }
       emit('sourceError')
       // if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
