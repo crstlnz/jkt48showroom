@@ -29,11 +29,13 @@ function back() {
 const navBar = ref()
 const { isMobile } = useResponsive()
 const lastScroll = ref(0)
-const lastDirectionScroll = ref(0)
 const navShow = ref(true)
 const doc = ref()
+const lastDirectionScroll = ref(0)
 useEventListener(doc, 'scroll', () => {
+  const navHeight = navBar.value?.clientHeight ?? 0
   if (isMobile) {
+    if (window.scrollY < navHeight) return navShow.value = true
     const val = window.scrollY - lastScroll.value
     lastScroll.value = window.scrollY
     if ((val > 0) !== (lastDirectionScroll.value > 0)) {
@@ -43,9 +45,10 @@ useEventListener(doc, 'scroll', () => {
       lastDirectionScroll.value += val
     }
     if (val === 0) return
-    if (Math.abs(lastDirectionScroll.value) > 10) navShow.value = lastDirectionScroll.value < 0
+    if (Math.abs(lastDirectionScroll.value) > 30) navShow.value = lastDirectionScroll.value < 0
   }
 })
+
 const container = ref<HTMLElement>()
 
 onMounted(() => {
@@ -55,8 +58,8 @@ onMounted(() => {
 
 <template>
   <div class="flex min-h-full max-md:gap-3 max-xl:gap-4 w-full max-xl:flex-col">
-    <div ref="container" class="min-xl:min-h-[100vh] relative min-w-0 flex-1 dark:border-zinc-700 xl:border-r xl:pb-20">
-      <div ref="navBar" :class="{ '-translate-y-full': !navShow }" :style="{ left: `0px`, right: 0, top: 0 }" class="disable-highlight sticky z-nav h-14 md:h-16 cursor-pointer xl:sticky transition-[transform] duration-500">
+    <div ref="container" class="min-xl:min-h-[100vh] relative min-w-0 flex-1 dark:border-zinc-700 xl:border-r xl:pb-20 max-md:mt-14 max-xl:mt-16">
+      <div ref="navBar" :class="{ '-translate-y-full': !navShow }" :style="{ left: `0px`, right: 0, top: 0 }" class="disable-highlight fixed z-nav h-14 md:h-16 cursor-pointer xl:sticky transition-[transform] duration-500">
         <div class="bg-navbar absolute inset-0 backdrop-blur-md" />
         <LayoutRowTitle :show-back="showBack" :title="title" :sub-title="subTitle" class="z-10" @back="back" @scroll-top="scrollTop">
           <template #actionSection>
