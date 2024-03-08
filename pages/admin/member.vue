@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { Switch, SwitchGroup, SwitchLabel } from '@headlessui/vue'
 import { useFuse } from '@vueuse/integrations/useFuse'
-import type { ObjectId } from 'mongoose'
 import { useSettings } from '~~/store/settings'
 
 definePageMeta({ middleware: 'admin' })

@@ -35,7 +35,7 @@ const windowEl = ref()
 const isLocked = useScrollLock(windowEl)
 const ignore = ref<HTMLElement | null>(null)
 
-let setState: (_state: boolean) => void
+// let setState: (_state: boolean) => void
 // if ($device.isMobile) {
 //   const { state: openState, setState: setFun } = useQueryState(props.id)
 //   setState = setFun

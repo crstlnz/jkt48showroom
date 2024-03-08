@@ -61,11 +61,15 @@ function getBound() {
 
 let releaseAnimation: any
 let releaseZoomAnimation: any
+
+function preventDefault(e: Event) {
+  e.preventDefault()
+}
 onMounted(() => {
   if (!container.value) return
   // to prevent macbook trackpad pinch gesture
-  document.addEventListener('gesturestart', e => e.preventDefault())
-  document.addEventListener('gesturechange', e => e.preventDefault())
+  document.addEventListener('gesturestart', preventDefault)
+  document.addEventListener('gesturechange', preventDefault)
   gestureListener.value = new Gesture(
     container.value,
     {
@@ -111,7 +115,7 @@ onMounted(() => {
           }
         }
         else {
-          const percentY = Math.abs(rubberPos.value.y / windowHeight.value * 100)
+          const percentY = Math.abs(pos.value.y / windowHeight.value * 100)
           if (zoomState.value === 1 && percentY > 25) {
             isExit.value = true
             animate({
@@ -190,6 +194,8 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
+  document.removeEventListener('gesturestart', preventDefault)
+  document.removeEventListener('gesturechange', preventDefault)
   if (gestureListener.value) {
     gestureListener.value.destroy()
   }

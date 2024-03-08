@@ -175,7 +175,7 @@ today: Hari ini
 tomorrow: Besok
 noresult: Tidak ada hasil dengan pencarian
 total_member: Jumlah member
-recent_theater: Theater terakhir
+recent_theater: Theater sebelumnya
 upcoming_theater: Theater selanjutnya
 recent_detail_description: Lihat rekap gift dan fans ranking live Showroom {name} pada tanggal {date}
 member_profile_description: Berikut profile lengkap dari {name} {group}
@@ -223,6 +223,7 @@ menu:
   report_bugs: Lapor Bug
   about: Tentang
   stats: Statistik
+  event: Event
 known_issues: Masalah yang diketahui
 open_original: Buka web asli
 data_disclaimer: Data merupakan hasil rekaman bot, kesalahan dalam mengambil data mungkin saja terjadi.
@@ -240,3 +241,8 @@ ticket:
   online: Tiket Online
   offline: Tiket Offline
 at: di
+member_count: 'Tidak ada member | {count} Members'
+upcoming: Akan datang
+ongoing: Sedang berlangsung
+ended: Telah selesai
+other_schedule: Jadwal event lainnya

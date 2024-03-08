@@ -77,7 +77,7 @@ function openProfileImage() {
             />
           </component>
           <div class="flex gap-3 items-center">
-            <NuxtLink target="_blank" :to="$liveURL(member.url)" class="rounded-full bg-blue-500 px-2.5 h-6 leading-6 md:leading-9 md:h-9 md:px-4 text-xs sm:text-sm text-white self-center flex items-center">
+            <NuxtLink target="_blank" :to="$profileURL(roomId ?? 0)" class="rounded-full bg-blue-500 px-2.5 h-6 leading-6 md:leading-9 md:h-9 md:px-4 text-xs sm:text-sm text-white self-center flex items-center">
               Showroom
             </NuxtLink>
             <NuxtLink target="_blank" class="rounded-full bg-blue-500 gap-1 px-2.5 h-6 leading-6 md:leading-9 md:h-9 md:px-4 text-xs sm:text-sm text-white self-center flex items-center" :to="`https://twitter.com/intent/tweet?text=${shareUrl}`" data-size="large">

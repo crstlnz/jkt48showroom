@@ -13,6 +13,7 @@ function isSort(s: string): s is sortType {
 }
 
 const urls = {
+  jkt48url: 'https://jkt48.com',
   hlsUrl: 'https://cdn.jsdelivr.net/npm/hls.js@1.5.6',
   defaultIDNProfilePicture: 'https://cdn.idn.media/idnaccount/avatar/default.png',
   idnLiveIcon: 'https://upload.wikimedia.org/wikipedia/commons/b/ba/IDN_Live.svg',

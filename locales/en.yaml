@@ -223,6 +223,7 @@ menu:
   report_bugs: Report Bugs
   about: About
   stats: Stats
+  event: Event
 known_issues: Known Issues
 open_original: Open original
 data_disclaimer: Data is the result of bot recording, errors in data collection may occur.
@@ -240,3 +241,8 @@ ticket:
   online: Online Ticket
   offline: Offline Ticket
 at: at
+member_count: 'No members | 1 Member | {count} Members'
+upcoming: Upcoming
+ongoing: Ongoing
+ended: Ended
+other_schedule: Other schedule

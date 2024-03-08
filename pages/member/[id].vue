@@ -146,8 +146,8 @@ useHead({
                 </NuxtLink>
                 <NuxtLink :to="`/recent/${data?.stats?.last_live?.id}`" class="space-y-2 text-sm md:text-base md:flex-1 md:flex md:items-center md:justify-center">
                   {{
-                    data?.stats?.last_live?.date?.start
-                      ? $dayjs(data?.stats?.last_live?.date?.start ?? '').diff($dayjs(), 'week') > 1 ? $d(new Date(data?.stats?.last_live?.date?.start ?? ''), 'short') : $dayjs(data?.stats?.last_live?.date?.start ?? '').locale(locale).fromNow()
+                    data?.stats?.last_live?.date?.end
+                      ? $dayjs(data?.stats?.last_live?.date?.end ?? '').diff($dayjs(), 'week') > 1 ? $d(new Date(data?.stats?.last_live?.date?.end ?? ''), 'short') : $dayjs(data?.stats?.last_live?.date?.end ?? '').locale(locale).fromNow()
                       : $t('data.nodata')
                   }}
                 </NuxtLink>

@@ -1,15 +1,17 @@
 export default function<T>(id: string) {
   const onState = createEventHook<T | undefined | null>()
   function onStateChange(event: PopStateEvent) {
-    onState.trigger(event.state)
+    onState.trigger(event.state[id])
   }
   onMounted(() => {
     useEventListener(window, 'popstate', onStateChange)
   })
 
-  function push(state: T) {
+  function push(_state: T) {
+    const state: Record<string, T> = {}
+    state[id] = _state
     window.history.pushState(state, id)
-    onState.trigger(state)
+    onState.trigger(state[id])
   }
 
   function back() {

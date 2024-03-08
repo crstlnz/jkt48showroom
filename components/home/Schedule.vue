@@ -62,7 +62,7 @@ const { locale } = useI18n()
           </div>
         </td>
         <td class="w-full p-3">
-          <component :is="event.url.startsWith('/theater/schedule/id/') ? NuxtLink : 'div'" v-for="event in schedule.events" :key="event.id" :to="event.url.startsWith('/theater/schedule/id/') ? `/theater/${$getTheaterId(event.url)}` ?? undefined : undefined" class="flex gap-2">
+          <component :is="!event.url.startsWith('/calendar') ? NuxtLink : 'div'" v-for="event in schedule.events" :key="event.id" :to="event.url.startsWith('/theater/schedule/id/') ? `/theater/${$getTheaterId(event.url)}` : `${$jkt48url}${event.url}`" class="flex gap-2">
             <NuxtImg
               class="aspect-[56/19] w-14 object-cover self-center"
               :src="`${$cloudinaryURL}/assets/jkt48${event.label}`"

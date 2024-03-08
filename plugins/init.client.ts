@@ -1,12 +1,10 @@
 import { useIDNLives } from '~/store/idnLives'
-import { useNotifications } from '~/store/notifications'
 import { useSettings } from '~/store/settings'
 import { createGtagEvent } from '~/utils/gtag'
 import { useOnLives } from '~~/store/onLives'
 
 export default defineNuxtPlugin(({ hook }) => {
   const route = useRoute()
-  // const { refresh: refreshCSRF } = useCSRF()
   const { authenticated } = useAuth()
   const { group } = useSettings()
   watch(() => route.fullPath, (path) => {
@@ -45,10 +43,7 @@ export default defineNuxtPlugin(({ hook }) => {
   })
 
   onFocus(() => {
-    onLives.tryRefresh()
-    if (group === 'jkt48') {
-      idnLives.tryRefresh()
-    }
+    start()
   })
 
   hook('app:created', () => {

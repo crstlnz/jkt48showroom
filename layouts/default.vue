@@ -14,6 +14,8 @@ useHead({
   titleTemplate: t => t ? `${t} | ${title.value}` : title.value,
 })
 
+const { group } = useSettings()
+
 const menus: MenuItem[] = [
   {
     title: 'Home',
@@ -39,15 +41,6 @@ const menus: MenuItem[] = [
     icon: 'fluent:history-16-regular',
     activeIcon: 'fluent:history-16-filled',
   },
-  {
-    title: 'News',
-    url: '/news',
-    locale_id: 'menu.news',
-    group: 'jkt48',
-    mobile: false,
-    icon: 'fluent:news-20-regular',
-    activeIcon: 'fluent:news-20-filled',
-  },
   // {
   //   title: 'Schedule',
   //   url: '/schedule',
@@ -64,6 +57,24 @@ const menus: MenuItem[] = [
     icon: 'heroicons:user-group',
     activeIcon: 'heroicons:user-group-solid',
   },
+  {
+    title: 'Event',
+    url: '/event',
+    locale_id: 'menu.event',
+    mobile: true,
+    group: 'jkt48',
+    icon: 'material-symbols:event-note-outline-sharp',
+    activeIcon: 'material-symbols:event-note-sharp',
+  },
+  {
+    title: 'News',
+    url: '/news',
+    locale_id: 'menu.news',
+    group: 'jkt48',
+    mobile: false,
+    icon: 'fluent:news-20-regular',
+    activeIcon: 'fluent:news-20-filled',
+  },
   // {
   //   title: 'Follow',
   //   url: '/user/follow',
@@ -77,7 +88,7 @@ const menus: MenuItem[] = [
     locale_id: 'menu.bookmark',
     url: '/user/bookmark',
     login: true,
-    mobile: true,
+    mobile: group !== 'jkt48',
     icon: 'heroicons:bookmark',
     activeIcon: 'heroicons:bookmark-20-solid',
   },

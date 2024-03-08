@@ -4,15 +4,21 @@ const router = useRouter()
 const page = ref(Number(route.query.page) || 1)
 const { data, pending, error } = await useApiFetch<IApiNews>('/api/news', { params: { page } })
 const { locale } = useI18n()
-function changePage(p: number) {
-  page.value = p
-  window.scrollTo({ top: 0 })
-}
 
-watch(page, (p) => {
+watch(pending, (p) => {
+  if (p) window.scrollTo({ top: 0 })
+})
+
+function changePage(p: number) {
   router.push ({
     query: { page: String(p) },
   })
+}
+
+watch(() => route.query, (q, old) => {
+  if (old.page !== q.page) {
+    page.value = !Number.isNaN(q.page) ? Number(q.page) : 1
+  }
 })
 
 const { greaterOrEqual } = useResponsive()

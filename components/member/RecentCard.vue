@@ -135,9 +135,12 @@ onMounted(() => {
           format="webp"
           sizes="144px sm:172px md:200px lg:228px xl:256px"
           :placeholder="[32, 18, 75, 100]"
+          :modifiers="{
+            aspectRatio: 16 / 9,
+          }"
           class="relative h-full w-full cursor-pointer bg-slate-200 object-cover text-xs transition-all duration-200 dark:bg-dark-3 md:text-sm lg:text-base"
           :alt="`${recent.member?.name}Display Picture`"
-          :src="recent.member?.img ?? recent.member.img_alt"
+          :src="recent.member?.img ?? recent.member.img_alt ?? $errorPicture"
         />
       </div>
       <div class="flex min-w-0 flex-1 flex-col space-y-0.5 sm:space-y-1 md:space-y-2">

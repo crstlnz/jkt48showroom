@@ -29,14 +29,21 @@ function back() {
 const navBar = ref()
 const { isMobile } = useResponsive()
 const lastScroll = ref(0)
+const lastDirectionScroll = ref(0)
 const navShow = ref(true)
 const doc = ref()
 useEventListener(doc, 'scroll', () => {
   if (isMobile) {
     const val = window.scrollY - lastScroll.value
     lastScroll.value = window.scrollY
+    if ((val > 0) !== (lastDirectionScroll.value > 0)) {
+      lastDirectionScroll.value = val
+    }
+    else {
+      lastDirectionScroll.value += val
+    }
     if (val === 0) return
-    navShow.value = val < 0
+    if (Math.abs(lastDirectionScroll.value) > 10) navShow.value = lastDirectionScroll.value < 0
   }
 })
 const container = ref<HTMLElement>()
@@ -47,7 +54,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex min-h-full w-full gap-3 max-xl:flex-col">
+  <div class="flex min-h-full max-md:gap-3 max-xl:gap-4 w-full max-xl:flex-col">
     <div ref="container" class="min-xl:min-h-[100vh] relative min-w-0 flex-1 dark:border-zinc-700 xl:border-r xl:pb-20">
       <div ref="navBar" :class="{ '-translate-y-full': !navShow }" :style="{ left: `0px`, right: 0, top: 0 }" class="disable-highlight sticky z-nav h-14 md:h-16 cursor-pointer xl:sticky transition-[transform] duration-500">
         <div class="bg-navbar absolute inset-0 backdrop-blur-md" />

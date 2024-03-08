@@ -1,28 +1,40 @@
 <script lang="ts" setup>
+import { useIDNLives } from '~/store/idnLives'
 import { useOnLives } from '~/store/onLives'
 
 const onLives = useOnLives()
-const { data, pending, error } = storeToRefs(onLives)
+const { data, pending, hasLives, error } = storeToRefs(onLives)
+
+const idnLives = useIDNLives()
+const { data: idnData, pending: idnPending, hasLives: idnHasLive } = storeToRefs(idnLives)
 </script>
 
 <template>
   <HomeContainer title="Now Live" icon-class="bg-red-500">
-    <div v-if="pending && data == null">
+    <div v-if="(pending && idnPending) && (data == null && idnData == null)">
       <div class="flex aspect-square w-full items-center justify-center">
         <Icon name="svg-spinners:90-ring-with-bg" size="2.5rem" />
       </div>
     </div>
-    <div
-      v-else-if="error"
-      class="aspect-[10/9]"
-    >
-      <div class="pt-2 text-center">
-        <NuxtImg class="aspect-square w-72 mx-auto max-w-[65%] object-contain" :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" sizes="320px" fit="fill" />
-        <span>{{ $t("data.failed") }}</span>
-      </div>
-    </div>
-    <div v-else-if="data?.length" class="flex flex-col gap-3">
-      <MemberSideLiveCard v-for="live in data" :key="live.room_id" :live="live" />
+    <div v-else-if="hasLives || idnHasLive" class="flex flex-col gap-3">
+      <MemberSideLiveCard
+        v-for="live in idnData" :key="live.user.id" :live="{
+          img: live.image,
+          started_at: new Date(live.live_at),
+          is_premium: false,
+          name: live.user.name,
+          url: `${live.user.username}/idn`,
+        }"
+      />
+      <MemberSideLiveCard
+        v-for="live in data" :key="live.room_id" :live="{
+          img: live.img,
+          started_at: new Date(live.started_at),
+          is_premium: live.is_premium || false,
+          name: live.name,
+          url: live.url,
+        }"
+      />
     </div>
     <div
       v-else

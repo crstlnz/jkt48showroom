@@ -1,5 +1,7 @@
 <script lang="ts" setup>
+import { DragGesture } from '@use-gesture/vanilla'
 import { useScrollLock } from '@vueuse/core'
+import { animate } from 'popmotion'
 import { useSettings } from '~/store/settings'
 
 const props = defineProps<{
@@ -29,13 +31,6 @@ const hiddenMenus = computed(() => {
 const el = ref<HTMLElement | null>()
 const isLocked = useScrollLock(el)
 
-onMounted(() => {
-  el.value = document.body
-  useEventListener(window, 'popstate', (event) => {
-    isOpen.value = !!event.state?.isPopup
-  })
-})
-
 watch(isOpen, (open) => {
   isLocked.value = open
 })
@@ -60,6 +55,105 @@ const hiddenUsername = useCookie('_h_usrnme', {
   default: () => true,
   maxAge: 3600 * 24 * 30,
   path: '/',
+})
+
+// const bgOpacity = ref(0)
+const { width } = useWindowSize()
+
+const xPos = ref(100)
+const openAnimation = ref<any>(null)
+const background = ref<HTMLElement>()
+watch(isOpen, (open) => {
+  if (openAnimation.value) openAnimation.value.stop()
+  if (!background.value) return
+  background.value.style.display = 'none'
+  openAnimation.value = animate({
+    from: xPos.value,
+    to: open ? 0 : 100,
+    type: 'spring',
+    bounce: 0,
+    onUpdate(v) {
+      xPos.value = v
+    },
+    onPlay() {
+      if (background.value) background.value.style.pointerEvents = !isOpen.value ? 'none' : 'auto'
+
+      // if (!background.value) return
+      // background.value.style.pointerEvents = 'auto'
+      // background.value.style.display = 'block'
+    },
+    onStop() {
+      // if (!background.value) return
+      // if (isOpen.value) {
+      //   background.value.style.pointerEvents = 'none'
+      //   background.value.style.display = 'none'
+      // }
+    },
+    onComplete() {
+      // if (!background.value) return
+      // if (isOpen.value) {
+      //   background.value.style.pointerEvents = 'none'
+      //   background.value.style.display = 'none'
+      // }
+    },
+  })
+})
+
+const nav = ref<HTMLElement>()
+const dragListener = ref()
+
+function preventDefault(e: Event) {
+  e.preventDefault()
+}
+
+onMounted(() => {
+  document.addEventListener('gesturestart', preventDefault)
+  document.addEventListener('gesturechange', preventDefault)
+  el.value = document.body
+
+  useEventListener(window, 'popstate', (event) => {
+    isOpen.value = !!event.state?.isPopup
+  })
+
+  if (!nav.value) return
+  dragListener.value = new DragGesture(nav.value, (state) => {
+    if (state.down) {
+      if (openAnimation.value) openAnimation.value.stop()
+      xPos.value = Math.max(0, xPos.value + (state.delta[0] / (80 / 100 * width.value)) * 100)
+    }
+    else {
+      if (xPos.value > 40) {
+        closeMenu()
+      }
+      else {
+        openAnimation.value = animate({
+          from: xPos.value,
+          to: 0,
+          type: 'spring',
+          bounce: 0,
+          onUpdate(v) {
+            xPos.value = v
+          },
+        })
+      }
+    }
+  }, {
+    preventDefault: true,
+    bounds: {
+      left: 0,
+    },
+    eventOptions: {
+      passive: false,
+    },
+  })
+})
+
+onBeforeUnmount(() => {
+  if (dragListener.value) {
+    dragListener.value.destroy()
+  }
+  document.removeEventListener('gesturestart', preventDefault)
+  document.removeEventListener('gesturechange', preventDefault)
 })
 </script>
 
@@ -92,16 +186,21 @@ const hiddenUsername = useCookie('_h_usrnme', {
       </div>
     </nav>
     <div
+      ref="background"
+      :style="{
+        opacity: (100 - xPos) / 100,
+        display: xPos === 100 ? 'none' : 'block',
+      }"
       :class="{
-        'visible opacity-100': isOpen,
-        'invisible opacity-0': !isOpen,
-      }" class="ease fixed inset-0 z-aboveNav bg-black/75 transition-[opacity,visibility] duration-300" @click="closeMenu"
+      }" class="ease fixed inset-0 z-aboveNav bg-black/75" @click="closeMenu"
     />
     <div
+      ref="nav"
+      :style="{
+        transform: `translateX(${xPos}%)`,
+      }"
       :class="{
-        'visible translate-x-0': isOpen,
-        'invisible translate-x-full': !isOpen,
-      }" class="bg-container fixed inset-y-0 right-0 z-aboveNav w-[80%] overflow-y-auto p-5 transition-[transform,visibility] duration-300"
+      }" class="bg-container fixed inset-y-0 right-0 z-aboveNav w-[80%] overflow-y-auto p-5 touch-none"
     >
       <div class="flex flex-col h-full">
         <div class="pb-5 border-b-2 border-black/10 dark:border-white/5">
