@@ -56,8 +56,11 @@ const { locale } = useI18n()
           {{ $t('upcoming_theater') }}
         </span>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+      <div v-if="data?.theater?.upcoming?.length" class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
         <TheaterUpcomingCard v-for="theater in data?.theater?.upcoming" :key="theater.id" :theater="theater" />
+      </div>
+      <div v-else class="aspect-[12/5] sm:aspect-[12/4] md:aspect-[12/3] xl:aspect-[12/2.5] flex items-center justify-center bg-container rounded-xl">
+        Tidak ada theater selanjutnya
       </div>
       <div class="flex items-center justify-between mt-5 mb-2">
         <div class="text-xl sm:text-2xl font-bold flex gap-2 items-center">
@@ -87,7 +90,7 @@ const { locale } = useI18n()
           {{ $t('other_schedule') }}
         </span>
       </div>
-      <div class="space-y-3 md:space-y-4">
+      <div class="flex flex-col gap-3 md:gap-4">
         <component :is="!event.url.startsWith('/calendar') ? NuxtLink : 'div'" v-for="event in data.other_schedule" :key="event.id" :to="event.url.startsWith('/theater/schedule/id/') ? `/theater/${$getTheaterId(event.url)}` : `${$jkt48url}${event.url}`" class="bg-container rounded-xl p-3 md:p-4 space-y-1">
           <div class="flex items-center gap-2">
             <NuxtImg
