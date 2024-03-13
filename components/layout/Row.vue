@@ -59,7 +59,7 @@ onMounted(() => {
 <template>
   <div class="flex min-h-full max-md:gap-3 max-xl:gap-4 w-full max-xl:flex-col">
     <div ref="container" class="min-xl:min-h-[100vh] relative min-w-0 flex-1 dark:border-zinc-700 xl:border-r xl:pb-20 max-md:mt-14 max-xl:mt-16">
-      <div ref="navBar" :class="{ '-translate-y-full': !navShow }" :style="{ left: `0px`, right: 0, top: 0 }" class="disable-highlight fixed z-nav h-14 md:h-16 cursor-pointer xl:sticky transition-[transform] duration-500">
+      <div ref="navBar" :class="{ '-translate-y-full': !navShow, 'left-[76px] right-0 top-0': !isMobile, 'left-0 right-0 top-0': isMobile }" class="disable-highlight fixed z-nav h-14 md:h-16 cursor-pointer xl:sticky transition-[transform] duration-500">
         <div class="bg-navbar absolute inset-0 backdrop-blur-md" />
         <LayoutRowTitle :show-back="showBack" :title="title" :sub-title="subTitle" class="z-10" @back="back" @scroll-top="scrollTop">
           <template #actionSection>
