@@ -30,20 +30,19 @@ export default defineNuxtPlugin(({ hook }) => {
     idleTime: 30000,
   })
 
-  const { start, stop: stopTimeout } = useTimeoutFn(() => {
-    start()
+  const { resume, pause } = useIntervalFn(() => {
     onLives.tryRefresh()
     if (group === 'jkt48') {
       idnLives.tryRefresh()
     }
-  }, 15000, { immediate: true })
+  }, 15000, { immediate: true, immediateCallback: true })
 
   onUnfocus(() => {
-    stopTimeout()
+    pause()
   })
 
   onFocus(() => {
-    start()
+    resume()
   })
 
   hook('app:created', () => {
