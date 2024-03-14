@@ -86,15 +86,15 @@ export default function<T> (
   async function tryRefresh(...args: unknown[]) {
     if (!isOnline.value) return
     if (!fetchData) throw new Error('Fetch function required!')
-    if (!isExpired()) {
-      pending.value = false
-      return
-    }
+    if (!isExpired()) return
+    if (!isOnline.value) return
     if (pending.value && promise.value) {
       return await promise.value
     }
-    if (!isFirstFetch.value) return
-    await refresh(...args)
+    if (!isFirstFetch.value) {
+      return
+    }
+    return await refresh(...args)
   }
 
   async function refresh(...args: unknown[]) {
@@ -106,8 +106,10 @@ export default function<T> (
       const res: T = await promise.value
       set(res)
       pending.value = false
+      promise.value = null
     }
     catch (e) {
+      promise.value = null
       pending.value = false
       error.value = true
     }

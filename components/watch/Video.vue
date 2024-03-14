@@ -121,6 +121,7 @@ useScriptTag(useAppConfig().hlsUrl, () => {
   defer: true,
 })
 
+const useWorker = ref(true)
 onMounted(() => {
   if (!createdVideo.value && typeof Hls !== 'undefined') {
     createdVideo.value = true
@@ -135,7 +136,7 @@ function createHLS(_url: string) {
     isLoading.value = true
     destroyVideo()
     hls.value = new Hls({
-      enableWorker: true,
+      enableWorker: useWorker.value,
       liveSyncDurationCount: 2,
       maxBufferSize: props.maxBufferSize ? props.maxBufferSize : 254 * 1000 * 1000,
       // maxMaxBufferLength: props.maxMaxBufferLength ? props.maxMaxBufferLength : 1800,
@@ -174,6 +175,10 @@ function createHLS(_url: string) {
             break
           default:
             console.error('cannot recover error')
+            if (useWorker.value) {
+              useWorker.value = false
+              return createHLS(url)
+            }
             reload()
             break
         }
