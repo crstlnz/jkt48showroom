@@ -30,11 +30,15 @@ export default defineNuxtPlugin(({ hook }) => {
     idleTime: 30000,
   })
 
-  const { resume, pause } = useIntervalFn(() => {
+  function tryRefreshLive() {
     onLives.tryRefresh()
     if (group === 'jkt48') {
       idnLives.tryRefresh()
     }
+  }
+
+  const { resume, pause } = useIntervalFn(() => {
+    tryRefreshLive()
   }, 15000, { immediate: true, immediateCallback: true })
 
   onUnfocus(() => {
@@ -46,17 +50,11 @@ export default defineNuxtPlugin(({ hook }) => {
   })
 
   hook('app:created', () => {
-    onLives.tryRefresh()
-    if (group === 'jkt48') {
-      idnLives.tryRefresh()
-    }
+    tryRefreshLive()
   })
 
   hook('page:start', () => { // when the page is change try refresh the state
-    onLives.tryRefresh()
-    if (group === 'jkt48') {
-      idnLives.tryRefresh()
-    }
+    tryRefreshLive()
   })
 
   const { checkAuth } = useAuth()
