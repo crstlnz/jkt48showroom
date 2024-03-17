@@ -3,7 +3,7 @@ import { useElementHover, useTimeoutFn } from '@vueuse/core'
 import type { PreviewVideo } from '#components'
 import { LazyImage } from '#components'
 
-const props = defineProps<{ live: IRoomLive }>()
+const props = defineProps<{ live: INowLive }>()
 defineEmits(['refreshliveinfo'])
 const $device = useDevice()
 const openMenu = ref(false)
@@ -21,7 +21,7 @@ const isSupported = ref(false)
 const playing = ref(false)
 const preview = ref<typeof PreviewVideo>()
 const streamingURL = computed(() => {
-  return (props.live.streaming_url_list.find(i => i.id === 3 || i.id === 4) ?? props.live.streaming_url_list[0])?.url ?? ''
+  return (props.live.streaming_url_list[0])?.url ?? ''
 })
 
 useScriptTag(useAppConfig().hlsUrl, () => {
@@ -199,7 +199,7 @@ async function refreshDate() {
         </h2>
         <div class="ext-center grid grid-cols-2 gap-2 text-sm sm:text-xs font-semibold text-white md:text-sm">
           <NuxtLink
-            :to="`/watch/${live.url}`"
+            :to="`/watch/${live.url_key}`"
             class="flex cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-red-500 p-2  hover:bg-red-600 md:px-4 md:py-2"
           >
             <Icon name="ic:round-videocam" />
@@ -207,7 +207,7 @@ async function refreshDate() {
           </NuxtLink>
           <a
             :tabindex="openMenu ? -1 : undefined"
-            :href="$liveURL(live.url)"
+            :href="$liveURL(live.url_key ?? '')"
             target="_blank"
             class="flex cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-blue-500 p-2 hover:bg-blue-600 md:px-4 md:py-2"
           >
@@ -225,7 +225,7 @@ async function refreshDate() {
           class="flex max-h-[75%] flex-col overflow-hidden overflow-y-auto text-lg [&>li]:my-3 [&>li]:cursor-pointer [&>li]:px-4 [&>li]:text-center [&>li]:font-semibold"
         >
           <li>
-            <NuxtLink :to="`/member/${live.url}`" no-prefetch>
+            <NuxtLink :to="`/member/${live.url_key}`" no-prefetch>
               Profile
             </NuxtLink>
           </li>
@@ -236,7 +236,7 @@ async function refreshDate() {
             <a
               target="_blank"
               class="twitter-share-button"
-              :href="$tweetURL(`${live.name}%20Broadcasting!%0Ahttps://www.showroom-live.com/r${live.url.startsWith('/') ? '' : '/'}${live.url}?t=${Math.floor(new Date().getTime() / 1000)}`)"
+              :href="$tweetURL(`${live.name}%20Broadcasting!%0Ahttps://www.showroom-live.com/r${live.url_key?.startsWith('/') ? '' : '/'}${live.url_key}?t=${Math.floor(new Date().getTime() / 1000)}`)"
               data-size="large"
             >
               Tweet</a>

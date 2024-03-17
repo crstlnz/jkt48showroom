@@ -1,12 +1,9 @@
 <script lang="ts" setup>
-import { useIDNLives } from '~/store/idnLives'
+import { LazyMemberIDNLiveCard, LazyMemberLiveCard } from '#components'
 import { useOnLives } from '~/store/onLives'
 
 const onLives = useOnLives()
 const { data, pending, liveCount, hasLives, error } = storeToRefs(onLives)
-
-const idnLives = useIDNLives()
-const { data: idnData, pending: idnPending, liveCount: idnCount, hasLives: idnHasLive, error: idnError } = storeToRefs(idnLives)
 </script>
 
 <template>
@@ -22,7 +19,7 @@ const { data: idnData, pending: idnPending, liveCount: idnCount, hasLives: idnHa
             </div>
           </template>
           <div
-            v-if="!data?.length && !idnData?.length"
+            v-if="!data?.length"
             class="absolute left-1/2 top-1/2 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gray-500"
           >
             <div class="aspect-square w-full rounded-full" />
@@ -41,12 +38,15 @@ const { data: idnData, pending: idnPending, liveCount: idnCount, hasLives: idnHa
       <template #fallback>
         <div class="pulse-color h-4 w-20 animate-pulse rounded-xl md:h-5" />
       </template>
-      <div v-if="(pending && idnPending) && (data == null && idnData == null)" key="loading">
+      <div
+        v-if="pending && data == null"
+        key="loading"
+      >
         <div class="pulse-color h-4 w-20 animate-pulse rounded-xl md:h-5" />
       </div>
       <div v-else key="data" class="text-xs opacity-60 md:text-sm">
-        {{ liveCount + idnCount }}
-        {{ $t("member", liveCount + idnCount) }}
+        {{ liveCount }}
+        {{ $t("member", liveCount) }}
       </div>
     </ClientOnly>
   </div>
@@ -60,34 +60,29 @@ const { data: idnData, pending: idnPending, liveCount: idnCount, hasLives: idnHa
         </div>
       </template>
       <div
-        v-if="error && idnError"
+        v-if="error"
         class="bg-container flex w-full flex-col items-center justify-center gap-2 rounded-xl pb-5 text-xs shadow-sm md:gap-3 md:text-sm xl:gap-5 xl:pb-8 xl:pt-2"
       >
         <NuxtImg class="aspect-square w-72 max-w-[70%]" :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" sizes="320px" fit="fill" />
         {{ $t("data.failed") }}
       </div>
       <div
-        v-else-if="((pending || idnPending) && !hasLives && !idnHasLive)"
+        v-else-if="pending && !hasLives"
         class="bg-container grid-live-now gap-4 rounded-xl p-4"
       >
         <PulseLiveCard />
       </div>
       <div
-        v-else-if="hasLives || idnHasLive"
+        v-else-if="hasLives"
         class="bg-container grid-live-now gap-4 rounded-xl p-4"
       >
         <ClientOnly>
           <template #fallback>
             <PulseLiveCard />
           </template>
-          <Suspense v-if="!idnError && idnData?.length">
-            <LazyMemberIDNLiveCard v-for="live in idnData" :key="live.slug" :live="live" class="bg-background" />
-            <template #fallback>
-              <PulseLiveCard v-for="num in idnData.length" :key="num" />
-            </template>
-          </Suspense>
           <Suspense v-if="!error && data?.length">
-            <LazyMemberLiveCard
+            <component
+              :is="live.type === 'showroom' ? LazyMemberLiveCard : LazyMemberIDNLiveCard"
               v-for="live in data"
               :key="live.room_id"
               class="bg-background"

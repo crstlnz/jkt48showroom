@@ -83,43 +83,48 @@ export default function<T> (
 
   const isOnline = useOnline()
   const promise = ref<Promise<T> | null>(null)
-  async function tryRefresh(...args: unknown[]) {
-    if (!isOnline.value) return
+
+  async function tryRefresh(...args: unknown[]): Promise<DataValue<T> | null> {
     if (!fetchData) throw new Error('Fetch function required!')
-    if (!isExpired()) return
-    if (!isOnline.value) return
-    if (pending.value && promise.value) {
-      return await promise.value
-    }
-    if (!isFirstFetch.value) {
-      return
-    }
+    if (!isExpired()) return data.value
+    if (!isOnline.value) return data.value
+    // if (!isFirstFetch.value) return
+
+    // console.log('REFRESH')
     return await refresh(...args)
   }
 
-  async function refresh(...args: unknown[]) {
-    isFirstFetch.value = false
+  async function refresh(...args: unknown[]): Promise<DataValue<T> | null> {
+    // isFirstFetch.value = false
     if (!fetchData) throw new Error('Fetch function required!')
+    const fetch: Promise<T> = promise.value ? promise.value : fetchData(args)
+    if (!promise.value) promise.value = fetch
     try {
       pending.value = true
-      promise.value = fetchData(args)
-      const res: T = await promise.value
-      set(res)
+      const res = await fetch
       pending.value = false
       promise.value = null
+      set(res)
+      return get(res)
     }
     catch (e) {
+      console.error(e)
       promise.value = null
       pending.value = false
       error.value = true
+      return null
+    }
+  }
+
+  function get(value: T) {
+    return {
+      data: value,
+      created_at: new Date().getTime(),
     }
   }
 
   function set(value: T) {
-    data.value = {
-      data: value,
-      created_at: new Date().getTime(),
-    }
+    data.value = get(value)
   }
 
   function clear() {

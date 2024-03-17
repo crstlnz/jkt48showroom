@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { MultiMediaControl, MultiVideo } from '#components'
-import { useIDNLives } from '~/store/idnLives'
 import { useNotifications } from '~/store/notifications'
 import { useOnLives } from '~/store/onLives'
 import { useSettings } from '~/store/settings'
@@ -141,9 +140,6 @@ const onLives = useOnLives()
 const { data } = storeToRefs(onLives)
 const { t } = useI18n()
 
-const idnLives = useIDNLives()
-const { data: idnData } = storeToRefs(idnLives)
-
 // const livesIds = computed(() => {
 //   return [...(data.value?.map(i => String(i.room_id)) || []), ...(idnData.value?.map(i => String(i.user?.id)) || [])]
 // })
@@ -165,11 +161,8 @@ const { data: idnData } = storeToRefs(idnLives)
 
 function checkLive(video: Multi.Video) {
   if (video.is_mockup) return true
-  const showroomLives = data.value ?? []
-  const idnLives = idnData.value ?? []
-  const showroomRoom = showroomLives.find(i => video.id === String(i.room_id))
-  const idnRoom = idnLives.find(i => video.id === i.user.id)
-  if (!showroomRoom && !idnRoom) {
+  const live = (data.value ?? []).find(i => video.id === `${i.type}-${i.room_id}`)
+  if (!live) {
     if (autoRemove.value) add(video) /// delete
     addNotif({
       type: 'info',
@@ -180,18 +173,10 @@ function checkLive(video: Multi.Video) {
   else {
     const oldVideo = videosMap.value.get(video.id)
     if (oldVideo) {
-      if (showroomRoom) {
-        videosMap.value.set(oldVideo.id, {
-          ...convertShowroom(showroomRoom),
-          order: oldVideo.order,
-        })
-      }
-      else if (idnRoom) {
-        videosMap.value.set(oldVideo.id, {
-          ...convertIDNLive(idnRoom),
-          order: oldVideo.order,
-        })
-      }
+      videosMap.value.set(oldVideo.id, {
+        ...(live.type === 'showroom' ? convertShowroom(live) : convertIDNLive(live)),
+        order: oldVideo.order,
+      })
     }
   }
 }

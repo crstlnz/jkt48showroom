@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
-import { useIDNLives } from '~/store/idnLives'
 import { useOnLives } from '~/store/onLives'
-import { useSettings } from '~/store/settings'
 import { convertShowroom } from '~/utils/multi'
 
 const props = defineProps<{
@@ -21,9 +19,6 @@ function select(video: Omit<Multi.Video, 'order'>) {
 const onLives = useOnLives()
 const { data, pending } = storeToRefs(onLives)
 
-const idnLives = useIDNLives()
-const { data: idnData, pending: idnPending } = storeToRefs(idnLives)
-
 const mockupVideos = [
   { src: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', title: 'Big Buck Bunny' },
   { src: 'https://cdn.jwplayer.com/manifests/pZxWPRg4.m3u8', title: 'FDR CDN 1080p' },
@@ -35,16 +30,14 @@ const mockupVideos = [
 ]
 
 const lives = computed<Omit< Multi.Video, 'order'>[]>(() => {
-  const showroomLive = data.value || []
-  const idnLives = idnData.value || []
   const result: Omit< Multi.Video, 'order'>[] = []
-
-  for (const live of showroomLive) {
-    result.push(convertShowroom(live))
-  }
-
-  for (const live of idnLives) {
-    result.push(convertIDNLive(live))
+  for (const live of (data.value || [])) {
+    if (live.type === 'showroom') {
+      result.push(convertShowroom(live))
+    }
+    else {
+      result.push(convertIDNLive(live))
+    }
   }
 
   if (isMockup.value) {
@@ -70,12 +63,7 @@ const lives = computed<Omit< Multi.Video, 'order'>[]>(() => {
   return result
 })
 
-const { group } = useSettings()
-
 function forceRefresh() {
-  if (group === 'jkt48') {
-    idnLives.refresh()
-  }
   onLives.refresh()
 }
 </script>
@@ -99,7 +87,7 @@ function forceRefresh() {
             <Icon name="ic:round-refresh" class="h-full w-full p-1" />
           </button>
         </div>
-        <div v-if="pending && idnPending" class="p-10 flex justify-center">
+        <div v-if="pending " class="p-10 flex justify-center">
           <Icon name="svg-spinners:ring-resize" size="1.7rem" />
         </div>
         <div v-else-if="lives?.length" class="flex flex-col font-bold pb-16 overflow-y-auto flex-1">

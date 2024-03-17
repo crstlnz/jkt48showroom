@@ -3,7 +3,7 @@ import { useElementHover, useTimeoutFn } from '@vueuse/core'
 import type { PreviewVideo } from '#components'
 import { LazyImage } from '#components'
 
-const props = defineProps<{ live: IDNLives }>()
+const props = defineProps<{ live: INowLive }>()
 defineEmits(['refreshliveinfo'])
 const $device = useDevice()
 const openMenu = ref(false)
@@ -15,7 +15,7 @@ const isHovered = useElementHover(hover)
 const isSupported = ref(false)
 const playing = ref(false)
 const preview = ref<typeof PreviewVideo>()
-const streamingURL = computed(() => props.live.stream_url)
+const streamingURL = computed(() => props.live.streaming_url_list?.[0].url)
 
 useScriptTag(useAppConfig().hlsUrl, () => {
   isSupported.value = Hls.isSupported()
@@ -107,7 +107,7 @@ watch(isHovered, (hovered) => {
         <Icon v-if="!openMenu" name="ph:dots-three-outline-fill" class="aspect-square text-xs text-white md:text-base" />
         <Icon v-else name="ph:x-bold" class="aspect-square text-xs md:text-base" />
       </button>
-      <NuxtLink ref="hover" :to="`/watch/${live.user.username}/idn`" :class="{ 'cursor-pointer': isSupported }" class="disable-highlight relative w-full h-full">
+      <NuxtLink ref="hover" :to="`/watch/${live.url_key}/idn`" :class="{ 'cursor-pointer': isSupported }" class="disable-highlight relative w-full h-full">
         <div :class="isHovered && !isPreview && isSupported ? 'visible opacity-100' : 'invisible opacity-0'" class="absolute bottom-10 left-3 md:bottom-11 md:left-4 z-40 rounded-md bg-black px-2 py-1 text-xs text-white dark:bg-slate-100 dark:text-black">
           Keep Hover
         </div>
@@ -125,7 +125,7 @@ watch(isHovered, (hovered) => {
                 alt="Profile Picture"
                 lazy="false"
                 class="relative h-full w-full brightness-100 transition-all duration-200"
-                :src="$fixCloudinary(live.image)"
+                :src="$fixCloudinary(live.img)"
               />
             </div>
           </div>
@@ -133,7 +133,7 @@ watch(isHovered, (hovered) => {
       </NuxtLink>
     </div>
     <div class="absolute top-0 left-0 z-20 p-3 md:p-4 pointer-events-none">
-      <NuxtLink class="pointer-events-auto" :to="$idnLiveUrl(live?.user?.username, live?.slug)" target="_blank" :external="true" no-prefetch>
+      <NuxtLink class="pointer-events-auto" :to="$idnLiveUrl(live?.url_key ?? '0', live?.slug ?? '0')" target="_blank" :external="true" no-prefetch>
         <NuxtImg src="https://upload.wikimedia.org/wikipedia/commons/b/ba/IDN_Live.svg" size="64px" class="w-16" />
       </NuxtLink>
     </div>
@@ -142,7 +142,7 @@ watch(isHovered, (hovered) => {
         <div class="shadow-bawah z-10" />
         <div class="flex gap-1.5 items-center z-20 w-full">
           <div class="text-white truncate text-sm md:text-base w-0 flex-1">
-            {{ live.user.name }}
+            {{ live.name }}
           </div>
           <!-- <div class="bg-red-500 px-1.5 rounded-sm text-xs text-white">
             IDN
@@ -159,7 +159,7 @@ watch(isHovered, (hovered) => {
         class="flex max-h-[75%] flex-col overflow-hidden overflow-y-auto text-lg [&>li]:my-3 [&>li]:cursor-pointer [&>li]:px-4 [&>li]:text-center [&>li]:font-semibold"
       >
         <li>
-          <NuxtLink :to="$idnLiveUrl(live?.user?.username, live?.slug)" target="_blank" :external="true" no-prefetch>
+          <NuxtLink :to="$idnLiveUrl(live?.url_key ?? '0', live?.slug ?? '0')" target="_blank" :external="true" no-prefetch>
             Buka di IDN
           </NuxtLink>
         </li>

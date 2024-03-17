@@ -54,18 +54,38 @@ interface IShowroomRecents {
   }
 }
 
-interface IRoomLive {
+// interface IRoomLive {
+//   name: string
+//   img: string
+//   img_alt?: string
+//   url: string
+//   room_id: number
+//   is_graduate: boolean
+//   is_group: boolean
+//   room_exists: boolean
+//   started_at: string | number
+//   streaming_url_list: ShowroomAPI.StreamingURL[]
+//   is_premium?: boolean
+// }
+interface StreamingURL {
+  label: string
+  quality: number
+  url: string
+}
+
+interface INowLive {
   name: string
   img: string
   img_alt?: string
-  url: string
+  url_key?: string
+  slug?: string
   room_id: number
   is_graduate: boolean
   is_group: boolean
-  room_exists: boolean
   started_at: string | number
-  streaming_url_list: ShowroomAPI.StreamingURL[]
+  streaming_url_list: StreamingURL[]
   is_premium?: boolean
+  type: 'idn' | 'showroom'
 }
 
 // _id: '6245e2fe1a8860fba4cdaccd',
@@ -504,24 +524,17 @@ interface IDNUser {
   avatar: string
 }
 
-interface IDNLives {
-  user: IDNUser
-  image: string
-  title: string
-  slug: string
-  view_count: number
-  live_at: string
-  stream_url: string
-}
+// interface IDNLives {
+//   user: IDNUser
+//   image: string
+//   title: string
+//   slug: string
+//   view_count: number
+//   live_at: string
+//   stream_url: string
+// }
 
-interface IDNLivesDetail {
-  user?: IDNUser
-  image?: string
-  title?: string
-  slug?: string
-  view_count?: number
-  live_at?: string
-  stream_url?: string
+interface IDNLivesDetail extends Partial<INowLive> {
   is_live: boolean
   member_info?: {
     name?: string
@@ -531,9 +544,9 @@ interface IDNLivesDetail {
   }
 }
 
-type IRoomLiveExtended = IRoomLive & { type: 'showroom' }
-type IDNLivesExtended = IRoomLive & { type: 'idn' }
-type LivesData = IRoomLiveExtended | IDNLivesExtended
+// type IRoomLiveExtended = IRoomLive & { type: 'showroom' }
+// type IDNLivesExtended = IRoomLive & { type: 'idn' }
+// type LivesData = IRoomLiveExtended | IDNLivesExtended
 interface LiveData {
   showroom: IRoomLive[]
   idn: IDNLives[]

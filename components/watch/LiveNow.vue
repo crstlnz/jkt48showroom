@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { LazyMemberIDNLiveCard, LazyMemberLiveCard } from '#components'
 import { useOnLives } from '~/store/onLives'
 
 const { roomKey } = defineProps<{
@@ -9,7 +10,7 @@ const { data: rawData, pending, error } = storeToRefs(onLives)
 
 const data = computed(() => {
   if (!rawData.value) return null
-  return rawData.value.filter(i => i.url !== roomKey)
+  return rawData.value.filter(i => i.url_key !== roomKey)
 })
 </script>
 
@@ -39,8 +40,9 @@ const data = computed(() => {
           class="bg-container grid-live-now gap-4 rounded-xl"
         >
           <Suspense>
-            <LazyMemberLiveCard
-              v-for="live in data.values()"
+            <component
+              :is="live.type === 'showroom' ? LazyMemberLiveCard : LazyMemberIDNLiveCard"
+              v-for="live in data"
               :key="live.room_id"
               class="bg-background"
               :live="live"

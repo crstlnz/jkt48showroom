@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { useIDNLives } from '~/store/idnLives'
+import { useOnLives } from '~/store/onLives'
 import { useMembers } from '~/store/members'
 
 const route = useRoute()
 // const { data, pending, error } = await useApiFetch<IDNLivesDetail>(`/api/watch/${route.params.id}/idn`)
-const { data: lives, tryRefresh: tryRefreshIdn } = useIDNLives()
-const { members, tryRefresh } = useMembers()
+const { tryRefresh } = useOnLives()
+const { members, tryRefresh: tryRefreshMember } = useMembers()
 const { data, pending, error } = await useAsyncData<IDNLivesDetail>(
   `idn-${route.params.id}`,
   async () => {
-    await tryRefresh()
-    await tryRefreshIdn()
-    const live = lives?.find(i => i.user.username === route.params.id)
+    await tryRefreshMember()
+    const lives = await tryRefresh()
+    const live = lives?.data?.find(i => i.url_key === route.params.id)
     const member = members?.find(i => i.idn_username === route.params.id)
     const member_info = member
       ? {
@@ -40,7 +40,7 @@ const { data, pending, error } = await useAsyncData<IDNLivesDetail>(
 )
 
 const title = computed(() => {
-  const name = data.value?.user?.name
+  const name = data.value?.name
   return name ? `${name} - IDN Live` : ''
 })
 
@@ -50,11 +50,11 @@ const isLandscape = computed(() => {
   return width.value >= height.value
 })
 const streamURLs = computed(() => {
-  if (!data.value?.stream_url) return []
+  if (!data.value?.streaming_url_list) return []
   return [
     {
       is_default: true,
-      url: `${data.value.stream_url}`,
+      url: `${data.value.streaming_url_list?.[0]?.url}`,
       type: 'hls',
       id: 1,
       label: 'Original',
@@ -145,7 +145,7 @@ function setVideoLandscape(val: boolean) {
           }"
         >
           <NuxtLink
-            :to="$idnLiveUrl(data?.user?.username || '', data?.slug || '')"
+            :to="$idnLiveUrl(data?.url_key || '', data?.slug || '')"
             target="_blank"
             :external="true"
             no-prefetch
@@ -160,7 +160,7 @@ function setVideoLandscape(val: boolean) {
           <div
             class="absolute right-0 top-0 px-2 md:px-3 py-1 text-base font-semibold text-white z-20 bg-black/40 rounded-xl m-3"
           >
-            {{ data?.user?.name }}
+            {{ data?.name }}
           </div>
           <Suspense>
             <template #fallback>
@@ -186,7 +186,7 @@ function setVideoLandscape(val: boolean) {
                 // 'h-[calc(100dvh_-_60px_-_28px_-_24px)]': !(videoIsLandscape && isLandscape) && isMobile,
                 // 'h-[calc(100dvh_-_28px_-_24px)] max-h-[1200px]': !(videoIsLandscape && isLandscape) && !isMobile,
               }"
-              :poster="data?.image ?? ''"
+              :poster="data?.img ?? ''"
               :sources="streamURLs"
               rotate-fill="height"
               @is-landscape="setVideoLandscape"
@@ -207,7 +207,7 @@ function setVideoLandscape(val: boolean) {
           <div class="flex justify-end pr-3 md:pr-0 w-full">
             <NuxtLink
               target="_blank"
-              :to="$idnLiveUrl(data?.user?.username || '', data?.slug || '')"
+              :to="$idnLiveUrl(data?.url_key || '', data?.slug || '')"
               class="mb-3 text-sm bg-red-500 self-end h-7 flex items-center text-white px-3 py-1 rounded-md"
             >
               {{ $t('watch_on') }} IDN
