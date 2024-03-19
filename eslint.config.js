@@ -1,3 +1,4 @@
+/* This JavaScript code snippet is configuring ESLint rules using the `@antfu/eslint-config` package. */
 import antfu from '@antfu/eslint-config'
 
 export default antfu(

@@ -136,7 +136,8 @@ function createHLS(_url: string) {
     isLoading.value = true
     destroyVideo()
     hls.value = new Hls({
-      enableWorker: useWorker.value,
+      // enableWorker: useWorker.value,
+      enableWorker: false,
       liveSyncDurationCount: 2,
       maxBufferSize: props.maxBufferSize ? props.maxBufferSize : 254 * 1000 * 1000,
       // maxMaxBufferLength: props.maxMaxBufferLength ? props.maxMaxBufferLength : 1800,
@@ -157,6 +158,7 @@ function createHLS(_url: string) {
         proxied.value = true
         return createHLS(url)
       }
+
       emit('sourceError')
       // if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
       // }
@@ -563,7 +565,7 @@ function calculateVideoSize() {
     }
     console.log('is potrait', isPortrait, originalSize.value.width, originalSize.value.height)
     if (isFullscreen.value) {
-      aspectRatio = isFullscreenLandscape ? (!isLandscape.value ? landscape : potrait) : (!isLandscape.value ? potrait : landscape)
+      aspectRatio = isFullscreenLandscape.value ? (!isLandscape.value ? landscape : potrait) : (!isLandscape.value ? potrait : landscape)
     }
     // aspectRatio = isFullscreen.value ? (isPortrait ? potrait : landscape) : (!isPortrait ? landscape : potrait)
     video.value.style.scale = `${aspectRatio}`
