@@ -138,10 +138,7 @@ const calculatedGift = computed<RecentUserGifts[]>(() => {
         </table>
       </div>
     </div>
-    <GiftInfo :gifts="data.live_info.gift.list" />
-    <LiveGiftList :gifts="data.live_info.gift.list" class="mx-3 md:mx-4" type="showroom" />
-    <HomeFans v-if="data.fans?.length" :data="data.fans" class="rounded-xl mx-3 md:mx-4" />
-
+    
     <div
       class="pulse-color col-span-2 aspect-[16/13] flex-1 overflow-hidden shadow-sm sm:mx-3 md:mx-4 sm:rounded-xl md:aspect-[16/10] lg:w-auto 2xl:aspect-[16/9]"
     >
@@ -173,6 +170,10 @@ const calculatedGift = computed<RecentUserGifts[]>(() => {
         No data
       </div>
     </div>
+    <GiftInfo :gifts="data.live_info.gift.list" />
+    <LiveGiftList :gifts="data.live_info.gift.list" class="mx-3 md:mx-4" type="showroom" />
+    <HomeFans v-if="data.fans?.length" :data="data.fans" class="rounded-xl mx-3 md:mx-4" />
+
     <div class="mx-3 md:mx-4 overflow-hidden rounded-xl bg-white shadow-sm dark:bg-dark-1">
       <LiveGiftScroll :gift-rate="data.gift_rate || 107.1" type="showroom" :gifts="calculatedGift" :page-mode="true" :data-id="data.data_id" :has-next-page="data.live_info?.gift?.next_page" :gift-list="data?.live_info?.gift?.list ?? []" />
     </div>

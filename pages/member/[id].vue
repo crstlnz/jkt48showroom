@@ -27,7 +27,7 @@ async function follow() {
     isFollow.value = !isFollow.value
     addNotif({
       type: 'success',
-      message: t(isFollow ? 'follow.following' : 'follow.unfollow', { name: data.value?.name }),
+      message: t(isFollow.value ? 'follow.following' : 'follow.unfollow', { name: data.value?.name }),
       duration: 2500,
     })
   }

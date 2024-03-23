@@ -65,8 +65,14 @@ export default defineNuxtConfig({
             'object-src': ['\'none\''],
             'script-src-attr': ['\'none\''],
             'style-src': ['\'self\'', 'https:', '\'unsafe-inline\''],
-            'script-src': ['\'self\'', 'https:', '\'unsafe-inline\'', '\'strict-dynamic\'', '\'nonce-{{nonce}}\''],
-            'upgrade-insecure-requests': false,
+            'script-src': [
+              '\'self\'', // Fallback value, will be ignored by most modern browsers (level 3)
+              'https:', // Fallback value, will be ignored by most modern browsers (level 3)
+              '\'unsafe-inline\'', // Fallback value, will be ignored by almost any browser (level 2)
+              '\'strict-dynamic\'', // Strict CSP via 'strict-dynamic', supported by most modern browsers (level 3)
+              '\'nonce-{{nonce}}\'', // Enables CSP nonce support for scripts in SSR mode, supported by almost any browser (level 2)
+            ],
+            'upgrade-insecure-requests': true,
           }
         : false,
     },

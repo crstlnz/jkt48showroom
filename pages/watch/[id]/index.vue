@@ -138,7 +138,7 @@ useHead({
 })
 
 const { pause, resume } = useIntervalFn(() => {
-  if (roomId) {
+  if (roomId.value) {
     _getPolling()
   }
 }, 120000, { immediate: false, immediateCallback: true })
@@ -203,7 +203,7 @@ const { addNotif } = useNotifications()
 const { t } = useI18n()
 
 function onStart() {
-  if (roomId) {
+  if (roomId.value) {
     _getPolling()
   }
   resume()

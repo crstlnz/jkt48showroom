@@ -48,8 +48,9 @@ export default defineNuxtPlugin(({ hook }) => {
 
   hook('page:start', () => { // when the page is change try refresh the state
     tryRefreshLive()
+    console.log('page start')
   })
 
-  const { checkAuth } = useAuth()
-  checkAuth()
+  // const { checkAuth } = useAuth()
+  // checkAuth()
 })

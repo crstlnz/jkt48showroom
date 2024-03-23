@@ -11,7 +11,6 @@ export const pwa: PwaModuleOptions = {
     theme_color: '#1e2124',
     description: 'Fanmade JKT48 Live Portal',
     orientation: 'portrait',
-    start_url: '/',
     icons: [
       {
         src: 'img/192x192-logo.png',

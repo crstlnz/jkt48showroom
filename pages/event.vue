@@ -60,7 +60,7 @@ const { locale } = useI18n()
         <TheaterUpcomingCard v-for="theater in data?.theater?.upcoming" :key="theater.id" :theater="theater" />
       </div>
       <div v-else class="aspect-[12/5] sm:aspect-[12/4] md:aspect-[12/3] xl:aspect-[12/2.5] flex items-center justify-center bg-container rounded-xl">
-        Tidak ada theater selanjutnya
+        {{ $t('no_upcoming_theater') }}
       </div>
       <div class="flex items-center justify-between mt-5 mb-2">
         <div class="text-xl sm:text-2xl font-bold flex gap-2 items-center">

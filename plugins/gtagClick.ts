@@ -9,7 +9,6 @@ export default defineNuxtPlugin((nuxtApp) => {
       }
     },
   })
-
   nuxtApp.vueApp.directive('socialClick', <Directive<HTMLElement, string>> {
     mounted(el, { value }) {
       el.onclick = () => {
