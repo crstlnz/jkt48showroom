@@ -3,7 +3,7 @@ import { LazyMemberIDNLiveCard, LazyMemberLiveCard } from '#components'
 import { useOnLives } from '~/store/onLives'
 
 const onLives = useOnLives()
-const { data, pending, liveCount, hasLives, error } = storeToRefs(onLives)
+const { data, pending, liveCount, error } = storeToRefs(onLives)
 </script>
 
 <template>
@@ -67,20 +67,20 @@ const { data, pending, liveCount, hasLives, error } = storeToRefs(onLives)
         {{ $t("data.failed") }}
       </div>
       <div
-        v-else-if="pending && !hasLives"
+        v-else-if="pending && !data?.length"
         class="bg-container grid-live-now gap-4 rounded-xl p-4"
       >
         <PulseLiveCard />
       </div>
       <div
-        v-else-if="hasLives"
+        v-else-if="data?.length"
         class="bg-container grid-live-now gap-4 rounded-xl p-4"
       >
         <ClientOnly>
           <template #fallback>
             <PulseLiveCard />
           </template>
-          <Suspense v-if="!error && data?.length">
+          <Suspense>
             <component
               :is="live.type === 'showroom' ? LazyMemberLiveCard : LazyMemberIDNLiveCard"
               v-for="live in data"

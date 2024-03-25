@@ -61,7 +61,7 @@ export default function<T> (
   const allowExpiredData = opts?.allowExpiredData ?? false
   const pending = ref(true)
   const error = ref(false)
-  const isFirstFetch = ref(true)
+  // const isFirstFetch = ref(true)
   const fetchData = opts?.fetch
   const customIsExpired = opts?.isExpired
 
@@ -84,14 +84,17 @@ export default function<T> (
   const isOnline = useOnline()
   const promise = ref<Promise<T> | null>(null)
 
-  async function tryRefresh(...args: unknown[]): Promise<DataValue<T> | null> {
+  async function tryRefreshFetch(...args: unknown[]): Promise<DataValue<T> | null> {
     if (!fetchData) throw new Error('Fetch function required!')
     if (!isExpired()) return data.value
     if (!isOnline.value) return data.value
-    // if (!isFirstFetch.value) return
-
-    // console.log('REFRESH')
     return await refresh(...args)
+  }
+
+  async function tryRefresh(...args: unknown[]): Promise<DataValue<T> | null> {
+    const data = await tryRefreshFetch(...args)
+    pending.value = false
+    return data
   }
 
   async function refresh(...args: unknown[]): Promise<DataValue<T> | null> {
