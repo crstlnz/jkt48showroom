@@ -25,7 +25,7 @@ watch(comment, () => {
 
 const loading = ref(false)
 const validForSubmit = computed(() => {
-  return !loading.value && liveId != null && props.isLive
+  return !loading.value && liveId.value != null && props.isLive
 })
 
 function submit() {
