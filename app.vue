@@ -123,6 +123,6 @@ useAuth()
         }"
       />
     </NuxtLayout>
-    <NuxtPwaManifest />
+    <!-- <NuxtPwaManifest /> -->
   </div>
 </template>

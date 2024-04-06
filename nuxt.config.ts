@@ -36,7 +36,7 @@ export default defineNuxtConfig({
   },
   watch: ['~/assets/css/tailwindcss.css'],
   modules: [
-    '@vite-pwa/nuxt',
+    // '@vite-pwa/nuxt',
     'floating-vue/nuxt',
     'nuxt-security',
     'dayjs-nuxt',
@@ -98,7 +98,7 @@ export default defineNuxtConfig({
     asyncContext: true,
     watcher: 'parcel',
   },
-  pwa: !isDev ? pwa : undefined,
+  // pwa: !isDev ? pwa : undefined,
   css: ['~/assets/css/style.scss', '~/assets/css/transition.scss'],
   colorMode: {
     preference: 'dark',
