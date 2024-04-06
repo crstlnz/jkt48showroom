@@ -122,6 +122,8 @@ useScriptTag(useAppConfig().hlsUrl, () => {
 })
 
 const useWorker = ref(true)
+const proxyServers = ref(getProxyServer())
+const proxyIndex = ref(0)
 onMounted(() => {
   if (!createdVideo.value && typeof Hls !== 'undefined') {
     createdVideo.value = true
@@ -130,7 +132,8 @@ onMounted(() => {
 })
 
 function createHLS(_url: string) {
-  const url = `${proxied.value ? useRuntimeConfig().public.proxy : ''}${_url}`
+  const url = `${proxied.value ? `${proxyServers.value[proxyIndex.value] ?? ''}` : ''}${_url}`
+  console.log(proxyIndex.value, url)
   if (Hls.isSupported()) {
     fatalError.value = 0
     isLoading.value = true
@@ -154,9 +157,15 @@ function createHLS(_url: string) {
     })
 
     hls.value.on(Hls.Events.ERROR, (event: any, data: any) => {
-      if (data.response.code === 0 && data.type === Hls.ErrorTypes.NETWORK_ERROR && !proxied.value) {
-        proxied.value = true
-        return createHLS(url)
+      if ((data.response.code === 0 || data.response.code === 403) && data.type === Hls.ErrorTypes.NETWORK_ERROR) {
+        if (!proxied.value) {
+          proxied.value = true
+          return createHLS(_url)
+        }
+        else if (proxyIndex.value < proxyServers.value.length - 1) {
+          proxyIndex.value += 1
+          return createHLS(_url)
+        }
       }
 
       emit('sourceError')
