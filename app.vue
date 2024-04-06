@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { NuxtPwaManifest } from '#components'
 import { useSettings } from '~~/store/settings'
 
 const colorMode = useColorMode()

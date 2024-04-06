@@ -5,6 +5,7 @@ defineProps<{
   redirectMsg?: string
   alt?: string
   url?: string
+  external?: boolean
 }>()
 </script>
 
@@ -19,12 +20,7 @@ defineProps<{
           {{ message }}
         </h2>
         <NuxtLink
-          class="md:text-md mt-4 inline-block text-xs hover:text-second-2 xl:text-base" :href="url ?? '/'" @click="(e) => {
-            e.preventDefault()
-            clearError({
-              redirect: url ?? '/',
-            })
-          }"
+          class="md:text-md mt-4 inline-block text-xs hover:text-second-2 xl:text-base" :external="external" :target="external ? '_blank' : ''" :href="url ?? '/'"
         >
           {{
             !redirectMsg ? $t("redirectme") : redirectMsg

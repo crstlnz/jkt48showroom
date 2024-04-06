@@ -283,7 +283,7 @@ onComment((comment) => {
 <template>
   <div class="h-full w-full pb-5 sm:pb-14 lg:px-3 lg:pb-20 lg:pt-4">
     <div v-if="isPremium">
-      <Error :message="$t('premium_live')" :alt="$t('premium_live')" :img-src="`${$cloudinaryURL}/assets/svg/web/video_files.svg`" :redirect-msg="`${$t('watch_on')} Showroom`" :url="$liveURL(String(route.params.id))" />
+      <Error :message="$t('premium_live')" :alt="$t('premium_live')" :img-src="`${$cloudinaryURL}/assets/svg/web/video_files.svg`" :redirect-msg="`${$t('watch_on')} Showroom`" :external="true" :url="$liveURL(String(route.params.id))" />
     </div>
     <div v-else-if="pending" class="h-full w-full">
       <div class="relative flex w-full flex-col gap-3 md:gap-4 lg:flex-row">
