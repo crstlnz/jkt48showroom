@@ -168,7 +168,7 @@ function toggleGen(key: string) {
             page-mode
           >
             <template #default="{ item, index, active }">
-              <DynamicScrollerItem :item="item" :active="active" :data-index="index">
+              <DynamicScrollerItem :key="item.room_id" :item="item" :active="active" :data-index="index">
                 <div class="pb-3">
                   <div class="bg-container flex gap-3 rounded-xl p-3">
                     <NuxtLink :to="`/member/${item.url}`" class="h-20 w-20 overflow-hidden rounded-full">

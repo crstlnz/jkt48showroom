@@ -133,7 +133,6 @@ onMounted(() => {
 
 function createHLS(_url: string) {
   const url = `${proxied.value ? `${proxyServers.value[proxyIndex.value] ?? ''}` : ''}${_url}`
-  console.log(proxyIndex.value, url)
   if (Hls.isSupported()) {
     fatalError.value = 0
     isLoading.value = true
@@ -157,7 +156,7 @@ function createHLS(_url: string) {
     })
 
     hls.value.on(Hls.Events.ERROR, (event: any, data: any) => {
-      if ((data.response.code === 0 || data.response.code === 403) && data.type === Hls.ErrorTypes.NETWORK_ERROR) {
+      if ((data.response.code === 0 || data.response.code === 403) && data.type === Hls.ErrorTypes.NETWORK_ERROR && !_url.includes('showroom')) {
         if (!proxied.value) {
           proxied.value = true
           return createHLS(_url)
@@ -169,9 +168,6 @@ function createHLS(_url: string) {
       }
 
       emit('sourceError')
-      // if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
-      // }
-
       startAutoReload()
       if (data.fatal) {
         switch (data.type) {

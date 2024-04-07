@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<!-- <script lang="ts" setup>
 import type { Serializer } from '@vueuse/core'
 import { useEventListener } from '@vueuse/core'
 import { useSettings } from '~~/store/settings'
@@ -235,4 +235,7 @@ function setButton(key: string) {
   transition-duration: 300ms;
   transition-timing-function: cubic-bezier(0.170, 0.795, 0.285, 1.000);
 }
-</style>
+</style> -->
+<template>
+  <div>Stats</div>
+</template>

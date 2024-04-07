@@ -237,15 +237,14 @@ async function apply() {
 
   try {
     isLoading.value = true
-    await $apiFetch('/api/admin/edit_memberdata', { method: 'POST', body: formData })
+    const res = await $apiFetch<Admin.IdolMemberWithID>('/api/admin/edit_memberdata', { method: 'POST', body: formData })
     addNotif({
       type: 'success',
       title: 'Success',
       duration: 1500,
       message: 'Data berhasil diubah',
     })
-    console.log(q)
-    emit('onUpdate', { ...props.memberData, ...q })
+    emit('onUpdate', res)
     isLoading.value = false
   }
   catch (e: any) {

@@ -8,7 +8,7 @@ definePageMeta({ middleware: 'admin' })
 const { data: stage48members, pending } = await useApiFetch<Admin.IdolMemberWithID[]>('/api/admin/stage48')
 const { data: jkt48members } = await useApiFetch<JKT48.Member[]>('/api/admin/jkt48member')
 
-const membersRaw = ref<Admin.IdolMemberWithID[]>([])
+const membersRaw = shallowRef<Admin.IdolMemberWithID[]>([])
 
 watch(stage48members, (val) => {
   membersRaw.value = val as unknown as Admin.IdolMemberWithID[]
@@ -84,9 +84,19 @@ function onUpdate(data: Admin.IdolMemberWithID) {
   // editMember.value = data
   const keys = Array.from(Object.keys(data)).filter(i => i !== 'undefined')
   if (editMember.value) {
-    for (const key of keys) {
-      (editMember.value as any)[key] = (data as any)[key]
-    }
+    if (!membersRaw.value?.length) return
+    membersRaw.value = membersRaw.value.map((i) => {
+      if (i._id === data._id) {
+        const newdata = { ...i }
+        for (const key of keys) {
+          (newdata as any)[key] = (data as any)[key]
+        }
+        return newdata
+      }
+      else {
+        return i
+      }
+    })
   }
 }
 
