@@ -341,3 +341,8 @@ export function deepCompare(obj1: any, obj2: any): boolean {
 export function getProxyServer(): string[] {
   return [...(useRuntimeConfig().public.proxy ?? '')?.split(',')?.map(i => i.trim())?.filter(i => i !== ''), `${useRuntimeConfig().public.api}/api/stream?url=`]
 }
+
+const allowed = ['twitter.com', 'x.com', 'facebook.com', 'instagram.com', 'tiktok.com', 'showroom-live.com', 'idn.media']
+export function getAllowedSocials(socials: SocialNetwork[]) {
+  return socials.filter(i => allowed.some(u => i.url?.includes(u)))
+}

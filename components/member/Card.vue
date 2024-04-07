@@ -15,9 +15,8 @@ watch(openMenu, (isOpen) => {
   }
 })
 
-const allowed = ['twitter.com', 'x.com', 'facebook.com', 'instagram.com', 'tiktok.com', 'showroom-live.com']
 const socials = computed(() => {
-  return (props.member?.socials ?? []).filter(i => allowed.some(u => i.url?.includes(u)))
+  return getAllowedSocials(props.member?.socials ?? [])
 })
 </script>
 
@@ -57,13 +56,8 @@ const socials = computed(() => {
         </div>
       </div>
     </div>
-    <div class="flex justify-center gap-3 text-xl px-5">
-      <NuxtLink v-for="[i, social] in socials.entries()" :key="i" :to="social.url" target="_blank" class="w-8 h-8 lg:h-10 lg:w-10 hover:bg-blue-400/30 transition-colors duration-300 rounded-md">
-        <Icon v-if="!social.url.includes('showroom-live')" :name="$getSocialIcon(social.url) ?? ''" class="size-full p-1 lg:p-2" />
-        <div v-else class="size-full p-0.5 lg:p-1.5">
-          <img src="/svg/showroom.svg" alt="" class="size-full rounded-md text-white">
-        </div>
-      </NuxtLink>
+    <div class="flex justify-center gap-x-3 gap-y-1 text-xl px-8 flex-wrap">
+      <SocialIcon v-for="[i, social] in socials.entries()" :key="i" :social="social" class="w-8 h-8 lg:h-10 lg:w-10 hover:bg-blue-400/30 transition-colors duration-300 rounded-md" />
     </div>
     <div class="flex flex-1 items-end">
       <NuxtLink :to="`/member/${member.url.replace('/', '')}`" class="w-full rounded-full bg-blue-500 p-3 text-center text-white">

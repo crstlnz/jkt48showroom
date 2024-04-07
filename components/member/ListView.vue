@@ -5,10 +5,6 @@ defineProps<{
   members: IMember[]
 }>()
 const config = useAppConfig()
-const allowed = ['twitter.com', 'x.com', 'facebook.com', 'instagram.com', 'tiktok.com', 'showroom-live.com']
-function getAllowedSocials(socials: SocialNetwork[]) {
-  return socials.filter(i => allowed.some(u => i.url?.includes(u)))?.slice(0, 5)
-}
 </script>
 
 <template>
@@ -43,7 +39,7 @@ function getAllowedSocials(socials: SocialNetwork[]) {
       <template #default="{ item: member, index }">
         <div :key="index" class="pb-3">
           <div class="bg-container flex gap-3 rounded-xl p-3">
-            <NuxtLink :key="member.room_id" :to="`/member/${member.url}`" class="h-20 w-20 overflow-hidden rounded-full">
+            <NuxtLink :key="member.room_id" :to="`/member/${member.url}`" class="h-20 w-20 shrink-0 overflow-hidden rounded-full">
               <NuxtImg
                 class="h-20 w-20 object-cover"
                 :src="member.img_alt ?? member.img ?? config.errorPicture"
@@ -75,12 +71,13 @@ function getAllowedSocials(socials: SocialNetwork[]) {
                   </div>
                 </div>
                 <div class="flex items-center gap-4 self-end text-base">
-                  <NuxtLink v-for="[i, social] in getAllowedSocials(member.socials ?? []).entries()" :key="i" :to="social.url" target="_blank" class="h-6 w-6 hover:bg-blue-400/30 transition-colors duration-300 rounded-md">
+                  <SocialIcon v-for="[i, social] in getAllowedSocials(member.socials ?? []).entries()" :key="i" :social="social" class="size-7 hover:bg-blue-400/30 transition-colors duration-300 rounded-md" />
+                  <!-- <NuxtLink v-for="[i, social] in getAllowedSocials(member.socials ?? []).entries()" :key="i" :to="social.url" target="_blank" class="h-6 w-6 hover:bg-blue-400/30 transition-colors duration-300 rounded-md">
                     <Icon v-if="!social.url.includes('showroom-live')" :name="$getSocialIcon(social.url) ?? ''" class="size-full p-0.5 opacity-60" />
                     <div v-else class="size-full">
                       <img src="/svg/showroom.svg" alt="" class="size-full rounded-md opacity-60">
                     </div>
-                  </NuxtLink>
+                  </NuxtLink> -->
                   <!-- <NuxtLink :to="$liveURL(member.url)" target="_blank" :aria-label="`${member.name} Live`">
                     <Icon name="ic:round-videocam" size="1.6rem" />
                   </NuxtLink>
