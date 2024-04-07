@@ -75,26 +75,26 @@ const applyProgress = ref(false)
 
 async function applyMemberData() {
   applyProgress.value = true
-  await $apiFetch('/api/admin/set_member_data', {
-    method: 'POST',
-    query: {
-      room_id: props.member?.room_id,
-      memberDataId: memberDataId.value,
-    },
-    onResponse(ctx) {
-      if (ctx.response.status) {
-        addNotif({ message: 'Success', type: 'success', duration: 1500 })
-        const data = props.stage48members?.find(i => (i as any)._id === memberDataId.value) as IdolMember & { _id: string } || null
-        if (member.value?.member_data) {
-          member.value.member_data = data
-        }
-        emit('onDismiss')
-      }
-    },
-  }).catch((e) => {
-    console.log(e)
+  try {
+    await $apiFetch('/api/admin/set_memberdata', {
+      method: 'POST',
+      query: {
+        room_id: props.member?.room_id,
+        memberDataId: memberDataId.value,
+      },
+    })
+
+    addNotif({ message: 'Success', type: 'success', duration: 1500 })
+    const data = props.stage48members?.find(i => (i as any)._id === memberDataId.value) as IdolMember & { _id: string } || null
+    if (member.value?.member_data) {
+      member.value.member_data = data
+    }
+    emit('onDismiss')
+  }
+  catch (e) {
+    console.error(e)
     addNotif({ message: 'Failed', type: 'danger', duration: 1500 })
-  })
+  }
 
   applyProgress.value = false
 }
