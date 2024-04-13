@@ -3,7 +3,7 @@ import { useSettings } from '~~/store/settings'
 
 const colorMode = useColorMode()
 const themeColor = computed(() => {
-  return (colorMode.preference === 'dark') ? '#1e2124' : '#f1f5f9'
+  return colorMode.preference === 'dark' ? '#1e2124' : '#f1f5f9'
 })
 
 const i18nHead = useLocaleHead({
@@ -31,7 +31,11 @@ useHead({
     { rel: 'icon', type: 'image/x-icon', href: getFavicon(settings.group) },
     { rel: 'canonical', href: url.href },
     { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-    { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: 'anonymous' },
+    {
+      rel: 'preconnect',
+      href: 'https://fonts.gstatic.com',
+      crossorigin: 'anonymous',
+    },
   ],
   meta: [
     ...(i18nHead.value.meta || []),
@@ -43,7 +47,11 @@ useHead({
 
 const { group } = useSettings()
 const { getGroupTitle, getMetaImage } = useAppConfig()
-const description = `A Fanmade Website for ${getGroupTitle(group)} Showroom. Discover the latest ${getGroupTitle(group)} member showroom live streams, member profile, and fans ranking!`
+const description = `A Fanmade Website for ${getGroupTitle(
+  group,
+)} Showroom. Discover the latest ${getGroupTitle(
+  group,
+)} member showroom live streams, member profile, and fans ranking!`
 useSeoMeta({
   ogTitle: () => `${getGroupTitle(group)} Showroom Log`,
   description,
@@ -83,27 +91,46 @@ if (typeof window !== 'undefined') {
 const keys = useMagicKeys({
   passive: false,
   onEventFired(e) {
-    if (e.code === 'Escape' && e.type === 'keydown' && document.activeElement?.id === 'search_shortcut') {
+    if (
+      e.code === 'Escape'
+      && e.type === 'keydown'
+      && document.activeElement?.id === 'search_shortcut'
+    ) {
       if ((document.activeElement as HTMLInputElement | null)?.value !== '') {
-        (document.activeElement as HTMLInputElement).value = '';
-        (document.activeElement as HTMLInputElement).blur()
+        ;(document.activeElement as HTMLInputElement).value = ''
+        ;(document.activeElement as HTMLInputElement).blur()
       }
     }
-    else
-      if (e.code === 'KeyK' && e.ctrlKey) {
-        e.preventDefault()
-      }
+    else if (e.code === 'KeyK' && e.ctrlKey) {
+      e.preventDefault()
+    }
   },
 })
 const shiftCtrlA = keys['Ctrl+K']
 
 watch(shiftCtrlA, (v) => {
   if (v) {
-    const input = document.querySelector('input#search_shortcut') as HTMLElement | null
+    const input = document.querySelector(
+      'input#search_shortcut',
+    ) as HTMLElement | null
     input?.focus()
   }
 })
 
+const navRect = useState<DOMRect | null>('navRect', () => null)
+const navElement = ref<HTMLElement>()
+
+onMounted(() => {
+  const el = document.querySelector('#navbar')
+  if (el) {
+    navElement.value = el as HTMLElement
+    navRect.value = el.getBoundingClientRect()
+  }
+})
+
+useEventListener(navElement, 'resize', () => {
+  navRect.value = navElement.value!.getBoundingClientRect()
+})
 // useCSRF()
 useAuth()
 </script>
