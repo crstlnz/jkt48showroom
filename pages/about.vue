@@ -28,6 +28,13 @@
         </NuxtLink>
       </p>
 
+      <div>
+        <div class="mb-3">
+          Terima kasih juga buat yang sudah donate 🙏
+        </div>
+        <SaweriaLeaderboard />
+      </div>
+
       <div class="flex flex-col gap-3 justify-between">
         <div class="text-xl mb-2 flex gap-1.5 items-center">
           <Icon name="typcn:cloud-storage" class="text-blue-500 text-2xl" /><span>Penyimpanan</span>
