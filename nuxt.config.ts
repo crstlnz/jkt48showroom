@@ -1,7 +1,7 @@
-import { pwa } from './pwa.config'
+// import { pwa } from './pwa.config'
 
 const isDev = process.env.NODE_ENV === 'development'
-console.log('API', process.env.API)
+// console.log('API', process.env.API)
 export default defineNuxtConfig({
   app: {
     head: {

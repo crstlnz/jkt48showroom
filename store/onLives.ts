@@ -29,7 +29,7 @@ export const useOnLives = defineStore('onLives', () => {
   const { addNotif } = useNotifications()
   async function getShowroomLives(): Promise<INowLive[]> {
     try {
-      return await $apiFetch<INowLive[]>(`/api/now_live`, { query: { group: settings.group } }).catch(() => [])
+      return await $apiFetch<INowLive[]>(`/api/now_live`, { query: { group: settings.group, debug: useRuntimeConfig().public.isDev } }).catch(() => [])
     }
     catch (e) {
       addNotif({
