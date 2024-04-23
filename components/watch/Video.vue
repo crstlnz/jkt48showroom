@@ -87,6 +87,7 @@ const isHoverControl = ref(false)
 const { start: autoRemoveHover, stop: stopAutoRemoveHover } = useTimeoutFn(
   () => {
     isFocusControl.value = false
+    isHoverControl.value = false
     setShowControl(false)
   },
   2500,
@@ -779,7 +780,7 @@ defineExpose({
           ? aspectRatio
           : 'h-full w-full',
       {
-        '!cursor-none': !showControl,
+        '!cursor-none': !showControl && isPlaying,
       },
     ]"
   >
@@ -947,9 +948,7 @@ defineExpose({
               v-if="!compact && isMD"
               class="flex items-center text-xs md:text-sm"
             >
-              {{
-                $dayjs.duration(currentTimeFloor, 'second').format('mm:ss')
-              }}
+              {{ $dayjs.duration(currentTimeFloor, 'second').format('mm:ss') }}
               / {{ $dayjs.duration(duration, 'second').format('mm:ss') }}
             </div>
             <button
