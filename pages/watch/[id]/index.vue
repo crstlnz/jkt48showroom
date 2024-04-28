@@ -286,11 +286,11 @@ onComment((comment) => {
       <Error :message="$t('premium_live')" :alt="$t('premium_live')" :img-src="`${$cloudinaryURL}/assets/svg/web/video_files.svg`" :redirect-msg="`${$t('watch_on')} Showroom`" :external="true" :url="$liveURL(String(route.params.id))" />
     </div>
     <div v-else-if="pending" class="h-full w-full">
-      <div class="relative flex w-full flex-col gap-3 md:gap-4 lg:flex-row">
-        <div class="flex-1 space-y-3 md:space-y-4 lg:w-auto">
+      <div class="relative flex w-full flex-col gap-3 md:gap-4 lg:flex-row h-full">
+        <div class="lg:flex-1 space-y-3 md:space-y-4 lg:w-auto">
           <div class="pulse-color aspect-video animate-pulse overflow-hidden max-lg:shadow-sm lg:rounded-xl" />
         </div>
-        <div class="relative min-h-[640px] w-full bg-white dark:bg-dark-1 max-lg:max-h-[70vh] max-lg:shadow-sm lg:w-[300px] lg:rounded-xl xl:w-[350px]">
+        <div class="relative min-h-[640px] w-full bg-white dark:bg-dark-1 max-lg:flex-1 max-lg:shadow-sm lg:w-[300px] lg:rounded-xl xl:w-[350px]">
           <div class="absolute inset-0 z-0 overflow-hidden">
             <div class="pulse-color h-full w-full animate-pulse lg:rounded-xl" />
           </div>
