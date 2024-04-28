@@ -411,8 +411,8 @@ onComment((comment) => {
           </template>
           <div class="space-y-3">
             <WatchTabButtons v-if="isLarge" :tab-view="tabView" @set-view="setView" />
-            <div class="relative h-full min-h-[640px] w-full bg-white dark:bg-dark-1 max-lg:max-h-[70vh] max-lg:shadow-sm lg:max-h-[85vh] lg:w-[300px] lg:rounded-xl xl:w-[350px]">
-              <div class="absolute inset-0 z-0 overflow-hidden rounded-xl">
+            <div class="relative h-full min-h-[640px] overflow-hidden w-full bg-white dark:bg-dark-1 max-lg:max-h-[70vh] max-lg:shadow-sm lg:max-h-[85vh] lg:w-[300px] lg:rounded-xl xl:w-[350px]">
+              <div class="absolute inset-0 z-0">
                 <WatchComment
                   v-if="tabView === 'comment'" ref="comment" :is-live="isLive" :data="data" :comments="comments" :delayed-comments="delayedComments" class="h-full w-full" @set-auto-append="(val) => setAutoAppend(val)" @create-comment="createComment" @append-delayed-comments="appendDelayedComments"
                 />

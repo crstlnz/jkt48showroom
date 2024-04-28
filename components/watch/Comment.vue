@@ -59,7 +59,7 @@ const showCommentForm = useLocalStorage('show_comment_form', true)
       <template #before>
         <div>
           <div
-            class="-z-10 border-b-2 border-slate-100/60 bg-white/90 p-3 text-xl font-bold backdrop-blur-sm dark:border-dark-2/60 dark:bg-dark-1/90 md:p-5"
+            class="border-b-2 relative -z-10  p-3 text-xl font-bold backdrop-blur-sm border-slate-100/60 bg-white/90 dark:border-dark-2/60 dark:bg-dark-1/90 md:p-5"
           >
             <div class="flex items-center gap-2" size="1.4rem">
               <Icon name="iconamoon:comment-dots-fill" />

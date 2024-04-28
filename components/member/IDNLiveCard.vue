@@ -172,7 +172,7 @@ watch(isHovered, (hovered) => {
 .shadow-bawah {
   display: block;
   position: absolute;
-  background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0, #000 100%);
+  background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0, #000 100%);
   content: '';
   top:0;
   right:0;

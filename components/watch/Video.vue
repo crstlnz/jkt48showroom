@@ -110,10 +110,6 @@ watch(y, () => {
   }
 })
 
-watch(isFocusControl, (v) => {
-  if (!isMobile) setShowControl(v)
-})
-
 const volumeSlider = ref<HTMLInputElement | null>(null)
 
 useEventListener(volumeSlider, 'input', (event) => {
@@ -126,6 +122,8 @@ function setShowControl(show: boolean) {
     autoRemoveHover()
   }
   else {
+    isFocusControl.value = false
+    isHoverControl.value = false
     stopAutoRemoveHover()
   }
   showControl.value = show
@@ -134,6 +132,7 @@ function setShowControl(show: boolean) {
 const fatalError = ref(0)
 const proxied = ref(false)
 const createdVideo = ref(false)
+
 useScriptTag(
   useAppConfig().hlsUrl,
   () => {
@@ -154,11 +153,16 @@ onMounted(() => {
   }
 })
 
+const hlsNotWork = ref(false)
+const id = useId()
+
 function createHLS(_url: string) {
+  if (!video.value) return
   const url = `${
     proxied.value ? `${proxyServers.value[proxyIndex.value] ?? ''}` : ''
   }${_url}`
-  if (Hls.isSupported()) {
+
+  if (!video.value.canPlayType('application/vnd.apple.mpegurl') && !hlsNotWork.value) {
     fatalError.value = 0
     isLoading.value = true
     destroyVideo()
@@ -198,6 +202,10 @@ function createHLS(_url: string) {
         }
       }
 
+      if (data.details === 'manifestParsingError' && !hlsNotWork.value) {
+        hlsNotWork.value = true
+        return createHLS(_url)
+      }
       emit('sourceError')
       startAutoReload()
       if (data.fatal) {
@@ -247,10 +255,10 @@ function createHLS(_url: string) {
     play()
   }
   else {
-    if (video.value) {
-      video.value?.setAttribute('src', url)
-      play()
-    }
+    console.log('USE DEFAULT PLAYER')
+    video.value.src = url
+    video.value.load()
+    play()
   }
 }
 
@@ -338,12 +346,13 @@ useEventListener(videoControl, 'pointerleave', () => {
 // })
 
 useEventListener(videoControl, 'focusin', () => {
+  if (isMobile) return
   isFocusControl.value = true
 })
 
-useEventListener(video, 'click', () => {
-  isFocusControl.value = true
-})
+// useEventListener(video, 'click', () => {
+//   isFocusControl.value = true
+// })
 
 useEventListener(videoControl, 'focusout', () => {
   isFocusControl.value = false
@@ -494,8 +503,13 @@ function videoClick() {
   if (!isMobile) {
     togglePlay()
   }
-  else if (!showControl.value) {
-    setShowControl(true)
+  else {
+    if (!showControl.value) {
+      setShowControl(true)
+    }
+    else {
+      setShowControl(false)
+    }
   }
 }
 
@@ -802,6 +816,7 @@ defineExpose({
       @click="videoClick"
     >
       <video
+        :id="id"
         ref="video"
         playsinline
         :controls="!(!useDefaultControl || enableRotate || hideControl)"
@@ -824,6 +839,7 @@ defineExpose({
       <div
         v-if="!isPlaying && !isLoading"
         class="z-10 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/50 p-1"
+        :class="{ 'pointer-events-none': !isMobile }"
         @click="
           () => {
             if (isMobile) togglePlay()
@@ -835,6 +851,7 @@ defineExpose({
       <div
         v-if="isMobile && isPlaying && showControl && !isLoading"
         class="z-10 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/50 p-1"
+        :class="{ 'pointer-events-none': !isMobile }"
         @click="togglePlay"
       >
         <Icon name="ic:round-pause" class="text-white/60" size="3rem" />
