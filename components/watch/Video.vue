@@ -162,7 +162,7 @@ function createHLS(_url: string) {
     proxied.value ? `${proxyServers.value[proxyIndex.value] ?? ''}` : ''
   }${_url}`
 
-  if (!video.value.canPlayType('application/vnd.apple.mpegurl') && !hlsNotWork.value) {
+  if (Hls.isSupported() && !hlsNotWork.value) {
     fatalError.value = 0
     isLoading.value = true
     destroyVideo()
