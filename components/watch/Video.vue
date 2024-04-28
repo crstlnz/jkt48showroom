@@ -255,7 +255,6 @@ function createHLS(_url: string) {
     play()
   }
   else {
-    console.log('USE DEFAULT PLAYER')
     video.value.src = url
     video.value.load()
     play()

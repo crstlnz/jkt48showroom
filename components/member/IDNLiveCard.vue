@@ -107,7 +107,8 @@ watch(isHovered, (hovered) => {
         <Icon v-if="!openMenu" name="ph:dots-three-outline-fill" class="aspect-square text-xs text-white md:text-base" />
         <Icon v-else name="ph:x-bold" class="aspect-square text-xs md:text-base" />
       </button>
-      <NuxtLink ref="hover" :to="$idnLiveUrl(live.url_key ?? '', live.slug ?? '')" :external="true" target="_blank" :class="{ 'cursor-pointer': isSupported }" class="disable-highlight relative w-full h-full">
+      <!-- <NuxtLink ref="hover" :to="$idnLiveUrl(live.url_key ?? '', live.slug ?? '')" :external="true" target="_blank" :class="{ 'cursor-pointer': isSupported }" class="disable-highlight relative w-full h-full"> -->
+      <NuxtLink ref="hover" :to="`/watch/${live.url_key}/idn`" :class="{ 'cursor-pointer': isSupported }" class="disable-highlight relative w-full h-full">
         <div :class="isHovered && !isPreview && isSupported ? 'visible opacity-100' : 'invisible opacity-0'" class="absolute bottom-10 left-3 md:bottom-11 md:left-4 z-40 rounded-md bg-black px-2 py-1 text-xs text-white dark:bg-slate-100 dark:text-black">
           Keep Hover
         </div>
