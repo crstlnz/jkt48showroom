@@ -128,9 +128,11 @@ onMounted(() => {
   }
 })
 
-useEventListener(navElement, 'resize', () => {
+const { width } = useElementSize(navElement)
+watch(width, () => {
   navRect.value = navElement.value!.getBoundingClientRect()
 })
+
 // useCSRF()
 useAuth()
 </script>

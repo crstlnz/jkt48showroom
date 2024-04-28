@@ -281,7 +281,7 @@ onComment((comment) => {
 </script>
 
 <template>
-  <div class="h-full w-full pb-5 sm:pb-14 lg:px-3 lg:pb-20 lg:pt-4">
+  <div class="h-full w-full lg:px-3 lg:pb-20 lg:pt-4">
     <div v-if="isPremium">
       <Error :message="$t('premium_live')" :alt="$t('premium_live')" :img-src="`${$cloudinaryURL}/assets/svg/web/video_files.svg`" :redirect-msg="`${$t('watch_on')} Showroom`" :external="true" :url="$liveURL(String(route.params.id))" />
     </div>
@@ -303,11 +303,11 @@ onComment((comment) => {
 
     <div v-else class="h-full w-full">
       <div class="relative flex min-h-full w-full flex-col gap-3 md:gap-4 lg:flex-row">
-        <div class="flex flex-1 flex-col lg:w-auto">
+        <div class="flex lg:flex-1 flex-col lg:w-auto">
           <div class="relative aspect-video overflow-hidden bg-white outline-none dark:bg-dark-1 max-lg:shadow-sm lg:rounded-xl">
             <ClientOnly>
               <div
-                v-if="telops && isLive" class="absolute inset-x-0 top-0 z-[10] bg-black/50 p-1.5 text-center text-base md:text-lg lg:text-xl"
+                v-if="telops && isLive" class="absolute inset-x-0 top-0 z-[10] bg-/50 p-1.5 text-center text-base md:text-lg lg:text-xl"
                 :style="{
                   color: `rgb(${telops.color.r}, ${telops.color.g}, ${telops.color.b})`,
                 }"
@@ -407,11 +407,11 @@ onComment((comment) => {
         </div>
         <ClientOnly>
           <template #fallback>
-            <div class="animate-pulse relative h-full min-h-[640px] w-full bg-white dark:bg-dark-1 max-lg:max-h-[70vh] max-lg:shadow-sm lg:max-h-[85vh] lg:w-[300px] lg:rounded-xl xl:w-[350px]" />
+            <div class="animate-pulse relative max-lg:flex-1 h-full min-h-[640px] w-full bg-white dark:bg-dark-1 max-lg:shadow-sm lg:max-h-[85vh] lg:w-[300px] lg:rounded-xl xl:w-[350px]" />
           </template>
-          <div class="space-y-3">
+          <div class="space-y-3 max-lg:flex-1 flex flex-col">
             <WatchTabButtons v-if="isLarge" :tab-view="tabView" @set-view="setView" />
-            <div class="relative h-full min-h-[640px] overflow-hidden w-full bg-white dark:bg-dark-1 max-lg:max-h-[70vh] max-lg:shadow-sm lg:max-h-[85vh] lg:w-[300px] lg:rounded-xl xl:w-[350px]">
+            <div class="relative h-full min-h-[640px] flex-1 overflow-hidden w-full bg-white dark:bg-dark-1 max-lg:shadow-sm lg:max-h-[85vh] lg:w-[300px] lg:rounded-xl xl:w-[350px]">
               <div class="absolute inset-0 z-0">
                 <WatchComment
                   v-if="tabView === 'comment'" ref="comment" :is-live="isLive" :data="data" :comments="comments" :delayed-comments="delayedComments" class="h-full w-full" @set-auto-append="(val) => setAutoAppend(val)" @create-comment="createComment" @append-delayed-comments="appendDelayedComments"
