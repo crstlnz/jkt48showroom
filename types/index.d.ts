@@ -566,3 +566,8 @@ declare module 'cloudinary'
 declare module 'horoscope'
 declare module 'vue-dndrop';
 declare let Hls: any
+declare let Plyr: any
+
+interface Window {
+  hls: any
+}

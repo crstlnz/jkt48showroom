@@ -5,8 +5,13 @@ definePageMeta({
   layout: 'sorter',
 })
 
-const membersStore = await useMembers()
+const membersStore = useMembers()
 const { members, pending, error } = storeToRefs(membersStore)
+
+onMounted(() => {
+  membersStore.tryRefresh()
+})
+
 const data = computed<ISortMember[]>(() => {
   return members.value?.map<ISortMember>((i) => {
     return {
