@@ -76,7 +76,7 @@ useHead({
               <span v-if="data.shows.length > 1" class="bg-red-500 py-0.5 px-1.5 rounded-md">
                 Show {{ idx + 1 }}
               </span>
-              <div class="flex gap-3">
+              <div class="flex gap-3 items-center">
                 <h3 class="text-xl">
                   {{ theater.title }}
                 </h3>
@@ -89,6 +89,7 @@ useHead({
                   width="56px"
                   format="webp"
                 />
+                <AdminEditTheaterButton :theater-data="theater" />
               </div>
 
               <div class="font-light opacity-90">

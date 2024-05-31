@@ -1,4 +1,4 @@
-import { FormArrayObject, FormArrayString, FormDate, FormNumber, FormSelect, FormSelectMultiple, FormText, FormTextArea } from '#components'
+import { FormArrayObject, FormArrayString, FormDate, FormMemberSelect, FormNumber, FormSelect, FormSelectMultiple, FormText, FormTextArea } from '#components'
 
 export function getForm(formName: string) {
   switch (formName) {
@@ -29,6 +29,10 @@ export function getForm(formName: string) {
     case 'date' :{
       return FormDate
     }
+
+    // case 'member-select' : {
+    //   return FormMemberSelect
+    // }
 
     default : {
       return FormText

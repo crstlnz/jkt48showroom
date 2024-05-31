@@ -7,14 +7,6 @@ export function useAuth() {
   const pending = useState('authPending', () => process.client ? payload?.data?.auth?.pending ?? true : false)
   const error = useState('authError', () => process.client ? (payload?.data?.auth?.error ? Error(payload?.data?.auth?.error) : null) : null)
 
-  const status = computed<StatusLogin>(() => {
-    if (pending.value) return 'loading'
-    if (!data.value || error.value) return 'unauthenticated'
-    return 'authenticated'
-  })
-
-  const authenticated = computed(() => status.value === 'authenticated')
-
   if (process.server && payload) {
     nuxtApp.payload.data.auth = {
       user: null,
@@ -22,6 +14,14 @@ export function useAuth() {
       error: null,
     }
   }
+
+  const status = computed<StatusLogin>(() => {
+    if (pending.value) return 'loading'
+    if (!data.value || error.value) return 'unauthenticated'
+    return 'authenticated'
+  })
+
+  const authenticated = computed(() => status.value === 'authenticated')
 
   async function checkAuthOnServer() {
     if (process.client) return

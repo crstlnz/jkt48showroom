@@ -2,18 +2,18 @@ declare namespace Admin {
   interface FormBasic {
     title: string
     id: string
-    component: string
+    component?: string
   }
 
   interface FormText extends FormBasic {
     placeholder?: string
     data: string
-    check: (data: string) => boolean
+    check: (data: string | string[]) => boolean
   }
 
   interface FormArrayText extends FormBasic {
     data: string[]
-    check: (data: string[]) => boolean
+    check: (data: string | string[]) => boolean
   }
 
   interface FormSelect extends FormBasic {
@@ -22,7 +22,7 @@ declare namespace Admin {
       title: string
       value: string
     }[]
-    check: (data: string) => boolean
+    check: (data: string | string[]) => boolean
   }
 
   interface FormMultipleSelect extends FormBasic {
@@ -31,10 +31,10 @@ declare namespace Admin {
       title: string
       value: string
     }[]
-    check: (data: string[]) => boolean
+    check: (data: string | string[]) => boolean
   }
 
-  type Form = FormSelect | FormArrayText | FormSelect | FormMultipleSelect
+  type Form = FormText | FormSelect | FormArrayText | FormSelect | FormMultipleSelect
 
   type I48Member = Database.I48Member & { _id: string | null }
   type IdolMemberWithID = IdolMember & { _id: string | null }

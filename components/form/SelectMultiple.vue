@@ -62,6 +62,8 @@ const filteredData = computed(() => {
 watch(selectedId, (id) => {
   add(id)
   query.value = ''
+  const inputEl = input.value?.$el
+  if (inputEl) inputEl.value = ''
 })
 </script>
 
