@@ -3,6 +3,12 @@ import ExpiredSerializer from '~~/library/serializer/expired'
 
 export const useSettings = defineStore('settings', () => {
   // const { status } = useAuth()
+  const version = ref('')
+
+  function setVersion(ver: string) {
+    version.value = ver
+  }
+
   const status = ref(null)
   const domain = ref('')
   const csrfToken = ref('')
@@ -65,7 +71,7 @@ export const useSettings = defineStore('settings', () => {
   watch(() => route.fullPath, (p) => {
     path.value = p
   })
-  return { domain, setDomain, currentURL, getWebTitle, group, csrfToken, firstDate, session: skipHydrate(session) }
+  return { domain, version, setVersion, setDomain, currentURL, getWebTitle, group, csrfToken, firstDate, session: skipHydrate(session) }
 })
 
 if (import.meta.hot) {
