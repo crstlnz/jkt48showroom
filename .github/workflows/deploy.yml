@@ -28,4 +28,4 @@ jobs:
           org-id: ${{ vars.VERCEL_ORG_ID }}
           project-id: ${{ vars.VERCEL_PROJECT_ID }}
           production: ${{ github.ref == 'refs/heads/master' }}
-          # prebuilt: true # If set to true, build will be performed using GitHub Actions.
+          prebuilt: true # If set to true, build will be performed using GitHub Actions.
