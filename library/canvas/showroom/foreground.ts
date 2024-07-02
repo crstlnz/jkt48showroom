@@ -3,7 +3,7 @@ import CanvasUtil from './canvasUtil'
 class ShowroomForeground extends CanvasUtil {
   foreground?: HTMLImageElement | ImageBitmap | null
 
-  inject(canvas: HTMLCanvasElement) {
+  override inject(canvas: HTMLCanvasElement) {
     super.inject(canvas)
     if (this.ctx) this.ctx.globalAlpha = 0.9
     this.loadForeground(
@@ -26,7 +26,7 @@ class ShowroomForeground extends CanvasUtil {
     }
   }
 
-  draw(_time?: number): void {
+  override draw(_time?: number): void {
     this.drawForeground()
   }
 }

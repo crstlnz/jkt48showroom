@@ -461,6 +461,7 @@ async function play() {
       await video.value.play()
     }
     catch (e) {
+      console.error(e)
       if (errorPlayCount.value > 5) return
       errorPlayCount.value += 1
       await nextTick(async () => {
@@ -579,11 +580,6 @@ function checkMute() {
   return video.value?.getAttribute('prop')
 }
 
-useEventListener(video, 'volumechange', (event) => {
-  isMuted.value = (event.target as HTMLVideoElement)?.muted
-  volume.value = (event.target as HTMLVideoElement)?.volume || 0
-})
-
 const volumeIcon = computed(() => {
   if (!isMuted.value && volume.value >= 0.5) {
     return 'ic:round-volume-up'
@@ -693,6 +689,9 @@ useEventListener(video, 'playing', () => {
 useEventListener(video, 'stalled', () => {
   isLoading.value = true
 })
+useEventListener(video, 'waiting', () => {
+  isLoading.value = true
+})
 useEventListener(video, 'durationchange', () => {
   duration.value = video.value?.duration || 0
 })
@@ -702,6 +701,11 @@ useEventListener(video, 'timeupdate', () => {
 })
 useEventListener(video, 'loadstart', () => {
   isLoading.value = true
+})
+
+useEventListener(video, 'volumechange', (event) => {
+  isMuted.value = (event.target as HTMLVideoElement)?.muted
+  volume.value = (event.target as HTMLVideoElement)?.volume || 0
 })
 
 function checkBuiltInFullscreen() {

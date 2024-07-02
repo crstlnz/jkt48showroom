@@ -31,7 +31,7 @@ class CookieParser extends Map<string, CookieObject> {
     return [...this.values()]
   }
 
-  toString() {
+  override toString() {
     return this.serializeCookie(this.toArray())
   }
 

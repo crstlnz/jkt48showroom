@@ -1,7 +1,4 @@
-// import { pwa } from './pwa.config'
-
 const isDev = process.env.NODE_ENV === 'development'
-// console.log('API', process.env.API)
 export default defineNuxtConfig({
   app: {
     head: {
@@ -36,12 +33,11 @@ export default defineNuxtConfig({
   },
   watch: ['~/assets/css/tailwindcss.css'],
   modules: [
-    // '@vite-pwa/nuxt',
     'floating-vue/nuxt',
     'nuxt-security',
     'dayjs-nuxt',
     '@nuxtjs/device',
-    'nuxt-icon',
+    '@nuxt/icon',
     '@nuxtjs/tailwindcss',
     '@nuxtjs/color-mode',
     '@vueuse/nuxt',
@@ -50,6 +46,9 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxt/fonts',
   ],
+  icon: {
+    mode: 'svg',
+  },
   security: {
     nonce: !isDev,
     headers: {
@@ -99,7 +98,7 @@ export default defineNuxtConfig({
     watcher: 'parcel',
   },
   // pwa: !isDev ? pwa : undefined,
-  css: ['~/assets/css/style.scss', '~/assets/css/transition.scss'],
+  css: ['~/assets/css/style.scss', '~/assets/css/transition.scss', '~/assets/css/tailwindcss.css'],
   colorMode: {
     preference: 'dark',
     fallback: 'light',

@@ -71,13 +71,13 @@ class StageShowroom extends CanvasUtil {
     this.fansRanks?.set(fans)
   }
 
-  inject(canvas: HTMLCanvasElement): void {
+  override inject(canvas: HTMLCanvasElement): void {
     super.inject(canvas)
     this.fansRanks = new FansRankings(this)
     this.requestDraw()
   }
 
-  draw(time = 0) {
+  override draw(time = 0) {
     this.clear()
     this.setDeltaTime(time)
     if (this.fansRanks) this.fansRanks.draw(this.deltaTime)

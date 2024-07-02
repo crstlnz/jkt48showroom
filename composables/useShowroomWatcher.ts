@@ -4,7 +4,7 @@ export default function (data: Ref<Watch.WatchData | null>) {
   const comment = createEventHook<Watch.Comment>()
   const isLive = createEventHook<boolean>()
   const gift = createEventHook<ShowroomAPI.GiftLogItem>()
-  const onTelops = createEventHook<Watch.Telops | null>()
+  const onTelops = createEventHook<Watch.Telops[]>()
 
   onMounted(() => {
     watch(data, () => {
@@ -44,26 +44,20 @@ export default function (data: Ref<Watch.WatchData | null>) {
         }
         else if (code === 8) { // telop start
           try {
-            const telopsData = msg.telops[0]
-            if (telopsData) {
-              onTelops.trigger({
-                color: telopsData.color,
-                text: telopsData.text,
-                live_id: telopsData.live_id,
-                type: telopsData.type,
-              })
-            }
-            else {
-              onTelops.trigger(null)
-            }
+            onTelops.trigger(msg.telops.map((i: any) => ({
+              color: i.color,
+              text: i.text,
+              live_id: i.live_id,
+              type: i.type,
+            })))
           }
           catch (e) {
             console.error(e)
-            onTelops.trigger(null)
+            onTelops.trigger([])
           }
         }
         else if (code === 9) { // telop stop
-          onTelops.trigger(null)
+          onTelops.trigger([])
         }
         else if (code === 2) {
           gift.trigger(

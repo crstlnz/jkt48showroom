@@ -3,6 +3,12 @@
 @tailwind utilities;
 // @import url("https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600;700&display=swap");
 
+@layer base {
+  .background {
+    @apply bg-slate-100 dark:bg-dark-2;
+  }
+}
+
 html {
   padding: 0 !important;
   overflow: initial !important;

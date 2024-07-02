@@ -51,7 +51,7 @@ class ShowroomBackground extends CanvasUtil {
     this.podiumGifts = []
   }
 
-  inject(canvas: HTMLCanvasElement) {
+  override inject(canvas: HTMLCanvasElement) {
     super.inject(canvas)
     this.giftAreaSize = {
       width: (this.canvas?.width ?? 0) * 0.34,
@@ -122,7 +122,7 @@ class ShowroomBackground extends CanvasUtil {
     if (this.background && this.ctx) this.ctx.drawImage(this.background, 0, 0, this.width, this.height)
   }
 
-  draw(_time?: number): void {
+  override draw(_time?: number): void {
     this.clear()
     this.screenshots.draw()
     this.drawBackground()

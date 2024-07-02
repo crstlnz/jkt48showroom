@@ -139,6 +139,7 @@ useAuth()
 
 <template>
   <div>
+    <NuxtLoadingIndicator />
     <Dialog />
     <LiveUserDraggable />
     <NotificationView />

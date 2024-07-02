@@ -98,7 +98,7 @@ function forceRefresh() {
         </div>
       </PopoverPanel>
     </Transition>
-    <PopoverButton aria-label="Setting" class="absolute bottom-0 right-0 rounded-full z-[1000] p-1 w-12 h-12 2xl:w-14 2xl:h-14 bg-red-500 hover:bg-red-600 text-white">
+    <PopoverButton aria-label="Setting" class="absolute bottom-0 right-0 rounded-full z-[1000] flex items-center justify-center w-12 h-12 2xl:w-14 2xl:h-14 bg-red-500 hover:bg-red-600 text-white">
       <Icon name="streamline:live-video-solid" size="2rem" />
     </PopoverButton>
   </Popover>

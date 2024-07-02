@@ -167,19 +167,16 @@ watch(data, (val) => {
   immediate: true,
 })
 
-const telops = ref<Watch.Telops | null>(null)
+const telops = ref<Watch.Telops[]>([])
 async function fetchTelops() {
   try {
     const data = await $apiFetch<Watch.TelopApi>(`${config.public.api}/api/showroom/telop?room_id=${roomId.value}`)
-    const tel = data.telops[0]
-    if (tel) {
-      telops.value = {
-        color: tel.color,
-        text: tel.text,
-        type: tel.type,
-        live_id: tel.live_id,
-      }
-    }
+    telops.value = data.telops.map(i => ({
+      color: i.color,
+      text: i.text,
+      type: i.type,
+      live_id: i.live_id,
+    }))
   }
   catch (e) {
     console.error(e)
@@ -265,9 +262,10 @@ onLiveState((isLive: boolean) => {
   }
 })
 
-onTelops((t: Watch.Telops | null) => {
+onTelops((t: Watch.Telops[]) => {
   telops.value = t
 })
+
 const { comments, delayedComments, appendComment, createComment, appendDelayedComments, setAutoAppend, stopAutoAppend } = useShowroomComments(data)
 
 onGift((gift: ShowroomAPI.GiftLogItem) => {
@@ -277,6 +275,27 @@ onGift((gift: ShowroomAPI.GiftLogItem) => {
 onComment((comment) => {
   if (user.value?.id === comment.user_id) return
   appendComment(comment)
+})
+
+const telop = ref<Watch.Telops | null>(null)
+const telopIndex = ref(0)
+const { resume: resumeTelop, pause: pauseTelop } = useIntervalFn(() => {
+  telopIndex.value += 1
+  telop.value = telops.value?.[telopIndex.value % telops.value.length]
+}, 10000, {
+  immediate: false,
+  immediateCallback: false,
+})
+
+watch(telops, (v) => {
+  telopIndex.value = 0
+  telop.value = v?.[telopIndex.value]
+  if (v.length > 1) {
+    resumeTelop()
+  }
+  else {
+    pauseTelop()
+  }
 })
 </script>
 
@@ -307,12 +326,20 @@ onComment((comment) => {
           <div class="relative aspect-video overflow-hidden bg-white outline-none dark:bg-dark-1 max-lg:shadow-sm lg:rounded-xl">
             <ClientOnly>
               <div
-                v-if="telops && isLive" class="absolute inset-x-0 top-0 z-[10] bg-/50 p-1.5 text-center text-base md:text-lg lg:text-xl"
-                :style="{
-                  color: `rgb(${telops.color.r}, ${telops.color.g}, ${telops.color.b})`,
-                }"
+                v-if="telop && isLive" class="absolute inset-x-0 top-0 z-[10] bg-black/50 p-1.5 text-center text-base md:text-lg lg:text-xl"
               >
-                {{ telops.text }}
+                <div class="relative inset-0">
+                  <Transition name="telop">
+                    <div
+                      :key="telop.text"
+                      :style="{
+                        color: `rgb(${telop.color.r}, ${telop.color.g}, ${telop.color.b})`,
+                      }"
+                    >
+                      {{ telop.text }}
+                    </div>
+                  </Transition>
+                </div>
               </div>
               <div v-if="!isLive" class="flex h-full w-full items-center justify-center">
                 <div class="space-y-4 md:space-y-6 lg:space-y-10">
@@ -324,7 +351,8 @@ onComment((comment) => {
               </div>
 
               <Suspense v-else>
-                <LazyWatchVideo
+                <LazyVideoPlayer :poster="data?.image ?? ''" :sources="(data?.streaming_url_list ?? []).filter(i => i.type === 'hls')" />
+                <!-- <LazyWatchVideo
                   ref="video"
                   :poster="data?.image ?? ''"
                   :sources="data?.streaming_url_list ?? []"
@@ -332,7 +360,7 @@ onComment((comment) => {
                   @fullsceen="(isFullscreen) => {
                     if (isFullscreen && comment) stopAutoAppend()
                   }"
-                />
+                /> -->
               </Suspense>
             </ClientOnly>
           </div>
@@ -344,7 +372,7 @@ onComment((comment) => {
               <div class="truncate max-lg:flex-1" :title="data?.name">
                 {{ data?.name }}
               </div>
-              <span class="shrink-0 space-x-1 rounded-lg bg-red-500 px-1.5 py-1 text-sm text-slate-50">
+              <span class="shrink-0 flex items-center space-x-1 rounded-lg bg-red-500 px-1.5 py-1 text-sm text-slate-50">
                 <Icon name="mingcute:user-3-fill" />
                 <span>{{ $n(viewers) }}</span>
               </span>

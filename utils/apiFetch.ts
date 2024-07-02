@@ -8,8 +8,9 @@ const fetcher = ofetch.create({
 })
 
 export async function $apiFetch<T>(request: RequestInfo, options?: FetchOptions<'json'> | undefined): Promise<T> {
-  const nuxtApp = useNuxtApp()
-  return nuxtApp.runWithContext(async () => {
+  const nuxtApp = tryUseNuxtApp()
+
+  const fetch = async () => {
     const config = useRuntimeConfig()
     const opts: FetchOptions<'json'> = {
       baseURL: config.public.api,
@@ -24,13 +25,13 @@ export async function $apiFetch<T>(request: RequestInfo, options?: FetchOptions<
       ...opts,
       onResponse(ctx) {
         if (onResponse) onResponse(ctx)
-        if (process.server) {
+        if (import.meta.server) {
           setCookie(ctx.response.headers)
         }
       },
       onRequest(ctx) {
         if (onRequest) onRequest(ctx)
-        if (process.server) {
+        if (import.meta.server) {
           ctx.options.headers = getHeaders()
         }
         else {
@@ -45,5 +46,12 @@ export async function $apiFetch<T>(request: RequestInfo, options?: FetchOptions<
       },
     })
     return res._data as T
-  })
+  }
+
+  if (nuxtApp) {
+    return nuxtApp.runWithContext(fetch)
+  }
+  else {
+    return fetch()
+  }
 }

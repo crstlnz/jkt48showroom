@@ -1,7 +1,8 @@
 /** @type {import('tailwindcss').Config} */
-import { readFileSync } from 'node:fs'
-import postcss from 'postcss'
-import postcssJs from 'postcss-js'
+// import { readFileSync } from 'node:fs'
+// import postcss from 'postcss'
+// import postcssJs from 'postcss-js'
+import headlessPlugin from '@headlessui/tailwindcss'
 
 module.exports = {
   content: ['components/**/*.{vue,js}', 'layouts/**/*.vue', 'pages/**/*.vue', 'assets/css/*.{scss,css}'],
@@ -32,21 +33,21 @@ module.exports = {
     },
   },
   plugins: [
-    require('@headlessui/tailwindcss'),
-    ({ addBase, addComponents, addUtilities }) => {
-      const css = readFileSync('./assets/css/tailwindcss.css', 'utf8')
-      const root = postcss.parse(css)
-      const jss = postcssJs.objectify(root)
+    headlessPlugin,
+    //   ({ addBase, addComponents, addUtilities }: any) => {
+    //     const css = readFileSync('./assets/css/tailwindcss.css', 'utf8')
+    //     const root = postcss.parse(css)
+    //     const jss = postcssJs.objectify(root)
 
-      if ('@layer base' in jss) {
-        addBase(jss['@layer base'])
-      }
-      if ('@layer components' in jss) {
-        addComponents(jss['@layer components'])
-      }
-      if ('@layer utilities' in jss) {
-        addUtilities(jss['@layer utilities'])
-      }
-    },
+  //     if ('@layer base' in jss) {
+  //       addBase(jss['@layer base'])
+  //     }
+  //     if ('@layer components' in jss) {
+  //       addComponents(jss['@layer components'])
+  //     }
+  //     if ('@layer utilities' in jss) {
+  //       addUtilities(jss['@layer utilities'])
+  //     }
+  //   },
   ],
 }

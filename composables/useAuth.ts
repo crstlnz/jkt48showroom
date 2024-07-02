@@ -4,10 +4,10 @@ export function useAuth() {
   const nuxtApp = tryUseNuxtApp()
   const payload = nuxtApp?.payload
   const data = useState<ShowroomLogin.User | null>('authUser', () => process.client ? payload?.data?.auth?.user || null : null)
-  const pending = useState('authPending', () => process.client ? payload?.data?.auth?.pending ?? true : false)
-  const error = useState('authError', () => process.client ? (payload?.data?.auth?.error ? Error(payload?.data?.auth?.error) : null) : null)
+  const pending = useState('authPending', () => import.meta.client ? payload?.data?.auth?.pending ?? true : false)
+  const error = useState('authError', () => import.meta.client ? (payload?.data?.auth?.error ? new Error(payload?.data?.auth?.error) : null) : null)
 
-  if (process.server && payload) {
+  if (import.meta.server && payload) {
     nuxtApp.payload.data.auth = {
       user: null,
       pending: false,
@@ -24,7 +24,7 @@ export function useAuth() {
   const authenticated = computed(() => status.value === 'authenticated')
 
   async function checkAuthOnServer() {
-    if (process.client) return
+    if (import.meta.server) return
     const event = useRequestEvent()
     const cookie = event?.headers?.get('Cookie')
     if (payload) payload.data.auth.pending = true
@@ -43,7 +43,7 @@ export function useAuth() {
   }
 
   async function checkAuthOnClient() {
-    if (process.server) return
+    if (import.meta.server) return
     if (authenticated.value) return
     const cookie = document.cookie
     if (!cookie.includes('_st=') && !cookie?.includes('_rt=')) return
@@ -70,7 +70,7 @@ export function useAuth() {
   }
 
   async function checkAuth() {
-    if (process.server) {
+    if (import.meta.server) {
       await checkAuthOnServer()
     }
     else {
@@ -79,7 +79,7 @@ export function useAuth() {
   }
 
   async function signIn(body: URLSearchParams) {
-    if (process.server) throw new Error('No ssr login!')
+    if (import.meta.server) throw new Error('No ssr login!')
     await $apiFetch('/api/auth/login', {
       body,
       method: 'POST',

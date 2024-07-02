@@ -13,7 +13,7 @@ export default function () {
       if (app?.ssrContext && cookies?.length) {
         if (!app.ssrContext.newCookie) app.ssrContext.newCookie = new CookieParser()
         for (const cookie of cookies) {
-          app.ssrContext.newCookie.addCookies(cookie)
+          (app.ssrContext.newCookie as any).addCookies(cookie)
         }
       }
 

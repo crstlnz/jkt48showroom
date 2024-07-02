@@ -13,9 +13,7 @@
     text-shadow: 0px 0px 5px rgba(0, 0, 0, 1);
   }
 
-  .background {
-    @apply bg-slate-100 dark:bg-dark-2;
-  }
+ 
   .bg-background {
     @apply bg-slate-100 dark:bg-dark-2;
   }
