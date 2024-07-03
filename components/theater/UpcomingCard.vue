@@ -44,7 +44,7 @@ const { locale } = useI18n()
           {{ $dayjs(theater.date).locale(locale).format("DD MMMM YYYY") }}
         </div>
       </div>
-      <div class="text-sm bg-blue-500 text-white px-2.5 rounded-xl py-1 self-start">
+      <div class="text-sm bg-blue-500 text-white px-2.5 rounded-xl py-1 self-start whitespace-nowrap">
         {{ $t('member_count', { count: theater.member_count }) }}
       </div>
     </div>

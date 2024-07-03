@@ -19,16 +19,8 @@ jobs:
       statuses: write
       pull-requests: write
 
-    env:
-      NODE_OPTIONS: --max_old_space_size=4096
     steps:
       - uses: actions/checkout@v3
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - uses: pnpm/action-setup@v4
 
       - uses: nexterias/actions-vercel@v1
         with:
