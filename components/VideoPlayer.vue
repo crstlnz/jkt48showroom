@@ -96,44 +96,46 @@ function createQuality() {
 }
 
 function createRefreshButton(player: any) {
-  const downloadButton = document.createElement('button')
-  downloadButton.classList.add('plyr__control')
-  downloadButton.innerHTML = '<svg role="presentation" focusable="false"><use xlink:href="#plyr-restart"></use></svg>'
-  downloadButton.addEventListener('click', () => {
+  const refreshButton = document.createElement('button')
+  refreshButton.classList.add('plyr__control')
+  refreshButton.innerHTML = '<svg role="presentation" focusable="false"><use xlink:href="#plyr-restart"></use></svg>'
+  refreshButton.addEventListener('click', () => {
     createHls()
   })
 
   const controls = player.elements.controls
-  const fullscreenButton = controls.querySelector('.plyr__control[data-plyr=\'fullscreen\']')
-  controls.insertBefore(downloadButton, fullscreenButton)
+  const settingButton = controls.querySelector('.plyr__control[data-plyr=\'settings\']')
+  // controls.insertBefore(refreshButton, settingButton.nextSibling)
+  settingButton.insertAdjacentElement('afterend', refreshButton)
 }
 
 function createRotateButton(player: any) {
-  const downloadButton = document.createElement('button')
-  downloadButton.classList.add('plyr__control')
-  downloadButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="#ffffff" d="M4 2h3a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2m16 13a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-9v-7zM14 4a8 8 0 0 1 8 8l-.06 1h-2.02l.08-1a6 6 0 0 0-6-6v3l-4-4l4-4z"/></svg>'
-  downloadButton.addEventListener('click', () => {
+  const rotateButton = document.createElement('button')
+  rotateButton.classList.add('plyr__control')
+  rotateButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="#ffffff" d="M4 2h3a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2m16 13a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-9v-7zM14 4a8 8 0 0 1 8 8l-.06 1h-2.02l.08-1a6 6 0 0 0-6-6v3l-4-4l4-4z"/></svg>'
+  rotateButton.addEventListener('click', () => {
     rotate()
   })
 
   // Insert the download button before the fullscreen button
   const controls = player.elements.controls
-  const fullscreenButton = controls.querySelector('.plyr__control[data-plyr=\'fullscreen\']')
-  controls.insertBefore(downloadButton, fullscreenButton)
+  const settingButton = controls.querySelector('.plyr__control[data-plyr=\'settings\']')
+  settingButton.insertAdjacentElement('afterend', rotateButton)
+  // controls.insertBefore(rotateButton, settingButton.nextSibling)
 }
 
 function createVideoPlayer() {
   if (!video.value) return
   const defaultOptions: Record<string, any> = {
     controls: [
+      'progress', // The progress bar and scrubber for playback and buffering
       'play-large', // The large play button in the center
       'play', // Play/pause playback
       'fast-forward', // Fast forward by the seek time (default 10 seconds)
-      'progress', // The progress bar and scrubber for playback and buffering
-      'current-time', // The current time of playback
-      'duration', // The full duration of the media
       'mute', // Toggle mute
       'volume', // Volume control
+      'current-time', // The current time of playback
+      'duration', // The full duration of the media
       'settings', // Settings menu
       'pip', // Picture-in-picture (currently Safari only)
       'airplay', // Airplay (currently Safari only)
@@ -176,8 +178,8 @@ function createVideoPlayer() {
     }
   })
 
-  if (!isMobile) { createRefreshButton(player.value) }
   if (isRotateFeatureEnabled.value) { createRotateButton(player.value) }
+  if (!isMobile) { createRefreshButton(player.value) }
   createHls()
 }
 
@@ -185,7 +187,6 @@ function createHls() {
   if (!video.value) return
   if (window.hls) window.hls.destroy()
   const source = currentSource.value
-  console.log(source)
 
   // if (source.type === 'hls') {
   if (!Hls.isSupported()) {
@@ -249,7 +250,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div ref="wrapper" class="x-video-wrapper rotate [&>video]:transform [&>video]:duration-500">
+  <div ref="wrapper" class="x-video-wrapper rotate [&_video]:transform [&_video]:duration-[400ms] ease-out">
     <video :id="id" ref="video" :poster="poster" class="size-full" />
   </div>
 </template>
@@ -262,10 +263,28 @@ onMounted(async () => {
 }
 
 .x-video-wrapper {
-  .plyr__video-wrapper{
-      video {
-         transition: 0.7s ease-out
+  .plyr__progress input[type=range], .plyr__progress__buffer {
+      border-radius: 0px !important;
+  }
+
+  .plyr__progress__container{
+      @apply absolute w-full inset-x-0 left-0 right-0 top-1/2 -translate-y-[calc(50%_+_14px)];
+
+      input,progress {
+        border-radius: 0px !important
       }
+
+      progress[value]::-webkit-progress-bar {
+        border-radius: 0px;
+      }
+
+      progress[value]::-webkit-progress-value {
+        border-radius: 0px;
+      }
+    }
+
+    .plyr__volume {
+      @apply flex-1
     }
 }
 
