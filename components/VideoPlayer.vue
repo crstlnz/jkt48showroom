@@ -179,7 +179,7 @@ function createVideoPlayer() {
   })
 
   if (isRotateFeatureEnabled.value) { createRotateButton(player.value) }
-  if (!isMobile) { createRefreshButton(player.value) }
+  createRefreshButton(player.value)
   createHls()
 }
 
@@ -279,7 +279,7 @@ onMounted(async () => {
       }
 
       progress[value]::-webkit-progress-value {
-        border-radius: 0px;
+        border-radius: 0pxm;
       }
     }
 
