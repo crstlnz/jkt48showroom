@@ -24,7 +24,7 @@ export function useAuth() {
   const authenticated = computed(() => status.value === 'authenticated')
 
   async function checkAuthOnServer() {
-    if (import.meta.server) return
+    if (!import.meta.server) return
     const event = useRequestEvent()
     const cookie = event?.headers?.get('Cookie')
     if (payload) payload.data.auth.pending = true

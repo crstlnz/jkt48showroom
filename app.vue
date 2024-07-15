@@ -134,10 +134,8 @@ watch(width, () => {
 })
 
 // useCSRF()
-const {checkAuth} = useAuth()
-onMounted(()=>{
-  checkAuth()
-})
+// const {checkAuth} = useAuth()
+// checkAuth()
 </script>
 
 <template>
