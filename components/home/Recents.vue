@@ -53,7 +53,7 @@ const { locale } = useI18n()
         </div>
       </div>
     </div>
-    <button v-if="date" type="button" class="absolute right-0 bottom-0 text-xs font-light float-right px-3 pt-1 pb-3 truncate" @click="refresh">
+    <button v-if="date" type="button" class="flex gap-1 items-center absolute right-0 bottom-0 text-xs font-light float-right px-3 pt-1 pb-3 truncate" @click="refresh">
       {{ pending ? 'Loading' : $dayjs(date).locale(locale).fromNow() }}
       <Icon v-if="!pending" name="ic:outline-refresh" />
       <Icon v-else name="svg-spinners:ring-resize" />
