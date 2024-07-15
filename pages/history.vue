@@ -212,7 +212,7 @@ const recentHeight = computed(() => {
       >
         <button
           type="button"
-          class="flex-1 border-r border-second-2 px-2 py-2.5 text-center active:bg-blue-500"
+          class="flex-1 border-r border-second-2 px-2 py-2.5 text-center active:bg-blue-500 flex gap-1 items-center"
           @click="scrollToTop"
         >
           {{ $t("scrolltop") }} <Icon name="ph:arrow-up-bold" class="self-center text-base" />
