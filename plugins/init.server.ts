@@ -5,6 +5,10 @@ export default defineNuxtPlugin(async () => {
   const { checkAuth } = useAuth()
   await checkAuth()
   
-  const { setVersion } = useSettings()
-  setVersion(pkg.version)
+  try{
+    const { setVersion } = useSettings()
+    setVersion(pkg.version)
+  }catch(e){
+    console.error(e)
+  }
 })
