@@ -1,7 +1,7 @@
 {
   "name": "jkt48showroom",
   "type": "module",
-  "version": "0.13.10",
+  "version": "0.13.11",
   "packageManager": "pnpm@8.9.0+sha1.01c55344d677f3b481c6bb6ffba9a6b3c6dbd91d",
   "engines": {
     "node": "20.x.x"
@@ -37,6 +37,7 @@
     "@antfu/eslint-config": "^2.21.2",
     "@iconify-json/ant-design": "^1.1.16",
     "@iconify-json/bi": "^1.1.23",
+    "@iconify-json/bx": "^1.1.10",
     "@iconify-json/carbon": "^1.1.36",
     "@iconify-json/fa6-solid": "^1.1.21",
     "@iconify-json/fluent": "^1.1.58",
@@ -50,6 +51,7 @@
     "@iconify-json/mdi": "^1.1.67",
     "@iconify-json/mi": "^1.1.8",
     "@iconify-json/mingcute": "^1.1.18",
+    "@iconify-json/octicon": "^1.1.56",
     "@iconify-json/ph": "^1.1.13",
     "@iconify-json/radix-icons": "^1.1.14",
     "@iconify-json/ri": "^1.1.21",

@@ -134,8 +134,7 @@ watch(width, () => {
 })
 
 // useCSRF()
-// const {checkAuth} = useAuth()
-// checkAuth()
+useAuth()
 </script>
 
 <template>

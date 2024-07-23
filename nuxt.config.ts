@@ -99,6 +99,9 @@ export default defineNuxtConfig({
   },
   // pwa: !isDev ? pwa : undefined,
   css: ['~/assets/css/style.scss', '~/assets/css/transition.scss', '~/assets/css/tailwindcss.css'],
+  fonts: {
+    provider: 'google',
+  },
   colorMode: {
     preference: 'dark',
     fallback: 'light',

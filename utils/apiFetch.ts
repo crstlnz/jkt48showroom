@@ -1,7 +1,7 @@
 import type { FetchOptions } from 'ofetch'
 import { ofetch } from 'ofetch'
 import syncServerCookies from '~/composables/syncServerCookies'
-import { useSettings } from '~/store/settings'
+// import { useSettings } from '~/store/settings'
 
 const fetcher = ofetch.create({
   credentials: 'include',
@@ -34,15 +34,15 @@ export async function $apiFetch<T>(request: RequestInfo, options?: FetchOptions<
         if (import.meta.server) {
           ctx.options.headers = getHeaders()
         }
-        else {
-          if (['post', 'delete', 'put'].includes(ctx.options.method?.toLowerCase() || '')) {
-            const settings = useSettings()
-            ctx.options.headers = {
-              ...ctx.options.headers,
-              'X-CSRF-TOKEN': settings.csrfToken,
-            }
-          }
-        }
+        // else {
+        //   if (['post', 'delete', 'put'].includes(ctx.options.method?.toLowerCase() || '')) {
+        //     const settings = useSettings()
+        //     ctx.options.headers = {
+        //       ...ctx.options.headers,
+        //       'X-CSRF-TOKEN': settings.csrfToken,
+        //     }
+        //   }
+        // }
       },
     })
     return res._data as T

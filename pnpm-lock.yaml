@@ -61,6 +61,9 @@ devDependencies:
   '@iconify-json/bi':
     specifier: ^1.1.23
     version: 1.1.23
+  '@iconify-json/bx':
+    specifier: ^1.1.10
+    version: 1.1.10
   '@iconify-json/carbon':
     specifier: ^1.1.36
     version: 1.1.36
@@ -100,6 +103,9 @@ devDependencies:
   '@iconify-json/mingcute':
     specifier: ^1.1.18
     version: 1.1.18
+  '@iconify-json/octicon':
+    specifier: ^1.1.56
+    version: 1.1.56
   '@iconify-json/ph':
     specifier: ^1.1.13
     version: 1.1.13
@@ -1277,6 +1283,12 @@ packages:
       '@iconify/types': 2.0.0
     dev: true
 
+  /@iconify-json/bx@1.1.10:
+    resolution: {integrity: sha512-4JzMDYhs/hkU9mO8nNMNKZwHn706oQaD46URyUuD4fP/XAWGf01vg6wKITmQseEHsHDrtKAXjwcumfnTUDi3OQ==}
+    dependencies:
+      '@iconify/types': 2.0.0
+    dev: true
+
   /@iconify-json/carbon@1.1.36:
     resolution: {integrity: sha512-NC3VcqLtwLZpi7+LeXj+99/byv+asrnCQxiDNCZV6hKr9WcNh6C25kJguJYfN+dV54kOkw78e+6PitQi2Bppnw==}
     dependencies:
@@ -1351,6 +1363,12 @@ packages:
 
   /@iconify-json/mingcute@1.1.18:
     resolution: {integrity: sha512-P5szgBqUMv8XVjZpbVT5eG1XtqpRPgfvZWxOR/uSqBwmVroHpxN5+nbLTHj9HJxL16msMsNbA294b69MNEQzaw==}
+    dependencies:
+      '@iconify/types': 2.0.0
+    dev: true
+
+  /@iconify-json/octicon@1.1.56:
+    resolution: {integrity: sha512-fCSFHruJQwTuD7E95Tgm1cr/PQJgMt6wgS01z0VvwFmxbaqdC56f6UkZ16JUQ0tYGHpgkd8shsB+c+nYo0NVPg==}
     dependencies:
       '@iconify/types': 2.0.0
     dev: true

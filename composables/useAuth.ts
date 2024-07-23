@@ -3,7 +3,7 @@ import type { FetchError } from 'ofetch'
 export function useAuth() {
   const nuxtApp = tryUseNuxtApp()
   const payload = nuxtApp?.payload
-  const data = useState<ShowroomLogin.User | null>('authUser', () => process.client ? payload?.data?.auth?.user || null : null)
+  const data = useState<ShowroomLogin.User | null>('authUser', () => import.meta.client ? payload?.data?.auth?.user || null : null)
   const pending = useState('authPending', () => import.meta.client ? payload?.data?.auth?.pending ?? true : false)
   const error = useState('authError', () => import.meta.client ? (payload?.data?.auth?.error ? new Error(payload?.data?.auth?.error) : null) : null)
 
@@ -24,7 +24,7 @@ export function useAuth() {
   const authenticated = computed(() => status.value === 'authenticated')
 
   async function checkAuthOnServer() {
-    if (!import.meta.server) return
+    if (import.meta.client) return
     const event = useRequestEvent()
     const cookie = event?.headers?.get('Cookie')
     if (payload) payload.data.auth.pending = true
@@ -80,14 +80,16 @@ export function useAuth() {
 
   async function signIn(body: URLSearchParams) {
     if (import.meta.server) throw new Error('No ssr login!')
-    await $apiFetch('/api/auth/login', {
-      body,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      credentials: 'include',
-    })
+    try {
+      await $apiFetch('/api/auth/login', {
+        body,
+        method: 'POST',
+      })
+    }
+    catch (e) {
+      console.error(e)
+      throw e
+    }
     checkAuth()
   }
 
