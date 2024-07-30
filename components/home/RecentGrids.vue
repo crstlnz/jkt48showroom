@@ -23,7 +23,7 @@ const { locale } = useI18n()
 
 <template>
   <div class="space-y-3 px-3 md:px-4">
-    <div class="flex gap-1">
+    <div class="flex gap-1 items-center">
       <Icon name="ic:round-history" class="self-center text-xl sm:text-2xl" />
       <h2 class="flex-1 text-xl font-bold leading-10 sm:text-2xl">
         {{ $t("page.title.recent") }}
