@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
-import { LazyImage } from '#components'
+import { DeferImage } from '#components'
 import { useSelectedUser } from '~/store/selectedUser'
 
 const divId = ref(0)
@@ -268,7 +268,7 @@ onMounted(() => {
           </div>
           <div v-else-if="userData" class="mb-6 flex flex-col items-center gap-4">
             <div class="relative aspect-square w-32 lg:w-36">
-              <LazyImage :alt="`${userData.name} profile picture`" class="h-full w-full overflow-hidden rounded-full" :src="userData.image" />
+              <DeferImage :alt="`${userData.name} profile picture`" class="h-full w-full overflow-hidden rounded-full" :src="userData.image" />
               <img v-if="userData.avatar_url" :src="userData.avatar_url" class="absolute -bottom-2 -right-4 aspect-square w-16">
             </div>
             <div class="disable-drag flex flex-col gap-2 text-center">

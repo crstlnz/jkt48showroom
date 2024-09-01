@@ -7,6 +7,7 @@ const props = defineProps<{
   member: Database.IMemberBasicData | IMemberProfileAPI
   roomId?: number
   shareUrl?: string
+  sousenkyo?: SousenkyoMember
 }>()
 const { isLive: checkLive } = useOnLives()
 const isLive = computed(() => {
@@ -88,10 +89,11 @@ function openProfileImage() {
           </div>
         </div>
         <div class="flex min-w-0 self-start flex-1 items-start justify-end flex-col mb-0.5">
-          <div class="font-semibold flex gap-3 md:gap-4 self-stretch">
+          <div class="font-semibold flex gap-3 md:gap-4 self-stretch items-center">
             <div class="flex-1 text-2xl md:text-3xl">
               {{ (member.nickname || member.name)?.split("-")?.[0] }}
             </div>
+            <Sousenkyo2024Label v-if="sousenkyo"/>
           </div>
           <div class="flex gap-2 text-xs md:text-sm">
             <div

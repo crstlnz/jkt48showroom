@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { LazyImage } from '#components'
+import { DeferImage } from '#components'
 import { useSettings } from '~~/store/settings'
 
 const props = defineProps<{
@@ -33,7 +33,7 @@ const { group } = useSettings()
           {{ rank }}
         </div>
         <div v-if="member" class="flex h-full w-full flex-col gap-1">
-          <LazyImage :key="member.id" :src="member.img" :alt="`${member.name} Profile Picture`" class="h-0 w-full flex-1 select-none overflow-hidden rounded-lg object-cover" :draggable="false" />
+          <DeferImage :key="member.id" :src="member.img" :alt="`${member.name} Profile Picture`" class="h-0 w-full flex-1 select-none overflow-hidden rounded-lg object-cover" :draggable="false" />
           <div class="w-full">
             <div class="w-full truncate text-left text-base font-bold md:text-lg">
               {{ member.name }}

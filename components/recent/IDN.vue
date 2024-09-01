@@ -74,7 +74,7 @@ const calculatedGift = computed<RecentUserGifts[]>(() => {
 
 <template>
   <div class="flex flex-col gap-3 md:gap-4">
-    <MemberProfileBanner :room-id="data.room_id" :member="data.room_info" />
+    <MemberProfileBanner :sousenkyo="data.sousenkyo" :room-id="data.room_id" :member="data.room_info" />
     <div class="mx-3 md:mx-4">
       <div class="flex gap-3 md:gap-4 flex-col md:flex-row">
         <div class="relative shrink-0 h-80 md:aspect-[5/6.5]">

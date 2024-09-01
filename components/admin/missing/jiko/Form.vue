@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { LazyImage } from '#components'
+import { DeferImage } from '#components'
 import { useNotifications } from '~~/store/notifications'
 
 const props = defineProps<{
@@ -51,7 +51,7 @@ async function update() {
 
 <template>
   <div :key="member.room_id" class="bg-container flex flex-col gap-3 rounded-xl p-3 md:flex-row lg:p-4">
-    <LazyImage :src="member.img ?? $errorPicture" :alt="`${member.name} picture`" class="aspect-video h-32 shrink-0 overflow-hidden rounded-xl border-2 dark:border-none" />
+    <DeferImage :src="member.img ?? $errorPicture" :alt="`${member.name} picture`" class="aspect-video h-32 shrink-0 overflow-hidden rounded-xl border-2 dark:border-none" />
     <div class="flex flex-1 flex-col gap-1">
       <div class="text-lg">
         {{ member.name }}

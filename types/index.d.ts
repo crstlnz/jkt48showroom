@@ -515,6 +515,39 @@ interface IMemberProfileAPI extends IMemberBasicData {
   height?: string
   recentTheater?: ITheaterAPI[]
   upcomingTheater?: ITheaterAPI[]
+  sousenkyo?: SousenkyoMember
+}
+
+interface SousenkyoMember {
+  name: string
+  id: string
+  url: string
+  data?: SousenkyoMemberDetail | null
+}
+
+interface SousenkyoMemberDetail {
+  id: number
+  name: string
+  img: string
+  dob: string
+  nickname: string
+  url_video: string
+  tagline: string
+  bg: string
+  mobileBg: string
+  tag: string
+  mTag: string
+  nameImg: string
+  count: number
+  darkTheme: boolean
+  ja: SousenkyoMemberDetailJa
+}
+
+interface SousenkyoMemberDetailJa {
+  name: string
+  dob: string
+  nickname: string
+  tagline: string
 }
 
 interface IDNUser {
@@ -542,6 +575,7 @@ interface IDNLivesDetail extends Partial<INowLive> {
     room_id?: number
     key?: string
   }
+  sousenkyo?: SousenkyoMember
 }
 
 // type IRoomLiveExtended = IRoomLive & { type: 'showroom' }

@@ -9,13 +9,13 @@
 
 .sheet-enter-active,
 .sheet-leave-active {
+    transition: 0.4s ease;
     .background {
         transition: 0.4s ease;
     }
     .sheet-content {
         transition: 0.4s ease;
     }
-    transition: 0.4s ease;
 }
 
 .sheet-enter-from,

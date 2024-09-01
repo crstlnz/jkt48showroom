@@ -15,7 +15,7 @@ export default function (data: Ref<Watch.WatchData | null>) {
   function createSocket() {
     destroySocket()
     if (!data.value?.socket_host) return
-    socket = new WebSocket(`wss://${data.value?.socket_host}` ?? '')
+    socket = new WebSocket(`wss://${data.value?.socket_host}`)
     socket.onopen = () => {
       socket?.send(`SUB\t${data.value?.socket_key ?? ''}`)
     }

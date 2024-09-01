@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useNotifications } from '~~/store/notifications'
-import { LazyImage } from '#components'
+import { DeferImage } from '#components'
 
 const props = withDefaults(defineProps<{
   member?: Admin.IShowroomMember
@@ -119,7 +119,7 @@ const tabList = ref([
         <div class="flex flex-col gap-1.5 w-full">
           <div class="flex h-20 md:h-32 xl:h-36 items-center gap-3 md:gap-5 overflow-x-auto">
             <div class="aspect-video h-full shrink-0 overflow-hidden rounded-xl border-2 dark:border-dark-2">
-              <LazyImage class="h-full w-full object-cover" :src="$fixCloudinary(member?.img || config.errorPicture)" :alt="member.name" />
+              <DeferImage class="h-full w-full object-cover" :src="$fixCloudinary(member?.img || config.errorPicture)" :alt="member.name" />
             </div>
             <MemberFormImage
               v-if="member?.member_data?._id != null"
@@ -234,7 +234,7 @@ const tabList = ref([
         </div>
       </div>
       <div v-else class="p-5 text-xl text-center pb-7 flex items-center justify-center h-full">
-        <div class="space-y-3">
+        <div class="space-y-3 flex flex-col items-center">
           <div>
             Loading...
           </div>

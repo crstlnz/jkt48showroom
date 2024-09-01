@@ -78,6 +78,7 @@ declare namespace Watch {
     comments: Comment[]
     premium_room_type: number
     image: string
+    sousenkyo?: SousenkyoMember
   }
 
   interface Gift {

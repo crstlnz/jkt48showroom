@@ -11,7 +11,7 @@ function save() {
   const data: Record<string, string> = {}
   if (inputData.value) {
     for (const form of inputData.value) {
-      data[form.getAttribute('data-id' || '') || ''] = form.value
+      data[form.getAttribute('data-id') || ''] = form.value
     }
   }
   emit('change', data)

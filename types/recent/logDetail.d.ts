@@ -108,6 +108,7 @@ declare namespace LogDetail {
     room_id: number
     total_gifts: number
     created_at: string
+    sousenkyo?: SousenkyoMember
   }
 
   interface Showroom extends Base {

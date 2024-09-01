@@ -31,7 +31,7 @@ function getNumColor(num: number) {
           <img :class="{ 'h-12 w-12 md:h-14 md:w-14 scale-[120%] origin-center': type === 'idn', 'h-10 w-10 md:h-12 md:w-12': type === 'showroom' }" class="ml-1" :src="gift.img" alt="Gift Icon">
           <div class="flex-1 w-0">
             <div class="flex items-center gap-1.5 w-full">
-              <span class="font-semibold truncate">{{ gift.name.split(" ").map(i => i.slice(0, 1).toLocaleUpperCase() + i.slice(1)).join(" ") }}</span>
+              <span class="font-semibold truncate">{{ gift.name?.split(" ")?.map(i => i.slice(0, 1).toLocaleUpperCase() + i.slice(1))?.join(" ") }}</span>
               <span :class="getNumColor(gift.num)" class="shrink-0 rounded-md px-1 py-0.5 text-xs font-semibold text-white">x{{ gift.num }}</span>
             </div>
             <div class="flex items-center space-x-1.5 text-sm md:text-base font-light">

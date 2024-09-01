@@ -33,6 +33,7 @@ export default defineNuxtConfig({
   },
   watch: ['~/assets/css/tailwindcss.css'],
   modules: [
+    '@nuxt/image',
     'floating-vue/nuxt',
     'nuxt-security',
     'dayjs-nuxt',
@@ -43,7 +44,6 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@nuxtjs/i18n',
     '@pinia/nuxt',
-    '@nuxt/image',
     '@nuxt/fonts',
   ],
   icon: {
@@ -116,8 +116,8 @@ export default defineNuxtConfig({
   i18n: {
     strategy: 'no_prefix',
     locales: [
-      { code: 'id', iso: 'id-ID', file: 'id.yaml', dir: 'ltr', name: 'ID' },
-      { code: 'en', iso: 'en-US', file: 'en.yaml', dir: 'ltr', name: 'EN' },
+      { code: 'id', language: 'id-ID', file: 'id.yaml', dir: 'ltr', name: 'ID' },
+      { code: 'en', language: 'en-US', file: 'en.yaml', dir: 'ltr', name: 'EN' },
     ],
     langDir: 'locales',
     lazy: true,
@@ -147,6 +147,7 @@ export default defineNuxtConfig({
     },
   },
   image: {
+    provider: 'cloudinary',
     cloudinary: {
       baseURL: process.env.CLOUDINARY_BASE_URL,
     },
@@ -163,4 +164,5 @@ export default defineNuxtConfig({
       '2xl': 1536,
     },
   },
+  compatibilityDate: '2024-08-31',
 })

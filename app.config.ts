@@ -71,6 +71,7 @@ const SortList: SortData[] = [
 export default {
   // group: 'hinatazaka46', // jkt48, hinatazaka or all
   ...urls,
+  enableSousenkyou: true,
   getTheaterId(url: string) {
     const match = url.match(/\/(\d+)\?/)
     return match ? match[1] : null
@@ -111,9 +112,9 @@ export default {
       }
       default : {
         return {
-          title: 'Sayonara Crawl - Shani Graduation Single',
-          img: 'https://res.cloudinary.com/haymzm4wp/image/upload/v1697142302/assets/img/jqs2lvaesnnqi86wyzcg.jpg',
-          url: 'https://www.youtube.com/watch?v=5cy3vDjTfFY&ab_channel=JKT48',
+          title: 'Sousenkyo JKT48 2024',
+          img: 'https://res.cloudinary.com/haymzm4wp/image/upload/v1725119914/assets/img/raj4al9rdjxgnaqbrhcj.png',
+          url: 'https://ssk.jkt48.com/2024/id',
         }
       }
     }

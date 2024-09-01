@@ -108,7 +108,7 @@ function measureElement(el: Element) {
           <div :style="{ width: `${width[0]}px` }" />
           <div
             v-for="virtualColumn in virtualColumns"
-            :key="virtualColumn.key"
+            :key="virtualColumn.key as any"
             :style="{
               minHeight: virtualRow.size,
               width: `${getColumnWidth()}px`,

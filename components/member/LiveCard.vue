@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useElementHover, useTimeoutFn } from '@vueuse/core'
 import type { PreviewVideo } from '#components'
-import { LazyImage } from '#components'
+import { DeferImage } from '#components'
 
 const props = defineProps<{ live: INowLive }>()
 defineEmits(['refreshliveinfo'])
@@ -149,7 +149,7 @@ async function refreshDate() {
               class="z-[1] inline-block h-full w-full overflow-hidden"
               no-prefetch
             >
-              <LazyImage
+              <DeferImage
                 alt="Profile Picture"
                 lazy="false"
                 class="relative h-full w-full brightness-100 transition-all duration-200"

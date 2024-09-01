@@ -22,17 +22,21 @@ const { data, pending, error } = await useAsyncData<IDNLivesDetail>(
         }
       : undefined
 
+    const sousenkyoData = member ? await $apiFetch<SousenkyoMember>(`/api/sousenkyo/member/${member?.room_id}/room_id`) : undefined
+
     if (live) {
       return {
         ...live,
         is_live: true,
         member_info,
+        sousenkyo: sousenkyoData,
       }
     }
     else {
       return {
         is_live: false,
         member_info,
+        sousenkyo: sousenkyoData,
       }
     }
   },
@@ -157,10 +161,13 @@ function setVideoLandscape(val: boolean) {
               class="w-20 md:w-24"
             />
           </NuxtLink>
-          <div
-            class="absolute right-0 top-0 px-2 md:px-3 py-1 text-base font-semibold text-white z-20 bg-black/40 rounded-xl m-3"
-          >
-            {{ data?.name }}
+          <div class="z-10 absolute right-0 top-0 flex-col flex justify-end m-3 items-end gap-2">
+            <div
+              class="px-2 md:px-3 py-1 text-base font-semibold text-white z-20 bg-black/40 rounded-xl"
+            >
+              {{ data?.name }}
+            </div>
+            <Sousenkyo2024Label v-if="data.sousenkyo" />
           </div>
           <Suspense>
             <template #fallback>

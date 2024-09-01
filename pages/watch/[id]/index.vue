@@ -368,8 +368,12 @@ watch(telops, (v) => {
             <div class="h-8 w-14 overflow-hidden rounded-md max-sm:hidden md:h-14 md:w-24 md:rounded-xl">
               <img :src="data?.image" :alt="data?.name" class="h-full w-full object-cover">
             </div>
-            <div class="flex min-w-0 flex-1 gap-2 max-sm:flex-[100%]">
-              <div class="truncate max-lg:flex-1" :title="data?.name">
+            <div class="flex items-center min-w-0 flex-1 gap-2 max-sm:flex-[100%]">
+              <div v-if="true" class="flex flex-col items-start truncate max-lg:flex-1" :title="data?.name">
+                <div>{{ data?.name }}</div>
+                <Sousenkyo2024Label />
+              </div>
+              <div v-else class="truncate max-lg:flex-1" :title="data?.name">
                 {{ data?.name }}
               </div>
               <span class="shrink-0 flex items-center space-x-1 rounded-lg bg-red-500 px-1.5 py-1 text-sm text-slate-50">
@@ -377,7 +381,7 @@ watch(telops, (v) => {
                 <span>{{ $n(viewers) }}</span>
               </span>
               <span
-                v-if="isLive" v-tooltip="`${timeAgo}`" class="shrink-0 space-x-1 rounded-lg bg-slate-700 px-1.5 py-1 text-sm text-slate-50 dark:bg-slate-500"
+                v-if="isLive" v-tooltip="`${timeAgo}`" class="flex shrink-0 space-x-1 rounded-lg bg-slate-700 px-1.5 py-1 text-sm items-center justify-center text-slate-50 dark:bg-slate-500"
               >
                 {{ $dayjs(convertToMilliseconds(data?.started_at ?? 0)).format('h:mm A') }}
               </span>

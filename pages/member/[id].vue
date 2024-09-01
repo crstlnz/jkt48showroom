@@ -101,8 +101,9 @@ useHead({
             <span>{{ $t("data.nodata") }}</span>
           </div>
           <div v-else class="flex flex-col gap-3 md:gap-4">
-            <MemberProfileBanner :member="member" :room-id="member.showroom_id" />
+            <MemberProfileBanner :sousenkyo="data?.sousenkyo" :member="member" :room-id="member.showroom_id" />
             <MemberShowroomInfo v-if="isShowroomExists" :room-id="member.showroom_id" @data="(data) => isFollow = data.is_follow" />
+            <Sousenkyo2024 v-if="data?.sousenkyo" id="sousenkyo" :data="data?.sousenkyo" class="scroll-mt-20" />
             <div v-if="data?.stats" class="max-md:p-3 max-md:bg-container max-md:rounded-xl mx-3 md:mx-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4">
               <div class="md:bg-container md:rounded-xl md:p-4 flex flex-col md:items-center gap-1.5 md:gap-2 relative">
                 <Icon v-tooltip="$t('data_disclaimer')" name="heroicons:information-circle" class="absolute right-0 top-0.5 md:right-3 md:top-3 text-lg outline-none" />

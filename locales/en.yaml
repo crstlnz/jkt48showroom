@@ -224,6 +224,7 @@ menu:
   about: About
   stats: Stats
   event: Event
+  sousenkyo: Sousenkyo 2024
 known_issues: Known Issues
 open_original: Open original
 data_disclaimer: Data is the result of bot recording, errors in data collection may occur.
@@ -247,3 +248,4 @@ ongoing: Ongoing
 ended: Ended
 other_schedule: Other schedule
 no_upcoming_theater: No upcoming theater
+watch_sousenkyo: Watch now

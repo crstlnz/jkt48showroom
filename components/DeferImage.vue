@@ -37,7 +37,6 @@ watch(isLoading, (loading) => {
           class="h-full w-full object-cover object-center"
           :alt="!error ? alt : 'Image Error'"
           :src="!error ? src : '/img/img-error.jpg'"
-          loading="lazy"
           :draggable="draggable"
         >
       </div>

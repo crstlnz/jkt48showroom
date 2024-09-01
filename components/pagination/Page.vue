@@ -41,7 +41,7 @@ const showDuration = ref(false)
           <PaginationFilter
             class="bg-container mt-4 h-fit overflow-y-auto rounded-xl p-4 shadow-sm lg:max-h-[calc(100vh_-_96px_-_20px)]"
             :query="query"
-            @apply="(filter) => setFilter(filter)"
+            @apply="(filter : Record<any, any>) => setFilter(filter)"
             @show-duration="(show : boolean) => showDuration = show"
             @title="(t : string) => {
               title = t

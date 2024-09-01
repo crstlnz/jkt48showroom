@@ -50,7 +50,7 @@ const title = computed(() => {
 })
 
 // const { $fixCloudinary } = useNuxtApp()
-const name = computed(() => data.value?.room_info.nickname || data.value?.room_info.fullname || data.value?.room_info?.name)
+const name = computed(() => data.value?.room_info?.nickname || data.value?.room_info?.fullname || data.value?.room_info?.name)
 const description = computed(() => {
   // return t('recent_detail_description', { name: data.value?.room_info.nickname || data.value?.room_info.fullname || data.value?.room_info?.name, date: date.value })
   return `${name.value} mendapatkan gift sebanyak ± ${n((data.value?.total_gifts || 0) * (data.value?.gift_rate || 0), 'currency', 'id-ID')} pada live ini!`
