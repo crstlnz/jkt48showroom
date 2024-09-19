@@ -58,6 +58,13 @@ useEventListener(doc, 'scroll', () => {
 onMounted(() => {
   doc.value = document
 })
+
+const id = computed(()=>{
+  if (route.path.startsWith("/theater/")) {
+    return "show-detail"
+  }
+  return ""
+}) // for theater scrape
 </script>
 
 <template>
@@ -70,7 +77,7 @@ onMounted(() => {
         </template>
       </LayoutRowTitle>
     </div>
-    <div class="flex-1">
+    <div class="flex-1" :id="id">
       <slot />
     </div>
     <div :class="{ 'pb-[72px]': isMobile }" class="pt-4 pb-10 text-center px-3 md:px-4">
