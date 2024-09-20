@@ -9,20 +9,25 @@ export function useApiFetch<T>(url: string | (() => string), options: UseFetchOp
   const onResponse = options?.onResponse
   const onRequest = options?.onRequest
   const defaults: UseFetchOptions<T> = {
-    baseURL: config.public.api,
+    baseURL: config.public.api as string,
     key: typeof url === 'string' ? url : url(),
     server: true,
     lazy: true,
     credentials: 'include',
     onResponse(ctx) {
       if (typeof onResponse === 'function') onResponse(ctx)
-      if (process.server) {
+      if (import.meta.server) {
         setCookie(ctx.response.headers)
+        if (ctx.response.status !== 200) {
+          const event = useRequestEvent()
+          if (event)
+            setResponseStatus(event, ctx.response.status, ctx.response.statusText)
+        }
       }
     },
     onRequest(ctx) {
       if (typeof onRequest === 'function') onRequest(ctx)
-      if (process.server) {
+      if (import.meta.server) {
         ctx.options.headers = getHeaders()
       }
     },
