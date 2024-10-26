@@ -62,7 +62,7 @@ export default defineNuxtConfig({
             'frame-ancestors': ['\'self\''],
             'img-src': ['*', 'data:'],
             'object-src': ['\'none\''],
-            'script-src-attr': ['\'none\''],
+            'script-src-attr': ["'self'", "'nonce-{{nonce}}'", "'strict-dynamic'"],
             'style-src': ['\'self\'', 'https:', '\'unsafe-inline\''],
             'script-src': [
               '\'self\'', // Fallback value, will be ignored by most modern browsers (level 3)
@@ -75,7 +75,7 @@ export default defineNuxtConfig({
           }
         : false,
     },
-    csrf: false,
+    csrf: true,
     xssValidator: false,
     requestSizeLimiter: {
       maxRequestSizeInBytes: 15000000,

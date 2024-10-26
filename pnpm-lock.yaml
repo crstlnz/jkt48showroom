@@ -73,6 +73,9 @@ devDependencies:
   '@iconify-json/fluent':
     specifier: ^1.1.58
     version: 1.1.63
+  '@iconify-json/formkit':
+    specifier: ^1.2.0
+    version: 1.2.0
   '@iconify-json/heroicons':
     specifier: ^1.1.21
     version: 1.1.24
@@ -1731,6 +1734,12 @@ packages:
 
   /@iconify-json/fluent@1.1.63:
     resolution: {integrity: sha512-JmCfiMvxoCFOr0gOPA4uPl78DOVPsiL/TwE4hWIWG0io9NT69zbuNWiQbYPR4qpffNowB5HchQz7cQrIm0iLAQ==}
+    dependencies:
+      '@iconify/types': 2.0.0
+    dev: true
+
+  /@iconify-json/formkit@1.2.0:
+    resolution: {integrity: sha512-zRKXPqyFqe5Nf70C0uuEeAz3t12mv7kKwZLkHs82mJLDNLk5XO+ue4fOvNhOGk3jjUqWUR2HlKgNE0ICu0a8Iw==}
     dependencies:
       '@iconify/types': 2.0.0
     dev: true
