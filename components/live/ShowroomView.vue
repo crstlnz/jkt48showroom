@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { Popover, PopoverButton, PopoverPanel, Switch, SwitchGroup, SwitchLabel } from '@headlessui/vue'
 import { useFullscreen, useLocalStorage, useScreenOrientation } from '@vueuse/core'
-import { StageShowroom } from '~~/library/canvas/showroom/stage'
 import ShowroomBackground from '~~/library/canvas/showroom/background'
 import ShowroomForeground from '~~/library/canvas/showroom/foreground'
+import { StageShowroom } from '~~/library/canvas/showroom/stage'
 import { useSelectedUser } from '~/store/selectedUser'
 
 const props = defineProps<{
@@ -76,7 +76,7 @@ watch(selectedTime, async () => {
         users.set(user.id, user)
       }
     }
-    catch (e) {
+    catch {
       stageListFetch.value = false
     }
   }

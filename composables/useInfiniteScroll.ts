@@ -12,7 +12,7 @@ export default function (onload: () => any | Promise<any>, opts: InfiniteScrollO
   })
 
   async function checkTrigger(val: number | null = null) {
-    if (process.client) {
+    if (import.meta.client) {
       if ((val ?? y.value) >= document.documentElement.scrollHeight - window.innerHeight - distance) {
         await onload()
       }

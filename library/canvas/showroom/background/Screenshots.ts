@@ -1,6 +1,6 @@
-import CanvasUtil from '../canvasUtil'
 import type ShowroomBackground from '.'
 import config from '~~/app.config'
+import CanvasUtil from '../canvasUtil'
 
 const { cloudinaryURL } = config
 

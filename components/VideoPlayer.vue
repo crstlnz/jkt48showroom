@@ -178,7 +178,7 @@ function createVideoPlayer() {
     }
   })
 
-  if (isRotateFeatureEnabled.value && !isMobile) { createRotateButton(player.value) }
+  if (isRotateFeatureEnabled.value && !isMobile) createRotateButton(player.value)
   createRefreshButton(player.value)
   createHls()
 }

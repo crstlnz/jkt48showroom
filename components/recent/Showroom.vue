@@ -69,7 +69,7 @@ const calculatedGift = computed<RecentUserGifts[]>(() => {
     })
     return mapped
   }
-  catch (e) {
+  catch {
     return []
   }
 })
@@ -138,7 +138,7 @@ const calculatedGift = computed<RecentUserGifts[]>(() => {
         </table>
       </div>
     </div>
-    
+
     <div
       class="pulse-color col-span-2 aspect-[16/13] flex-1 overflow-hidden shadow-sm sm:mx-3 md:mx-4 sm:rounded-xl md:aspect-[16/10] lg:w-auto 2xl:aspect-[16/9]"
     >

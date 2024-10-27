@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { useNotifications } from '~~/store/notifications'
 import { FormImageDrop } from '#components'
+import { useNotifications } from '~~/store/notifications'
 
 const props = defineProps<{
   setlist?: JKT48.Setlist | null
@@ -62,7 +62,7 @@ async function save() {
       type: 'danger',
       message: 'Post form error!',
     })
-    console.log(e)
+    console.error(e)
   }
 }
 </script>

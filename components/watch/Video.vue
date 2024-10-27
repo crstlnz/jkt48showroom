@@ -313,6 +313,7 @@ async function togglePlay() {
       isProcessingPlay.value = false
     }
     catch (e) {
+      console.error(e)
       isProcessingPlay.value = false
     }
   }
@@ -324,6 +325,7 @@ function reload() {
     createHLS(currentSource.value.url)
   }
   catch (e) {
+    console.error(e)
     destroyVideo()
   }
 }
@@ -448,7 +450,7 @@ watch(
 )
 
 async function play() {
-  if (process.server) return
+  if (import.meta.server) return
   pausedByUser.value = false
   if (video.value) {
     try {

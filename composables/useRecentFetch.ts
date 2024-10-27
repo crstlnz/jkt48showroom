@@ -1,5 +1,5 @@
-import { deepCompare } from '~/utils'
 import { useSettings } from '~~/store/settings'
+import { deepCompare } from '~/utils'
 
 interface RecentFetchOpts {
   initPage?: number

@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { Switch, SwitchGroup, SwitchLabel } from '@headlessui/vue'
 import { useFuse } from '@vueuse/integrations/useFuse'
-import { useMembers } from '~/store/members'
-import { deepCompare } from '~/utils'
-
 import { useSettings } from '~~/store/settings'
+import { useMembers } from '~/store/members'
+
+import { deepCompare } from '~/utils'
 
 const { t: $t } = useI18n()
 const { group } = useSettings()

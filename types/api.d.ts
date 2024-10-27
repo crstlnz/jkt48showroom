@@ -47,4 +47,39 @@ declare namespace API {
     created_at: string
     fans: IStatFans[]
   }
+
+  interface YoutubeThumbnail {
+    url: string
+    width: number
+    height: number
+  }
+  interface Statistics {
+    viewCount: string
+    likeCount: string
+    favoriteCount: string
+    commentCount: string
+  }
+
+  interface JKT48Video {
+    id: string
+    profilePict: {
+      default: YoutubeThumbnail
+      medium: YoutubeThumbnail
+      high: YoutubeThumbnail
+    }
+    channelTitle: string
+    channelId: string
+    channelUrl: string
+    title: string
+    description: string
+    thumbnails: {
+      default: YoutubeThumbnail
+      medium: YoutubeThumbnail
+      high: YoutubeThumbnail
+    }
+    url: string
+    etag: string
+    date: string
+    statistics?: Statistics
+  }
 }

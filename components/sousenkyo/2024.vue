@@ -3,17 +3,17 @@ defineProps<{
   data: SousenkyoMember
 }>()
 
-function convertToEmbedUrl(youtubeUrl: string): string | null {
-  const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|.+\?v=)|youtu\.be\/)([\w-]{11})/
-  const match = youtubeUrl.match(regex)
+// function convertToEmbedUrl(youtubeUrl: string): string | null {
+//   const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|.+\?v=)|youtu\.be\/)([\w-]{11})/
+//   const match = youtubeUrl.match(regex)
 
-  if (match && match[1]) {
-    const videoId = match[1]
-    return `https://www.youtube.com/embed/${videoId}`
-  }
+//   if (match && match[1]) {
+//     const videoId = match[1]
+//     return `https://www.youtube.com/embed/${videoId}`
+//   }
 
-  return null // Return null if the URL is not a valid YouTube URL
-}
+//   return null // Return null if the URL is not a valid YouTube URL
+// }
 </script>
 
 <template>

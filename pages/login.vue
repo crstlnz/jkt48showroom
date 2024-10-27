@@ -49,7 +49,7 @@ const usernameError = ref('')
 const passwordError = ref('')
 const captchaError = ref('')
 
-const { checkAuth, signIn } = useAuth()
+const { signIn } = useAuth()
 
 watch(username, () => {
   if (usernameError.value) usernameError.value = ''
@@ -94,6 +94,7 @@ const redirectURL = computed<string>(() => {
     return url || (router?.options?.history?.state?.back as string) || '/'
   }
   catch (e) {
+    console.error(e)
     return (router?.options?.history?.state?.back as string) || '/'
   }
 })

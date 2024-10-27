@@ -28,8 +28,8 @@ const props = withDefaults(
   },
 )
 const pos = ref<Position>({ x: 0, y: 0 })
-type ToolTipType = 'left' | 'right' | 'top' | 'bottom'
-const type = ref<ToolTipType>('top')
+// type ToolTipType = 'left' | 'right' | 'top' | 'bottom'
+// const type = ref<ToolTipType>('top')
 const container = ref<HTMLElement | null>(null)
 const { width, height } = useWindowSize()
 const isOpen = ref(false)

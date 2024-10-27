@@ -17,7 +17,7 @@ function scrollTop() {
 }
 
 function back() {
-  if (process.client) {
+  if (import.meta.client) {
     if (history.state.back === null) {
       router.replace('/')
     }

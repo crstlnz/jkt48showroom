@@ -20,15 +20,16 @@ export function useApiFetch<T>(url: string | (() => string), options: UseFetchOp
         setCookie(ctx.response.headers)
         if (ctx.response.status !== 200) {
           const event = useRequestEvent()
-          if (event)
+          if (event) {
             setResponseStatus(event, ctx.response.status, ctx.response.statusText)
+          }
         }
       }
     },
     onRequest(ctx) {
       if (typeof onRequest === 'function') onRequest(ctx)
       if (import.meta.server) {
-        ctx.options.headers = getHeaders()
+        ctx.options.headers = new Headers(getHeaders())
       }
     },
   }

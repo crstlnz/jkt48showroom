@@ -19,7 +19,7 @@ async function getData() {
     theaterData.value = await $apiFetch<JKT48.Theater>(`/api/admin/theater/${props.theaterData.id}`)
     jkt48members.value = await $apiFetch<JKT48.Member[]>(`/api/admin/jkt48member`)
   }
-  catch (e) {
+  catch {
     openDialog.value = false
     addNotif({
       message: 'Failed to get data!',

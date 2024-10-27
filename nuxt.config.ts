@@ -45,6 +45,7 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     '@pinia/nuxt',
     '@nuxt/fonts',
+    '@nuxt/eslint',
   ],
   icon: {
     mode: 'svg',
@@ -62,7 +63,7 @@ export default defineNuxtConfig({
             'frame-ancestors': ['\'self\''],
             'img-src': ['*', 'data:'],
             'object-src': ['\'none\''],
-            'script-src-attr': ["'self'", "'nonce-{{nonce}}'", "'strict-dynamic'"],
+            'script-src-attr': ['\'self\'', '\'nonce-{{nonce}}\''],
             'style-src': ['\'self\'', 'https:', '\'unsafe-inline\''],
             'script-src': [
               '\'self\'', // Fallback value, will be ignored by most modern browsers (level 3)
@@ -75,7 +76,7 @@ export default defineNuxtConfig({
           }
         : false,
     },
-    csrf: true,
+    csrf: !isDev,
     xssValidator: false,
     requestSizeLimiter: {
       maxRequestSizeInBytes: 15000000,
@@ -162,6 +163,11 @@ export default defineNuxtConfig({
       'xl': 1280,
       'xxl': 1536,
       '2xl': 1536,
+    },
+  },
+  eslint: {
+    config: {
+      standalone: false,
     },
   },
   compatibilityDate: '2024-08-31',

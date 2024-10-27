@@ -7,7 +7,7 @@ const videoLoaded = ref(false)
 const isMuted = ref(true)
 
 function buffer() {
-  if (process.server) return
+  if (import.meta.server) return
   if (Hls.isSupported() && video.value) {
     hls.value = new Hls({
       enableWorker: true,
@@ -27,7 +27,7 @@ function buffer() {
 }
 
 function play() {
-  if (process.server) return
+  if (import.meta.server) return
   if (video.value) {
     video.value.muted = isMuted.value
     video.value.play()
@@ -35,7 +35,7 @@ function play() {
 }
 
 function stop() {
-  if (process.server) return
+  if (import.meta.server) return
   if (hls.value) {
     hls.value.destroy()
     videoLoaded.value = false

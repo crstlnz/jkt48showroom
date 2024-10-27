@@ -26,7 +26,7 @@ async function getData() {
     stage48members.value = res.stage48members
     jkt48members.value = res.jkt48members
   }
-  catch (e) {
+  catch {
     openDialog.value = false
     addNotif({
       message: 'Failed to get data!',

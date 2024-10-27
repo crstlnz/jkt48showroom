@@ -11,6 +11,7 @@ export default class JSONSerializer<T> implements Serializer<T> {
       return JSON.parse(raw)
     }
     catch (e) {
+      console.error(e)
       return this.default
     }
   }

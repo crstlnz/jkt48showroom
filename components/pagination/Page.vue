@@ -33,7 +33,7 @@ const showDuration = ref(false)
             v-else
             key="pagination"
             class="justify-center sm:!left-auto"
-            :page="query.page"
+            :page="query.page ?? 1"
             :max-dots="7"
             :total="totalPage"
             @page-change="(page : number) => changePage(page)"

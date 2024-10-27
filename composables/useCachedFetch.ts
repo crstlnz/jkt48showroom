@@ -1,5 +1,5 @@
-import { get } from '@vueuse/core'
 import type { Ref } from 'vue'
+import { get } from '@vueuse/core'
 import JSONSerializer from '~/library/serializer/json'
 
 interface CachedFetchOptions {

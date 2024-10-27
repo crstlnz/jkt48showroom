@@ -33,23 +33,9 @@ async function toggleGraduate(value: boolean) {
       }
     },
   }).catch((e) => {
-    console.log(e)
+    console.error(e)
   })
 }
-
-// const applyProgress = ref(false)
-
-// const tabState = ref(0)
-// const tabList = ref([
-//   {
-//     title: 'Showroom',
-//     key: 0,
-//   },
-//   {
-//     title: 'Member Data',
-//     key: 1,
-//   },
-// ])
 </script>
 
 <template>

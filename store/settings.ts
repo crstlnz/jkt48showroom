@@ -1,5 +1,5 @@
-import { skipHydrate } from 'pinia'
 import ExpiredSerializer from '~~/library/serializer/expired'
+import { skipHydrate } from 'pinia'
 
 export const useSettings = defineStore('settings', () => {
   // const { status } = useAuth()

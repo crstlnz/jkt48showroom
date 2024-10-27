@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 import { DeferImage } from '#components'
+import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 import { useSelectedUser } from '~/store/selectedUser'
 
 const divId = ref(0)
@@ -63,7 +63,7 @@ async function refresh() {
     }
   }
   catch (e) {
-    console.log(e)
+    console.error(e)
     if (e instanceof Error) {
       error.value = e
     }
@@ -83,7 +83,7 @@ watch(position, (v) => {
 })
 
 watch(userId, () => {
-  if (process.client) {
+  if (import.meta.client) {
     refresh()
   }
 })

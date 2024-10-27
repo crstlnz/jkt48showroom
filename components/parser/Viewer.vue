@@ -11,6 +11,7 @@ function parseInt() {
     return Number.parseInt(props.value)
   }
   catch (e) {
+    console.error(e)
     return 0
   }
 }

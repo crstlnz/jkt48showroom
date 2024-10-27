@@ -1,5 +1,5 @@
-import { createGtagEvent } from '~/utils/gtag'
 import { useOnLives } from '~~/store/onLives'
+import { createGtagEvent } from '~/utils/gtag'
 
 export default defineNuxtPlugin(({ hook }) => {
   const route = useRoute()
@@ -48,9 +48,5 @@ export default defineNuxtPlugin(({ hook }) => {
 
   hook('page:start', () => { // when the page is change try refresh the state
     tryRefreshLive()
-    console.log('page start')
   })
-
-  // const { checkAuth } = useAuth()
-  // checkAuth()
 })

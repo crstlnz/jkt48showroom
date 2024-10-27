@@ -8,7 +8,10 @@ const { data, pending, error } = await useApiFetch<{ jpy_rates: number, fans: Da
   <LayoutRow title="Fans List">
     <div class="space-y-3 px-4">
       <div v-if="error" class="flex flex-col items-center justify-center gap-5">
-        <img class="mx-auto aspect-square w-72 max-w-[65%] object-contain" :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" sizes="320px" fit="fill">
+        <img
+          class="mx-auto aspect-square w-72 max-w-[65%] object-contain"
+          :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" sizes="320px" fit="fill"
+        >
         <span>{{ $t("data.failed") }}</span>
       </div>
       <div v-else-if="pending" class="flex aspect-video items-center justify-center">
@@ -28,22 +31,24 @@ const { data, pending, error } = await useApiFetch<{ jpy_rates: number, fans: Da
               {{ fans.name }}
             </div>
             <table class="fansdata opacity-75 [&>*]:p-3">
-              <tr>
-                <td>
-                  Total gifts
-                </td>
-                <td>
-                  <Parser parse-type="gift" :value="fans.point" />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Last seen
-                </td>
-                <td>
-                  <Parser parse-type="date" :value="Number(fans.last_seen?.slice(0, 10) ?? 0) * 1000" />
-                </td>
-              </tr>
+              <tbody>
+                <tr>
+                  <td>
+                    Total gifts
+                  </td>
+                  <td>
+                    <Parser parse-type="gift" :value="fans.point" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Last seen
+                  </td>
+                  <td>
+                    <Parser parse-type="date" :value="Number(fans.last_seen?.slice(0, 10) ?? 0) * 1000" />
+                  </td>
+                </tr>
+              </tbody>
             </table>
           </div>
         </div>
@@ -57,10 +62,10 @@ const { data, pending, error } = await useApiFetch<{ jpy_rates: number, fans: Da
 </template>
 
 <style lang="scss">
-.fansdata{
+.fansdata {
   td {
-    padding-right : 55px;
-    padding-top : 5px;
+    padding-right: 55px;
+    padding-top: 5px;
   }
 }
 </style>

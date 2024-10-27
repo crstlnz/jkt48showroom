@@ -39,7 +39,7 @@ async function submit() {
     })
   }
   catch (e) {
-    console.log(e)
+    console.error(e)
     addNotif({
       message: 'Error!',
       type: 'danger',
@@ -49,7 +49,7 @@ async function submit() {
 }
 const { escape } = useMagicKeys()
 watch(escape, (v) => {
-  if (v) { emit('dismiss') }
+  if (v) emit('dismiss')
 })
 </script>
 

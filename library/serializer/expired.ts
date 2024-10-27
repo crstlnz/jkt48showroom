@@ -20,6 +20,7 @@ export default class JSONSerializer<T> implements Serializer<T> {
       }
     }
     catch (e) {
+      console.error(e)
       return this.default
     }
   }

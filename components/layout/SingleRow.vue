@@ -21,7 +21,7 @@ function scrollTop() {
 }
 
 function back() {
-  if (process.client) {
+  if (import.meta.client) {
     if (history.state.back === null) {
       router.replace('/')
     }
@@ -59,11 +59,11 @@ onMounted(() => {
   doc.value = document
 })
 
-const id = computed(()=>{
-  if (route.path.startsWith("/theater/")) {
-    return "show-detail"
+const id = computed(() => {
+  if (route.path.startsWith('/theater/')) {
+    return 'show-detail'
   }
-  return ""
+  return ''
 }) // for theater scrape
 </script>
 
@@ -77,7 +77,7 @@ const id = computed(()=>{
         </template>
       </LayoutRowTitle>
     </div>
-    <div class="flex-1" :id="id">
+    <div :id="id" class="flex-1">
       <slot />
     </div>
     <div :class="{ 'pb-[72px]': isMobile }" class="pt-4 pb-10 text-center px-3 md:px-4">

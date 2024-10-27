@@ -66,7 +66,7 @@ const calculatedGift = computed<RecentUserGifts[]>(() => {
     })
     return mapped
   }
-  catch (e) {
+  catch {
     return []
   }
 })

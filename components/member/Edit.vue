@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { useNotifications } from '~~/store/notifications'
 import { DeferImage } from '#components'
+import { useNotifications } from '~~/store/notifications'
 
 const props = withDefaults(defineProps<{
   member?: Admin.IShowroomMember
@@ -67,7 +67,7 @@ async function toggleGraduate(value: boolean) {
     },
   }).catch((e) => {
     addNotif({ message: 'Failed Set Graduate', type: 'danger', duration: 1500 })
-    console.log(e)
+    console.error(e)
   })
 }
 

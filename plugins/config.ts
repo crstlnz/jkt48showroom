@@ -1,6 +1,6 @@
 import config from '~~/app.config'
-import SwipeDetector from '~~/library/plugins/swipeDetector'
 import DragListener from '~~/library/plugins/dragListener'
+import SwipeDetector from '~~/library/plugins/swipeDetector'
 
 export default defineNuxtPlugin(() => {
   type CurrencyType = 'jpy' | 'idr' | 'sr'

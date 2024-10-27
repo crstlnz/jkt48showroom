@@ -1,9 +1,9 @@
 import type { MaybeRef } from '@vueuse/core'
 import { get } from '@vueuse/core'
 
+import timeFormat from '~~/library/plugins/timeFormat'
 import dayjs from 'dayjs'
 import 'dayjs/locale/id'
-import timeFormat from '~~/library/plugins/timeFormat'
 
 export default defineNuxtPlugin((nuxtApp) => {
   // nuxtApp.$i18n.onLanguageSwitched = (_oldLocale: any, newLocale: any) => {}

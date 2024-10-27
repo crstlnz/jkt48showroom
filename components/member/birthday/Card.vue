@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import dayjs from 'dayjs'
 import { NuxtLink } from '#components'
+import dayjs from 'dayjs'
 
 const props = defineProps<{
   member: IMemberBirthDay

@@ -19,7 +19,7 @@ async function post() {
       type: 'success',
     })
   }
-  catch (e) {
+  catch {
     error.value = true
     addNotif({
       message: 'Error!',

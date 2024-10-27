@@ -45,6 +45,7 @@ const sourceURLs = computed(() => {
     },
   ]
 })
+// eslint-disable-next-line no-unused-vars, unused-imports/no-unused-vars
 async function refreshShowroomStreamURL() {
   try {
     const res = await $apiFetch<Watch.WatchData>(`/api/watch/${props.video.original_url.replaceAll('https://www.showroom-live.com/r/', '')}`)
@@ -59,7 +60,7 @@ async function refreshShowroomStreamURL() {
       duration: 2500,
     })
   }
-  catch (e) {
+  catch {
     addNotif({
       message: props.video.name,
       title: 'Stream url refresh failed!',

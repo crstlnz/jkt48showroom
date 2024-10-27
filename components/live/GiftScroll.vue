@@ -114,7 +114,7 @@ async function getPage(p = 1, search = '') {
     }
     pending.value = false
   }
-  catch (e) {
+  catch {
     error.value = true
     pending.value = false
   }

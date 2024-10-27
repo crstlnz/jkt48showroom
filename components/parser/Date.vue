@@ -14,7 +14,7 @@ function parseDate() {
     const date = new Date(Number.isNaN(timestamp) ? props.value : timestamp)
     return !Number.isNaN(date?.getTime()) ? date : null
   }
-  catch (e) {
+  catch {
     return null
   }
 }

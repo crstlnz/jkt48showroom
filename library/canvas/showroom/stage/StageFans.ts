@@ -1,5 +1,5 @@
-import stagePositions from './StagePosition'
 import type { StageShowroom } from '.'
+import stagePositions from './StagePosition'
 
 export class FansAvatar {
   id: number | undefined

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import VueDatePicker from '@vuepic/vue-datepicker'
-import '@vuepic/vue-datepicker/dist/main.css'
 import { useSettings } from '~~/store/settings'
+import '@vuepic/vue-datepicker/dist/main.css'
 
 const { modelValue } = defineProps<{
   modelValue: QueryDateRange

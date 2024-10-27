@@ -3,7 +3,7 @@ import { MemberSideLiveCard } from '#components'
 import { useOnLives } from '~/store/onLives'
 
 const onLives = useOnLives()
-const { data, pending, hasLives, error } = storeToRefs(onLives)
+const { data, pending, hasLives } = storeToRefs(onLives)
 </script>
 
 <template>

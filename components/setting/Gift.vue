@@ -4,7 +4,7 @@
       <div class="relative min-w-[250px] py-3">
         <div class="flex flex-col text-sm [&>*]:hover:bg-hover [&>*]:p-3">
           <NuxtLink to="/logout" class="inline-block text-left">
-            wew
+            Logout
           </NuxtLink>
         </div>
       </div>

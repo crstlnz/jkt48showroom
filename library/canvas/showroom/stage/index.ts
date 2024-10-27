@@ -91,4 +91,4 @@ class StageShowroom extends CanvasUtil {
   }
 }
 
-export { stagePositions, StageShowroom, FansAvatar }
+export { FansAvatar, stagePositions, StageShowroom }

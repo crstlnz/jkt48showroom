@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
 import { useVirtualizer, useWindowVirtualizer } from '@tanstack/vue-virtual'
+import { computed, onMounted, ref } from 'vue'
 
 interface Column {
   key: string
@@ -12,7 +12,7 @@ const parentRef = ref<HTMLElement | null>(null)
 const { width: parentWidth } = useElementSize(parentRef)
 
 function generateColumns(count: number) {
-  return [...Array(count)].map((_, i) => {
+  return [...Array.from({ length: count })].map((_, i) => {
     const key: string = i.toString()
     return {
       key,
@@ -23,7 +23,7 @@ function generateColumns(count: number) {
 }
 
 function generateData(columns: Column[], count = 52) {
-  return [...Array(count)].map((_, rowIndex) =>
+  return [...Array.from({ length: count })].map((_, _rowIndex) =>
     columns.reduce<string[]>((acc, _curr, colIndex) => {
       acc.push(`Column ${colIndex}`)
 

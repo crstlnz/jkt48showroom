@@ -1,13 +1,13 @@
 import type { EventHandlerRequest, H3Event } from 'h3'
-import { appendResponseHeader } from 'h3'
 import CookieParser from '@/library/cookieParser'
+import { appendResponseHeader } from 'h3'
 
 export default function () {
   const event = useRequestEvent()
 
   function setCookie(headers: Headers) {
     const app = tryUseNuxtApp()
-    if (process.server) {
+    if (import.meta.server) {
       const setCookie = headers.get('set-cookie')
       const cookies = (setCookie) ? setCookie.split(',') : []
       if (app?.ssrContext && cookies?.length) {

@@ -1,14 +1,15 @@
-import pkg from '../package.json'
 import { useSettings } from '~/store/settings'
+import pkg from '../package.json'
 
 export default defineNuxtPlugin(async () => {
   const { checkAuth } = useAuth()
   await checkAuth()
-  
-  try{
+
+  try {
     const { setVersion } = useSettings()
     setVersion(pkg.version)
-  }catch(e){
+  }
+  catch (e) {
     console.error(e)
   }
 })

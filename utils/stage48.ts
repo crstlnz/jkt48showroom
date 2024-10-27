@@ -24,7 +24,7 @@ export function generateGen(): {
   hinatazaka46: Database.Generation[]
 } {
   return {
-    jkt48: Array.from(Array(jkt48gen).keys()).map((i) => {
+    jkt48: Array.from(Array.from({ length: jkt48gen }).keys()).map((i) => {
       const gen = i + 1
       return {
         title: `${getOrdinal(gen)} Generation`,
@@ -33,7 +33,7 @@ export function generateGen(): {
         key: getGenerationKey(gen, 'jkt48'),
       }
     }),
-    hinatazaka46: Array.from(Array(hinatazaka46gen).keys()).map((i) => {
+    hinatazaka46: Array.from(Array.from({ length: hinatazaka46gen }).keys()).map((i) => {
       const gen = i + 1
       return {
         title: `${getOrdinal(gen)} Generation`,
@@ -51,7 +51,7 @@ export function parseGeneration(key: string, short = false) {
   try {
     return getGeneration(Number.parseInt(key.split('-')[0].replace('gen', '')), short)
   }
-  catch (e) {
+  catch {
     return null
   }
 }
@@ -78,7 +78,7 @@ export function getGeneration(gen?: number | null, short = false) {
 }
 
 export function findGenerationNumber(str: string): number | null {
-  const match = str.match(/\b\d+(?:st|nd|rd|th)?\b\s*Generation/i) // Matches the generation number followed by "Generation"
+  const match = str.match(/\b\d+(?:st|nd|rd|th)?\s+Generation/i) // Matches the generation number followed by "Generation"
   if (match) {
     const generationText = match[0]
     const generationNumberMatch = generationText.match(/\d+/) // Matches the numeric portion of the generation text

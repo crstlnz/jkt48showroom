@@ -1,5 +1,5 @@
-import type { Ref } from 'vue'
 import type { Serializer } from '@vueuse/core'
+import type { Ref } from 'vue'
 import { useLocalStorage } from '@vueuse/core'
 import JSONSerializer from '~~/library/serializer/json'
 
@@ -33,6 +33,7 @@ class ExtendedSerializer<T> implements Serializer<DataValue<T> | null> {
       return null
     }
     catch (e) {
+      console.error(e)
       return null
     }
   }

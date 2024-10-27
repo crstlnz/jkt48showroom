@@ -2,7 +2,7 @@
 import { Switch, SwitchGroup, SwitchLabel } from '@headlessui/vue'
 import { useFuse } from '@vueuse/integrations/useFuse'
 
-const { data, pending, error } = await useApiFetch<Admin.ApiMissingJKT48ID>('/api/admin/missing_jkt48id')
+const { data, pending } = await useApiFetch<Admin.ApiMissingJKT48ID>('/api/admin/missing_jkt48id')
 
 const missingMembers = ref<Admin.MissingJKT48ID[]>([])
 
@@ -68,7 +68,6 @@ const generations = computed(() => {
 })
 
 function remove(id: string) {
-  console.log(id)
   missingMembers.value = missingMembers.value.filter(i => i._id !== id)
 }
 

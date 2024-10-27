@@ -5,7 +5,7 @@ const { locale } = useI18n()
 
 const description = computed(() => {
   const regex = /&[^;]+;/g
-  let str = (data.value?.content?.replace(/(<([^>]+)>)/ig, '') || '').replace(regex, '')
+  let str = (data.value?.content?.replace(/(<([^>]+)>)/g, '') || '').replace(regex, '')
   if (str.split(' ').length > 25) {
     str = `${str.split(' ').slice(0, 25).join(' ')}...`
   }

@@ -43,7 +43,6 @@
 
 //   watch(data, async (d) => {
 //     if (process.server) return
-//     console.log('wewew', d)
 //     if (d) {
 //       await prepareSocket(d)
 //     }

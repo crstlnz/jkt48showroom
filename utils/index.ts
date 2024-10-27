@@ -16,12 +16,15 @@ export function convertToMilliseconds(timestamp: number): number {
 }
 
 export function isValidURL(str: string): boolean {
-  const pattern = new RegExp('^(https?:\\/\\/)?' // protocol
+  const pattern = new RegExp(
+    '^(https?:\\/\\/)?' // protocol
     + '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' // domain name
     + '((\\d{1,3}\\.){3}\\d{1,3}))' // OR ip (v4) address
     + '(:\\d+)?(\\/[-\\w%.~+]*)*' // port and path
     + '(\\?[;&\\w%.~+=-]*)?' // query string
-    + '(#[-\\w]*)?$', 'i') // fragment locator
+    + '(#[-\\w]*)?$',
+    'i',
+  ) // fragment locator
   return !!pattern.test(str)
 }
 
@@ -54,7 +57,12 @@ export function getDateRange(type: IDateRangeType): IDateRange {
   }
 }
 
-export function flattenAndSoftenColor(r: number, g: number, b: number, num = 0.9): [number, number, number] {
+export function flattenAndSoftenColor(
+  r: number,
+  g: number,
+  b: number,
+  num = 0.9,
+): [number, number, number] {
   // Determine the mid-value of the RGB components
   const mid = Math.round((r + g + b) / 3)
 
@@ -81,7 +89,10 @@ export function flattenAndSoftenColor(r: number, g: number, b: number, num = 0.9
   return [r, g, b]
 }
 
-export function getDominantColorClient(src: string, canvas?: HTMLCanvasElement | OffscreenCanvas): Promise<[number, number, number]> {
+export function getDominantColorClient(
+  src: string,
+  canvas?: HTMLCanvasElement | OffscreenCanvas,
+): Promise<[number, number, number]> {
   return new Promise((resolve, reject) => {
     const image = new Image()
     image.crossOrigin = '*'
@@ -130,7 +141,11 @@ export function clamp(min: number, max: number, num: number, pad = 0) {
   return Math.max(min + pad, Math.min(num, max - pad))
 }
 
-export function convertRGBtoHex(red: number, green: number, blue: number): string {
+export function convertRGBtoHex(
+  red: number,
+  green: number,
+  blue: number,
+): string {
   const redHex = red.toString(16).padStart(2, '0')
   const greenHex = green.toString(16).padStart(2, '0')
   const blueHex = blue.toString(16).padStart(2, '0')
@@ -168,7 +183,14 @@ export function deepEqual(obj1: DeepData, obj2: DeepData): boolean {
     }
   }
   else {
-    if (typeof obj1 !== 'object' || obj1 === null || typeof obj2 !== 'object' || obj2 === null) return false
+    if (
+      typeof obj1 !== 'object'
+      || obj1 === null
+      || typeof obj2 !== 'object'
+      || obj2 === null
+    ) {
+      return false
+    }
     const keys1 = Object.keys(obj1)
     const keys2 = Object.keys(obj2)
     if (keys1.length !== keys2.length) return false
@@ -185,7 +207,9 @@ interface ParsedCookie {
   attributes: { [key: string]: string }
 }
 
-export function parseCookieString(cookieString: string): { [key: string]: ParsedCookie } {
+export function parseCookieString(cookieString: string): {
+  [key: string]: ParsedCookie
+} {
   const cookieObj: { [key: string]: ParsedCookie } = {}
 
   if (cookieString) {
@@ -229,7 +253,10 @@ const defaultOpts = {
   second: true,
 }
 
-export function formatDuration(time: string | number, opt?: RelativeTimeOpts): string {
+export function formatDuration(
+  time: string | number,
+  opt?: RelativeTimeOpts,
+): string {
   try {
     const opts = defu(opt, defaultOpts)
     const { t } = useI18n()
@@ -248,11 +275,16 @@ export function formatDuration(time: string | number, opt?: RelativeTimeOpts): s
     if (month && opts.month) str.push(`${month || ''} ${t('month', month)}`)
     if (day && opts.day) str.push(`${day || ''} ${t('day', day)}`)
     if (hour && opts.hour) str.push(`${hour || ''} ${t('hour', hour)}`)
-    if (minute && opts.minute) str.push(`${minute || ''} ${t('minute', minute)}`)
-    if (second && opts.second) str.push(`${second || ''} ${t('second', second)}`)
+    if (minute && opts.minute) {
+      str.push(`${minute || ''} ${t('minute', minute)}`)
+    }
+    if (second && opts.second) {
+      str.push(`${second || ''} ${t('second', second)}`)
+    }
     return str.join(' ')
   }
   catch (e) {
+    console.error(e)
     return 'Parse duration error!'
   }
 }
@@ -270,27 +302,6 @@ export function getNumColor(num: number) {
   else {
     return 'text-red-500 dark:text-red-400'
   }
-}
-
-interface ParseOptions {
-  rate?: number
-  showOriginal?: boolean
-}
-
-export function parseGift(number: number, _opts: ParseOptions) {
-  const opts = {
-    showOriginal: false,
-    ..._opts,
-  }
-
-  const { n } = useI18n()
-
-  if (!opts.rate) return `${n(number)}G`
-
-  if (opts.showOriginal) {
-    return `${n(number)}G (± ${n(number * opts.rate, 'currency', 'id-ID')})`
-  }
-  return `± ${n(number * opts.rate, 'currency', 'id-ID')}`
 }
 
 export function deepCompare(obj1: any, obj2: any): boolean {
@@ -341,10 +352,74 @@ export function deepCompare(obj1: any, obj2: any): boolean {
 }
 
 export function getProxyServer(): string[] {
-  return [...(useRuntimeConfig().public.proxy ?? '')?.split(',')?.map(i => i.trim())?.filter(i => i !== ''), `${useRuntimeConfig().public.api}/api/stream?url=`]
+  return [
+    ...(useRuntimeConfig().public.proxy ?? '')
+      ?.split(',')
+      ?.map(i => i.trim())
+      ?.filter(i => i !== ''),
+    `${useRuntimeConfig().public.api}/api/stream?url=`,
+  ]
 }
 
-const allowed = ['twitter.com', 'x.com', 'facebook.com', 'instagram.com', 'tiktok.com', 'showroom-live.com', 'idn.media']
+const allowed = [
+  'twitter.com',
+  'x.com',
+  'facebook.com',
+  'instagram.com',
+  'tiktok.com',
+  'showroom-live.com',
+  'idn.media',
+]
 export function getAllowedSocials(socials: SocialNetwork[]) {
   return socials.filter(i => allowed.some(u => i.url?.includes(u)))
+}
+
+export function youtubeViewsFormat(
+  views: string | number | null | undefined,
+  locale: string,
+  suffix: boolean = true,
+) {
+  views = Number.isNaN(views) ? 0 : Number(views)
+  let formattedViews: string
+
+  // Pilih format sesuai dengan lokal yang diberikan
+  if (locale === 'id') {
+    if (views >= 1_000_000_000) {
+      formattedViews = `${(views / 1_000_000).toFixed(1)} M x`
+    }
+    else if (views >= 1_000_000) {
+      formattedViews = `${(views / 1_000_000).toFixed(1)} jt x`
+    }
+    else if (views >= 1_000) {
+      formattedViews = `${(views / 1_000).toFixed(1)} rb x`
+    }
+    else {
+      formattedViews = views.toString()
+    }
+  }
+  else {
+    if (views >= 1_000_000_000) {
+      formattedViews = `${(views / 1_000_000).toFixed(1)}B`
+    }
+    else if (views >= 1_000_000) {
+      formattedViews = `${(views / 1_000_000).toFixed(1)}M`
+    }
+    else if (views >= 1_000) {
+      formattedViews = `${(views / 1_000).toFixed(1)}K`
+    }
+    else {
+      formattedViews = views.toString()
+    }
+  }
+
+  formattedViews = formattedViews.replace(/\.0$/, '') // Menghapus .0 jika ada
+  if (suffix) {
+    if (locale === 'id') {
+      formattedViews += ' ditonton'
+    }
+    else {
+      formattedViews += ' views'
+    }
+  }
+  return formattedViews
 }

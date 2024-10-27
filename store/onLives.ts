@@ -1,6 +1,6 @@
+import JSONSerializer from '~~/library/serializer/json'
 import { useNotifications } from './notifications'
 import { useSettings } from './settings'
-import JSONSerializer from '~~/library/serializer/json'
 
 export const useOnLives = defineStore('onLives', () => {
   const { data: lives, pending, error, refresh, tryRefresh } = useLocalStoreController<INowLive[] | null>('onlives', {
@@ -32,6 +32,7 @@ export const useOnLives = defineStore('onLives', () => {
       return await $apiFetch<INowLive[]>(`/api/now_live`, { query: { group: settings.group, debug: useRuntimeConfig().public.isDev } }).catch(() => [])
     }
     catch (e) {
+      console.error(e)
       addNotif({
         type: 'danger',
         message: 'Failed to get Showroom Lives Data!',

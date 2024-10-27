@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { useFocus } from '@vueuse/core'
 import { vOnClickOutside } from '@vueuse/components'
+import { useFocus } from '@vueuse/core'
 
 const props = withDefaults(defineProps<{
   formId: string
@@ -18,14 +18,14 @@ const emit = defineEmits(['update:modelValue'])
 const input = ref<HTMLInputElement>()
 const { focused } = useFocus(input)
 
-function includes(object: object) {
-  for (const obj of props.modelValue) {
-    const object1 = obj as any
-    const object2 = object as any
-    if (Object.keys(obj).every((key: string) => object1[key] === object2[key])) return true
-  }
-  return false
-}
+// function includes(object: object) {
+//   for (const obj of props.modelValue) {
+//     const object1 = obj as any
+//     const object2 = object as any
+//     if (Object.keys(obj).every((key: string) => object1[key] === object2[key])) return true
+//   }
+//   return false
+// }
 
 onMounted(() => {
   focused.value = true
@@ -39,7 +39,7 @@ onMounted(() => {
 // }
 
 function remove(i: number) {
-  return emit('update:modelValue', props.modelValue.filter((idx, d) => i !== idx))
+  return emit('update:modelValue', props.modelValue.filter((idx, _d) => i !== idx))
 }
 
 function previous(index: number) {

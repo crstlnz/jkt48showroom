@@ -39,6 +39,7 @@ async function logout() {
     localStorage.clear()
   }
   catch (e) {
+    console.error(e)
     addNotif({
       message: 'Logout failed!',
       type: 'danger',

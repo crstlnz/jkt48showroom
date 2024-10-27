@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { WatchComment } from '#components'
 import type { WatchVideo } from '#components'
+import { WatchComment } from '#components'
 import { useNotifications } from '~~/store/notifications'
 
 const route = useRoute()
@@ -12,14 +12,14 @@ const { data, pending, error, refresh: refreshWatchData } = await useApiFetch<Wa
       if (!isPremium.value) {
         throw createError({ statusCode: 404, message: 'Page not found!' })
       }
-      if (process.server) {
+      if (import.meta.server) {
         useNuxtApp().payload.isPremium = true
       }
     }
   },
 })
 
-if (process.client) {
+if (import.meta.client) {
   if (useNuxtApp().payload.isPremium !== null) {
     isPremium.value = useNuxtApp().payload.isPremium as boolean
   }
@@ -266,7 +266,7 @@ onTelops((t: Watch.Telops[]) => {
   telops.value = t
 })
 
-const { comments, delayedComments, appendComment, createComment, appendDelayedComments, setAutoAppend, stopAutoAppend } = useShowroomComments(data)
+const { comments, delayedComments, appendComment, createComment, appendDelayedComments, setAutoAppend } = useShowroomComments(data)
 
 onGift((gift: ShowroomAPI.GiftLogItem) => {
   addGift(gift)

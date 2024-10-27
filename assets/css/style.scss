@@ -364,3 +364,7 @@ img.lazyLoad {
     opacity: 1;
   }
 }
+
+.pswp__img{
+  @apply object-cover
+}

@@ -10,7 +10,7 @@ function parseInt() {
   try {
     return Number.parseInt(props.value)
   }
-  catch (e) {
+  catch {
     return 0
   }
 }

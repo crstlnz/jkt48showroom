@@ -29,6 +29,7 @@ useEventListener(feedbackForm, 'submit', async (e) => {
     feedbackForm.value?.reset()
   }
   catch (e) {
+    console.error(e)
     error.value = 'Gagal mengirim form!'
     addNotif({
       title: 'Error',

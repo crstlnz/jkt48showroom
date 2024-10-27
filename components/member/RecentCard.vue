@@ -90,7 +90,7 @@ async function fetchScreenshot() {
       })
       startScreenshotSlide()
     }
-    catch (e) {
+    catch {
       finishLoading.value = true
     }
   }

@@ -6,7 +6,7 @@ const props = defineProps<{
   jkt48members: JKT48.Member[]
 }>()
 
-const emit = defineEmits<{
+defineEmits<{
   (e: 'dismiss'): void
   (e: 'onUpdate', data: Admin.IShowroomMember): void
 }>()

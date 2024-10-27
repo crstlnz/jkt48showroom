@@ -7,7 +7,7 @@ const fetcher = ofetch.create({
   credentials: 'include',
 })
 
-export async function $apiFetch<T>(request: RequestInfo, options?: FetchOptions<'json'> | undefined): Promise<T> {
+export async function $apiFetch<T>(request: RequestInfo, options?: FetchOptions<'json', any> | undefined): Promise<T> {
   const nuxtApp = tryUseNuxtApp()
 
   const fetch = async () => {
@@ -24,25 +24,31 @@ export async function $apiFetch<T>(request: RequestInfo, options?: FetchOptions<
     const res = await fetcher.raw<T>(request, {
       ...opts,
       onResponse(ctx) {
-        if (onResponse) onResponse(ctx)
+        if (Array.isArray(onResponse)) {
+          for (const r of onResponse) {
+            r(ctx)
+          }
+        }
+        else if (onResponse) {
+          onResponse(ctx)
+        }
+
         if (import.meta.server) {
           setCookie(ctx.response.headers)
         }
       },
       onRequest(ctx) {
-        if (onRequest) onRequest(ctx)
-        if (import.meta.server) {
-          ctx.options.headers = getHeaders()
+        if (Array.isArray(onRequest)) {
+          for (const r of onRequest) {
+            r(ctx)
+          }
         }
-        // else {
-        //   if (['post', 'delete', 'put'].includes(ctx.options.method?.toLowerCase() || '')) {
-        //     const settings = useSettings()
-        //     ctx.options.headers = {
-        //       ...ctx.options.headers,
-        //       'X-CSRF-TOKEN': settings.csrfToken,
-        //     }
-        //   }
-        // }
+        else if (onRequest) {
+          onRequest(ctx)
+        }
+        if (import.meta.server) {
+          ctx.options.headers = new Headers(getHeaders())
+        }
       },
     })
     return res._data as T

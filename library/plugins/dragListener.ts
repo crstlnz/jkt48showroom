@@ -78,7 +78,7 @@ class DragListener extends EventEmitter {
       this.listener.remove('touchmove')
       this.listener.remove('touchend')
     }
-    catch (e) {}
+    catch {}
   }
 }
 export default DragListener

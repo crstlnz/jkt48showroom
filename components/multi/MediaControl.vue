@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { MultiVideo } from '#components'
+import { Slider } from '#components'
 import {
   Dialog,
   DialogPanel,
@@ -6,8 +8,6 @@ import {
   TransitionChild,
   TransitionRoot,
 } from '@headlessui/vue'
-import { Slider } from '#components'
-import type { MultiVideo } from '#components'
 
 const props = defineProps<{
   videoPlayers: Map<string, InstanceType<typeof MultiVideo>>
@@ -77,10 +77,6 @@ const autoRemove = useLocalStorage('auto_remove_player', () => true)
 const centerVideos = useLocalStorage('center_videos', () => false)
 const showVideoControl = useLocalStorage('show_video_control', () => true)
 
-function onVolumeChange(vol: number | undefined) {
-  console.log(vol)
-}
-
 const isAllVolumeSame = computed(() => {
   return videoPlayers.value.every(a => a.video?.volume === videoPlayers.value[0]?.video?.volume)
 })
@@ -112,7 +108,6 @@ watch(allVolume, (volume) => {
 onMounted(() => {
   if (slider.value?.slider) {
     useEventListener(slider.value.slider, 'change', () => {
-      console.log('okeeey')
     })
   }
 })

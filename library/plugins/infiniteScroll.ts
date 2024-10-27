@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import EventEmitter from 'events'
 import Listener from './eventListener'
 
@@ -54,8 +55,8 @@ class InfiniteScroll extends EventEmitter {
   checkTrigger() {
     const percent
       = (window.scrollY
-      / (document.documentElement.scrollHeight - window.innerHeight))
-      * 100
+        / (document.documentElement.scrollHeight - window.innerHeight))
+        * 100
     if (percent > this.trigger) {
       this.state = state.LOADING
       this.emit('load')

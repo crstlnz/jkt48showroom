@@ -43,7 +43,7 @@ const date = computed(() => {
     }
     return str.join(' ')
   }
-  catch (e) {
+  catch {
     return 'Parse duration error!'
   }
 })

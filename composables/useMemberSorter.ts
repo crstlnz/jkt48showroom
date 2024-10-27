@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useNotifications } from '~~/store/notifications'
 
 enum GameState {

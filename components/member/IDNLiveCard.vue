@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { useElementHover, useTimeoutFn } from '@vueuse/core'
 import type { PreviewVideo } from '#components'
 import { DeferImage } from '#components'
+import { useElementHover, useTimeoutFn } from '@vueuse/core'
 
 const props = defineProps<{ live: INowLive }>()
 defineEmits(['refreshliveinfo'])
@@ -29,7 +29,9 @@ watch(openMenu, (isOpen) => {
       openMenu.value = false
     })
   }
-  else if (listener.value) listener.value()
+  else if (listener.value) {
+    listener.value()
+  }
 })
 
 const { start, stop } = useTimeoutFn(() => {
@@ -62,7 +64,9 @@ watch(isPreview, (preview) => {
       closePreview()
     })
   }
-  else if (listener.value && !openMenu.value) listener.value()
+  else if (listener.value && !openMenu.value) {
+    listener.value()
+  }
 })
 
 watch(isContainerHovered, (hovered) => {

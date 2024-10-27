@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 enum Modes {
   DOWN,
   UP,

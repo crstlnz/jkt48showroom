@@ -22,7 +22,7 @@ async function reorder() {
     })
   }
   catch (e) {
-    console.log(e)
+    console.error(e)
     addNotif({
       type: 'danger',
       message: t('reorder.failed'),
@@ -48,7 +48,7 @@ async function follow() {
     })
   }
   catch (e) {
-    console.log(e)
+    console.error(e)
     addNotif({
       type: 'danger',
       message: t('follow.failed'),

@@ -22,7 +22,7 @@ async function fetchProfile() {
 
     emit('data', profile.value)
   }
-  catch (e) {
+  catch {
 
   }
   pending.value = false

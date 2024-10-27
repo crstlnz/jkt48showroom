@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { Slider } from '#components'
 import type { MultiVideo } from '#components'
+import { Slider } from '#components'
 
 const props = defineProps<{
   player: InstanceType<typeof MultiVideo>
