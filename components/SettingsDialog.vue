@@ -28,7 +28,7 @@ const showVideoControl = useLocalStorage('show_video_control', () => true)
       v-ripple
       type="button"
       aria-label="Toggle Dark Mode"
-      class="bg-container flex items-center justify-start gap-3 rounded-full p-3"
+      class="2xl:bg-container max-2xl:hover:bg-hover flex items-center justify-center gap-3 rounded-full size-12 aspect-square z-aboveNav"
       @click="openModal"
     >
       <Icon name="heroicons:cog-6-tooth-solid" class="h-6 w-6" />

@@ -140,6 +140,9 @@ export default defineNuxtConfig({
     compressPublicAssets: {
       brotli: true,
     },
+    prerender: {
+      routes: ['/about'],
+    },
   },
   devtools: {
     enabled: true,

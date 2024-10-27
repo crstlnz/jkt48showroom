@@ -4,7 +4,7 @@ defineProps<{ icon: string, activeIcon: string, title: string, url: string, acti
 
 <template>
   <NuxtLink :to="url" class="group w-full select-none" :active-class="activeClass ?? ''" :aria-label="title">
-    <div class="inline-flex items-center overflow-hidden rounded-full p-3 transition-[background-color] group-hover:bg-hover" :class="{ 'font-black': active, 'font-extralight': !active }">
+    <div v-ripple class="inline-flex items-center overflow-hidden rounded-full p-3 transition-[background-color] group-hover:bg-hover" :class="{ 'font-black': active, 'font-extralight': !active }">
       <div class="h-7 w-7">
         <SwitchIcon :is-switch="active" :icon="icon" :switch-icon="activeIcon" size="28px" class="h-full w-full" />
       </div>
