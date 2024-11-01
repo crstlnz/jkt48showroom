@@ -596,7 +596,6 @@ declare module 'cors'
 declare module 'vue-twitter-timeline'
 declare module 'hls.js/dist/hls.min.js'
 declare module 'vue-gtag-next'
-declare module 'cloudinary'
 declare module 'horoscope'
 declare module 'vue-dndrop';
 declare let Hls: any

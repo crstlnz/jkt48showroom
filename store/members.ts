@@ -6,7 +6,7 @@ export const useMembers = defineStore('members', () => {
   const settings = useSettings()
   const { data: members, trySet, isValid } = useExpiredLocalStorage<IMember[]>(`membersv15-${settings.group}`, 86400000)
   async function fetch() {
-    await trySet(async () => await $apiFetch('/api/member', { query: { group: settings.group, _v: 'v15' } }))
+    await trySet(async () => await $apiFetch('/api/member', { query: { group: settings.group, _v: 'v16' } }))
   }
 
   async function load() {
