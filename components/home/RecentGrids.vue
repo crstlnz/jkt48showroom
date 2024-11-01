@@ -57,7 +57,7 @@ const { locale } = useI18n()
         </NuxtLink>
         <div class="flex flex-1 flex-col">
           <div class="flex-1">
-            <NuxtLink :to="`/member/${recent.member.url}`" class="text-lg">
+            <NuxtLink :to="`/member/${recent.member.url}`" class="text-lg line-clamp-2 leading-6">
               {{ (recent.member.nickname ?? recent.member.name).split("-")?.[0] }}
             </NuxtLink>
             <ul class="mt-1 space-y-1 text-xs md:text-sm [&>li]:flex [&>li]:gap-1">
