@@ -10,3 +10,5 @@ dist
 .vscode/*
 .nuxtrc
 .data
+.data/hub
+.wrangler

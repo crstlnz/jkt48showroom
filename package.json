@@ -70,6 +70,7 @@
     "@nuxt/eslint": "^0.6.0",
     "@nuxt/fonts": "^0.10.2",
     "@nuxt/icon": "^1.5.8",
+    "@nuxthub/core": "^0.8.4",
     "@nuxtjs/color-mode": "^3.5.2",
     "@nuxtjs/device": "^3.2.4",
     "@nuxtjs/i18n": "8.5.5",
@@ -90,7 +91,8 @@
     "sass": "^1.77.8",
     "typescript": "5.6.3",
     "v-wave": "^2.0.0",
-    "vue-virtual-scroll-grid": "^1.11.0"
+    "vue-virtual-scroll-grid": "^1.11.0",
+    "wrangler": "^3.84.1"
   },
   "overrides": {
     "vue": "latest"
