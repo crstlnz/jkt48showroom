@@ -46,7 +46,6 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@nuxt/fonts',
     '@nuxt/eslint',
-    '@nuxthub/core',
   ],
   icon: {
     mode: 'svg',
