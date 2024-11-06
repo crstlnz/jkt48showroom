@@ -52,7 +52,9 @@ const description = `A Fanmade Website for ${getGroupTitle(
 )} Showroom. Discover the latest ${getGroupTitle(
   group,
 )} member showroom live streams, member profile, and fans ranking!`
+
 useSeoMeta({
+  title: `${getGroupTitle(group)} Showroom Log`,
   ogTitle: () => `${getGroupTitle(group)} Showroom Log`,
   description,
   ogSiteName: `${getGroupTitle(group)} Showroom Log`,
@@ -62,6 +64,7 @@ useSeoMeta({
   twitterDescription: description,
   twitterImage: getMetaImage(group),
   twitterCard: 'summary',
+  ogType: 'website',
 })
 
 // TODO: Remove when https://github.com/vuejs/core/issues/5513 fixed

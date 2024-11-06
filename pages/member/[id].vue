@@ -72,14 +72,16 @@ const description = computed(() => {
   return `Berikut profile lengkap dari ${name} ${getGroup(group)}`
 })
 useSeoMeta({
-  ogTitle: () => `${data.value?.fullname || member.value?.name} Profile` || 'Member Profile',
   description,
-  ogDescription: description,
-  ogImage: () => member.value?.img || '',
+  title: () => `${data.value?.fullname || member.value?.name} Profile` || 'Member Profile',
   twitterTitle: () => `${member.value?.name} Profile` || 'Member Profile',
   twitterDescription: description,
   twitterImage: () => $fixCloudinary(member.value?.img_alt || member.value?.img || ''),
   twitterCard: 'summary',
+  ogTitle: () => `${data.value?.fullname || member.value?.name} Profile` || 'Member Profile',
+  ogImage: () => member.value?.img || '',
+  ogDescription: description,
+  ogType: 'profile',
 })
 
 useHead({
