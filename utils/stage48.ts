@@ -1,4 +1,4 @@
-const jkt48gen = 12
+const jkt48gen = 13
 const hinatazaka46gen = 4
 
 function getOrdinal(number: number): string {
