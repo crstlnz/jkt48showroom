@@ -178,7 +178,7 @@ function toggleGen(key: string) {
                             {{ item.is_group ? "Official" : (item?.info?.is_graduate ? "Graduated" : "Active") }}
                           </div>
                         </div>
-                        <div class="space-x-4 self-end text-base text-slate-700 dark:text-slate-400">
+                        <div class="flex gap-4 self-end text-base text-slate-700 dark:text-slate-400">
                           <NuxtLink :to="$liveURL(item.url)" target="_blank">
                             <Icon name="ic:round-videocam" size="1.6rem" />
                           </NuxtLink>

@@ -197,11 +197,11 @@ function toggleGen(key: string) {
                         <div v-if="!(item.member_data)?._id && !item.is_group" class="text-base text-rose-500">
                           No member data
                         </div>
-                        <div v-else class="text-base" :class="item.is_group ? 'text-blue-500' : (item?.member_data?.isGraduate ? 'text-red-500' : 'text-green-500')">
-                          {{ item.is_group ? "Official" : (item?.member_data?.isGraduate ? "Graduated" : "Active") }}
+                        <div v-else class="text-base" :class="item.is_group ? 'text-blue-500' : (item?.member_data?.info?.is_graduate ? 'text-red-500' : 'text-green-500')">
+                          {{ item.is_group ? "Official" : (item?.member_data?.info?.is_graduate ? "Graduated" : "Active") }}
                         </div>
                       </div>
-                      <div class="space-x-4 self-end text-base text-slate-700 dark:text-slate-400">
+                      <div class="flex gap-4 self-end text-base text-slate-700 dark:text-slate-400">
                         <NuxtLink :to="$liveURL(item.url)" target="_blank">
                           <Icon name="ic:round-videocam" size="1.6rem" />
                         </NuxtLink>

@@ -10,6 +10,7 @@ interface IdolMember {
   info: {
     img: string
     description?: string
+    profile_video?: string
     nicknames?: string[]
     kanji?: string
     is_graduate?: boolean

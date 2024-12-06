@@ -16,7 +16,7 @@ definePageMeta({ middleware: 'admin' })
           Setlist
         </NuxtLink>
         <NuxtLink class="bg-container rounded-3xl px-3.5 py-2 text-sm hover:bg-hover" to="/admin/member">
-          Showroom Member
+          Showroom
         </NuxtLink>
         <NuxtLink class="bg-container rounded-3xl px-3.5 py-2 text-sm hover:bg-hover" to="/admin/stage48">
           Stage48

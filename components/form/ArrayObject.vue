@@ -5,7 +5,7 @@ import { useFocus } from '@vueuse/core'
 const props = withDefaults(defineProps<{
   formId: string
   label?: string
-  modelValue: any[]
+  modelValue?: any[]
   inputClass?: string
   keys: string[]
   titleKey?: string
@@ -39,10 +39,11 @@ onMounted(() => {
 // }
 
 function remove(i: number) {
-  return emit('update:modelValue', props.modelValue.filter((idx, _d) => i !== idx))
+  return emit('update:modelValue', props.modelValue?.filter((idx, _d) => i !== idx))
 }
 
 function previous(index: number) {
+  if (!props.modelValue) return
   const data = [...props.modelValue]
   const pick = data[index]
   data.splice(index, 1)
@@ -51,6 +52,7 @@ function previous(index: number) {
 }
 
 function next(index: number) {
+  if (!props.modelValue) return
   const data = [...props.modelValue]
   const pick = data[index]
   data.splice(index, 1)
@@ -61,6 +63,7 @@ const formOpen = ref(new Set())
 const formAdd = ref(false)
 
 function formChange(i: number, data: any) {
+  if (!props.modelValue) return
   formOpen.value.clear()
   const d = [...props.modelValue]
   d[i] = data
@@ -68,6 +71,7 @@ function formChange(i: number, data: any) {
 }
 
 function add(data: any) {
+  if (!props.modelValue) return
   formAdd.value = false
   const d = [...props.modelValue]
   d.push(data)
@@ -80,7 +84,7 @@ function add(data: any) {
     <!-- <label v-if="label" class="pl-2.5" :for="formId">{{ label }}</label> -->
     <div class="flex flex-wrap gap-3 !bg-transparent" :class="inputClass">
       <div
-        v-for="[idx, i] in modelValue.entries()" :key="String(i)" type="button" class=" group py-1.5 px-2.5 bg-container-2 rounded-md relative min-w-[115px]"
+        v-for="[idx, i] in modelValue?.entries() ?? []" :key="String(i)" type="button" class=" group py-1.5 px-2.5 bg-container-2 rounded-md relative min-w-[115px]"
       >
         <Transition name="fade">
           <FormObject v-if="formOpen.has(idx)" v-on-click-outside="() => formOpen.clear()" :keys="keys" :data="i" class="absolute bottom-0 left-0 z-10" @change="(data) => formChange(idx, data)" />
@@ -96,13 +100,13 @@ function add(data: any) {
           </button>
         </div>
         <div class="flex gap-3 text-center">
-          <button v-if="modelValue.length > 1" type="button" class="disabled:opacity-40 disabled:cursor-not-allowed" :disabled="idx === 0" @click="() => previous(idx)">
+          <button v-if="(modelValue?.length ?? 0) > 1" type="button" class="disabled:opacity-40 disabled:cursor-not-allowed" :disabled="idx === 0" @click="() => previous(idx)">
             {{ '<' }}
           </button>
           <div class="flex-1" @click="() => formOpen.add(idx)">
             {{ i[titleKey ?? keys[0]] }}
           </div>
-          <button v-if="modelValue.length > 1" type="button" class="disabled:opacity-40 disabled:cursor-not-allowed" :disabled="idx === modelValue.length - 1" @click="() => next(idx)">
+          <button v-if="(modelValue?.length ?? 0) > 1" type="button" class="disabled:opacity-40 disabled:cursor-not-allowed" :disabled="idx === (modelValue?.length ?? 0) - 1" @click="() => next(idx)">
             {{ '>' }}
           </button>
         </div>

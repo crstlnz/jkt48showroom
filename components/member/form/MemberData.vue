@@ -170,6 +170,16 @@ function generateForm() {
       },
     },
     {
+      title: 'Profile Video',
+      placeholder: 'Youtube Url',
+      id: 'profile_video',
+      data: props.memberData?.info?.profile_video,
+      component: 'text',
+      check: (data: any): boolean => {
+        return props.memberData?.info?.profile_video === data
+      },
+    },
+    {
       title: 'Missing Showroom',
       placeholder: 'Missing Showroom',
       id: 'live_data.missing.showroom',
