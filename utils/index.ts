@@ -423,3 +423,20 @@ export function youtubeViewsFormat(
   }
   return formattedViews
 }
+
+export function getVideoId(youtubeUrl: string): string | null {
+  try {
+    const url = new URL(youtubeUrl)
+    const videoId = url.searchParams.get('v') ?? url.pathname.split('/').pop()
+
+    if (videoId) {
+      return videoId
+    }
+
+    return youtubeUrl
+  }
+  catch (error) {
+    console.error('Invalid URL:', error)
+    return youtubeUrl
+  }
+}
