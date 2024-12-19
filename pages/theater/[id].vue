@@ -194,6 +194,19 @@ useHead({
                       {{ $t('at') }} <b>Showroom</b>
                     </div>
                   </NuxtLink>
+                  <NuxtLink
+                    v-if="theater.idnTheater && getTheaterState(theater.date) !== 'ended'"
+                    :to="`https://idn.app/${theater.idnTheater.username}/live/preview/${theater.idnTheater.slug}`" external target="_blank"
+                    class="p-3 aspect-[12/2.2] md:aspect-[12/3] text-white bg-red-500 rounded-xl flex flex-col justify-center items-center "
+                  >
+                    <div class="text-lg lg:text-xl xl:text-2xl flex gap-2 items-center">
+                      <Icon name="ep:ticket" class="text-white text-xl lg:text-2xl xl:text-3xl" />
+                      <b>{{ $t("ticket.online") }}</b>
+                    </div>
+                    <div class="text-sm leading-3">
+                      {{ $t('at') }} <b>IDN Live</b>
+                    </div>
+                  </NuxtLink>
                 </div>
               </div>
             </div>

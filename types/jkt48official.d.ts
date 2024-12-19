@@ -20,13 +20,41 @@ declare namespace JKT48 {
     setlistId: string
     memberIds: string[]
     seitansaiIds: string[]
-    graduationIds: string[]
+    graduationIds?: string[]
     date: Date
     team: {
       id: string
       img: string
     }
-    showroomTheater?: ShowroomPremiumLive
+    showroomTheater?: ShowroomPremiumLiveWithPrice
+    idnTheater?: IDNPremiumLive
+  }
+
+  interface ShowroomPremiumLive {
+    entrance_url: string
+    room_url: string
+    image: string
+    premium_live_type: number
+    is_onlive?: boolean
+    title: string
+    paid_live_id: number
+    room_id: number
+    room_name: string
+    start_at: number
+  }
+
+  interface ShowroomPremiumLiveWithPrice extends ShowroomPremiumLive {
+    price: number
+  }
+
+  interface IDNPremiumLive {
+    title: string
+    slug: string
+    image: string
+    start_at: number
+    username: string
+    uuid: string
+    price: number
   }
 
   interface TheaterDetail {
@@ -41,7 +69,8 @@ declare namespace JKT48 {
       id: string
       img: string
     }
-    showroomTheater?: ShowroomPremiumLive
+    showroomTheater?: ShowroomPremiumLiveWithPrice
+    idnTheater?: IDNPremiumLive
   }
 
   interface Song {

@@ -250,6 +250,7 @@ interface IApiTheaterDetail {
   seitansai: JKT48MemberExtend[]
   graduation: JKT48MemberExtend[]
   showroomTheater?: ShowroomPremiumLive
+  idnTheater?: JKT48.IDNPremiumLive
   date: Date
   team: {
     id: string
