@@ -71,7 +71,7 @@ const SortList: SortData[] = [
 export default {
   // group: 'hinatazaka46', // jkt48, hinatazaka or all
   ...urls,
-  enableSousenkyou: true,
+  enableSousenkyou: false,
   getTheaterId(url: string) {
     const match = url.match(/\/(\d+)\?/)
     return match ? match[1] : null

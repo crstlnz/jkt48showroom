@@ -71,9 +71,9 @@ function formChange(i: number, data: any) {
 }
 
 function add(data: any) {
-  if (!props.modelValue) return
+  // if (!props.modelValue) return
   formAdd.value = false
-  const d = [...props.modelValue]
+  const d = [...(props.modelValue ?? [])]
   d.push(data)
   emit('update:modelValue', d)
 }

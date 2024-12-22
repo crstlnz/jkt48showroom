@@ -77,7 +77,7 @@ const calculatedGift = computed<RecentUserGifts[]>(() => {
 
 <template>
   <div class="flex flex-col gap-3 md:gap-4">
-    <MemberProfileBanner :sousenkyo="data.sousenkyo" :room-id="data.room_id" :member="data.room_info" />
+    <MemberProfileBanner :room-id="data.room_id" :member="data.room_info" />
     <div class="mx-3 md:mx-4 flex gap-3 md:gap-4 items-stretch [&>div]:flex-1 max-xl:flex-col">
       <div class="flex flex-col md:flex-row xl:flex-col gap-3 md:gap-4 flex-wrap">
         <InfoCard class="flex-1" icon-class="bg-red-500/20 text-red-500 dark:bg-red-300/20 dark:text-red-300" icon="material-symbols:calendar-today">

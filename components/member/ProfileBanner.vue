@@ -93,7 +93,6 @@ function openProfileImage() {
             <div class="flex-1 text-2xl md:text-3xl">
               {{ (member.nickname || member.name)?.split("-")?.[0] }}
             </div>
-            <Sousenkyo2024Label v-if="sousenkyo" />
           </div>
           <div class="flex gap-2 text-xs md:text-sm">
             <div

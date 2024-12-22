@@ -22,21 +22,21 @@ const { data, pending, error } = await useAsyncData<IDNLivesDetail>(
         }
       : undefined
 
-    const sousenkyoData = member ? await $apiFetch<SousenkyoMember>(`/api/sousenkyo/member/${member?.room_id}/room_id`).catch(() => undefined) : undefined
+    // const sousenkyoData = member ? await $apiFetch<SousenkyoMember>(`/api/sousenkyo/member/${member?.room_id}/room_id`).catch(() => undefined) : undefined
 
     if (live) {
       return {
         ...live,
         is_live: true,
         member_info,
-        sousenkyo: sousenkyoData,
+        // sousenkyo: sousenkyoData,
       }
     }
     else {
       return {
         is_live: false,
         member_info,
-        sousenkyo: sousenkyoData,
+        // sousenkyo: sousenkyoData,
       }
     }
   },

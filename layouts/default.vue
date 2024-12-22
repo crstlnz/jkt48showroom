@@ -41,14 +41,14 @@ const menus: MenuItem[] = [
     icon: 'fluent:history-16-regular',
     activeIcon: 'fluent:history-16-filled',
   },
-  {
-    title: 'Sousenkyo 2024',
-    url: '/sousenkyo2024',
-    locale_id: 'menu.sousenkyo',
-    mobile: false,
-    icon: 'mdi:crown-outline',
-    activeIcon: 'mdi:crown',
-  },
+  // {
+  //   title: 'Sousenkyo 2024',
+  //   url: '/sousenkyo2024',
+  //   locale_id: 'menu.sousenkyo',
+  //   mobile: false,
+  //   icon: 'mdi:crown-outline',
+  //   activeIcon: 'mdi:crown',
+  // },
   // {
   //   title: 'Schedule',
   //   url: '/schedule',
