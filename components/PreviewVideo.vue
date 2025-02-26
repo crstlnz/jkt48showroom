@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-const props = defineProps<{ src: string }>()
+import { getProxiedStream } from '~/utils/proxyStream'
+
+const props = defineProps<{ src: string, useProxy?: boolean }>()
 const video = ref<HTMLMediaElement>()
 
 const hls = ref()
@@ -15,7 +17,7 @@ function buffer() {
       backBufferLength: 90,
     })
     hls.value.attachMedia(video.value)
-    hls.value.loadSource(props.src)
+    hls.value.loadSource(props.useProxy ? getProxiedStream(props.src) : props.src)
     hls.value.on(Hls.Events.BUFFER_CREATED, () => {
       videoLoaded.value = true
     })

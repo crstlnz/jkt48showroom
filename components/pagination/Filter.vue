@@ -118,6 +118,12 @@ const { isMobile } = useResponsive()
 const element = ref<HTMLElement>()
 const { height } = useWindowSize()
 
+const liveType = ref<string | null>(null)
+
+function setType(type: string) {
+  liveType.value = liveType.value === type ? null : type
+}
+
 const padding = 40
 const fixedHeight = ref<string | null>(null)
 const el = ref()
@@ -198,6 +204,28 @@ onMounted(() => {
       <span class="text-base">{{ $t("filter") }}</span>
     </div>
     <LazyFormDateRange v-model="date" />
+    <div
+      class="flex space-x-1 overflow-hidden rounded-xl bg-slate-200/70 dark:bg-dark-2 [&>*]:cursor-pointer [&>button]:flex-1 [&>button]:p-2 hover:[&>button]:bg-second-2/20 lg:[&>button]:p-2 [&>div]:flex-1"
+    >
+      <button
+        type="button"
+        :class="{
+          '!bg-second-2/90 text-white': liveType === 'showroom',
+        }"
+        @click="setType('showroom')"
+      >
+        Showroom
+      </button>
+      <button
+        type="button"
+        :class="{
+          '!bg-second-2/90 text-white': liveType === 'idn',
+        }"
+        @click="setType('idn')"
+      >
+        IDN Live
+      </button>
+    </div>
     <div
       class="flex space-x-1 overflow-hidden rounded-xl bg-slate-200/70 dark:bg-dark-2 [&>*]:cursor-pointer [&>button]:flex-1 [&>button]:p-2 hover:[&>button]:bg-second-2/20 lg:[&>button]:p-2 [&>div]:flex-1"
     >

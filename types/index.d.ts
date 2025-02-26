@@ -83,6 +83,7 @@ interface INowLive {
   is_graduate: boolean
   is_group: boolean
   started_at: string | number
+  chat_room_id?: string
   streaming_url_list: StreamingURL[]
   is_premium?: boolean
   type: 'idn' | 'showroom'

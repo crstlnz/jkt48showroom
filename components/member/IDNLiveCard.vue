@@ -117,7 +117,7 @@ watch(isHovered, (hovered) => {
           Keep Hover
         </div>
         <div section="preview-on" :class="{ 'visible opacity-100': isPreview, 'invisible opacity-0': !isPreview }" class="absolute h-full w-full inset-x-0 top-0 z-20 transition-opacity duration-[400ms]">
-          <LazyPreviewVideo ref="preview" :src="streamingURL" :playing="playing" class="w-full h-full" />
+          <LazyPreviewVideo ref="preview" :use-proxy="true" :src="streamingURL" :playing="playing" class="w-full h-full" />
         </div>
         <div section="preview-off" :class="{ 'bg-slate-200 dark:bg-dark-1/60': isHovered && !isPreview && isSupported }" class="relative top-0 w-full h-full overflow-hidden rounded-t-xl transition-colors">
           <div class="relative inset-0 flex h-full items-end justify-center">

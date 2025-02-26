@@ -101,21 +101,28 @@ export default {
       }
     }
   },
-  getBanner(group: string): Banner {
+  getBanner(group: string): Banner[] {
     switch (group) {
       case 'hinatazaka46' : {
-        return {
+        return [{
           title: 'Hinatazaka46 new single',
           img: 'https://res.cloudinary.com/haymzm4wp/image/upload/h_400,f_auto/v1689063914/assets/img/hinabannerwide_hurqhb.png',
           url: 'https://www.youtube.com/watch?v=vYKRIwJGRKk&ab_channel=%E6%97%A5%E5%90%91%E5%9D%8246OFFICIALYouTubeCHANNEL',
-        }
+        }]
       }
       default : {
-        return {
-          title: 'Sousenkyo JKT48 2024',
-          img: 'https://res.cloudinary.com/haymzm4wp/image/upload/v1725119914/assets/img/raj4al9rdjxgnaqbrhcj.png',
-          url: 'https://ssk.jkt48.com/2024/id',
-        }
+        return [
+          {
+            title: '#KuSangatSuka',
+            img: 'https://res.cloudinary.com/haymzm4wp/image/upload/s--haIor69P--/e_improve:outdoor/c_fit,w_1000/assets/img/joejskicp7xgarywsgkj',
+            url: 'https://www.youtube.com/watch?v=kvhNCk257WY',
+          },
+          {
+            title: 'Bibir yang telah dicuri',
+            img: 'https://res.cloudinary.com/haymzm4wp/image/upload/s--V03eHLn---/f_auto,q_auto/v1/assets/img/jpcep60w3hlmbtilpnpk',
+            url: 'https://www.youtube.com/watch?v=_Qn9B9mD2bI',
+          },
+        ]
       }
     }
   },
@@ -168,7 +175,7 @@ export default {
         return 'https://res.cloudinary.com/haymzm4wp/image/upload/h_400,f_auto/v1689063914/assets/img/hinabannerwide_hurqhb.png'
       }
       default : {
-        return 'https://res.cloudinary.com/haymzm4wp/image/upload/v1697142302/assets/img/jqs2lvaesnnqi86wyzcg.jpg'
+        return 'https://res.cloudinary.com/haymzm4wp/image/upload/s--haIor69P--/e_improve:outdoor/c_fit,w_1000/assets/img/joejskicp7xgarywsgkj'
       }
     }
   },

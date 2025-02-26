@@ -91,6 +91,15 @@ const menus: MenuItem[] = [
   //   icon: 'ic:round-favorite-border',
   //   activeIcon: 'ic:round-favorite',
   // },
+  // {
+  //   title: 'Stats',
+  //   locale_id: 'menu.stats',
+  //   url: '/stats',
+  //   login: false,
+  //   mobile: true,
+  //   icon: 'solar:ranking-linear',
+  //   activeIcon: 'solar:ranking-bold',
+  // },
   {
     title: 'Bookmark',
     locale_id: 'menu.bookmark',

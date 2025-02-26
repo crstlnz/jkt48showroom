@@ -1,4 +1,7 @@
+import { vite as vidstack } from 'vidstack/plugins'
+
 const isDev = process.env.NODE_ENV === 'development'
+
 export default defineNuxtConfig({
   app: {
     head: {
@@ -145,7 +148,7 @@ export default defineNuxtConfig({
     },
   },
   devtools: {
-    enabled: true,
+    enabled: false,
     timeline: {
       enabled: true,
     },
@@ -172,6 +175,14 @@ export default defineNuxtConfig({
     config: {
       standalone: false,
     },
+  },
+  vue: {
+    compilerOptions: {
+      isCustomElement: tag => tag.startsWith('media-'),
+    },
+  },
+  vite: {
+    plugins: [vidstack({ include: /vidstack\// })],
   },
   compatibilityDate: '2024-08-31',
 })

@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { MaybeElementRef } from '@vueuse/core'
+import type { DynamicScroller } from 'vue-virtual-scroller'
 import type DragListener from '~~/library/plugins/dragListener'
 import type SwipeDetector from '~~/library/plugins/swipeDetector'
-import type { DynamicScroller } from 'vue-virtual-scroller'
 import { breakpointsTailwind, onClickOutside, useBreakpoints, useEventListener } from '@vueuse/core'
 
 const props = withDefaults(

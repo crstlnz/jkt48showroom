@@ -53,11 +53,11 @@ export default function (data: Ref<Watch.WatchData | null>) {
           }
           catch (e) {
             console.error(e)
-            onTelops.trigger([])
+            onTelops.trigger([] as unknown as Watch.Telops)
           }
         }
         else if (code === 9) { // telop stop
-          onTelops.trigger([])
+          onTelops.trigger([] as unknown as Watch.Telops)
         }
         else if (code === 2) {
           gift.trigger(
