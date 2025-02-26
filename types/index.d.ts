@@ -26,7 +26,7 @@ interface RecentsQuery {
   filter?: 'graduated' | 'active' | 'all'
   date?: QueryDateRange
   group?: Group
-  type?: LogType | 'all'
+  type?: LogType | 'all' | null
 }
 
 interface ILiveInfo {
