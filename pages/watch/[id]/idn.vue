@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useWindowSize } from '@vueuse/core'
 import { useMembers } from '~/store/members'
 import { useOnLives } from '~/store/onLives'
 
@@ -53,6 +54,7 @@ const { width, height } = useWindowSize()
 const isLandscape = computed(() => {
   return width.value >= height.value
 })
+
 const streamURLs = computed(() => {
   if (!data.value?.streaming_url_list) return []
   return [
@@ -77,11 +79,13 @@ const { isMobile } = useDevice()
 function setVideoLandscape(val: boolean) {
   videoIsLandscape.value = val
 }
+
+const enableComment = useLocalStorage('enable-idn-comment', true)
 </script>
 
 <template>
   <div class="h-full">
-    <div v-if="pending" class="flex justify-center items-center w-full aspect-video">
+    <div v-if="pending" class="flex justify-center items-center w-full aspect-[4/5] sm:aspect-video">
       <div class="aspect-video w-20 max-w-[40%]">
         <Icon name="svg-spinners:ring-resize" class="w-full h-full" />
       </div>
@@ -119,76 +123,62 @@ function setVideoLandscape(val: boolean) {
         </div>
       </div>
     </div>
-    <div v-else class="max-md:w-full md:max-h-[100vh] flex flex-col items-center mx-auto relative overflow-hidden">
-      <ClientOnly>
+    <ClientOnly v-else>
+      <div
+        class="flex items-start relative"
+        :class="{
+          'h-[calc(100vh-62px)]': isMobile,
+          'h-[95vh]': !isMobile,
+        }"
+      >
         <div
-          class="relative flex flex-col gap-3 overflow-hidden transition-all duration-300" :class="{
-            'w-full aspect-[13.5/9] sm:aspect-[15/9]': videoIsLandscape,
-            'h-[calc(100dvh_-_60px)]': !videoIsLandscape,
-            'w-full': isMobile || !isLandscape,
-            'aspect-[9/16]': !videoIsLandscape && !isMobile,
-          }"
+          class="flex-1 relative flex flex-col gap-3 overflow-hidden transition-all duration-300 h-full"
         >
-          <NuxtLink
-            :to="$idnLiveUrl(data?.url_key || '', data?.slug || '')" target="_blank" :external="true"
-            no-prefetch class="absolute top-0 left-0 z-20 p-4 mt-0.5"
-          >
-            <NuxtImg
-              src="https://upload.wikimedia.org/wikipedia/commons/b/ba/IDN_Live.svg" size="64px"
-              class="w-20 md:w-24"
-            />
-          </NuxtLink>
-          <div class="z-10 absolute right-0 top-0 flex-col flex justify-end m-3 items-end gap-2">
-            <div class="px-2 md:px-3 py-1 text-base font-semibold text-white z-20 bg-black/40 rounded-xl">
-              {{ data?.name }}
-            </div>
-            <Sousenkyo2024Label v-if="data.sousenkyo" />
-          </div>
           <Suspense>
             <template #fallback>
               <div
-                class="max-h-[100vh] bg-black/50 flex-1 bg-container" :class="videoIsLandscape && isLandscape
-                  ? 'w-full'
-                  : isMobile
-                    ? 'h-[calc(100dvh_-_60px)]'
-                    : 'h-[100dvh] max-h-[1200px]'
-                "
+                class="max-h-[100vh] bg-black/50 flex-1 bg-container"
               />
             </template>
-            <LazyWatchVideo
-              :landscape="false" class="bg-container flex justify-center flex-col flex-1"
-              :video-fill="!videoIsLandscape ? 'height' : 'width'" :class="{
-                'aspect-square w-full': videoIsLandscape,
-                'w-full h-full': !videoIsLandscape,
-                // 'w-full': videoIsLandscape && isLandscape,
-                // 'h-[calc(100dvh_-_60px_-_28px_-_24px)]': !(videoIsLandscape && isLandscape) && isMobile,
-                // 'h-[calc(100dvh_-_28px_-_24px)] max-h-[1200px]': !(videoIsLandscape && isLandscape) && !isMobile,
-              }" :poster="data?.img ?? ''" :sources="streamURLs" rotate-fill="height" @is-landscape="setVideoLandscape"
-              @fullsceen="isFullscreen => { }"
+            <VidstackPlayer
+              class="bg-container flex justify-center flex-col flex-1"
+              :title="data.name ?? ''"
+              :thumbnails="data?.img ?? ''" :src="streamURLs[0].url"
             />
           </Suspense>
-          <!-- <div id="comment-section" class="bottom-0 inset-x-0 absolute bg-blue-500/50 p-3 text-sm max-h-[180px] overflow-y-auto overscroll-contain">
-            <div>
-              Comment example
+        </div>
+        <div v-if="isLandscape" class="max-md:absolute max-md:inset-x-0 md:bg-container rounded-r-md flex-1 flex flex-col min-h-[500px] h-[95vh]">
+          <div class="px-4 pt-4 pb-3 flex justify-between border-b dark:border-white/5">
+            <div class="flex flex-col">
+              <h1 class="text-xl leading-5">
+                {{ data.name }}
+              </h1>
+              <div class="text-sm opacity-75">
+                IDN Live
+              </div>
             </div>
-            <div>
-              Comment example
+            <div class="flex gap-2 items-center">
+              <button v-ripple type="button" class="size-10 rounded-full" @click="() => enableComment = !enableComment">
+                <Icon v-if="enableComment" name="tabler:message-circle" class="size-full p-2" />
+                <Icon v-else name="tabler:message-circle-off" class="size-full p-2" />
+              </button>
+              <NuxtLink
+                target="_blank" :to="$idnLiveUrl(data?.url_key || '', data?.slug || '')"
+                class="text-sm h-7 flex items-center text-white px-3 py-1 rounded-md bg-red-500"
+              >
+                {{ $t('watch_on') }} IDN
+              </NuxtLink>
             </div>
-            <div>
-              Comment example
+          </div>
+          <WatchIDNComment v-if="enableComment" class="flex-1" :idn-data="data" />
+          <div v-else class="flex-1 flex items-center justify-center">
+            <div class="text-xl mb-5">
+              {{ $t('comment_disabled') }}
             </div>
-          </div> -->
-          <div class="flex justify-end pr-3 md:pr-0 w-full">
-            <NuxtLink
-              target="_blank" :to="$idnLiveUrl(data?.url_key || '', data?.slug || '')"
-              class="mb-3 text-sm bg-red-500 self-end h-7 flex items-center text-white px-3 py-1 rounded-md"
-            >
-              {{ $t('watch_on') }} IDN
-            </NuxtLink>
           </div>
         </div>
-      </ClientOnly>
-    </div>
+      </div>
+    </ClientOnly>
   </div>
 </template>
 
