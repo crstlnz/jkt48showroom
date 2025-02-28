@@ -9,9 +9,13 @@ const props = defineProps<{
   shareUrl?: string
   sousenkyo?: SousenkyoMember
 }>()
-const { isLive: checkLive } = useOnLives()
+const { isLive: checkLive, getLive } = useOnLives()
 const isLive = computed(() => {
   return props.roomId ? checkLive(props.roomId || 0) : false
+})
+
+const liveData = computed(() => {
+  return props.roomId ? getLive(props.roomId || 0) : false
 })
 
 const { currentURL } = useSettings()
@@ -29,6 +33,15 @@ function openProfileImage() {
       src: props.member.img_alt ?? props.member.img ?? useNuxtApp().$errorPicture,
       alt: `${props.member.name} Profile Picture`,
     })
+  }
+}
+
+function getLiveUrl(member: INowLive) {
+  if (member.type === 'idn') {
+    return `/watch/${member.url_key}/idn`
+  }
+  else {
+    return `/watch/${member.url_key}`
   }
 }
 </script>
@@ -55,7 +68,7 @@ function openProfileImage() {
         <div class="flex gap-3 md:gap-4 justify-between">
           <component
             :is="route.path === `/member/${member.url}` ? 'button' : NuxtLink"
-            :to="isLive ? `/watch/${member.url}` : `/member/${member.url}`"
+            :to="liveData ? getLiveUrl(liveData) : `/member/${member.url}`"
             class="p-1.5 md:p-2 -ml-1.5 md:-ml-2 bg-background relative mt-[-40px] h-[85px] w-[85px] sm:w-[100px] sm:h-[100px] shrink-0 rounded-full sm:mt-[-30px] md:mt-[-35px] 2xl:mt-[-56px] md:h-[120px] md:w-[120px] 2xl:h-[140px] 2xl:w-[140px]"
             @click="openProfileImage"
           >

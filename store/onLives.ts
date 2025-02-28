@@ -18,7 +18,7 @@ export const useOnLives = defineStore('onLives', () => {
   const liveCount = computed(() => (lives.value?.length ?? 0))
 
   const livesMap = computed(() => {
-    const map = new Map()
+    const map = new Map<number, INowLive>()
     if (!lives.value) return map
     for (const live of (lives.value ?? [])) {
       map.set(live.room_id, live)
@@ -45,6 +45,10 @@ export const useOnLives = defineStore('onLives', () => {
     return livesMap.value?.has(roomId)
   }
 
+  function getLive(roomId: number) {
+    return livesMap.value?.get(roomId)
+  }
+
   return {
     data: lives,
     hasLives,
@@ -54,6 +58,7 @@ export const useOnLives = defineStore('onLives', () => {
     tryRefresh,
     refresh,
     isLive,
+    getLive,
   }
 })
 
