@@ -1,34 +1,38 @@
 <script lang="ts" setup>
-import { RecycleScroller } from 'vue-virtual-scroller'
-
 const props = defineProps<{
   idnData: IDNLivesDetail
 }>()
-const emit = defineEmits<{ (e: 'createComment', comment: string): void, (e: 'appendDelayedComments'): void, (e: 'setAutoAppend', value: boolean): void }>()
-const { comments, delayedComments, onComment, setAutoAppend, autoAppend } = useIDNComment(props.idnData.chat_room_id ?? '')
-const dynamicScroller = ref<any | null>(null)
+// const emit = defineEmits<{ (e: 'createComment', comment: string): void, (e: 'appendDelayedComments'): void, (e: 'setAutoAppend', value: boolean): void }>()
+const { comments, delayedComments, onComment, setAutoAppend, autoAppend } = useIDNComment(props.idnData.chat_room_id ?? '', 150)
+// const dynamicScroller = ref<any | null>(null)
+const scroller = ref<HTMLDivElement | null>(null)
 
 const lastScroll = ref(0)
 
 onComment((comment) => {
-  console.log(comment.user.name, ':', comment.chat.message)
-  nextTick(() => {
-    dynamicScroller.value?.scrollToItem(comments.value.length - 1)
-  })
+  if (autoAppend.value) {
+    nextTick(() => {
+      scrollToBottom()
+    })
+  }
 })
 
 onMounted(() => {
   nextTick(() => {
-    dynamicScroller.value?.scrollToItem(comments.value.length - 1)
+    scrollToBottom()
   })
 })
 
+function scrollToBottom() {
+  scroller.value?.scrollTo(0, scroller.value?.scrollHeight)
+}
+
 const showNewCommentButton = ref(true)
 
-useEventListener(dynamicScroller, 'scroll', (evt) => {
+useEventListener(scroller, 'scroll', (evt) => {
   if (!evt.isTrusted) return
 
-  const scrollPos = dynamicScroller.value?.$el?.scrollTop
+  const scrollPos = scroller.value?.scrollTop ?? 0
   if (lastScroll.value === scrollPos) return
   if (lastScroll.value < scrollPos) {
     showNewCommentButton.value = true
@@ -39,37 +43,26 @@ useEventListener(dynamicScroller, 'scroll', (evt) => {
   lastScroll.value = scrollPos
 })
 
-const { isMobile, greaterOrEqual } = useResponsive()
-const isSmall = greaterOrEqual('sm')
-const navRect = useState<DOMRect | null>('navRect', () => null)
-const showCommentForm = useLocalStorage('show_comment_form', true)
+// const { isMobile, greaterOrEqual } = useResponsive()
+// const isSmall = greaterOrEqual('sm')
+// const navRect = useState<DOMRect | null>('navRect', () => null)
+// const showCommentForm = useLocalStorage('show_comment_form', true)
 
-useEventListener(dynamicScroller, 'scroll', (evt) => {
-  if (!evt.isTrusted) return
-
-  const scrollPos = dynamicScroller.value?.$el?.scrollTop
-  if (lastScroll.value === scrollPos) return
-  if (lastScroll.value > scrollPos) {
-    showNewCommentButton.value = true
-  }
-  else {
-    emit('setAutoAppend', false)
-  }
-  lastScroll.value = scrollPos
-})
-
-const height = computed(() => {
-  return 64
-})
+function appendComments() {
+  setAutoAppend(true)
+  nextTick(() => {
+    scrollToBottom()
+  })
+}
 </script>
 
 <template>
-  <div class="flex flex-col relative">
+  <div class="flex flex-col justify-end relative overflow-y-hidden">
     <Transition :duration="500" name="height-shrink">
       <button
         v-if="showNewCommentButton && delayedComments.length"
         class="flex gap-1 z-10 items-center absolute h-[38px] left-1/2 -translate-x-1/2 rounded-xl bottom-5 drop-shadow-md overflow-hidden bg-blue-500 px-4 text-center text-sm text-slate-100  md:text-base"
-        @click="() => setAutoAppend(true)"
+        @click="appendComments"
       >
         {{
           `${delayedComments.length} ${$t(
@@ -80,38 +73,19 @@ const height = computed(() => {
         <Icon name="material-symbols:fitbit-arrow-downward-rounded" class="size-6" />
       </button>
     </Transition>
-    <div class="flex-1 flex-col absolute inset-0 overflow-y-auto roundedscrollbar">
-      <DynamicScroller
-        ref="dynamicScroller"
-        class="z-0 size-full hiddenscrollbar flex flex-col relative overflow-y-auto pb-5"
-        :prerender="15"
-        :items="comments"
-        :min-item-size="62"
-        key-field="id"
-        :buffer="600"
-      >
-        <template #default="{ item, index, active }">
-          <DynamicScrollerItem
-            :item="item"
-            :active="active"
-            :size-dependencies="[item.comment]"
-            :data-index="index"
-          >
-            <div :key="item.id" class="py-1.5 mx-5">
-              <div class="flex gap-1">
-                <div class="justify-between flex min-w-0 flex-1 flex-col">
-                  <div class="truncate text-lg font-bold text-green-500" :title="item.name" :style="{ color: item.user?.color_code }">
-                    {{ item.user?.name }}
-                  </div>
-                  <div class="w-full text-base text-white">
-                    {{ item.chat?.message }}
-                  </div>
-                </div>
-              </div>
+    <div ref="scroller" class="overflow-y-auto pb-4 roundedscrollbar">
+      <div v-for="comment in comments" :key="comment.id" class="py-1.5 mx-5">
+        <div class="flex gap-1">
+          <div class="justify-between flex min-w-0 flex-1 flex-col">
+            <div class="truncate text-lg font-bold text-green-500" :title="comment.user.name" :style="{ color: comment.user?.color_code }">
+              {{ comment.user?.name }}
             </div>
-          </DynamicScrollerItem>
-        </template>
-      </DynamicScroller>
+            <div class="w-full text-base text-white">
+              {{ comment.chat?.message }}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- <div v-if="pinnedMessage" class="bg-black/60 p-2 rounded-md flex gap-2 mx-3 items-center">
