@@ -141,7 +141,7 @@ const enableComment = useLocalStorage('enable-idn-comment', true)
               />
             </template>
             <VidstackPlayer
-              class="bg-container flex justify-center flex-col flex-1"
+              class="bg-container flex justify-center flex-col flex-1 [&_video]:object-cover"
               :title="data.name ?? ''"
               :thumbnails="data?.img ?? ''" :src="streamURLs[0].url"
             />
