@@ -50,6 +50,7 @@ useEventListener(scroller, 'scroll', (evt) => {
 
 function appendComments() {
   setAutoAppend(true)
+  showNewCommentButton.value = false
   nextTick(() => {
     scrollToBottom()
   })
@@ -58,10 +59,18 @@ function appendComments() {
 
 <template>
   <div class="flex flex-col justify-end relative overflow-y-hidden">
-    <Transition :duration="500" name="height-shrink">
+    <Transition
+      enter-active-class="transition-transform duration-300 ease-out"
+      enter-from-class="translate-y-[200%]"
+      enter-to-class="translate-y-0"
+      leave-active-class="transition-transform duration-300 ease-out"
+      leave-from-class="translate-y-0"
+      leave-to-class="translate-y-[200%]"
+    >
       <button
         v-if="showNewCommentButton && delayedComments.length"
-        class="flex gap-1 z-10 items-center absolute h-[38px] left-1/2 -translate-x-1/2 rounded-xl bottom-5 drop-shadow-md overflow-hidden bg-blue-500 px-4 text-center text-sm text-slate-100  md:text-base"
+        key="showbutton"
+        class="flex gap-1 z-10 items-center absolute h-[38px] left-1/2 -traPnslate-x-1/2 rounded-xl bottom-5 drop-shadow-md overflow-hidden bg-blue-500 px-4 text-center text-sm text-slate-100  md:text-base"
         @click="appendComments"
       >
         {{

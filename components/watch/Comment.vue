@@ -32,6 +32,7 @@ useEventListener(dynamicScroller, 'scroll', (evt) => {
 })
 
 function appendDelayedComments() {
+  showNewCommentButton.value = false
   dynamicScroller.value?.$el?.scrollTo({ top: 0 })
   emit('appendDelayedComments')
 }
@@ -68,20 +69,30 @@ const showCommentForm = useLocalStorage('show_comment_form', true)
               </span>
             </div>
           </div>
-          <Transition :duration="500" name="height-shrink">
-            <button
-              v-if="showNewCommentButton && delayedComments.length"
-              class="absolute h-[28px] w-full overflow-hidden bg-blue-500 px-3 text-center text-sm text-slate-100 md:h-[32px] md:text-base"
-              @click="appendDelayedComments"
+          <div class="absolute h-[28px] md:h-[32px] overflow-hidden inset-x-0 top-full">
+            <Transition
+              enter-active-class="transition-transform duration-300 ease-out"
+              enter-from-class="-translate-y-full"
+              enter-to-class="translate-y-0"
+              leave-active-class="transition-transform duration-300 ease-out"
+              leave-from-class="translate-y-0"
+              leave-to-class="-translate-y-full"
             >
-              {{
-                `${delayedComments.length} ${$t(
-                  'newcomment',
-                  delayedComments.length,
-                )}`
-              }}
-            </button>
-          </Transition>
+              <button
+                v-if="showNewCommentButton && delayedComments.length"
+                key="showbutton"
+                class="h-[28px] w-full overflow-hidden bg-blue-500 px-3 text-center text-sm text-slate-100 md:h-[32px] md:text-base"
+                @click="appendDelayedComments"
+              >
+                {{
+                  `${delayedComments.length} ${$t(
+                    'newcomment',
+                    delayedComments.length,
+                  )}`
+                }}
+              </button>
+            </Transition>
+          </div>
         </div>
       </template>
 
