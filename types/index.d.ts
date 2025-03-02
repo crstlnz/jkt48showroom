@@ -89,6 +89,12 @@ interface INowLive {
   type: 'idn' | 'showroom'
 }
 
+interface YoutubeLive extends JKT48VLiveResults {
+  type: 'youtube'
+}
+
+type ExtINowLive = INowLive | YoutubeLive
+
 // _id: '6245e2fe1a8860fba4cdaccd',
 // name: 'Lyn /リーン（JKT48）',
 // img: 'https://image.showroom-cdn.com/showroom-prod/image/room/cover/261d835846ccd54052d7bede79f89171d1f79af054ada2fecf81086644ff6ea4_m.jpeg?v=1648711909',

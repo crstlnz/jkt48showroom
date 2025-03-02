@@ -80,16 +80,17 @@ const { data, pending, liveCount, error } = storeToRefs(onLives)
           <template #fallback>
             <PulseLiveCard />
           </template>
-          <Suspense>
+          <Suspense v-for="live in data" :key="live.type === 'youtube' ? live.etag : live.room_id">
             <component
               :is="live.type === 'showroom' ? LazyMemberLiveCard : LazyMemberIDNLiveCard"
-              v-for="live in data"
+              v-if="live.type !== 'youtube'"
               :key="live.room_id"
               class="bg-background"
               :live="live"
             />
+            <YoutubeLiveCard v-else :key="live.etag" :live="live" class="bg-background" />
             <template #fallback>
-              <PulseLiveCard v-for="num in data.length" :key="num" />
+              <PulseLiveCard />
             </template>
           </Suspense>
         </ClientOnly>

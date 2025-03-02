@@ -3,10 +3,10 @@ import { useNotifications } from './notifications'
 import { useSettings } from './settings'
 
 export const useOnLives = defineStore('onLives', () => {
-  const { data: lives, pending, error, refresh, tryRefresh } = useLocalStoreController<INowLive[] | null>('onlives', {
+  const { data: lives, pending, error, refresh, tryRefresh } = useLocalStoreController<ExtINowLive[] | null>('onlives', {
     fetch: getShowroomLives,
     expiredIn: 12000,
-    serializer: new JSONSerializer<INowLive[] | null>(null),
+    serializer: new JSONSerializer<ExtINowLive[] | null>(null),
   })
 
   const settings = useSettings()
@@ -18,18 +18,20 @@ export const useOnLives = defineStore('onLives', () => {
   const liveCount = computed(() => (lives.value?.length ?? 0))
 
   const livesMap = computed(() => {
-    const map = new Map<number, INowLive>()
+    const map = new Map<number, ExtINowLive>()
     if (!lives.value) return map
     for (const live of (lives.value ?? [])) {
-      map.set(live.room_id, live)
+      if (live.type !== 'youtube') {
+        map.set(live.room_id, live)
+      }
     }
     return map
   })
 
   const { addNotif } = useNotifications()
-  async function getShowroomLives(): Promise<INowLive[]> {
+  async function getShowroomLives(): Promise<ExtINowLive[]> {
     try {
-      return await $apiFetch<INowLive[]>(`/api/now_live`, { query: { group: settings.group, debug: useRuntimeConfig().public.isDev } }).catch(() => [])
+      return await $apiFetch<ExtINowLive[]>(`/api/now_live`, { query: { group: settings.group, debug: useRuntimeConfig().public.isDev } }).catch(() => [])
     }
     catch (e) {
       console.error(e)
