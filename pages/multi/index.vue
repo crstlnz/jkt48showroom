@@ -137,7 +137,10 @@ function deleteVideo(video: Multi.Video, reason?: string) {
 }
 
 const onLives = useOnLives()
-const { data } = storeToRefs(onLives)
+const { data: raw } = storeToRefs(onLives)
+const data = computed(() => {
+  return raw.value?.filter(i => i.type !== 'youtube')
+})
 const { t } = useI18n()
 
 // const livesIds = computed(() => {
