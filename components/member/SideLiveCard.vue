@@ -6,7 +6,8 @@ defineProps<{
     name: string
     url: string
     is_premium: boolean
-    started_at: Date
+    started_at?: Date | null
+    type: 'youtube' | 'idn' | 'showroom'
   }
 }>()
 const { locale } = useI18n()
@@ -15,7 +16,7 @@ const { locale } = useI18n()
 <template>
   <div>
     <div class="flex items-start gap-3 border-b border-black/10 dark:border-white/10 pt-1 pb-3">
-      <NuxtLink :to="`/watch/${live.url}`" class="group rounded-xl overflow-hidden">
+      <NuxtLink :external="live.type === 'youtube'" :to="live.type === 'youtube' ? live.url : `/watch/${live.url}`" class="group rounded-xl overflow-hidden">
         <NuxtImg
           class="aspect-[4/5] w-[85px] object-cover scale-[100.01%] group-hover:scale-110 transition-transform duration-500"
           :modifiers="{

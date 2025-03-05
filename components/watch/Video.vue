@@ -531,7 +531,7 @@ function seek() {
   if (seekSlider.value) {
     currentTime.value
       = (Number(seekSlider.value.value) / (Number(seekSlider.value.max) || 0))
-      * duration.value
+        * duration.value
   }
 }
 
@@ -539,7 +539,7 @@ function changeVideoTime() {
   if (seekSlider.value && video.value) {
     video.value.currentTime
       = (Number(seekSlider.value.value) / (Number(seekSlider.value.max) || 0))
-      * duration.value
+        * duration.value
   }
   isSeekDragging.value = false
 }
@@ -610,8 +610,16 @@ function syncLive() {
   }
 }
 
-const enableRotate = useLocalStorage<boolean>('rotate_feature_v1', () => false)
 const rotation = ref(0)
+const enableRotate = useLocalStorage<boolean>('rotate_feature_v1', () => false)
+
+watch(enableRotate, (v) => {
+  if (!v) {
+    video.value?.style.removeProperty('scale')
+    rotation.value = 0
+  }
+})
+
 function rotate() {
   if (!enableRotate.value) return
   rotation.value += 90

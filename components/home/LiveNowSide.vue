@@ -15,12 +15,13 @@ const { data, pending, hasLives } = storeToRefs(onLives)
     </div>
     <div v-else-if="hasLives && data" class="flex flex-col gap-3">
       <MemberSideLiveCard
-        v-for="[i, live] in data.entries()" :key="live.room_id + i" :live="{
-          img: live.img,
-          started_at: new Date(live.started_at),
-          is_premium: live.is_premium || false,
-          name: live.name,
-          url: live.type === 'showroom' ? (live.url_key ?? '0') : `${live.url_key}/idn` }"
+        v-for="[i, live] in data.entries()" :key="live.type === 'youtube' ? live.etag : live.room_id + i" :live="{
+          img: live.type === 'youtube' ? live.thumbnails.medium.url : live.img,
+          started_at: live.type === 'youtube' ? null : new Date(live.started_at),
+          is_premium: live.type === 'youtube' ? false : live.is_premium || false,
+          name: live.type === 'youtube' ? live.title : live.name,
+          type: live.type,
+          url: live.type === 'youtube' ? live.url : (live.type === 'showroom' ? (live.url_key ?? '0') : `${live.url_key}/idn`) }"
       />
     </div>
     <div
