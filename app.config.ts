@@ -18,8 +18,14 @@ const urls = {
   defaultIDNProfilePicture: 'https://cdn.idn.media/idnaccount/avatar/default.png',
   idnLiveIcon: 'https://upload.wikimedia.org/wikipedia/commons/b/ba/IDN_Live.svg',
   showroomIcon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/SHOWROOM_logo.svg/500px-SHOWROOM_logo.svg.png',
-  idnLiveUrl: (username: string, slug: string) => {
+  oldIdnLiveUrl: (username: string, slug: string) => {
     return `https://click.idn.media/VKUf?af_dp=idnapp://live/${username}/${slug}&af_web_dp=https://www.idn.app/${username}/live/${slug}&c=web-android&deep_link_value=live/${username}/${slug}&pid=idnapp`
+  },
+  idnLiveUrl: (username: string, slug: string) => {
+    const af_dp = encodeURIComponent(`idnapp://live/${username}/?room=${slug}`)
+    const webUrl = encodeURIComponent(`https://www.idn.app/${username}/live/${slug}`)
+    const deepLinkValue = encodeURIComponent(`idnapp://live/?room=${slug}`)
+    return `https://click.idn.media/VKUf?af_dp=${af_dp}&af_web_dp=${webUrl}&c=detail-liveroom&deep_link_value=${deepLinkValue}&pid=idnapp`
   },
   defaultCardBackground: 'https://res.cloudinary.com/haymzm4wp/image/upload/v1689879547/assets/img/jkt48pt_vbvdpw.png',
   giftUrl: (id: string | number, type: GiftSize = 'small') => `https://static.showroom-live.com/image/gift/${id}_${type === 'small' ? 's' : 'm'}.png`,

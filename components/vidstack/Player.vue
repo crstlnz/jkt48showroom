@@ -79,7 +79,8 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="size-full">
-    <media-player :volume="volume" class="size-full [&_video]:size-full" plays-inline :title="props.title" :src="src">
+    <!-- eslint-disable-next-line vue/attribute-hyphenation -->
+    <media-player playsInline :volume="volume" class="size-full [&_video]:size-full" :title="props.title" :src="src">
       <ClientOnly>
         <media-provider />
         <media-video-layout :thumbnails="props.thumbnails" />

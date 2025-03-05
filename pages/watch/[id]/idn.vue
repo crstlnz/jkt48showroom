@@ -12,7 +12,7 @@ const { data, pending, error } = await useAsyncData<IDNLivesDetail>(
   async () => {
     await tryRefreshMember()
     const lives = await tryRefresh()
-    const live = lives?.data?.find(i => i.url_key === route.params.id)
+    const live = lives?.data?.find(i => i.type === 'idn' && i.url_key === route.params.id) as INowLive | undefined
     const member = members?.find(i => i.idn_username === route.params.id)
     const member_info = member
       ? {
@@ -132,7 +132,7 @@ const enableComment = useLocalStorage('enable-idn-comment', true)
         }"
       >
         <div
-          class="flex-1 relative flex flex-col gap-3 overflow-hidden transition-all duration-300 h-full"
+          class="flex-1 relative flex flex-col overflow-hidden transition-all duration-300 h-full"
         >
           <Suspense>
             <template #fallback>
@@ -146,6 +146,11 @@ const enableComment = useLocalStorage('enable-idn-comment', true)
               :thumbnails="data?.img ?? ''" :src="streamURLs[0].url"
             />
           </Suspense>
+          <div v-if="!isLandscape" class="p-2">
+            <NuxtLink class="text-sm h-7 flex items-center justify-center text-white px-3 py-2 text-center font-bold rounded-md bg-red-500" :to="$idnLiveUrl(data?.url_key || '', data?.slug || '')" external>
+              {{ $t('watch_on') }} IDN
+            </NuxtLink>
+          </div>
         </div>
         <div v-if="isLandscape" class="max-md:absolute max-md:inset-x-0 md:bg-container rounded-r-md flex-1 flex flex-col min-h-[500px] h-[95vh]">
           <div class="px-4 pt-4 pb-3 flex justify-between border-b dark:border-white/5">
