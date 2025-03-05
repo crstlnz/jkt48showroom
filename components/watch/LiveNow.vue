@@ -10,13 +10,13 @@ const { data: rawData, pending, error } = storeToRefs(onLives)
 
 const data = computed(() => {
   if (!rawData.value) return null
-  return rawData.value.filter(i => i.url_key !== roomKey)
+  return rawData.value.filter(i => i.type === 'youtube' || i.url_key !== roomKey)
 })
 </script>
 
 <template>
   <div class="pt-3">
-    <div class="bg-container flex h-full flex-col gap-3 overflow-hidden px-3 pt-3 lg:rounded-xl lg:p-4 lg:pb-5">
+    <div class="bg-container flex h-full flex-col gap-3 px-3 pt-3 lg:rounded-xl lg:p-4 lg:pb-5">
       <div class="flex items-center gap-2 text-xl font-bold">
         <Icon name="fluent:live-20-filled" class="text-red-500" size="1.8rem" />
         <span class="pt-1">{{ $t('otherlive') }}</span>
@@ -39,18 +39,24 @@ const data = computed(() => {
           v-else-if="data?.length"
           class="bg-container grid-live-now gap-4 rounded-xl"
         >
-          <Suspense>
-            <component
-              :is="live.type === 'showroom' ? LazyMemberLiveCard : LazyMemberIDNLiveCard"
-              v-for="live in data"
-              :key="live.room_id"
-              class="bg-background"
-              :live="live"
-            />
+          <ClientOnly>
             <template #fallback>
               <PulseLiveCard />
             </template>
-          </Suspense>
+            <Suspense v-for="live in data" :key="live.type === 'youtube' ? live.etag : live.room_id">
+              <component
+                :is="live.type === 'showroom' ? LazyMemberLiveCard : LazyMemberIDNLiveCard"
+                v-if="live.type !== 'youtube'"
+                :key="live.room_id"
+                class="bg-background"
+                :live="live"
+              />
+              <YoutubeLiveCard v-else :key="live.etag" :live="live" class="bg-background" />
+              <template #fallback>
+                <PulseLiveCard />
+              </template>
+            </Suspense>
+          </ClientOnly>
         </div>
         <div
           v-else
