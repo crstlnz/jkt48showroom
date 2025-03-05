@@ -17,7 +17,10 @@ function select(video: Omit<Multi.Video, 'order'>) {
 }
 
 const onLives = useOnLives()
-const { data, pending } = storeToRefs(onLives)
+const { data: raw, pending } = storeToRefs(onLives)
+const data = computed(() => {
+  return raw.value?.filter(i => i.type !== 'youtube')
+})
 
 const mockupVideos = [
   { src: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', title: 'Big Buck Bunny' },
@@ -29,8 +32,8 @@ const mockupVideos = [
   { src: 'https://mtoczko.github.io/hls-test-streams/test-group/playlist.m3u8', title: '1080p' },
 ]
 
-const lives = computed<Omit< Multi.Video, 'order'>[]>(() => {
-  const result: Omit< Multi.Video, 'order'>[] = []
+const lives = computed<Omit<Multi.Video, 'order'>[]>(() => {
+  const result: Omit<Multi.Video, 'order'>[] = []
   for (const live of (data.value || [])) {
     if (live.type === 'showroom') {
       result.push(convertShowroom(live))
