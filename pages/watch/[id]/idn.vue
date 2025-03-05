@@ -142,6 +142,7 @@ const enableComment = useLocalStorage('enable-idn-comment', true)
             </template>
             <VidstackPlayer
               class="bg-container flex justify-center flex-col flex-1 [&_video]:object-cover"
+              :class="{ 'landscape-screen': isLandscape }"
               :title="data.name ?? ''"
               :thumbnails="data?.img ?? ''" :src="streamURLs[0].url"
             />
@@ -199,5 +200,13 @@ const enableComment = useLocalStorage('enable-idn-comment', true)
   &::-webkit-scrollbar {
     display: none;
   }
+}
+
+.landscape-screen {
+  media-player[data-fullscreen] {
+    video  {
+      object-fit: contain !important;
+    }
+}
 }
 </style>
