@@ -53,7 +53,7 @@ const maxDots = computed(() => {
             format="webp"
           />
           <div class="flex-1 flex flex-col">
-            <NuxtLink :to="`/theater/${event.url}`" class="inline-block leading-5 text-lg">
+            <NuxtLink :to="`/jkt48event/${event.url}`" class="inline-block leading-5 text-lg">
               {{ event.title }}
             </NuxtLink>
             <div class="flex-1 font-light py-2 gap-1 flex-col flex">
@@ -72,7 +72,7 @@ const maxDots = computed(() => {
 
               <!-- {{ $dayjs(news.date).locale(locale).format("DD MMMM YYYY") }} -->
             </div>
-            <NuxtLink :to="`/theater/${event.url}`" class="self-end">
+            <NuxtLink :to="`/jkt48event/${event.url}`" class="self-end">
               Detail
             </NuxtLink>
           </div>
