@@ -2,7 +2,6 @@
   "name": "jkt48showroom",
   "type": "module",
   "version": "0.15.1",
-  "packageManager": "pnpm@8.9.0+sha1.01c55344d677f3b481c6bb6ffba9a6b3c6dbd91d",
   "engines": {
     "node": "20.x.x"
   },
@@ -92,7 +91,6 @@
     "nuxt-security": "2.1.4",
     "sass": "^1.77.8",
     "typescript": "5.7.3",
-    "unplugin-swc": "^1.5.1",
     "v-wave": "^3.0.2",
     "vue-virtual-scroll-grid": "^1.11.0"
   },

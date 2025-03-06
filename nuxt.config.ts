@@ -1,4 +1,3 @@
-import swc from 'unplugin-swc'
 import { vite as vidstack } from 'vidstack/plugins'
 
 const isDev = process.env.NODE_ENV === 'development'
@@ -185,10 +184,6 @@ export default defineNuxtConfig({
   vite: {
     plugins: [
       vidstack({ include: /vidstack\// }),
-      // Vite plugin
-      swc.vite(),
-      // Rollup plugin
-      swc.rollup(),
     ],
   },
   compatibilityDate: '2024-08-31',
