@@ -45,11 +45,10 @@ watch(keyId, () => {
     <ClientOnly v-else>
       <template #fallback>
         <div class="grid-member-list gap-4">
-          <MemberCard
-            v-for="member in members" :key="member.room_id"
-            :data-id="member.name"
-            class="shadow-sm aspect"
-            :member="member"
+          <div
+            v-for="i in 12"
+            :key="i"
+            class="item pulse-color animate-pulse"
           />
         </div>
       </template>
@@ -64,13 +63,19 @@ watch(keyId, () => {
         <template #probe>
           <div class="item pulse-color" />
         </template>
-        <template #default="{ item, style }">
-          <MemberCard
-            :style="style"
-            :data-id="item.name"
-            class="shadow-sm aspect"
-            :member="item"
-          />
+        <template #default="{ item, style, index }">
+          <Suspense>
+            <LazyMemberCard
+              :key="item.name"
+              :style="style"
+              :data-id="item.name"
+              class="shadow-sm aspect"
+              :member="item"
+            />
+            <template #fallback>
+              <div :key="index" :style="style" class="item pulse-color animate-pulse" />
+            </template>
+          </Suspense>
         </template>
         <template #placeholder="{ index, style }">
           <div :key="index" class="item pulse-color" :style="style" />

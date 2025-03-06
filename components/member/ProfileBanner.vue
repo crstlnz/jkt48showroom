@@ -36,7 +36,8 @@ function openProfileImage() {
   }
 }
 
-function getLiveUrl(member: INowLive) {
+function getLiveUrl(member: ExtINowLive) {
+  if (member.type === 'youtube') return null
   if (member.type === 'idn') {
     return `/watch/${member.url_key}/idn`
   }

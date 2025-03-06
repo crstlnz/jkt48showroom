@@ -3,7 +3,7 @@ const { t } = useI18n()
 const title = ref('')
 
 useHead({ title: computed(() => t(title.value || 'page.title.recent')) })
-const fetch = await useRecentFetch({ changeRoute: false, mode: 'infinite', initPage: 1 })
+const fetch = useRecentFetch({ changeRoute: false, mode: 'infinite', initPage: 1 })
 const { data: res, query, pending, error } = fetch.data
 const { changePage, refresh, setFilter, onQueryChange } = fetch
 const filterOpen = ref(false)
@@ -15,7 +15,7 @@ const isLoadDelayed = ref(false) // if next page must be loaded but the filter d
 const el = ref<Window | null>(null)
 const { y, arrivedState } = useScroll(el, { behavior: 'smooth' })
 const isTop = computed(() => arrivedState.top)
-const dataset = useSessionStorage<{ page: number, data: IRecent[] }>('recent-datasetssss', { page: 0, data: [] }, { deep: true })
+const dataset = useSessionStorage<{ page: number, data: IRecent[] }>('recent-dataset', { page: 0, data: [] }, { deep: true })
 
 const { checkTrigger } = useInfiniteScroll(
   () => {
@@ -73,16 +73,17 @@ watch(res, (val) => {
       data: [...dataset.value.data, ...(val?.recents || [])],
     }
   }
-  else if (val?.recents && (val?.page || 0) <= dataset.value.page) {
-    const newData = val.recents
-    const oldData = dataset.value.data.slice(0, newData.length)
-    if (!deepEqual(newData as any, oldData as any)) {
-      dataset.value = {
-        page: val?.page ?? 0,
-        data: [...newData],
-      }
-    }
-  }
+  // disable this, use clearDataset instead
+  // else if (val?.recents && (val?.page || 0) <= dataset.value.page) {
+  //   const newData = val.recents
+  //   const oldData = dataset.value.data.slice(0, newData.length)
+  //   if (!deepEqual(newData as any, oldData as any)) {
+  //     dataset.value = {
+  //       page: val?.page ?? 0,
+  //       data: [...newData],
+  //     }
+  //   }
+  // }
 })
 
 const SortList = useAppConfig().sortList
@@ -101,9 +102,17 @@ const searchinput = ref()
 const { focused } = useFocus(searchinput)
 
 function applySearch() {
+  clearDataset()
   if ($device.isMobile) focused.value = false
   const q = { ...query.value, search: search.value }
   applyFilter(q)
+}
+
+function clearDataset() {
+  dataset.value = {
+    data: [],
+    page: 0,
+  }
 }
 
 function clearSearch() {
@@ -173,10 +182,10 @@ const recentHeight = computed(() => {
     </template>
     <template #actionSection>
       <ClientOnly>
-        <LayoutPopupButton v-if="!isXL" class="bg-container flex aspect-square h-10 w-10 items-center justify-center rounded-2xl transition-colors sm:hover:bg-blue-500 sm:hover:text-slate-100">
+        <LayoutPopupButton v-if="!isXL || isMobile" class="bg-container flex aspect-square h-10 w-10 items-center justify-center rounded-2xl transition-colors sm:hover:bg-blue-500 sm:hover:text-slate-100">
           <Icon name="ph:magnifying-glass-bold" />
           <template #panel="{ close }">
-            <div class="flex flex-col items-stretch py-3 text-lg max-sm:py-5" :class="{ 'min-w-[350px]': !isMobile }">
+            <div class="flex flex-col items-stretch py-3 text-lg max-sm:py-5 sm:min-w-[350px]">
               <PaginationFilter
                 key="filterDiv"
                 :must-calculate-height="true"
@@ -203,6 +212,9 @@ const recentHeight = computed(() => {
     >
       <div
         v-if="!isTop"
+        :class="{
+          '!bottom-[80px]': isMobile,
+        }"
         class="fixed bottom-[80px] left-1/2 z-belowNav flex w-[180px] max-w-[80%] -translate-x-1/2 overflow-hidden rounded-xl bg-second-2/95 font-bold text-white transition sm:bottom-10"
       >
         <button

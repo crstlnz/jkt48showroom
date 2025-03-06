@@ -15,7 +15,7 @@ const isSmall = smallerOrEqual('sm')
     <PopoverButton aria-label="Filter" :class="customClass">
       <slot :close="close" />
     </PopoverButton>
-    <Teleport to="body" :disabled="!isMobile">
+    <Teleport to="body" :disabled="!isSmall">
       <Transition
         enter-active-class="transition ease duration-200"
         enter-from-class="opacity-0"
@@ -24,7 +24,7 @@ const isSmall = smallerOrEqual('sm')
         leave-from-class="opacity-100"
         leave-to-class="opacity-0"
       >
-        <PopoverOverlay v-if="open && (isSmall || isMobile)" class="fixed z-aboveNav inset-0 bg-black/50" />
+        <PopoverOverlay v-if="open && (isSmall)" class="fixed z-aboveNav inset-0 bg-black/50" />
       </Transition>
 
       <Transition

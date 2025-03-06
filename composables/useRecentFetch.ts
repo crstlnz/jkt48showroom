@@ -12,7 +12,7 @@ const defaultOpts = {
   changeRoute: true,
   mode: 'page',
 }
-export default async function (opts: RecentFetchOpts | null = null, q: RecentsQuery | null = null) {
+export default function (opts: RecentFetchOpts | null = null, q: RecentsQuery | null = null) {
   const cooldownDuration = 300
   const urlroute = useRoute()
   const config = useAppConfig()
@@ -20,12 +20,11 @@ export default async function (opts: RecentFetchOpts | null = null, q: RecentsQu
   const settings = useSettings()
   let query: Ref<RecentsQuery>
   if (q) {
-    query = ref({ ...q, type: 'all' })
+    query = ref({ ...q })
   }
   else {
     query = useSessionStorage<RecentsQuery>(opts?.userHistory ? 'history-fetch-query' : `recent-fetch-query`, buildQuery())
     // query = useSessionStorage<RecentsQuery>('recent-fetch-query', { page: opts?.initPage ?? 1 }, { mergeDefaults: opts?.initPage != null })
-    query.value.type = 'all'
     if (opts?.initPage != null) {
       query.value.page = opts.initPage
     }
@@ -34,14 +33,21 @@ export default async function (opts: RecentFetchOpts | null = null, q: RecentsQu
   const cooldown = ref(false)
   const timeout = ref<NodeJS.Timeout | undefined>(undefined)
 
+  function isResurrected() {
+    if (!window) return false
+    if (!!window.performance && window.performance.navigation.type === 2) {
+      return true
+    }
+  }
+
   const {
     data: res,
     error,
     pending: apiPending,
     refresh,
-  } = await useApiFetch<IApiRecents>(
+  } = useApiFetch<IApiRecents>(
     opts?.userHistory ? '/api/user/history' : '/api/recent',
-    { key, query, watch: false, deep: false, server: false, lazy: true },
+    { key, query, watch: false, deep: false, server: false, lazy: true, immediate: isResurrected() },
   )
 
   const mustPending = ref(false)
@@ -107,6 +113,7 @@ export default async function (opts: RecentFetchOpts | null = null, q: RecentsQu
     }
     query.value = buildQuery(q)
     queryChange.trigger(q)
+
     slowRefresh()
   }
 
@@ -133,6 +140,11 @@ export default async function (opts: RecentFetchOpts | null = null, q: RecentsQu
     if (Number.isNaN(page)) page = 1
     settingQuery({ ...query.value, page })
   }
+
+  console.log(query.value)
+  onUnmounted(() => {
+    console.log(query.value)
+  })
 
   function buildQuery(query: RecentsQuery | null = null): RecentsQuery {
     const reqQuery = query ?? urlroute.query
