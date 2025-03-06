@@ -46,7 +46,7 @@ const selectedId = ref()
 const options = {
   includeScore: true,
   threshold: 0.25,
-  keys: ['value', 'title'],
+  keys: ['value', 'title', 'alt'],
 }
 
 const listData = computed(() => {

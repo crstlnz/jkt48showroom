@@ -12,6 +12,9 @@ definePageMeta({ middleware: 'admin' })
         <NuxtLink class="bg-container rounded-3xl px-3.5 py-2 text-sm hover:bg-hover" to="/admin/missing_jkt48id">
           Missing JKT48 Id
         </NuxtLink>
+        <NuxtLink class="bg-container rounded-3xl px-3.5 py-2 text-sm hover:bg-hover" to="/admin/event">
+          Event
+        </NuxtLink>
         <NuxtLink class="bg-container rounded-3xl px-3.5 py-2 text-sm hover:bg-hover" to="/admin/setlist">
           Setlist
         </NuxtLink>

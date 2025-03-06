@@ -3,7 +3,7 @@ import { FormImageDrop } from '#components'
 import { useNotifications } from '~~/store/notifications'
 
 const props = defineProps<{
-  setlist?: JKT48.Setlist & { _id: string } | null
+  event?: JKT48.EventDetail & { _id: string } | null
 }>()
 
 const emit = defineEmits<{
@@ -16,10 +16,10 @@ onClickOutside(editDialog, () => {
   emit('onDismiss')
 })
 
-const id = ref(props.setlist?.id ?? '')
-const title = ref(props.setlist?.title ?? '')
-const title_alt = ref(props.setlist?.title_alt ?? '')
-const description = ref(props.setlist?.description ?? '')
+const id = ref(props.event?.id ?? '')
+const title = ref(props.event?.title ?? '')
+const title_alt = ref(props.event?.title_alt ?? '')
+const description = ref(props.event?.description ?? '')
 const posterImageDrop = ref<typeof FormImageDrop>()
 const bannerImageDrop = ref<typeof FormImageDrop>()
 const pending = ref(false)
@@ -38,18 +38,18 @@ async function save() {
       formData.append('banner', banner)
     }
 
-    if (props.setlist?.id) {
+    if (props.event?.id) {
       formData.append('origin_id', id.value)
     }
 
-    formData.append('_id', props.setlist?._id ?? '')
+    formData.append('_id', props.event?._id ?? '')
     formData.append('id', id.value)
     formData.append('title', title.value)
     formData.append('title_alt', title_alt.value)
     formData.append('description', description.value)
     // formData.append('commentsBy', commentsBy.value ?? '')
 
-    await $apiFetch('/api/admin/setlist', { method: 'POST', body: formData })
+    await $apiFetch('/api/admin/event', { method: 'POST', body: formData })
     pending.value = false
     addNotif({
       type: 'success',
@@ -76,8 +76,8 @@ async function save() {
           Setlist Form
         </h3>
         <div class="flex gap-3 py-4">
-          <FormImageDrop ref="posterImageDrop" :src="setlist?.poster" form-id="poster" title="Poster" class="bg-container-2 flex aspect-[4/5] h-40 items-center justify-center overflow-hidden rounded-md" />
-          <FormImageDrop ref="bannerImageDrop" :src="setlist?.banner" form-id="poster" title="Banner" class="bg-container-2 flex aspect-[16/9] h-40 items-center justify-center overflow-hidden rounded-md" />
+          <FormImageDrop ref="posterImageDrop" :src="event?.poster" form-id="poster" title="Poster" class="bg-container-2 flex aspect-[4/5] h-40 items-center justify-center overflow-hidden rounded-md" />
+          <FormImageDrop ref="bannerImageDrop" :src="event?.banner" form-id="poster" title="Banner" class="bg-container-2 flex aspect-[16/9] h-40 items-center justify-center overflow-hidden rounded-md" />
           <!-- <button class="bg-container-2 flex aspect-[4/5] h-40 items-center justify-center rounded-md">
             <div v-if="!poster">
               Poster

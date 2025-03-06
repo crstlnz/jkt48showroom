@@ -1,34 +1,34 @@
 <script lang="ts" setup>
 import { useNotifications } from '~/store/notifications'
 
-type JKT48SetlistWithId = JKT48.Setlist & { _id: string }
-const { data, error, pending, refresh } = await useApiFetch<JKT48SetlistWithId[]>('/api/admin/setlist')
+type JKT48EventDetailWithId = JKT48.EventDetail & { _id: string }
+const { data, error, pending, refresh } = await useApiFetch<(JKT48EventDetailWithId)[]>('/api/admin/event')
 const config = useAppConfig()
 const showForm = ref(false)
+
+const { addNotif } = useNotifications()
 
 function onDismiss() {
   refresh()
   showForm.value = false
 }
 
-const editData = ref<JKT48SetlistWithId | null>(null)
+const editData = ref<JKT48EventDetailWithId | null>(null)
 
 function addNewSetlist() {
   editData.value = null
   showForm.value = true
 }
 
-function openEdit(data: JKT48SetlistWithId) {
+function openEdit(data: JKT48EventDetailWithId) {
   editData.value = data
   showForm.value = true
 }
 
-const { addNotif } = useNotifications()
-
-const deleteData = ref<JKT48SetlistWithId | null>(null)
-async function deleteEvent(data: JKT48SetlistWithId) {
+const deleteData = ref<JKT48EventDetailWithId | null>(null)
+async function deleteEvent(data: JKT48EventDetailWithId) {
   try {
-    await $apiFetch(`/api/admin/setlist/${data._id}`, {
+    await $apiFetch(`/api/admin/event/${data._id}`, {
       method: 'DELETE',
     })
     addNotif({ message: `Berhasil menghapus ${data.title}`, type: 'success' })
@@ -45,7 +45,7 @@ async function deleteEvent(data: JKT48SetlistWithId) {
 </script>
 
 <template>
-  <LayoutRow title="Setlist">
+  <LayoutRow title="Event">
     <template #default>
       <Transition name="fade">
         <div v-if="deleteData" class="bg-black/50 fixed inset-0 z-aboveNav" @click="deleteData = null" />
@@ -57,55 +57,53 @@ async function deleteEvent(data: JKT48SetlistWithId) {
             <button type="button" class="bg-blue-500 px-3 py-1 text-sm rounded-md" @click="deleteData = null">
               Cancel
             </button>
-            <button type="button" class="bg-red-500 px-3 py-1 text-sm rounded-md" @click="() => deleteEvent(deleteData as JKT48SetlistWithId)">
+            <button type="button" class="bg-red-500 px-3 py-1 text-sm rounded-md" @click="() => deleteEvent(deleteData as JKT48EventDetailWithId)">
               Delete
             </button>
           </div>
         </div>
       </Transition>
       <Transition name="fade">
-        <SetlistForm v-if="showForm" :setlist="editData" @on-dismiss="onDismiss" />
+        <EventForm v-if="showForm" :event="editData" @on-dismiss="onDismiss" />
       </Transition>
       <div class="p-3 md:p-4">
         <div v-if="error">
           Error
         </div>
-        <div v-else-if="pending">
-          Pending
-        </div>
+        <div v-else-if="pending" />
         <div v-else-if="!data?.length">
           Kosong
         </div>
         <div v-else class="space-y-3 md:space-y-4">
-          <div v-for="setlist in data" :key="setlist.id" class="bg-container flex gap-3 rounded-xl p-3 md:gap-4 md:p-4">
-            <img :src="setlist.poster ?? config.errorPicture" alt="Theater Poster" class="aspect-[9/12] w-40 rounded-xl object-cover">
+          <div v-for="eventDetail in data" :key="eventDetail.id" class="bg-container flex gap-3 rounded-xl p-3 md:gap-4 md:p-4">
+            <img :src="eventDetail.poster ?? config.errorPicture" alt="Theater Poster" class="aspect-[9/12] w-40 rounded-xl object-cover">
             <div class="flex flex-1 flex-col gap-2">
               <div class="flex gap-3 text-xl">
-                <span>{{ setlist.title }}</span>
-                <span v-if="setlist.title_alt">
-                  ( {{ setlist.title_alt }} )
+                <span>{{ eventDetail.title }}</span>
+                <span v-if="eventDetail.title_alt">
+                  ( {{ eventDetail.title_alt }} )
                 </span>
               </div>
               <div class="flex-1 space-y-2">
                 <div>
-                  {{ setlist.description ?? "No description" }}
+                  {{ eventDetail.description ?? "No description" }}
                 </div>
                 <div class="flex gap-3">
-                  <div class="flex items-center gap-1.5 text-xl text-yellow-400">
+                  <!-- <div class="flex items-center gap-1.5 text-xl text-yellow-400">
                     <Icon name="ph:music-notes-duotone" />
-                    <span>{{ setlist.songs?.length ?? 0 }}</span>
+                    <span>{{ eventDetail.songs?.length ?? 0 }}</span>
                   </div>
                   <div class="flex items-center gap-1.5 text-xl text-sky-500">
                     <Icon name="solar:gallery-wide-bold-duotone" />
-                    <span>{{ setlist.gallery?.length ?? 0 }}</span>
-                  </div>
+                    <span>{{ eventDetail.gallery?.length ?? 0 }}</span>
+                  </div> -->
                 </div>
               </div>
               <div class="text-right">
-                <button type="button" class="p-2 text-red-500" @click="() => deleteData = setlist">
+                <button type="button" class="p-2 text-red-500" @click="() => deleteData = eventDetail">
                   <Icon name="ic:baseline-delete" size="1.5rem" />
                 </button>
-                <button type="button" class="p-2" @click="() => openEdit(setlist)">
+                <button type="button" class="p-2" @click="() => openEdit(eventDetail)">
                   <Icon name="material-symbols:edit-rounded" size="1.5rem" />
                 </button>
               </div>
