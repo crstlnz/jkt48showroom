@@ -44,7 +44,7 @@ export default function (data: Ref<Watch.WatchData | null>) {
         }
         else if (code === 8) { // telop start
           try {
-            onTelops.trigger(msg.telops.map((i: any) => ({
+            onTelops.trigger(msg.telops.map((i: Watch.Telops) => ({
               color: i.color,
               text: i.text,
               live_id: i.live_id,

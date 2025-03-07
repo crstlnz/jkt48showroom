@@ -263,6 +263,7 @@ onLiveState((isLive: boolean) => {
 })
 
 onTelops((t: Watch.Telops[]) => {
+  console.log(t)
   telops.value = t
 })
 

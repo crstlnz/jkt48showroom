@@ -14,7 +14,7 @@ export default function (number: number, _opts: ParseOptions) {
   if (!opts.rate) return `${n(number)}G`
 
   if (opts.showOriginal) {
-    return `${n(number)}G (± ${n(number * opts.rate, 'currency', 'id-ID')})`
+    return `${n(number)}G (± ${n(number * opts.rate)})`
   }
-  return `± ${n(number * opts.rate, 'currency', 'id-ID')}`
+  return `± ${n(number * opts.rate)}`
 }

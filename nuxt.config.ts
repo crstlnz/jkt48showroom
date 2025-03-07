@@ -11,7 +11,7 @@ export default defineNuxtConfig({
           src: 'https://www.googletagmanager.com/gtag/js?id=G-C92JVM8CR4',
         },
         {
-          children: `
+          innerHTML: `
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
@@ -64,7 +64,7 @@ export default defineNuxtConfig({
             'font-src': ['*', 'https:', 'data:'],
             'form-action': ['\'self\''],
             'frame-ancestors': ['\'self\''],
-            'img-src': ['*', 'data:'],
+            'img-src': ['*', 'data:', 'blob:'],
             'object-src': ['\'none\''],
             'script-src-attr': ['\'self\'', '\'nonce-{{nonce}}\''],
             'style-src': ['\'self\'', 'https:', '\'unsafe-inline\''],
@@ -118,6 +118,7 @@ export default defineNuxtConfig({
     },
   },
   i18n: {
+    baseUrl: process.env.BASE_URL,
     strategy: 'no_prefix',
     locales: [
       { code: 'id', language: 'id-ID', file: 'id.yaml', dir: 'ltr', name: 'ID' },
@@ -148,7 +149,7 @@ export default defineNuxtConfig({
     },
   },
   devtools: {
-    enabled: false,
+    enabled: true,
     timeline: {
       enabled: true,
     },

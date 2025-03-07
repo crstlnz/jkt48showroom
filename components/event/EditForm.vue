@@ -18,7 +18,7 @@ const event = ref(props.event)
 function generateForm(): Admin.Form[] {
   return [
     {
-      title: 'Theater Id',
+      title: 'Event Id',
       id: 'id',
       data: event.value.id,
       check: (data: any): boolean => {

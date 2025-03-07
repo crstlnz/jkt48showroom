@@ -141,11 +141,6 @@ export default function (opts: RecentFetchOpts | null = null, q: RecentsQuery | 
     settingQuery({ ...query.value, page })
   }
 
-  console.log(query.value)
-  onUnmounted(() => {
-    console.log(query.value)
-  })
-
   function buildQuery(query: RecentsQuery | null = null): RecentsQuery {
     const reqQuery = query ?? urlroute.query
     const q: RecentsQuery = { ...defaultQuery }
