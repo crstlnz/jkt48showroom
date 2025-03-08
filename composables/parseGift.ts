@@ -9,12 +9,12 @@ export default function (number: number, _opts: ParseOptions) {
     ..._opts,
   }
 
-  const { n } = useI18n()
-
+  const { n, numberFormats } = useI18n()
+  console.log(numberFormats.value)
   if (!opts.rate) return `${n(number)}G`
 
   if (opts.showOriginal) {
-    return `${n(number)}G (± ${n(number * opts.rate)})`
+    return `${n(number)}G (± ${n(number * opts.rate, 'currency', 'id')})`
   }
-  return `± ${n(number * opts.rate)}`
+  return `± ${n(number * opts.rate, 'currency', 'id')}`
 }

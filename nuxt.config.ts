@@ -49,6 +49,7 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@nuxt/fonts',
     '@nuxt/eslint',
+    '@nuxt/scripts',
   ],
   icon: {
     mode: 'svg',
@@ -123,10 +124,12 @@ export default defineNuxtConfig({
     locales: [
       { code: 'id', language: 'id-ID', file: 'id.yaml', dir: 'ltr', name: 'ID' },
       { code: 'en', language: 'en-US', file: 'en.yaml', dir: 'ltr', name: 'EN' },
+      { code: 'ja', language: 'ja-JP', file: 'jp.yaml', dir: 'ltr', name: 'JP' },
     ],
     langDir: 'locales',
     lazy: true,
     defaultLocale: 'id',
+    vueI18n: '../i18n.config.ts',
   },
   typescript: {
     shim: false,

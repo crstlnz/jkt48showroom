@@ -130,7 +130,7 @@ useHead({
                   <span>{{ $t('mostgifts') }}</span>
                 </NuxtLink>
                 <NuxtLink :to="`/recent/${data?.stats?.most_gift?.id}`" class="space-y-2 text-sm md:text-base md:flex-1 md:flex md:items-center md:justify-center">
-                  {{ data?.stats?.most_gift?.gift ? $n(data?.stats?.most_gift?.gift ?? 0, 'currency', 'id-ID') : $t('data.nodata') }}
+                  {{ data?.stats?.most_gift?.gift ? $n(data?.stats?.most_gift?.gift ?? 0, 'currency', 'id') : $t('data.nodata') }}
                 </NuxtLink>
               </div>
               <div class="md:bg-container md:rounded-xl md:p-4 flex md:flex-col max-md:justify-between gap-1.5 md:gap-3 items-center">

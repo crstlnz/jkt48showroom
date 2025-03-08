@@ -117,7 +117,7 @@ useHead({
                   {{ fans.name }}
                 </div>
                 <div class="text-sm">
-                  {{ $n(fans.total_gift, 'currency', 'id-ID') }}
+                  {{ $n(fans.total_gift, 'currency', 'id') }}
                 </div>
               </div>
             </div>

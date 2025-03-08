@@ -168,6 +168,9 @@ importers:
       '@nuxt/icon':
         specifier: ^1.10.3
         version: 1.10.3(magicast@0.3.5)(vite@6.2.1(@types/node@22.13.9)(jiti@2.4.2)(sass@1.85.1)(terser@5.39.0)(yaml@2.7.0))(vue@3.5.13(typescript@5.8.2))
+      '@nuxt/scripts':
+        specifier: 0.11.0
+        version: 0.11.0(@unhead/vue@2.0.0-rc.8(vue@3.5.13(typescript@5.8.2)))(db0@0.3.1)(ioredis@5.6.0)(magicast@0.3.5)(nuxt@3.16.0(@parcel/watcher@2.5.1)(@types/node@22.13.9)(db0@0.3.1)(eslint@9.21.0(jiti@2.4.2))(ioredis@5.6.0)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.34.9)(sass@1.85.1)(terser@5.39.0)(typescript@5.8.2)(vite@6.2.1(@types/node@22.13.9)(jiti@2.4.2)(sass@1.85.1)(terser@5.39.0)(yaml@2.7.0))(yaml@2.7.0))(typescript@5.8.2)
       '@nuxtjs/color-mode':
         specifier: ^3.5.2
         version: 3.5.2(magicast@0.3.5)
@@ -183,6 +186,9 @@ importers:
       '@pinia/nuxt':
         specifier: ^0.9.0
         version: 0.9.0(magicast@0.3.5)(pinia@2.3.1(typescript@5.8.2)(vue@3.5.13(typescript@5.8.2)))
+      '@unhead/vue':
+        specifier: ^2.0.0-rc.8
+        version: 2.0.0-rc.8(vue@3.5.13(typescript@5.8.2))
       '@vuepic/vue-datepicker':
         specifier: ^11.0.1
         version: 11.0.1(vue@3.5.13(typescript@5.8.2))
@@ -1231,6 +1237,25 @@ packages:
     resolution: {integrity: sha512-uCpcqWO6C4P5c4vi1/sq5GyajO0EOp+ZWFtPrnKaJ1pXAhA+W1aMVxAjfi2f18QMJHuRXBz1TouFg1RmWA6FuA==}
     engines: {node: ^14.18.0 || >=16.10.0}
 
+  '@nuxt/scripts@0.11.0':
+    resolution: {integrity: sha512-Xe1Nki8IDAyZtRnXjur4IewCX9+FpqOknGxDp9JsIZxuBh2EWoLztEvcH2YpErvbxi75SLc+P+c+y4032lw6+w==}
+    peerDependencies:
+      '@stripe/stripe-js': ^5.10.0
+      '@types/google.maps': ^3.58.1
+      '@types/vimeo__player': ^2.18.3
+      '@types/youtube': ^0.1.0
+      '@unhead/vue': ^2.0.0-rc.8
+      nuxt: ^3.16.0
+    peerDependenciesMeta:
+      '@stripe/stripe-js':
+        optional: true
+      '@types/google.maps':
+        optional: true
+      '@types/vimeo__player':
+        optional: true
+      '@types/youtube':
+        optional: true
+
   '@nuxt/telemetry@2.6.5':
     resolution: {integrity: sha512-lwMp9OHML/m0mjh7P5iz9PxINnk5smGkGebh88Wh8PjvnRooY1TBsbyq7mlSrNibpwD1BkwqhV5IAZOXWHLxMQ==}
     engines: {node: '>=18.12.0'}
@@ -1804,8 +1829,8 @@ packages:
     resolution: {integrity: sha512-2z8JQJWAzPdDd51dRQ/oqIJxe99/hoLIqmf8RMCAJQtYDc535W/Jt2+RTP4bP0aKeBG1F65yjIZuczOXCmbWwg==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@unhead/vue@2.0.0-rc.7':
-    resolution: {integrity: sha512-Hys2yUjlPq2jKADDbvIyyPwozlvj/i0ySIqiwudDcR097aF1gUklnGl1IjhG2wnb/2KbkXlbgZhEYdOuDr1bAA==}
+  '@unhead/vue@2.0.0-rc.8':
+    resolution: {integrity: sha512-jVnyM6ZeeYvgf/ZzAaV1GrgB7ARmYaMMVy3YPZiZzt9AIFJ6BxCV85lL6sxM/QEQI8itDJg9j/YBNbk9yLQi4A==}
     peerDependencies:
       vue: '>=3.5.13'
 
@@ -5164,8 +5189,8 @@ packages:
   unenv@2.0.0-rc.12:
     resolution: {integrity: sha512-aygmJLhrEnuLKDCISMoOL7ceRJeksnvXJXvtEvFei4zoOXQfvQkUGhZe8u//iK5C++M4pq3CsMbhVjFmWvOlmA==}
 
-  unhead@2.0.0-rc.7:
-    resolution: {integrity: sha512-QsA/kkx7IBRl0o03YtFdaRS+LaL5JByRXXGDabT1+08M1LCZTKFDrPKelIFVdKGrHqpO2NzoIBRocFiZML/3Sw==}
+  unhead@2.0.0-rc.8:
+    resolution: {integrity: sha512-v460EaVW4nQsXTULM2Fx5qmbmHpIs0kF72p3IwV5KXLk1uynFha0KbRraf8Vg+1EOJP91vLpNtXTLJtAzzF4zg==}
 
   unicode-properties@1.4.1:
     resolution: {integrity: sha512-CLjCCLQ6UuMxWnbIylkisbRj31qxHPAurvena/0iwSVbQ2G1VY5/HjV0IRabOEbDHlzZlRdCrD4NhB0JtU40Pg==}
@@ -5338,6 +5363,14 @@ packages:
     resolution: {integrity: sha512-o1KcUr5y6pL/TR/V7SuzDdHcL8+qkxSCwdUuBiLULs1wfRL7kvGUsxmuKQwvB94Ee9QEwz/zR5O1TwKJ87bWzQ==}
     peerDependencies:
       vue: ^2.0.0 || ^3.0.0
+
+  valibot@1.0.0-rc.3:
+    resolution: {integrity: sha512-LT0REa7Iqx4QGcaHLiTiTkcmJqJ9QdpOy89HALFFBJgejTS64GQFRIbDF7e4f6pauQbo/myfKGmWXCLhMeM6+g==}
+    peerDependencies:
+      typescript: '>=5'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
 
   validate-npm-package-license@3.0.4:
     resolution: {integrity: sha512-DpKm2Ui/xN7/HQKCtpZxoRWBhZ9Z0kqtygG8XCgNQ8ZlDnxuQmWhj566j8fN4Cu3/JmbhsDo7fcAJq4s9h27Ew==}
@@ -6892,6 +6925,48 @@ snapshots:
       pathe: 2.0.3
       std-env: 3.8.1
 
+  '@nuxt/scripts@0.11.0(@unhead/vue@2.0.0-rc.8(vue@3.5.13(typescript@5.8.2)))(db0@0.3.1)(ioredis@5.6.0)(magicast@0.3.5)(nuxt@3.16.0(@parcel/watcher@2.5.1)(@types/node@22.13.9)(db0@0.3.1)(eslint@9.21.0(jiti@2.4.2))(ioredis@5.6.0)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.34.9)(sass@1.85.1)(terser@5.39.0)(typescript@5.8.2)(vite@6.2.1(@types/node@22.13.9)(jiti@2.4.2)(sass@1.85.1)(terser@5.39.0)(yaml@2.7.0))(yaml@2.7.0))(typescript@5.8.2)':
+    dependencies:
+      '@nuxt/kit': 3.16.0(magicast@0.3.5)
+      '@unhead/vue': 2.0.0-rc.8(vue@3.5.13(typescript@5.8.2))
+      '@vueuse/core': 12.8.2(typescript@5.8.2)
+      consola: 3.4.0
+      defu: 6.1.4
+      h3: 1.15.1
+      magic-string: 0.30.17
+      nuxt: 3.16.0(@parcel/watcher@2.5.1)(@types/node@22.13.9)(db0@0.3.1)(eslint@9.21.0(jiti@2.4.2))(ioredis@5.6.0)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.34.9)(sass@1.85.1)(terser@5.39.0)(typescript@5.8.2)(vite@6.2.1(@types/node@22.13.9)(jiti@2.4.2)(sass@1.85.1)(terser@5.39.0)(yaml@2.7.0))(yaml@2.7.0)
+      ofetch: 1.4.1
+      ohash: 2.0.11
+      pathe: 2.0.3
+      pkg-types: 2.1.0
+      sirv: 3.0.1
+      std-env: 3.8.1
+      ufo: 1.5.4
+      unplugin: 2.2.0
+      unstorage: 1.15.0(db0@0.3.1)(ioredis@5.6.0)
+      valibot: 1.0.0-rc.3(typescript@5.8.2)
+    transitivePeerDependencies:
+      - '@azure/app-configuration'
+      - '@azure/cosmos'
+      - '@azure/data-tables'
+      - '@azure/identity'
+      - '@azure/keyvault-secrets'
+      - '@azure/storage-blob'
+      - '@capacitor/preferences'
+      - '@deno/kv'
+      - '@netlify/blobs'
+      - '@planetscale/database'
+      - '@upstash/redis'
+      - '@vercel/blob'
+      - '@vercel/kv'
+      - aws4fetch
+      - db0
+      - idb-keyval
+      - ioredis
+      - magicast
+      - typescript
+      - uploadthing
+
   '@nuxt/telemetry@2.6.5(magicast@0.3.5)':
     dependencies:
       '@nuxt/kit': 3.16.0(magicast@0.3.5)
@@ -7511,10 +7586,10 @@ snapshots:
       '@typescript-eslint/types': 8.26.0
       eslint-visitor-keys: 4.2.0
 
-  '@unhead/vue@2.0.0-rc.7(vue@3.5.13(typescript@5.8.2))':
+  '@unhead/vue@2.0.0-rc.8(vue@3.5.13(typescript@5.8.2))':
     dependencies:
       hookable: 5.5.3
-      unhead: 2.0.0-rc.7
+      unhead: 2.0.0-rc.8
       vue: 3.5.13(typescript@5.8.2)
 
   '@use-gesture/core@10.3.1': {}
@@ -10302,7 +10377,7 @@ snapshots:
       '@nuxt/telemetry': 2.6.5(magicast@0.3.5)
       '@nuxt/vite-builder': 3.16.0(@types/node@22.13.9)(eslint@9.21.0(jiti@2.4.2))(magicast@0.3.5)(optionator@0.9.4)(rollup@4.34.9)(sass@1.85.1)(terser@5.39.0)(typescript@5.8.2)(vue@3.5.13(typescript@5.8.2))(yaml@2.7.0)
       '@oxc-parser/wasm': 0.56.5
-      '@unhead/vue': 2.0.0-rc.7(vue@3.5.13(typescript@5.8.2))
+      '@unhead/vue': 2.0.0-rc.8(vue@3.5.13(typescript@5.8.2))
       '@vue/shared': 3.5.13
       c12: 3.0.2(magicast@0.3.5)
       chokidar: 4.0.3
@@ -11587,7 +11662,7 @@ snapshots:
       pathe: 2.0.3
       ufo: 1.5.4
 
-  unhead@2.0.0-rc.7:
+  unhead@2.0.0-rc.8:
     dependencies:
       hookable: 5.5.3
 
@@ -11788,6 +11863,10 @@ snapshots:
       vue: 3.5.13(typescript@5.8.2)
     transitivePeerDependencies:
       - magicast
+
+  valibot@1.0.0-rc.3(typescript@5.8.2):
+    optionalDependencies:
+      typescript: 5.8.2
 
   validate-npm-package-license@3.0.4:
     dependencies:

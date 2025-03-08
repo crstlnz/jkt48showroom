@@ -1,3 +1,5 @@
+console.log('load i18n')
+
 export default defineI18nConfig(() => ({
   legacy: false,
   datetimeFormats: {
@@ -43,21 +45,21 @@ export default defineI18nConfig(() => ({
     },
   },
   numberFormats: {
-    'en-US': {
+    en: {
       currency: {
         style: 'currency',
         currency: 'IDR',
         currencyDisplay: 'symbol',
       },
     },
-    'ja-JP': {
+    ja: {
       currency: {
         style: 'currency',
         currency: 'JPY',
         currencyDisplay: 'symbol',
       },
     },
-    'id-ID': {
+    id: {
       currency: {
         style: 'currency',
         currency: 'IDR',

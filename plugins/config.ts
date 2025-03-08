@@ -27,8 +27,8 @@ export default defineNuxtPlugin(() => {
           return `${$n(num)} G`
         }
         else {
-          if (type === 'jpy') return $n(num / 1.1, 'currency', 'ja-JP')
-          return $n(num * 105.5, 'currency', 'id-ID')
+          if (type === 'jpy') return $n(num / 1.1, 'currency', 'ja')
+          return $n(num * 105.5, 'currency', 'id')
         }
       },
     },
