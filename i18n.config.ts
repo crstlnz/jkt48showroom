@@ -1,5 +1,3 @@
-console.log('load i18n')
-
 export default defineI18nConfig(() => ({
   legacy: false,
   datetimeFormats: {
@@ -43,6 +41,7 @@ export default defineI18nConfig(() => ({
         minute: '2-digit',
       },
     },
+    ja: {},
   },
   numberFormats: {
     en: {
