@@ -53,6 +53,7 @@ export default defineNuxtConfig({
   ],
   icon: {
     mode: 'svg',
+    serverBundle: 'remote',
   },
   security: {
     nonce: !isDev,
