@@ -262,9 +262,8 @@ onLiveState((isLive: boolean) => {
   }
 })
 
-onTelops((t: Watch.Telops[]) => {
-  console.log(t)
-  telops.value = t
+onTelops((t: any) => {
+  telops.value = t as Watch.Telops[]
 })
 
 const { comments, delayedComments, appendComment, createComment, appendDelayedComments, setAutoAppend } = useShowroomComments(data)
@@ -372,7 +371,6 @@ watch(telops, (v) => {
             <div class="flex items-center min-w-0 flex-1 gap-2 max-sm:flex-[100%]">
               <div v-if="true" class="flex flex-col items-start truncate max-lg:flex-1" :title="data?.name">
                 <div>{{ data?.name }}</div>
-                <Sousenkyo2024Label />
               </div>
               <div v-else class="truncate max-lg:flex-1" :title="data?.name">
                 {{ data?.name }}
