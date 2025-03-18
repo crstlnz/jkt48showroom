@@ -48,20 +48,20 @@ const { data, pending } = useCachedFetch<API.JKT48Video[]>('/api/jkt48_youtube',
           :to="video.url" target="_blank" external
           class="aspect-video w-full relative group overflow-hidden sm:rounded-xl"
         >
-          <img
+          <DeferImage
             :src="video.thumbnails?.medium?.url ?? $errorPicture" :alt="`${video.channelTitle} profile picture`"
             class="size-full -z-10 object-cover transition-transform duration-500"
-          >
+          />
         </NuxtLink>
         <div class="flex gap-3 max-sm:px-3">
           <NuxtLink
             :to="`https://www.youtube.com/${video.channelUrl}`" target="_blank" external
             class="aspect-square relative group overflow-hidden rounded-full w-9 shrink-0 self-start"
           >
-            <img
-              :src="video.profilePict?.medium?.url ?? $errorPicture" :alt="`${video.channelTitle} profile picture`"
+            <DeferImage
+              :src="video.profilePict?.medium?.url ?? $errorPicture" error-image="https://res.cloudinary.com/haymzm4wp/image/upload/s--GIdv3Qf1--/t_media_lib_thumb/uploads/mbcry7wbt4pwk1ejf2rs" :alt="`${video.channelTitle} profile picture`"
               class="size-full -z-10 object-cover transition-transform duration-500"
-            >
+            />
           </NuxtLink>
           <div class="flex flex-col gap-1">
             <a :href="video.url" target="_blank" class="line-clamp-2 text-base md:text-lg font-bold leading-5">

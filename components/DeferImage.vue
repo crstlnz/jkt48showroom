@@ -6,6 +6,7 @@ const props = withDefaults(defineProps<{
   alt: string
   transparent?: boolean
   draggable?: boolean
+  errorImage?: string
 }>(), {
   transparent: false,
   draggable: true,
@@ -36,7 +37,7 @@ watch(isLoading, (loading) => {
           ref="lazyImage"
           class="h-full w-full object-cover object-center"
           :alt="!error ? alt : 'Image Error'"
-          :src="!error ? src : '/img/img-error.jpg'"
+          :src="!error ? src : errorImage ?? '/img/img-error.jpg'"
           :draggable="draggable"
         >
       </div>
