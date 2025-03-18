@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { MediaVolumeChangeEvent } from 'vidstack'
+import type { MediaLoadedMetadataEvent, MediaVolumeChangeEvent } from 'vidstack'
 import type { MediaPlayerElement } from 'vidstack/elements'
 import 'vidstack/bundle'
 
@@ -17,6 +17,7 @@ const { load: loadHls } = useScriptTag(
   },
 )
 
+const mediaPlayer = ref<MediaPlayerElement>()
 const proxied = ref(false)
 const proxyServers = ref(getProxyServer())
 const proxyIndex = ref(0)
@@ -75,12 +76,33 @@ async function play(retry: number = 0, tryRetry = true) {
 onBeforeUnmount(() => {
   player.value?.destroy()
 })
+
+const videoLandscape = ref(false)
+
+function onLoadedMetadata(ev: MediaLoadedMetadataEvent) {
+  const videoEl = ev.target.$el?.querySelector('video')
+  if (videoEl && videoEl.videoHeight < videoEl.videoWidth) {
+    videoLandscape.value = true
+  }
+  else {
+    videoLandscape.value = false
+  }
+}
+
+onMounted(() => {
+  if (!mediaPlayer.value) return
+  mediaPlayer.value.addEventListener('loaded-metadata', onLoadedMetadata)
+})
+
+onUnmounted(() => {
+  mediaPlayer.value?.removeEventListener('loaded-metadata', onLoadedMetadata)
+})
 </script>
 
 <template>
   <div class="size-full">
     <!-- eslint-disable-next-line vue/attribute-hyphenation -->
-    <media-player playsInline :volume="volume" class="size-full [&_video]:size-full" :title="props.title" :src="src">
+    <media-player ref="mediaPlayer" playsInline :volume="volume" class="size-full [&_video]:size-full" :title="props.title" :src="src" :class="{ landscape: videoLandscape, potrait: !videoLandscape }">
       <ClientOnly>
         <media-provider />
         <media-video-layout :thumbnails="props.thumbnails" />
