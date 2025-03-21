@@ -79,8 +79,25 @@ onBeforeUnmount(() => {
 
 const videoLandscape = ref(false)
 
+const videoDimens = ref<{ width: number, height: number }>({ width: 0, height: 0 })
+const containerDimens = ref<{ width: number, height: number }>({ width: 0, height: 0 })
+const { width: vWidth, height: vHeight } = useElementSize(mediaPlayer)
+
+watch([vWidth, vHeight], () => {
+  containerDimens.value = {
+    width: vWidth.value,
+    height: vHeight.value,
+  }
+})
+
 function onLoadedMetadata(ev: MediaLoadedMetadataEvent) {
   const videoEl = ev.target.$el?.querySelector('video')
+  if (videoEl) {
+    videoDimens.value = {
+      height: videoEl.videoHeight ?? 0,
+      width: videoEl.videoWidth ?? 0,
+    }
+  }
   if (videoEl && videoEl.videoHeight < videoEl.videoWidth) {
     videoLandscape.value = true
   }
@@ -89,23 +106,82 @@ function onLoadedMetadata(ev: MediaLoadedMetadataEvent) {
   }
 }
 
+const id = useId()
+const observer = ref<MutationObserver>()
+const { rotate, rotation, videoScale, isRotateFeatureEnabled, reset } = useVideoRotate(videoDimens, containerDimens)
 onMounted(() => {
   if (!mediaPlayer.value) return
   mediaPlayer.value.addEventListener('loaded-metadata', onLoadedMetadata)
+  createRotateButton()
+
+  observer.value = new MutationObserver((mutationsList) => {
+    mutationsList.forEach(() => {
+      if (isRotateFeatureEnabled.value) {
+        createRotateButton()
+      }
+      else {
+        deleteRotateButton()
+      }
+    })
+  })
+
+  observer.value.observe(mediaPlayer.value, { attributes: false, childList: true, subtree: true })
 })
 
 onUnmounted(() => {
+  observer.value?.disconnect()
   mediaPlayer.value?.removeEventListener('loaded-metadata', onLoadedMetadata)
+})
+
+function createRotateButton() {
+  const btn = document.querySelector(`#${id} media-rotate-button`)
+  if (btn) return
+  const fsBtns = Array.from(document.querySelectorAll('media-tooltip'))
+  const fsBtn = fsBtns.find(i => i.querySelector('media-fullscreen-button'))
+  if (!fsBtn) return
+  const button = document.createElement('media-rotate-button')
+  button.setAttribute('role', 'button')
+  button.classList.add('vds-button')
+  button.innerHTML = '<svg class="vds-icon" style="padding:4.5px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="#ffffff" d="M4 2h3a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2m16 13a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-9v-7zM14 4a8 8 0 0 1 8 8l-.06 1h-2.02l.08-1a6 6 0 0 0-6-6v3l-4-4l4-4z"/></svg>'
+
+  button.addEventListener('click', () => {
+    rotate()
+  })
+
+  fsBtn.before(button)
+}
+
+function deleteRotateButton() {
+  const btn = document.querySelector(`#${id} media-rotate-button`)
+  if (btn) btn.remove()
+}
+
+const videoLayouts = ref()
+watch(() => isRotateFeatureEnabled.value && videoLayouts.value, () => {
+  if (isRotateFeatureEnabled.value) {
+    createRotateButton()
+  }
+  else {
+    reset()
+    deleteRotateButton()
+  }
+})
+
+watch(rotation, () => {
+  const video = mediaPlayer.value?.querySelector('video')
+  if (video) {
+    video.style.transform = `rotate(${rotation.value}deg) scale(${videoScale.value})`
+  }
 })
 </script>
 
 <template>
   <div class="size-full">
     <!-- eslint-disable-next-line vue/attribute-hyphenation -->
-    <media-player ref="mediaPlayer" playsInline :volume="volume" class="size-full [&_video]:size-full" :title="props.title" :src="src" :class="{ landscape: videoLandscape, potrait: !videoLandscape }">
+    <media-player :id="id" ref="mediaPlayer" playsInline :volume="volume" class="size-full [&_video]:!size-full [&_video]:transition-[transform,object-fit] [&_video]:duration-[400ms] ease-out" :title="props.title" :src="src" :class="{ landscape: videoLandscape, potrait: !videoLandscape }">
       <ClientOnly>
         <media-provider />
-        <media-video-layout :thumbnails="props.thumbnails" />
+        <media-video-layout ref="videoLayouts" :thumbnails="props.thumbnails" />
       </ClientOnly>
     </media-player>
   </div>

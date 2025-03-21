@@ -768,10 +768,16 @@ onMounted(() => {
   })
 })
 
+function getAspectRatio(width: number, height: number, rotate = false) {
+  if (rotate) {
+    [width, height] = [height, width] // Swap width and height
+  }
+  return width / height
+}
+
 const aspectRatio = computed(() => {
-  const landscapeRatio = isMiring.value ? 'aspect-[9/12]' : 'aspect-video'
-  const portraitRatio = !isMiring.value ? 'aspect-[9/12]' : 'aspect-video'
-  return isLandscape.value ? landscapeRatio : portraitRatio
+  if (!videoWidth.value || !videoHeight.value) return getAspectRatio(16, 9, isMiring.value)
+  return getAspectRatio(videoWidth.value, videoHeight.value, isMiring.value)
 })
 
 const { isMD } = useResponsive()
@@ -800,16 +806,14 @@ defineExpose({
   <div
     ref="videoPlayer"
     class="overflow-hidden relative group flex items-center transform-all duration-300"
-    :class="[
-      !enableRotate
-        ? 'w-full h-full'
-        : rotateFill === 'width'
-          ? aspectRatio
-          : 'h-full w-full',
-      {
-        '!cursor-none': !showControl && isPlaying,
-      },
-    ]"
+    :style="{
+      aspectRatio: enableRotate && rotateFill === 'width' ? aspectRatio : undefined,
+
+    }"
+    :class="{
+      'w-full h-full': !enableRotate && rotateFill !== 'width',
+      '!cursor-none': !showControl && isPlaying,
+    }"
   >
     <div
       :class="{

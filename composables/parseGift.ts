@@ -9,8 +9,7 @@ export default function (number: number, _opts: ParseOptions) {
     ..._opts,
   }
 
-  const { n, numberFormats } = useI18n()
-  console.log(numberFormats.value)
+  const { n } = useI18n()
   if (!opts.rate) return `${n(number)}G`
 
   if (opts.showOriginal) {

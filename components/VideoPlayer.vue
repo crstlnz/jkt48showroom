@@ -52,7 +52,7 @@ const { load: loadPlyr } = useScriptTag(
 )
 
 const player = ref<any>()
-const { rotate, rotation, videoScale, isRotateFeatureEnabled } = useVideoRotate(videoDimens)
+const { rotate, rotation, videoScale, isRotateFeatureEnabled, reset } = useVideoRotate(videoDimens)
 watch(rotation, () => {
   const video = wrapper.value?.querySelector('video')
   if (video) {
@@ -109,8 +109,11 @@ function createRefreshButton(player: any) {
   settingButton.insertAdjacentElement('afterend', refreshButton)
 }
 
+const customButtonClass = 'x-custom-button'
+
 function createRotateButton(player: any) {
   const rotateButton = document.createElement('button')
+  rotateButton.classList.add(customButtonClass)
   rotateButton.classList.add('plyr__control')
   rotateButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="#ffffff" d="M4 2h3a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2m16 13a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-9v-7zM14 4a8 8 0 0 1 8 8l-.06 1h-2.02l.08-1a6 6 0 0 0-6-6v3l-4-4l4-4z"/></svg>'
   rotateButton.addEventListener('click', () => {
@@ -122,6 +125,13 @@ function createRotateButton(player: any) {
   const settingButton = controls.querySelector('.plyr__control[data-plyr=\'settings\']')
   settingButton.insertAdjacentElement('afterend', rotateButton)
   // controls.insertBefore(rotateButton, settingButton.nextSibling)
+}
+
+function deleteRotateButton() {
+  const elements = document.querySelectorAll(`.${customButtonClass}`)
+  elements.forEach((e) => {
+    e.remove()
+  })
 }
 
 function createVideoPlayer() {
@@ -178,10 +188,21 @@ function createVideoPlayer() {
     }
   })
 
-  if (isRotateFeatureEnabled.value && !isMobile) createRotateButton(player.value)
+  // if (isRotateFeatureEnabled.value && !isMobile) createRotateButton(player.value)
   createRefreshButton(player.value)
   createHls()
 }
+
+watch(() => isRotateFeatureEnabled.value && !isMobile && player.value, () => {
+  if (!isRotateFeatureEnabled.value) reset()
+  if (!player.value) return
+  if (isRotateFeatureEnabled.value && !isMobile) {
+    createRotateButton(player.value)
+  }
+  else {
+    deleteRotateButton()
+  }
+})
 
 function createHls() {
   if (!video.value) return
