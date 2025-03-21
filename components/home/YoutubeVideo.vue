@@ -3,6 +3,12 @@ const { locale } = useI18n()
 const { data, pending } = useCachedFetch<API.JKT48Video[]>('/api/jkt48_youtube', {
   expireIn: 600000,
 })
+
+function decodeHtml(text: string) {
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(text, 'text/html')
+  return doc.body.textContent
+}
 </script>
 
 <template>
@@ -65,7 +71,7 @@ const { data, pending } = useCachedFetch<API.JKT48Video[]>('/api/jkt48_youtube',
           </NuxtLink>
           <div class="flex flex-col gap-1">
             <a :href="video.url" target="_blank" class="line-clamp-2 text-base md:text-lg font-bold leading-5">
-              {{ video.title }}
+              {{ decodeHtml(video.title) }}
             </a>
             <div class="flex gap-x-1 flex-wrap text-xs sm:text-sm text-gray-500 dark:text-gray-400">
               <a :href="`https://youtube.com/${video.channelUrl}`" target="_blank" class="sm:w-full">{{ video.channelTitle }}</a>
