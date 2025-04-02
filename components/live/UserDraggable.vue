@@ -43,15 +43,10 @@ async function refresh() {
       }
     }
     else {
-      const res = await $fetch<UserDraggable.IDNUserApi>('https://api.idn.app/graphql', {
-        headers: {
-          'Content-Type': 'application/json',
+      const res = await $apiFetch<UserDraggable.IDNUserApi>('/api/idn_user', {
+        query: {
+          user_id: userId.value,
         },
-        method: 'POST',
-        body: JSON.stringify({
-          query: `query GetPublicProfile { getPublicProfile(uuid: "${userId.value}") { uuid username name avatar bio_description following_count follower_count is_follow }}`,
-
-        }),
       })
       userData.value = {
         id: res.data.getPublicProfile.uuid,
@@ -243,11 +238,11 @@ onMounted(() => {
           left: `${posX}px`,
           bottom: `${windowHeight - posY}px`,
         }"
-        class="fixed z-notification transition-all duration-[350ms] ease-out max-md:inset-0 max-md:!bottom-0 max-md:!left-0"
+        class="fixed z-notification transition-all duration-[350ms] ease-out max-md:inset-0 max-md:bottom-0! max-md:left-0!"
         @pointerdown="startDrag"
       >
         <div class="absolute -inset-40 bg-black/40 md:hidden" @click="isHidden = true" />
-        <div class="md:max-w-[3 00px] min-w-[280px] max-w-[95vw] rounded-3xl bg-white p-5 shadow-2xl drop-shadow-2xl dark:bg-dark-3 max-md:fixed max-md:!bottom-1/2 max-md:!left-1/2 max-md:-translate-x-1/2 max-md:translate-y-1/2 lg:max-w-[400px]">
+        <div class="md:max-w-[3 00px] min-w-[280px] max-w-[95vw] rounded-3xl bg-white p-5 shadow-2xl drop-shadow-2xl dark:bg-dark-3 max-md:fixed max-md:bottom-1/2! max-md:left-1/2! max-md:-translate-x-1/2 max-md:translate-y-1/2 lg:max-w-[400px]">
           <div class="mb-2 flex justify-end">
             <button type="button" aria-label="Close" class="disable-drag" @click="isHidden = true">
               <Icon name="ph:x-bold" class="pointer-events-none" />

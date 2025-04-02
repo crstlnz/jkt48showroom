@@ -95,15 +95,15 @@ watch(isHovered, (hovered) => {
 <template>
   <div
     ref="container"
-    class="group relative z-0 aspect-[20/28] origin-top overflow-hidden rounded-xl shadow-md transition-[transform,box-shadow,z-index] duration-300 will-change-transform md:aspect-[20/26]"
-    :class="{ 'lg:scale=[122%] z-50 translate-y-[-10%] scale-[115%] shadow-black/50 drop-shadow-2xl dark:shadow-black/80 md:scale-[118%] xl:scale-125': isPreview, 'shadow-sm ': !isPreview }"
+    class="group relative z-0 aspect-20/28 origin-top overflow-hidden rounded-xl shadow-md transition-[transform,scale,translate,box-shadow,z-index] duration-300 will-change-transform md:aspect-20/26"
+    :class="{ 'lg:scale=[122%] z-50 translate-y-[-10%] scale-[115%] shadow-black/50 drop-shadow-2xl dark:shadow-black/80 md:scale-[118%] xl:scale-125': isPreview, 'shadow-2xs ': !isPreview }"
   >
     <div class="flex h-full w-full flex-col">
       <button
         type="button"
-        class="absolute right-0 z-[25] m-2 flex aspect-square w-5 cursor-pointer select-none items-center justify-center rounded-full hover:bg-zinc-500 hover:text-slate-700 dark:hover:text-slate-100 md:m-3 md:w-6 xl:m-4"
+        class="absolute right-0 z-25 m-2 flex aspect-square w-5 cursor-pointer select-none items-center justify-center rounded-full hover:bg-zinc-500 hover:text-slate-700 dark:hover:text-slate-100 md:m-3 md:w-6 xl:m-4"
         :class="{
-          '!text-white': openMenu || isPreview,
+          'text-white!': openMenu || isPreview,
           'bg-zinc-500/60': !openMenu || !isPreview,
         }"
         @click="openMenu = !openMenu"
@@ -117,13 +117,13 @@ watch(isHovered, (hovered) => {
           Keep Hover
         </div>
         <div section="preview-on" :class="{ 'visible opacity-100': isPreview, 'invisible opacity-0': !isPreview }" class="absolute h-full w-full inset-x-0 top-0 z-20 transition-opacity duration-[400ms]">
-          <LazyPreviewVideo ref="preview" :use-proxy="true" :src="streamingURL" :playing="playing" class="w-full h-full" />
+          <LazyPreviewVideo ref="preview" :use-proxy="true" :src="streamingURL" :playing="playing" class="w-full h-full scale-" />
         </div>
         <div section="preview-off" :class="{ 'bg-slate-200 dark:bg-dark-1/60': isHovered && !isPreview && isSupported }" class="relative top-0 w-full h-full overflow-hidden rounded-t-xl transition-colors">
           <div class="relative inset-0 flex h-full items-end justify-center">
             <div
               :class="{ 'pointer-events-none': openMenu }"
-              class="z-[1] inline-block h-full w-full overflow-hidden"
+              class="z-1 inline-block h-full w-full overflow-hidden"
               no-prefetch
             >
               <DeferImage
@@ -149,15 +149,15 @@ watch(isHovered, (hovered) => {
           <div class="text-white truncate text-sm md:text-base w-0 flex-1">
             {{ live.name }}
           </div>
-          <!-- <div class="bg-red-500 px-1.5 rounded-sm text-xs text-white">
+          <!-- <div class="bg-red-500 px-1.5 rounded-xs text-xs text-white">
             IDN
           </div> -->
         </div>
       </div>
     </div>
     <div
-      class="visible absolute left-0 top-0 z-20 flex h-full w-full flex-col justify-center rounded-t-xl bg-red-500 p-3 text-white transition-[transform,visibility] duration-300 sm:p-4 md:p-5"
-      :class="{ 'invisible translate-y-full': !openMenu }"
+      class="visible absolute left-0 top-0 z-20 flex h-full w-full flex-col justify-center rounded-t-xl bg-red-500 p-3 text-white transition-[translate,visibility] duration-300 sm:p-4 md:p-5"
+      :class="{ 'invisible translate-y-[calc(100%+2px)]': !openMenu }"
     >
       <ul
         :class="{ 'no-scrollbar': $device.isMobile }"

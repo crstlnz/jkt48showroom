@@ -215,10 +215,10 @@ onBeforeUnmount(() => {
               <Icon v-else name="ic:baseline-person" size="1.5em" class="h-full w-full rounded-full p-2 text-white dark:text-slate-500/50" />
             </div>
             <div class="mr-3 flex flex-1 flex-col items-start">
-              <div class="text-base font-semibold !leading-5">
+              <div class="text-base font-semibold leading-5!">
                 {{ authenticated ? user?.name : "Login" }}
               </div>
-              <div v-if="authenticated" class="text-left text-sm font-light !leading-5" @click="hiddenUsername = !hiddenUsername">
+              <div v-if="authenticated" class="text-left text-sm font-light leading-5!" @click="hiddenUsername = !hiddenUsername">
                 <div v-if="!hiddenUsername">
                   {{ authenticated ? user?.account_id : $t('loginwithshowroom') }}
                 </div>
@@ -226,7 +226,7 @@ onBeforeUnmount(() => {
                   <span>********</span><Icon name="formkit:hidden" />
                 </div>
               </div>
-              <div v-else class="text-left text-sm font-light !leading-5">
+              <div v-else class="text-left text-sm font-light leading-5!">
                 {{ $t('loginwithshowroom') }}
               </div>
             </div>
@@ -268,8 +268,8 @@ onBeforeUnmount(() => {
               class="bg-container flex items-center justify-start gap-3 rounded-full p-3"
               @click="$emit('toggleDark')"
             >
-              <Icon name="ph:moon-bold" class="!hidden h-6 w-6 dark:!block" />
-              <Icon name="ph:sun-bold" class="h-6 w-6 dark:!hidden" />
+              <Icon name="ph:moon-bold" class="hidden! h-6 w-6 dark:block!" />
+              <Icon name="ph:sun-bold" class="h-6 w-6 dark:hidden!" />
             </button>
             <SettingsDialog />
           </div>

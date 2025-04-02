@@ -53,15 +53,15 @@ useEventListener(feedbackForm, 'submit', async (e) => {
       >
         <div class="flex gap-3">
           <label class="w-[100px] md:w-[150px]" for="Email">Email</label>
-          <input name="Email" type="email" placeholder="Tidak wajib" class="bg-black/10 dark:bg-white/10 rounded-md px-3 py-2 outline-none flex-1">
+          <input name="Email" type="email" placeholder="Tidak wajib" class="bg-black/10 dark:bg-white/10 rounded-md px-3 py-2 outline-hidden flex-1">
         </div>
         <div class="flex gap-3">
           <label class="w-[100px] md:w-[150px]" for="Name">Nama</label>
-          <input name="Name" type="text" placeholder="Name" required class="bg-black/10 dark:bg-white/10 rounded-md px-3 py-2 outline-none flex-1">
+          <input name="Name" type="text" placeholder="Name" required class="bg-black/10 dark:bg-white/10 rounded-md px-3 py-2 outline-hidden flex-1">
         </div>
         <div class="flex gap-3">
           <label class="w-[100px] md:w-[150px]" for="Detail">Isi</label>
-          <textarea name="Detail" type="text" placeholder="Isi laporan bug atau saran" required form="feedback" class="bg-black/10 dark:bg-white/10 rounded-md px-3 py-2 outline-none flex-1" />
+          <textarea name="Detail" type="text" placeholder="Isi laporan bug atau saran" required form="feedback" class="bg-black/10 dark:bg-white/10 rounded-md px-3 py-2 outline-hidden flex-1" />
         </div>
         <div class="h-6 leading-6">
           <div v-if="success" class="text-green-500 text-sm">

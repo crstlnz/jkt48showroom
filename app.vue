@@ -7,9 +7,9 @@ const themeColor = computed(() => {
 })
 
 const i18nHead = useLocaleHead({
-  addDirAttribute: true,
-  identifierAttribute: 'id',
-  addSeoAttributes: true,
+  dir: true,
+  lang: true,
+  seo: true,
 })
 
 const url = useRequestURL()
@@ -23,7 +23,7 @@ useHead({
   },
   noscript: [
     {
-      children: 'JavaScript is required',
+      innerHTML: 'JavaScript is required',
     },
   ],
   link: [

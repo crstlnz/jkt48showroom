@@ -60,7 +60,7 @@ const showCommentForm = useLocalStorage('show_comment_form', true)
       <template #before>
         <div>
           <div
-            class="border-b-2 relative -z-10  p-3 text-xl font-bold backdrop-blur-sm border-slate-100/60 bg-white/90 dark:border-dark-2/60 dark:bg-dark-1/90 md:p-5"
+            class="border-b-2 relative -z-10  p-3 text-xl font-bold backdrop-blur-xs border-slate-100/60 bg-white/90 dark:border-dark-2/60 dark:bg-dark-1/90 md:p-5"
           >
             <div class="flex items-center gap-2" size="1.4rem">
               <Icon name="iconamoon:comment-dots-fill" />
@@ -115,7 +115,7 @@ const showCommentForm = useLocalStorage('show_comment_form', true)
               >
                 <img
                   :key="item.avatar_id"
-                  class="h-full w-full rounded-lg md:bg-slate-100/90 md:p-1.5 md:hover:bg-slate-200 md:dark:bg-slate-100/5 md:hover:dark:bg-slate-300/10"
+                  class="h-full w-full rounded-lg md:bg-slate-100/90 md:p-1.5 md:hover:bg-slate-200 md:dark:bg-slate-100/5 md:dark:hover:bg-slate-300/10"
                   :src="$avatarURL(item.avatar_id)"
                   :alt="`${item.name} Avatar`"
                 >
@@ -141,7 +141,7 @@ const showCommentForm = useLocalStorage('show_comment_form', true)
       </template>
 
       <template v-if="!comments.length" #empty>
-        <div class="flex aspect-[9/8] items-center justify-center">
+        <div class="flex aspect-9/8 items-center justify-center">
           <div class="flex flex-col">
             <NuxtImg
               class="mx-auto h-auto w-[300px] max-w-[70%] max-lg:hidden"
@@ -162,7 +162,7 @@ const showCommentForm = useLocalStorage('show_comment_form', true)
       :room-id="data?.room_id"
       :class="{
         // 'bottom-[60px]': isMobile || !isSmall,
-        ' dark:!border-dark-2': isMobile || isSmall,
+        ' dark:border-dark-2!': isMobile || isSmall,
         'bottom-[0px] border-slate-100/60 dark:border-dark-2/60':
           !isMobile || !isSmall,
         'translate-y-full': (isMobile || !isSmall) && !showCommentForm,
@@ -172,7 +172,7 @@ const showCommentForm = useLocalStorage('show_comment_form', true)
         right: 0,
         bottom: `${isMobile ? navRect?.height || 0 : 0}px`,
       }"
-      class="max-lg:fixed left-[60px] bottom-0 z-10 flex gap-3 border-b-2 border-t-4 bg-white/90 p-2 font-bold backdrop-blur-sm transition-transform duration-300 dark:bg-dark-1/90 md:p-3"
+      class="max-lg:fixed left-[60px] bottom-0 z-10 flex gap-3 border-b-2 border-t-4 bg-white/90 p-2 font-bold backdrop-blur-xs transition-transform duration-300 dark:bg-dark-1/90 md:p-3"
       @comment="comment => $emit('createComment', comment)"
     >
       <button

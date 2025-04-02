@@ -146,7 +146,7 @@ watch(search, () => {
   >
     <template #before>
       <div
-        class="-z-10 rounded-t-xl border-b-2 border-slate-100/60 bg-white/90 p-3 font-bold backdrop-blur-sm dark:border-dark-2/60 dark:bg-dark-1/90 md:p-4"
+        class="-z-10 rounded-t-xl border-b-2 border-slate-100/60 bg-white/90 p-3 font-bold backdrop-blur-xs dark:border-dark-2/60 dark:bg-dark-1/90 md:p-4"
       >
         <div class="flex items-center">
           <div class="flex-1 text-lg xl:text-xl">
@@ -154,7 +154,7 @@ watch(search, () => {
           </div>
           <div class="pointer-events-none inset-x-0 mx-3 max-sm:absolute">
             <div class="pointer-events-auto float-right flex items-center rounded-2xl bg-slate-100 p-1.5 text-sm ring-blue-500 focus-within:ring-2 dark:bg-dark-2 max-sm:focus-within:w-full max-sm:focus-within:pl-3" :class="{ 'pl-3 max-sm:w-full': search.length !== 0 }">
-              <input id="search_shortcut" ref="searchEl" v-model="search" class="flex-1 truncate bg-transparent outline-none focus-visible:!outline-none max-sm:w-0 sm:ml-3" placeholder="Search...">
+              <input id="search_shortcut" ref="searchEl" v-model="search" class="flex-1 truncate bg-transparent outline-hidden focus-visible:outline-hidden! max-sm:w-0 sm:ml-3" placeholder="Search...">
               <button v-if="search.length === 0" aria-label="Search" class="group flex h-7 w-7 items-center justify-center rounded-xl p-1 sm:hover:bg-blue-500" @click="searchEl?.focus()">
                 <Icon name="uil:search" class="h-full w-full text-slate-800  dark:text-white/50 dark:group-hover:text-white" />
               </button>
@@ -177,7 +177,7 @@ watch(search, () => {
             <button type="button" class="user-btn" :aria-label="`${item.name} profile`" @click="(e) => userClick(e, item.id, type)">
               <img
                 :key="item.id"
-                class="h-[70px] w-[70px] rounded-lg bg-slate-100/90 hover:bg-slate-200 dark:bg-slate-100/5 hover:dark:bg-slate-300/10 lg:h-20 lg:w-20"
+                class="h-[70px] w-[70px] rounded-lg bg-slate-100/90 hover:bg-slate-200 dark:bg-slate-100/5 dark:hover:bg-slate-300/10 lg:h-20 lg:w-20"
                 :src="item.type === 'showroom' ? $giftUrl(item.avatar_id) : (item.avatar || $defaultIDNProfilePicture)"
                 :alt="`${item.name} Avatar`"
               >
@@ -213,7 +213,7 @@ watch(search, () => {
     </template>
 
     <template v-if="!giftData.length && !pending" #empty>
-      <div class="flex aspect-[14/8] items-center justify-center px-6 pt-6 pb-8 ">
+      <div class="flex aspect-14/8 items-center justify-center px-6 pt-6 pb-8 ">
         <div class="flex flex-col">
           <NuxtImg class="mx-auto h-auto w-[300px] max-w-[80%]" :alt="$t('giftempty')" :src="`${$cloudinaryURL}/assets/img/web/empty-box.png`" />
           <div class="mt-3 text-center font-bold">

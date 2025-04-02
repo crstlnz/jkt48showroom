@@ -35,10 +35,10 @@ const { locale } = useI18n()
         {{ $t('schedule') }}
       </h3>
     </div>
-    <div v-if="pending" class="aspect-[4/2] flex items-center justify-center mb-5">
+    <div v-if="pending" class="aspect-4/2 flex items-center justify-center mb-5">
       <Icon name="svg-spinners:ring-resize" size="2rem" />
     </div>
-    <div v-else-if="error && !data" class="aspect-[4/2] flex items-center justify-center mb-7 pt-5 flex-col gap-5">
+    <div v-else-if="error && !data" class="aspect-4/2 flex items-center justify-center mb-7 pt-5 flex-col gap-5">
       <NuxtImg :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" sizes="320px" fit="fill" class="w-[220px] max-w-[80%]" />
       <div>{{ $t("error.unknown") }}</div>
     </div>
@@ -46,7 +46,7 @@ const { locale } = useI18n()
       <NuxtImg :src="`${$cloudinaryURL}/assets/img/web/empty-box.png`" alt="" class="w-52 h-40 mb-2 object-contain" />
       {{ $t("data.nodata") }}
     </div>
-    <table v-else class="w-full border-t-2 border-black/5 dark:border-white/5 [&_*]:border-black/10 dark:[&_*]:border-white/10">
+    <table v-else class="w-full border-t-2 border-black/5 dark:border-white/5 **:border-black/10 dark:**:border-white/10">
       <tr v-for="(schedule, index) in groupedSchedule" :key="schedule.date" class="text-sm" :class="{ 'border-b-2': index !== groupedSchedule.length - 1 }">
         <td class="border-r-2 p-3 text-center align-top">
           <div v-if="schedule.today" class="whitespace-nowrap leading-10">
@@ -64,7 +64,7 @@ const { locale } = useI18n()
         <td class="w-full p-3">
           <component :is="!event.url.startsWith('/calendar') ? NuxtLink : 'div'" v-for="event in schedule.events" :key="event.id" :to="event.url.startsWith('/theater/schedule/id/') ? `/theater/${$getTheaterId(event.url)}` : `${$jkt48url}${event.url}`" class="flex gap-2">
             <NuxtImg
-              class="aspect-[56/19] w-14 object-cover self-center"
+              class="aspect-56/19 w-14 object-cover self-center"
               :src="`${$cloudinaryURL}/assets/jkt48${event.label}`"
               alt="Label"
               loading="lazy"

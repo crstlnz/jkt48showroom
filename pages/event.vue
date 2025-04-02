@@ -29,7 +29,7 @@ const { locale } = useI18n()
         </NuxtLink>
       </div>
       <div class="md:pt-1 grid grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4 animate-pulse">
-        <div v-for="num in Array(4)" :key="num" class="bg-container w-full aspect-[3/4] rounded-xl" />
+        <div v-for="num in Array(4)" :key="num" class="bg-container w-full aspect-3/4 rounded-xl" />
       </div>
       <div class="text-xl sm:text-2xl font-bold mb-2 flex gap-2 items-center mt-5">
         <Icon name="ant-design:schedule-filled" class="text-blue-500" />
@@ -59,7 +59,7 @@ const { locale } = useI18n()
       <div v-if="data?.theater?.upcoming?.length" class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
         <TheaterUpcomingCard v-for="theater in data?.theater?.upcoming" :key="theater.id" :theater="theater" />
       </div>
-      <div v-else class="aspect-[12/5] sm:aspect-[12/4] md:aspect-[12/3] xl:aspect-[12/2.5] flex items-center justify-center bg-container rounded-xl">
+      <div v-else class="aspect-12/5 sm:aspect-12/4 md:aspect-12/3 xl:aspect-[12/2.5] flex items-center justify-center bg-container rounded-xl">
         {{ $t('no_upcoming_theater') }}
       </div>
       <div class="flex items-center justify-between mt-5 mb-2">
@@ -94,7 +94,7 @@ const { locale } = useI18n()
         <component :is="!event.url.startsWith('/calendar') ? NuxtLink : 'div'" v-for="event in data.other_schedule" :key="event.id" :to="event.url.startsWith('/theater/schedule/id/') ? `/theater/${$getTheaterId(event.url)}` : `${$jkt48url}${event.url}`" class="bg-container rounded-xl p-3 md:p-4 space-y-1">
           <div class="flex items-center gap-2">
             <NuxtImg
-              class="aspect-[56/19] w-14 object-cover self-center"
+              class="aspect-56/19 w-14 object-cover self-center"
               :src="`${$cloudinaryURL}/assets/jkt48${event.label}`"
               alt="Label"
               loading="lazy"

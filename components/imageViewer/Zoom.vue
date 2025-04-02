@@ -205,7 +205,7 @@ onBeforeUnmount(() => {
 <template>
   <div
     ref="container"
-    class="fixed inset-0 w-screen z-aboveNav bg-black/90 imageViewer !pointer-events-auto"
+    class="fixed inset-0 w-screen z-aboveNav bg-black/90 imageViewer pointer-events-auto!"
     :style="{
       opacity: bgOpacity,
       pointerEvents: isExit ? 'none' : 'auto',

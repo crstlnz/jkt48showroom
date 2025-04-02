@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col rounded-xl bg-container p-4 text-center shadow-sm ">
+  <div class="flex flex-col rounded-xl bg-container p-4 text-center shadow-2xs ">
     <div class="flex items-center justify-center gap-1 font-thin opacity-75 dark:opacity-50">
       <slot name="title" />
     </div>

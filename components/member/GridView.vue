@@ -69,7 +69,7 @@ watch(keyId, () => {
               :key="item.name"
               :style="style"
               :data-id="item.name"
-              class="shadow-sm aspect"
+              class="shadow-2xs aspect"
               :member="item"
             />
             <template #fallback>
@@ -85,13 +85,14 @@ watch(keyId, () => {
   </div>
 </template>
 
-<style lang="scss">
-.memberList{
-  .aspect {
-    @apply aspect-[10/14] md:aspect-[13/16]
-  }
-  .item {
-    @apply aspect-[10/14] md:aspect-[13/16] rounded-xl animate-pulse shadow-sm;
-  }
+<style>
+@reference "~/assets/css/tailwindcss.css";
+
+.memberList .aspect {
+  @apply aspect-10/14 md:aspect-13/16
+}
+
+.memberList .item {
+  @apply aspect-10/14 md:aspect-13/16 rounded-xl animate-pulse shadow-sm;
 }
 </style>

@@ -78,7 +78,7 @@ async function deleteEvent(data: JKT48SetlistWithId) {
         </div>
         <div v-else class="space-y-3 md:space-y-4">
           <div v-for="setlist in data" :key="setlist.id" class="bg-container flex gap-3 rounded-xl p-3 md:gap-4 md:p-4">
-            <img :src="setlist.poster ?? config.errorPicture" alt="Theater Poster" class="aspect-[9/12] w-40 rounded-xl object-cover">
+            <img :src="setlist.poster ?? config.errorPicture" alt="Theater Poster" class="aspect-9/12 w-40 rounded-xl object-cover">
             <div class="flex flex-1 flex-col gap-2">
               <div class="flex gap-3 text-xl">
                 <span>{{ setlist.title }}</span>

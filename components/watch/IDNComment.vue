@@ -116,9 +116,9 @@ function appendComments() {
     <!-- <WatchCommentForm
       :live-id="data?.live_id"
       :is-live="isLive"
-      :room-id="data?.room_id" :class="{ 'bottom-[60px]': isMobile || !isSmall, ' dark:!border-dark-2': isMobile || isSmall, 'bottom-[0px] border-slate-100/60 dark:border-dark-2/60': !isMobile || !isSmall, 'translate-y-full': (isMobile || !isSmall) && !showCommentForm }"
+      :room-id="data?.room_id" :class="{ 'bottom-[60px]': isMobile || !isSmall, ' dark:border-dark-2!': isMobile || isSmall, 'bottom-[0px] border-slate-100/60 dark:border-dark-2/60': !isMobile || !isSmall, 'translate-y-full': (isMobile || !isSmall) && !showCommentForm }"
       :style="{ left: `${navRect?.width || 0}px`, right: 0 }"
-      class="z-10 flex gap-3 border-b-2 border-t-4 bg-white/90 p-2 font-bold backdrop-blur-sm transition-transform duration-300 dark:bg-dark-1/90 max-lg:fixed md:p-3"
+      class="z-10 flex gap-3 border-b-2 border-t-4 bg-white/90 p-2 font-bold backdrop-blur-xs transition-transform duration-300 dark:bg-dark-1/90 max-lg:fixed md:p-3"
       @comment="(comment) => $emit('createComment', comment)"
     >
       <button v-if="isMobile || !isSmall" type="button" class="bg-container fixed bottom-full right-2 rounded-t-md border-x-2 border-t-2 px-2.5 dark:border-dark-2" @click="showCommentForm = !showCommentForm">

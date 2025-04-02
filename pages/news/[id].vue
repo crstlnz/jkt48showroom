@@ -61,7 +61,7 @@ useHead({
               <span class="text-white"> {{ $t('open_original') }}</span>
             </NuxtLink>
           </div>
-          <div id="content" class="overflow-x-auto pb-20 !font-serif" v-html="content" />
+          <div id="content" class="overflow-x-auto pb-20 font-serif!" v-html="content" />
         </div>
       </template>
       <template #sidebar>

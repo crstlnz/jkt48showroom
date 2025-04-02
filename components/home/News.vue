@@ -18,7 +18,7 @@ const { locale } = useI18n()
             <div class="pulse-color h-4 w-24 rounded-[3px] text-sm" />
           </div>
           <div class="inline-block h-full leading-5">
-            <div class="pulse-color h-6 w-full rounded-sm" />
+            <div class="pulse-color h-6 w-full rounded-xs" />
           </div>
         </div>
       </div>

@@ -56,7 +56,7 @@ useHead({
         >
           <div class="flex flex-col gap-5 md:flex-row md:gap-4">
             <NuxtImg
-              class="bg-container aspect-[9/12] w-full shrink-0 overflow-hidden rounded-xl object-cover md:w-48 xl:w-80 sm self-start"
+              class="bg-container aspect-9/12 w-full shrink-0 overflow-hidden rounded-xl object-cover md:w-48 xl:w-80 sm self-start"
               :src="data.event?.poster ?? config.errorPicture" alt="Theater Poster" :modifiers="{
                 aspectRatio: 9 / 12,
               }" :placeholder="[10, 14, 75, 50]" loading="lazy" fit="fill"
@@ -106,7 +106,7 @@ useHead({
                   </div>
                   <NuxtLink
                     :to="`https://jkt48.com/theater/schedule/id/${data.id}?lang=id`" external target="_blank"
-                    class="p-3 aspect-[12/2.2] md:aspect-[12/3] flex justify-center gap-2 text-white bg-blue-500 rounded-xl items-center text-lg lg:text-xl xl:text-2xl"
+                    class="p-3 aspect-[12/2.2] md:aspect-12/3 flex justify-center gap-2 text-white bg-blue-500 rounded-xl items-center text-lg lg:text-xl xl:text-2xl"
                   >
                     <Icon
                       v-if="getTheaterState(data.date) !== 'ended'" name="ep:ticket"
@@ -117,7 +117,7 @@ useHead({
                   <NuxtLink
                     v-if="data.showroomTheater && getTheaterState(data.date) !== 'ended'"
                     :to="data.showroomTheater.entrance_url" external target="_blank"
-                    class="p-3 aspect-[12/2.2] md:aspect-[12/3] text-white bg-red-500 rounded-xl flex flex-col justify-center items-center "
+                    class="p-3 aspect-[12/2.2] md:aspect-12/3 text-white bg-red-500 rounded-xl flex flex-col justify-center items-center "
                   >
                     <div class="text-lg lg:text-xl xl:text-2xl flex gap-2 items-center">
                       <Icon name="ep:ticket" class="text-white text-xl lg:text-2xl xl:text-3xl" />
@@ -130,7 +130,7 @@ useHead({
                   <NuxtLink
                     v-if="data.idnTheater && getTheaterState(data.date) !== 'ended'"
                     :to="`https://idn.app/${data.idnTheater.username}/live/preview/${data.idnTheater.slug}`" external target="_blank"
-                    class="p-3 aspect-[12/2.2] md:aspect-[12/3] text-white bg-red-500 rounded-xl flex flex-col justify-center items-center "
+                    class="p-3 aspect-[12/2.2] md:aspect-12/3 text-white bg-red-500 rounded-xl flex flex-col justify-center items-center "
                   >
                     <div class="text-lg lg:text-xl xl:text-2xl flex gap-2 items-center">
                       <Icon name="ep:ticket" class="text-white text-xl lg:text-2xl xl:text-3xl" />
@@ -159,7 +159,7 @@ useHead({
             >
               <div class="overflow-hidden rounded-xl">
                 <NuxtImg
-                  class="bg-container block aspect-[8/10] size-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  class="bg-container block aspect-8/10 size-full object-cover group-hover:scale-110 transition-transform duration-300"
                   :src="member.img ?? pic" alt="Member picture" fit="fill" :modifiers="{
                     aspectRatio: 8 / 10,
                     gravity: 'faceCenter',
@@ -177,7 +177,7 @@ useHead({
           >
             <div v-for="num in 16" :key="num" class="relative flex flex-col space-y-2">
               <NuxtImg
-                class="bg-container block aspect-[8/10] h-full w-full overflow-hidden rounded-xl object-cover opacity-60 brightness-50"
+                class="bg-container block aspect-8/10 h-full w-full overflow-hidden rounded-xl object-cover opacity-60 brightness-50"
                 :src="pic" alt="Default member picture" fit="fill" :modifiers="{
                   aspectRatio: 8 / 10,
                   gravity: 'faceCenter',

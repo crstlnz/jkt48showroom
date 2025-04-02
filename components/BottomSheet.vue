@@ -201,13 +201,13 @@ defineExpose({ open, close, isOpen })
       <div v-if="isOpen">
         <div
           ref="background"
-          class="background visible fixed inset-0 z-aboveNav !m-0 bg-black/30 dark:bg-black/60 md:invisible md:opacity-0"
+          class="background visible fixed inset-0 z-aboveNav m-0! bg-black/30 dark:bg-black/60 md:invisible md:opacity-0"
         />
 
         <div
           ref="sheet"
           :class="{ 'transition-transform': !isDrag }"
-          class="sheet-content !fixed bottom-0 left-0 z-aboveNav max-h-[90vh] w-full touch-none overflow-hidden rounded-t-3xl ease-in-out md:left-auto md:right-10 md:w-[450px] md:rounded-t-2xl md:shadow-rounded lg:right-20"
+          class="sheet-content fixed! bottom-0 left-0 z-aboveNav max-h-[90vh] w-full touch-none overflow-hidden rounded-t-3xl ease-in-out md:left-auto md:right-10 md:w-[450px] md:rounded-t-2xl md:shadow-rounded lg:right-20"
         >
           <RecycleScroller
             ref="scroller"
@@ -219,11 +219,11 @@ defineExpose({ open, close, isOpen })
           >
             <template #before>
               <div
-                class="relative flex h-16 w-full justify-between bg-white/80 shadow-sm backdrop-blur-md dark:bg-dark-1/80"
+                class="relative flex h-16 w-full justify-between bg-white/80 shadow-2xs backdrop-blur-md dark:bg-dark-1/80"
               >
                 <div
                   v-if="$device.isMobile"
-                  class="absolute left-1/2 top-1.5 h-[3px] w-14 -translate-x-1/2 rounded-sm bg-slate-400/40 dark:bg-dark-3/90"
+                  class="absolute left-1/2 top-1.5 h-[3px] w-14 -translate-x-1/2 rounded-xs bg-slate-400/40 dark:bg-dark-3/90"
                 />
                 <h2 ref="navbar" class="flex-1 select-none px-5 text-xl font-bold leading-[4.5rem]">
                   {{ title }}

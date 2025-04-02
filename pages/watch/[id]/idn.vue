@@ -85,7 +85,7 @@ const enableComment = useLocalStorage('enable-idn-comment', true)
 
 <template>
   <div class="h-full">
-    <div v-if="pending" class="flex justify-center items-center w-full aspect-[4/5] sm:aspect-video">
+    <div v-if="pending" class="flex justify-center items-center w-full aspect-4/5 sm:aspect-video">
       <div class="aspect-video w-20 max-w-[40%]">
         <Icon name="svg-spinners:ring-resize" class="w-full h-full" />
       </div>
@@ -110,7 +110,7 @@ const enableComment = useLocalStorage('enable-idn-comment', true)
         <NuxtLink :to="`/member/${data?.member_info?.key}`" class="w-28 md:w-36 max-w-[40%]">
           <NuxtImg
             :src="data?.member_info?.img || $errorPicture" size="64px"
-            class="w-full aspect-[5/6] object-cover rounded-xl"
+            class="w-full aspect-5/6 object-cover rounded-xl"
           />
         </NuxtLink>
         <div>

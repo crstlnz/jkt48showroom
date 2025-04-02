@@ -136,8 +136,8 @@ const recentHeight = computed(() => {
     <template #sidebar>
       <ClientOnly>
         <template #fallback>
-          <div class="bg-container w-full aspect-[4/5] rounded-xl animate-pulse xl:mt-4" />
-          <div class="bg-container w-full aspect-[4/12] rounded-xl animate-pulse" />
+          <div class="bg-container w-full aspect-4/5 rounded-xl animate-pulse xl:mt-4" />
+          <div class="bg-container w-full aspect-4/12 rounded-xl animate-pulse" />
         </template>
         <div class="flex flex-col gap-4">
           <div v-if="isXL" class="bg-background sticky top-0 z-nav -mb-3 pb-3 pt-4">
@@ -150,7 +150,7 @@ const recentHeight = computed(() => {
                 :aria-label="$t('search')"
                 :placeholder="`${$t('search')}...`"
                 type="text"
-                class="w-full bg-transparent py-3 outline-none"
+                class="w-full bg-transparent py-3 outline-hidden"
                 @keyup.enter="applySearch"
               >
               <button v-if="search != null && search !== ''" type="button" aria-label="Clear" class="hidden h-6 w-6 shrink-0 rounded-full bg-blue-500 text-white group-focus-within:block group-hover:block" @click="clearSearch">
@@ -310,7 +310,7 @@ const recentHeight = computed(() => {
                         sizes="80px md:96px 2xl:112px"
                         fit="fill"
                         format="webp"
-                        class="aspect-[96/135] w-20 md:w-24 rounded-xl object-cover 2xl:w-28 self-start"
+                        class="aspect-96/135 w-20 md:w-24 rounded-xl object-cover 2xl:w-28 self-start"
                       />
                     </div>
                   </NuxtLink>

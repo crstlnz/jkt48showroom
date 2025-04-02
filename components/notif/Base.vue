@@ -58,10 +58,10 @@ onMounted(() => {
     <div class="flex items-stretch justify-between gap-3 pl-4 pr-4 lg:gap-4">
       <Icon :name="icon" class="h-6 w-6 self-center rounded-full p-1.5 text-white md:h-7 md:w-7 lg:h-8 lg:w-8" :class="color" />
       <div class="flex min-w-0 flex-1 flex-col py-1.5 sm:py-2 md:py-2.5 lg:py-3">
-        <div class="text-sm font-bold md:text-base !leading-5">
+        <div class="text-sm font-bold md:text-base leading-5!">
           {{ notif.title ?? defaultTitle ?? "Notification" }}
         </div>
-        <div :title="notif.message" class="truncate !leading-4 min-h-0 w-full text-xs md:text-sm text-slate-700 dark:text-slate-300">
+        <div :title="notif.message" class="truncate leading-4! min-h-0 w-full text-xs md:text-sm text-slate-700 dark:text-slate-300">
           {{ notif.message }}
         </div>
       </div>

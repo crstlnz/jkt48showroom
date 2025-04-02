@@ -140,8 +140,8 @@ const recentHeight = computed(() => {
     <template #sidebar>
       <ClientOnly>
         <template #fallback>
-          <div class="bg-container w-full aspect-[4/5] rounded-xl animate-pulse xl:mt-4" />
-          <div class="bg-container w-full aspect-[4/12] rounded-xl animate-pulse" />
+          <div class="bg-container w-full aspect-4/5 rounded-xl animate-pulse xl:mt-4" />
+          <div class="bg-container w-full aspect-4/12 rounded-xl animate-pulse" />
         </template>
         <div class="flex flex-col gap-4">
           <div v-if="isXL" class="bg-background sticky top-0 z-nav -mb-3 pb-3 pt-4">
@@ -154,7 +154,7 @@ const recentHeight = computed(() => {
                 :aria-label="$t('search')"
                 :placeholder="`${$t('search')}...`"
                 type="text"
-                class="w-full bg-transparent py-3 outline-none"
+                class="w-full bg-transparent py-3 outline-hidden"
                 @keyup.enter="applySearch"
               >
               <button v-if="search != null && search !== ''" type="button" aria-label="Clear" class="hidden h-6 w-6 shrink-0 rounded-full bg-blue-500 text-white group-focus-within:block group-hover:block" @click="clearSearch">
@@ -213,7 +213,7 @@ const recentHeight = computed(() => {
       <div
         v-if="!isTop"
         :class="{
-          '!bottom-[80px]': isMobile,
+          'bottom-[80px]!': isMobile,
         }"
         class="fixed bottom-[80px] left-1/2 z-belowNav flex w-[180px] max-w-[80%] -translate-x-1/2 overflow-hidden rounded-xl bg-second-2/95 font-bold text-white transition sm:bottom-10"
       >
@@ -244,8 +244,8 @@ const recentHeight = computed(() => {
           >
             <div class="space-y-5">
               <div class="mx-auto w-4/5 lg:w-[350px]">
-                <NuxtImg v-if="error" :src="`${$cloudinaryURL}/assets/img/web/security-error.png`" alt="An Error Occured!" class="mx-auto w-full aspect-[5/4] object-contain" />
-                <NuxtImg v-else :src="`${$cloudinaryURL}/assets/img/web/empty-box.png`" alt="Empty!" class="mx-auto w-full aspect-[5/4] object-contain" />
+                <NuxtImg v-if="error" :src="`${$cloudinaryURL}/assets/img/web/security-error.png`" alt="An Error Occured!" class="mx-auto w-full aspect-5/4 object-contain" />
+                <NuxtImg v-else :src="`${$cloudinaryURL}/assets/img/web/empty-box.png`" alt="Empty!" class="mx-auto w-full aspect-5/4 object-contain" />
               </div>
               <div v-if="error">
                 <h2 class="mb-1 text-xl lg:text-3xl">

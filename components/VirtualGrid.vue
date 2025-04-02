@@ -114,7 +114,7 @@ function measureElement(el: Element) {
               width: `${getColumnWidth()}px`,
             }"
           >
-            <div class="bg-blue-500 aspect-[5/4]">
+            <div class="bg-blue-500 aspect-5/4">
               {{ data[virtualRow.index][virtualColumn.index] }}
             </div>
           </div>

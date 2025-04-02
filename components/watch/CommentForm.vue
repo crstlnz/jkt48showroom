@@ -108,7 +108,7 @@ async function sendComment() {
         ref="commentInput"
         v-model="comment"
         type="text"
-        class="h-full w-full truncate rounded-lg bg-black/5 px-2 py-1.5 outline-none disabled:cursor-not-allowed disabled:opacity-25 dark:bg-black/10 md:px-2.5"
+        class="h-full w-full truncate rounded-lg bg-black/5 px-2 py-1.5 outline-hidden disabled:cursor-not-allowed disabled:opacity-25 dark:bg-black/10 md:px-2.5"
         placeholder="Comment..."
         @keyup.enter="submit"
       >

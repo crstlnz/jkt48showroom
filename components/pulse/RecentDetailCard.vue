@@ -1,5 +1,5 @@
 <template>
-  <div class="rounded-xl bg-white p-3 shadow-sm dark:bg-dark-1 md:p-4">
+  <div class="rounded-xl bg-white p-3 shadow-2xs dark:bg-dark-1 md:p-4">
     <div class="flex gap-3 md:gap-4">
       <div
         class="aspect-video h-20 animate-pulse overflow-hidden rounded-xl bg-slate-200 dark:bg-dark-3/50 sm:h-24 md:h-28 lg:h-32 xl:h-36"

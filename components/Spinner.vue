@@ -5,7 +5,7 @@
   </div>
 </template>
 
-<style lang="scss">
+<style>
 .lds-ellipsis {
   display: inline-block;
   position: relative;

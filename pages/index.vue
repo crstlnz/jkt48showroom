@@ -28,7 +28,7 @@ const searchInput = ref()
           >
             <input
               ref="searchInput" v-model="search"
-              class="flex-1 truncate bg-transparent outline-none focus-visible:!outline-none max-sm:w-0 sm:ml-3"
+              class="flex-1 truncate bg-transparent outline-hidden focus-visible:outline-hidden! max-sm:w-0 sm:ml-3"
               placeholder="Search..." @keyup.enter="applySearch"
             >
             <button
@@ -91,7 +91,7 @@ const searchInput = ref()
         <Icon name="uil:search" class="ml-1 h-5 w-5 shrink-0" />
         <input
           id="search_shortcut" v-model="search" :aria-label="$t('search')" :placeholder="`${$t('search')}...`"
-          type="text" class="w-full bg-transparent py-3 outline-none" @keyup.enter="applySearch"
+          type="text" class="w-full bg-transparent py-3 outline-hidden" @keyup.enter="applySearch"
         >
         <button
           v-if="search != null && search !== ''" type="button" aria-label="Clear"

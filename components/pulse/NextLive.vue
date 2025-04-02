@@ -1,7 +1,7 @@
 <template>
   <div class="flex gap-3 py-2 text-center md:py-3">
     <div
-      class="pulse-color aspect-square h-20 animate-pulse overflow-hidden rounded-full drop-shadow-sm"
+      class="pulse-color aspect-square h-20 animate-pulse overflow-hidden rounded-full drop-shadow-xs"
     />
     <div class="info flex min-w-0 flex-1 flex-col text-left">
       <div class="name flex flex-1 gap-2">

@@ -94,7 +94,7 @@ const calculatedGift = computed<RecentUserGifts[]>(() => {
         <div class="font-bold text-lg xl:text-xl mb-1">
           Detail
         </div>
-        <table class="table-auto [&_td]:py-1 [&_td]:xl:py-1.5 text-sm xl:text-base [&_td:first-child]:min-w-[150px] [&_td:first-child]:xl:min-w-[200px] [&_td:first-child]:opacity-80 font-semibold dark:[&_td:first-child]:opacity-60">
+        <table class="table-auto [&_td]:py-1 xl:[&_td]:py-1.5 text-sm xl:text-base [&_td:first-child]:min-w-[150px] xl:[&_td:first-child]:min-w-[200px] [&_td:first-child]:opacity-80 font-semibold dark:[&_td:first-child]:opacity-60">
           <tbody>
             <tr>
               <td>
@@ -140,7 +140,7 @@ const calculatedGift = computed<RecentUserGifts[]>(() => {
     </div>
 
     <div
-      class="pulse-color col-span-2 aspect-[16/13] flex-1 overflow-hidden shadow-sm sm:mx-3 md:mx-4 sm:rounded-xl md:aspect-[16/10] lg:w-auto 2xl:aspect-[16/9]"
+      class="pulse-color col-span-2 aspect-16/13 flex-1 overflow-hidden shadow-2xs sm:mx-3 md:mx-4 sm:rounded-xl md:aspect-16/10 lg:w-auto 2xl:aspect-16/9"
     >
       <ClientOnly v-if="data.live_info?.stage_list?.length">
         <template #fallback>
@@ -174,7 +174,7 @@ const calculatedGift = computed<RecentUserGifts[]>(() => {
     <LiveGiftList :gifts="data.live_info.gift.list" class="mx-3 md:mx-4" type="showroom" />
     <HomeFans v-if="data.fans?.length" :data="data.fans" class="rounded-xl mx-3 md:mx-4" />
 
-    <div class="mx-3 md:mx-4 overflow-hidden rounded-xl bg-white shadow-sm dark:bg-dark-1">
+    <div class="mx-3 md:mx-4 overflow-hidden rounded-xl bg-white shadow-2xs dark:bg-dark-1">
       <LiveGiftScroll :gift-rate="data.gift_rate || 107.1" type="showroom" :gifts="calculatedGift" :page-mode="true" :data-id="data.data_id" :has-next-page="data.live_info?.gift?.next_page" :gift-list="data?.live_info?.gift?.list ?? []" />
     </div>
   </div>

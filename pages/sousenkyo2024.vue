@@ -71,7 +71,7 @@ onState((state) => {
         </div>
       </template>
       <template #actionSection>
-        <a href="https://ssk.jkt48.com/2024/id/vote" target="_blank" class="mx-auto block max-w-[400px] rounded-full bg-gradient-to-r from-pink-300 via-purple-300 to-cyan-300 px-3 pb-1 pt-1 text-center font-bold text-white shadow-lg">Vote</a>
+        <a href="https://ssk.jkt48.com/2024/id/vote" target="_blank" class="mx-auto block max-w-[400px] rounded-full bg-linear-to-r from-pink-300 via-purple-300 to-cyan-300 px-3 pb-1 pt-1 text-center font-bold text-white shadow-lg">Vote</a>
       </template>
     </LayoutSingleRow>
   </div>

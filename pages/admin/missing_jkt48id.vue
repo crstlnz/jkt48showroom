@@ -110,7 +110,7 @@ const editMember = ref<Admin.MissingJKT48ID | null>()
               page-mode
             >
               <div class="mb-3 w-full px-3 md:x-4">
-                <button type="button" class="w-full focus-within:outline-none group rounded-xl" @click="editMember = item">
+                <button type="button" class="w-full focus-within:outline-hidden group rounded-xl" @click="editMember = item">
                   <AdminMissingJkt48id :key="item._id" :member="item" class="group-focus-within:bg-container-2" />
                 </button>
               </div>

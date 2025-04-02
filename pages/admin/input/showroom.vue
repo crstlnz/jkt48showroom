@@ -86,7 +86,7 @@ async function submit() {
           <div class="pl-2.5">
             Comments
           </div>
-          <div class="flex gap-3 [&>*]:flex-1">
+          <div class="flex gap-3 *:flex-1">
             <FormNumber v-model="comments" form-id="commentcount" placeholder="Count" />
             <FormNumber v-model="commentsBy" form-id="commentusers" placeholder="By" />
           </div>
@@ -95,7 +95,7 @@ async function submit() {
           <div class="pl-2.5">
             Date
           </div>
-          <div class="flex gap-3 [&>*]:flex-1">
+          <div class="flex gap-3 *:flex-1">
             <FormText v-model="dateStart" form-id="start" placeholder="Date Start" />
             <FormText v-model="dateEnd" form-id="end" placeholder="Date End" />
           </div>

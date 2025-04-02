@@ -60,7 +60,7 @@ async function toggleGraduate(value: boolean) {
               form-id="banner"
               post-url="/api/admin/member/banner"
               :member-data-id="stage48member?._id ?? '0'"
-              class="aspect-[15/5] h-32 shrink-0 overflow-hidden rounded-xl border-2 dark:border-dark-2 md:h-36 xl:h-40"
+              class="aspect-15/5 h-32 shrink-0 overflow-hidden rounded-xl border-2 dark:border-dark-2 md:h-36 xl:h-40"
               image-class="h-full w-full object-cover bg-container-2" :src="stage48member?.info?.banner"
               @uploaded="(url) => {
                 stage48member.info.banner = url

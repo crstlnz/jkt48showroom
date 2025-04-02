@@ -146,7 +146,7 @@ const tabList = ref([
               form-id="banner"
               post-url="/api/admin/member/banner"
               :member-data-id="member?.member_data?._id"
-              class="aspect-[15/5] h-full shrink-0 overflow-hidden rounded-xl border-2 dark:border-dark-2"
+              class="aspect-15/5 h-full shrink-0 overflow-hidden rounded-xl border-2 dark:border-dark-2"
               image-class="h-full w-full object-cover bg-container-2" :src="member?.member_data?.info.banner"
               @uploaded="(url) => {
                 if (member?.member_data)
@@ -155,7 +155,7 @@ const tabList = ref([
             />
             <div
               v-else
-              class="bg-container-2 flex aspect-[15/5] h-full shrink-0 items-center justify-center overflow-hidden rounded-xl border-2 text-center dark:border-dark-2"
+              class="bg-container-2 flex aspect-15/5 h-full shrink-0 items-center justify-center overflow-hidden rounded-xl border-2 text-center dark:border-dark-2"
             >
               <div>Member data is not defined!</div>
             </div>
@@ -204,7 +204,7 @@ const tabList = ref([
               </button>
             </div>
             <div class="mt-4">
-              <div class="flex items-stretch overflow-hidden rounded-full border-2 border-slate-200 text-center text-sm md:text-lg hover:[&>div]:bg-container-2 dark:border-dark-3 [&>div]:h-8 [&>div]:md:h-10">
+              <div class="flex items-stretch overflow-hidden rounded-full border-2 border-slate-200 text-center text-sm md:text-lg hover:[&>div]:bg-container-2 dark:border-dark-3 [&>div]:h-8 md:[&>div]:h-10">
                 <div v-for="tab in tabList" :key="tab.key" class="flex-1 cursor-pointer leading-8 md:leading-10" :class="{ 'bg-container-2': tabState === tab.key }" @click="tabState = tab.key">
                   {{ tab.title }}
                 </div>
@@ -217,7 +217,7 @@ const tabList = ref([
                   @on-dismiss="$emit('onDismiss')"
                 />
                 <div v-else-if="tabState === 1">
-                  <div v-if="member.member_data?._id == null" class="flex aspect-[19/4] items-center justify-center text-center">
+                  <div v-if="member.member_data?._id == null" class="flex aspect-19/4 items-center justify-center text-center">
                     No member data
                   </div>
                   <MemberFormMemberData

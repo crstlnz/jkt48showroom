@@ -86,7 +86,7 @@ function forceRefresh() {
           <div>
             Daftar Live
           </div>
-          <button v-ripple type="button" class="w-8 h-8 hover:bg-black/10 hover:dark:bg-white/5 flex items-center justify-center rounded-full" @click="forceRefresh">
+          <button v-ripple type="button" class="w-8 h-8 hover:bg-black/10 dark:hover:bg-white/5 flex items-center justify-center rounded-full" @click="forceRefresh">
             <Icon name="ic:round-refresh" class="h-full w-full p-1" />
           </button>
         </div>
@@ -101,7 +101,7 @@ function forceRefresh() {
         </div>
       </PopoverPanel>
     </Transition>
-    <PopoverButton aria-label="Setting" class="absolute bottom-0 right-0 rounded-full z-[1000] flex items-center justify-center w-12 h-12 2xl:w-14 2xl:h-14 bg-red-500 hover:bg-red-600 text-white">
+    <PopoverButton aria-label="Setting" class="absolute bottom-0 right-0 rounded-full z-1000 flex items-center justify-center w-12 h-12 2xl:w-14 2xl:h-14 bg-red-500 hover:bg-red-600 text-white">
       <Icon name="streamline:live-video-solid" size="2rem" />
     </PopoverButton>
   </Popover>

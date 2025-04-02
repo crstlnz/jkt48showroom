@@ -307,9 +307,9 @@ watch(telops, (v) => {
     <div v-else-if="pending" class="h-full w-full">
       <div class="relative flex w-full flex-col gap-3 md:gap-4 lg:flex-row h-full">
         <div class="lg:flex-1 space-y-3 md:space-y-4 lg:w-auto">
-          <div class="pulse-color aspect-video animate-pulse overflow-hidden max-lg:shadow-sm lg:rounded-xl" />
+          <div class="pulse-color aspect-video animate-pulse overflow-hidden max-lg:shadow-2xs lg:rounded-xl" />
         </div>
-        <div class="relative min-h-[640px] w-full bg-white dark:bg-dark-1 max-lg:flex-1 max-lg:shadow-sm lg:w-[300px] lg:rounded-xl xl:w-[350px]">
+        <div class="relative min-h-[640px] w-full bg-white dark:bg-dark-1 max-lg:flex-1 max-lg:shadow-2xs lg:w-[300px] lg:rounded-xl xl:w-[350px]">
           <div class="absolute inset-0 z-0 overflow-hidden">
             <div class="pulse-color h-full w-full animate-pulse lg:rounded-xl" />
           </div>
@@ -323,10 +323,10 @@ watch(telops, (v) => {
     <div v-else class="h-full w-full">
       <div class="relative flex min-h-full w-full flex-col gap-3 md:gap-4 lg:flex-row">
         <div class="flex lg:flex-1 flex-col lg:w-auto">
-          <div class="relative aspect-video overflow-hidden bg-white outline-none dark:bg-dark-1 max-lg:shadow-sm lg:rounded-xl">
+          <div class="relative aspect-video overflow-hidden bg-white outline-hidden dark:bg-dark-1 max-lg:shadow-2xs lg:rounded-xl">
             <ClientOnly>
               <div
-                v-if="telop && isLive" class="absolute inset-x-0 top-0 z-[10] bg-black/50 p-1.5 text-center text-base md:text-lg lg:text-xl"
+                v-if="telop && isLive" class="absolute inset-x-0 top-0 z-10 bg-black/50 p-1.5 text-center text-base md:text-lg lg:text-xl"
               >
                 <div class="relative inset-0">
                   <Transition name="telop">
@@ -388,7 +388,7 @@ watch(telops, (v) => {
 
             <a
               target="_blank"
-              class="flex select-none items-center justify-center rounded-lg bg-blue-500/80 p-1 px-3 text-center text-sm font-bold text-white transition-transform hover:bg-blue-500 active:scale-95 disabled:bg-blue-500/40 disabled:text-gray-400 disabled:active:scale-100 disabled:dark:text-gray-500 max-sm:flex-1 lg:p-1.5 lg:px-2.5"
+              class="flex select-none items-center justify-center rounded-lg bg-blue-500/80 p-1 px-3 text-center text-sm font-bold text-white transition-transform hover:bg-blue-500 active:scale-95 disabled:bg-blue-500/40 disabled:text-gray-400 disabled:active:scale-100 dark:disabled:text-gray-500 max-sm:flex-1 lg:p-1.5 lg:px-2.5"
               :href="$liveURL(data?.room_url_key ?? '')"
             >
               Showroom
@@ -399,7 +399,7 @@ watch(telops, (v) => {
               <button
                 v-if="!isLarge && authenticated"
                 type="button"
-                class="flex select-none items-center justify-center rounded-lg bg-blue-500/80 p-1 px-1.5 text-center text-sm font-bold text-white transition-transform hover:bg-blue-500 active:scale-95 disabled:bg-blue-500/40 disabled:text-gray-400 disabled:active:scale-100 disabled:dark:text-gray-500 lg:p-1.5 lg:px-2.5"
+                class="flex select-none items-center justify-center rounded-lg bg-blue-500/80 p-1 px-1.5 text-center text-sm font-bold text-white transition-transform hover:bg-blue-500 active:scale-95 disabled:bg-blue-500/40 disabled:text-gray-400 disabled:active:scale-100 dark:disabled:text-gray-500 lg:p-1.5 lg:px-2.5"
                 @click="userOpen = !userOpen"
               >
                 <Icon name="ic:baseline-person" size="1.2rem" />
@@ -438,11 +438,11 @@ watch(telops, (v) => {
         </div>
         <ClientOnly>
           <template #fallback>
-            <div class="animate-pulse relative max-lg:flex-1 h-full min-h-[640px] w-full bg-white dark:bg-dark-1 max-lg:shadow-sm lg:max-h-[85vh] lg:w-[300px] lg:rounded-xl xl:w-[350px]" />
+            <div class="animate-pulse relative max-lg:flex-1 h-full min-h-[640px] w-full bg-white dark:bg-dark-1 max-lg:shadow-2xs lg:max-h-[85vh] lg:w-[300px] lg:rounded-xl xl:w-[350px]" />
           </template>
           <div class="space-y-3 max-lg:flex-1 flex flex-col">
             <WatchTabButtons v-if="isLarge" :tab-view="tabView" @set-view="setView" />
-            <div class="relative h-full min-h-[640px] flex-1 overflow-hidden w-full bg-white dark:bg-dark-1 max-lg:shadow-sm lg:max-h-[85vh] lg:w-[300px] lg:rounded-xl xl:w-[350px]">
+            <div class="relative h-full min-h-[640px] flex-1 overflow-hidden w-full bg-white dark:bg-dark-1 max-lg:shadow-2xs lg:max-h-[85vh] lg:w-[300px] lg:rounded-xl xl:w-[350px]">
               <div class="absolute inset-0 z-0">
                 <WatchComment
                   v-if="tabView === 'comment'" ref="comment" :is-live="isLive" :data="data" :comments="comments" :delayed-comments="delayedComments" class="h-full w-full" @set-auto-append="(val) => setAutoAppend(val)" @create-comment="createComment" @append-delayed-comments="appendDelayedComments"

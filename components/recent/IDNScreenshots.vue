@@ -115,14 +115,14 @@ onBeforeUnmount(() => {
           <!-- <a v-for="ss in screenshots" ref="slideImgs" :key="ss.url" :href="ss.url" target="_blank"
             class="relative bg-container rounded-xl overflow-hidden md:h-80 aspect-[5/6.5]" :data-pswp-width="ss.width"
             :data-pswp-height="ss.height">
-            <img :data-src="ss.url" class="lazyLoad object-cover size-full absolute inset-0 !outline-none !ring-0">
+            <img :data-src="ss.url" class="lazyLoad object-cover size-full absolute inset-0 outline-hidden! ring-0!">
           </a> -->
           <div
             v-for="ss in screenshots" ref="slideImgs" :key="ss.url"
             class="relative bg-container rounded-xl overflow-hidden md:h-80 aspect-[5/6.5]" :data-pswp-width="ss.width"
             :data-pswp-height="ss.height"
           >
-            <img :data-src="ss.url" class="lazyLoad object-cover size-full absolute inset-0 !outline-none !ring-0">
+            <img :data-src="ss.url" class="lazyLoad object-cover size-full absolute inset-0 outline-hidden! ring-0!">
           </div>
         </div>
       </div>

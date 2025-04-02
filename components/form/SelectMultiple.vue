@@ -70,7 +70,7 @@ watch(selectedId, (id) => {
 <template>
   <div class="flex flex-col gap-1 border-t-2 border-dashed border-b-2 py-2 border-white/10">
     <label v-if="label" class="pl-2.5" :for="formId">{{ label }}</label>
-    <div class="flex flex-wrap gap-3 !bg-transparent" :class="inputClass">
+    <div class="flex flex-wrap gap-3 bg-transparent!" :class="inputClass">
       <div
         v-for="i in selectedData" :key="i?.value" type="button" class="group py-1.5 px-2.5 bg-container-2 rounded-md relative min-w-[115px]"
       >
@@ -97,7 +97,7 @@ watch(selectedId, (id) => {
               ref="input"
               :class="inputClass"
               :placeholder="selectedData?.length ? 'Search lagi' : 'Search'"
-              class="w-full border-none py-1.5 pl-3 pr-10 text-sm leading-5 focus:ring-0 outline-none min-w-[350px]"
+              class="w-full border-none py-1.5 pl-3 pr-10 text-sm leading-5 focus:ring-0 outline-hidden min-w-[350px]"
               :display-value="() => ''"
               @change="query = $event.target.value"
             />
@@ -119,7 +119,7 @@ watch(selectedId, (id) => {
             @after-leave="query = ''"
           >
             <ComboboxOptions
-              class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-container-2 py-1.5 text-xs md:text-sm shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm"
+              class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-container-2 py-1.5 text-xs md:text-sm shadow-lg ring-1 ring-black/5 focus:outline-hidden sm:text-sm"
             >
               <div
                 v-if="filteredData.length === 0 && query !== ''"

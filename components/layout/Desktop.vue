@@ -23,7 +23,7 @@ const isXL = greaterOrEqual('2xl')
 </script>
 
 <template>
-  <nav id="navbar" ref="navbar" class="sticky top-0 z-[151] h-[100vh] shrink-0 overflow-y-auto border-r dark:border-zinc-700 2xl:w-[290px]">
+  <nav id="navbar" ref="navbar" class="sticky top-0 z-151 h-[100vh] shrink-0 overflow-y-auto border-r dark:border-zinc-700 2xl:w-[290px]">
     <div class="flex h-full flex-col justify-between gap-3 [&>div]:mx-3 max-2xl:items-center">
       <div class="flex-1 flex flex-col max-2xl:items-center gap-2">
         <NuxtLink to="/" class="mb-2.5 mt-4 inline-block aspect-square w-10 xl:w-14 rounded-full text-3xl font-bold hover:bg-hover" aria-label="Home">
@@ -51,8 +51,8 @@ const isXL = greaterOrEqual('2xl')
           class="2xl:bg-container max-2xl:hover:bg-hover flex items-center justify-center gap-2 rounded-full size-12 aspect-square"
           @click="$emit('toggleDark')"
         >
-          <Icon name="ph:moon-bold" class="!hidden h-5 w-5 dark:!inline-block" />
-          <Icon name="ph:sun-bold" class="h-5 w-5 dark:!hidden" />
+          <Icon name="ph:moon-bold" class="hidden! h-5 w-5 dark:inline-block!" />
+          <Icon name="ph:sun-bold" class="h-5 w-5 dark:hidden!" />
         </button>
         <SettingsDialog />
       </div>

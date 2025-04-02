@@ -48,7 +48,7 @@ function next(index: number) {
 <template>
   <div class="flex flex-col gap-1 border-t-2 border-dashed border-b-2 py-2 border-white/10">
     <label v-if="label" class="pl-2.5" :for="formId">{{ label }}</label>
-    <div class="flex flex-wrap gap-3 !bg-transparent" :class="inputClass">
+    <div class="flex flex-wrap gap-3 bg-transparent!" :class="inputClass">
       <div
         v-for="[idx, i] in modelValue.entries()" :key="i" type="button" class="group py-1.5 px-2.5 bg-container-2 rounded-md relative min-w-[115px]"
       >
@@ -75,7 +75,7 @@ function next(index: number) {
         </div>
       </div>
       <div class="bg-container-2 rounded-md flex items-center gap-2.5 pr-2">
-        <input ref="input" type="text" :placeholder="modelValue?.length ? 'Tambah' : 'Input'" class="truncate text-sm w-[150px] bg-transparent px-2.5 py-1.5 outline-none" @keyup.enter="add">
+        <input ref="input" type="text" :placeholder="modelValue?.length ? 'Tambah' : 'Input'" class="truncate text-sm w-[150px] bg-transparent px-2.5 py-1.5 outline-hidden" @keyup.enter="add">
         <button type="button" class="bg-blue-500 px-2 py-0.5 rounded-md text-sm" @click="add">
           Add
         </button>

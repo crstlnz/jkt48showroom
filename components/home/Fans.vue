@@ -15,7 +15,7 @@ const { userClick } = useSelectedUser()
 </script>
 
 <template>
-  <div class="bg-container space-y-2.5 p-3 shadow-sm md:space-y-3.5 md:p-4">
+  <div class="bg-container space-y-2.5 p-3 shadow-2xs md:space-y-3.5 md:p-4">
     <div class="flex items-center justify-between">
       <h2 class="font-bold text-lg xl:text-xl">
         {{ $t("topfans") }}
@@ -25,7 +25,7 @@ const { userClick } = useSelectedUser()
       </button>
     </div>
     <ul class="columns-1 md:columns-2 lg:columns-3 min-[1700px]:columns-4">
-      <li v-for="[i, fans] in data.slice(0, 16).entries()" :key="fans.id" class="max-md:[&:nth-child(n+6)]:hidden max-lg:[&:nth-child(n+9)]:hidden max-[1700px]:[&:nth-child(n+13)]:hidden">
+      <li v-for="[i, fans] in data.slice(0, 16).entries()" :key="fans.id" class="max-md:nth-[n+6]:hidden max-lg:nth-[n+9]:hidden max-[1700px]:nth-[n+13]:hidden">
         <button v-ripple class="user-btn mb-3 flex w-full items-center gap-4 rounded-3xl p-2 sm:p-3" @click="(e) => userClick(e, fans.id)">
           <span class="w-5 sm:w-6">{{ i + 1 }}</span>
           <div

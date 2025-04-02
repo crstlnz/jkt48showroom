@@ -167,7 +167,7 @@ onMounted(() => {
         :aria-label="$t('search')"
         :placeholder="`${$t('search')}...`"
         type="text"
-        class="w-full bg-transparent py-3 outline-none"
+        class="w-full bg-transparent py-3 outline-hidden"
         @keyup.enter="() => { if (isEnabled) apply() }"
       >
       <button v-if="search != null && search !== ''" type="button" aria-label="Clear" class="hidden h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-500 text-white group-focus-within:flex group-hover:flex" @click="clearSearch">
@@ -195,7 +195,7 @@ onMounted(() => {
           type="button"
           class="w-full cursor-pointer px-4 py-2 font-bold hover:bg-second-2/20 lg:py-3"
           :class="{
-            '!bg-second-2/90 text-white': item.id === (temp.sort ?? query.sort),
+            'bg-second-2/90! text-white': item.id === (temp.sort ?? query.sort),
           }"
           @click="setSort(item.id)"
         >
@@ -215,12 +215,12 @@ onMounted(() => {
       </template>
     </Suspense>
     <div
-      class="flex space-x-1 overflow-hidden rounded-xl bg-slate-200/70 dark:bg-dark-2 [&>*]:cursor-pointer [&>button]:flex-1 [&>button]:p-2 hover:[&>button]:bg-second-2/20 lg:[&>button]:p-2 [&>div]:flex-1"
+      class="flex space-x-1 overflow-hidden rounded-xl bg-slate-200/70 dark:bg-dark-2 *:cursor-pointer [&>button]:flex-1 [&>button]:p-2 hover:[&>button]:bg-second-2/20 lg:[&>button]:p-2 [&>div]:flex-1"
     >
       <button
         type="button"
         :class="{
-          '!bg-second-2/90 text-white': isType('showroom'),
+          'bg-second-2/90! text-white': isType('showroom'),
         }"
         @click="setType('showroom')"
       >
@@ -229,7 +229,7 @@ onMounted(() => {
       <button
         type="button"
         :class="{
-          '!bg-second-2/90 text-white': isType('idn'),
+          'bg-second-2/90! text-white': isType('idn'),
         }"
         @click="setType('idn')"
       >
@@ -237,12 +237,12 @@ onMounted(() => {
       </button>
     </div>
     <div
-      class="flex space-x-1 overflow-hidden rounded-xl bg-slate-200/70 dark:bg-dark-2 [&>*]:cursor-pointer [&>button]:flex-1 [&>button]:p-2 hover:[&>button]:bg-second-2/20 lg:[&>button]:p-2 [&>div]:flex-1"
+      class="flex space-x-1 overflow-hidden rounded-xl bg-slate-200/70 dark:bg-dark-2 *:cursor-pointer [&>button]:flex-1 [&>button]:p-2 hover:[&>button]:bg-second-2/20 lg:[&>button]:p-2 [&>div]:flex-1"
     >
       <button
         type="button"
         :class="{
-          '!bg-second-2/90 text-white': isActive(false),
+          'bg-second-2/90! text-white': isActive(false),
         }"
         @click="setGraduated(false)"
       >
@@ -251,7 +251,7 @@ onMounted(() => {
       <button
         type="button"
         :class="{
-          '!bg-second-2/90 text-white': isActive(true),
+          'bg-second-2/90! text-white': isActive(true),
         }"
         @click="setGraduated(true)"
       >
@@ -261,7 +261,7 @@ onMounted(() => {
     <button
       type="button"
       :disabled="!isEnabled"
-      class="hover w-full select-none rounded-xl bg-second-2/80 p-2 text-center font-bold text-white transition-transform hover:bg-second-2 active:scale-95 disabled:bg-second-2/40 disabled:text-gray-400 disabled:active:scale-100 disabled:dark:text-gray-500 lg:p-3"
+      class="hover w-full select-none rounded-xl bg-second-2/80 p-2 text-center font-bold text-white transition-transform hover:bg-second-2 active:scale-95 disabled:bg-second-2/40 disabled:text-gray-400 disabled:active:scale-100 dark:disabled:text-gray-500 lg:p-3"
       @click="apply"
     >
       {{ $t("sort.apply") }}

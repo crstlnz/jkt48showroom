@@ -96,7 +96,7 @@ watch(res, (val) => {
     >
       <PaginationFilter
         key="filterDiv"
-        class="relative z-[90] rounded-t-xl bg-white p-4 dark:bg-dark-1"
+        class="relative z-90 rounded-t-xl bg-white p-4 dark:bg-dark-1"
         :query="query"
         @show-duration="(show : boolean) => showDuration = show"
         @title="(t:string) => {
@@ -113,7 +113,7 @@ watch(res, (val) => {
       >
         <div
           v-if="!isTop"
-          class="absolute bottom-[100%] left-1/2 z-[50] mb-2.5 flex w-[220px] max-w-[80%] -translate-x-1/2 overflow-hidden rounded-xl bg-second-2/95 font-bold text-white transition"
+          class="absolute bottom-[100%] left-1/2 z-50 mb-2.5 flex w-[220px] max-w-[80%] -translate-x-1/2 overflow-hidden rounded-xl bg-second-2/95 font-bold text-white transition"
         >
           <button
             type="button"
@@ -191,7 +191,7 @@ watch(res, (val) => {
 
     <div
       class="-z-10 flex h-0 items-center justify-center text-center leading-[5rem] transition-[height] duration-300"
-      :class="{ '!h-24': pending, '!h-16': isEnded }"
+      :class="{ 'h-24!': pending, 'h-16!': isEnded }"
     >
       <Transition name="fade" mode="out-in">
         <div v-if="pending" key="spinner" class="lds-ring">

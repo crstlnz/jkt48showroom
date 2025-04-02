@@ -76,15 +76,15 @@ async function save() {
           Setlist Form
         </h3>
         <div class="flex gap-3 py-4">
-          <FormImageDrop ref="posterImageDrop" :src="setlist?.poster" form-id="poster" title="Poster" class="bg-container-2 flex aspect-[4/5] h-40 items-center justify-center overflow-hidden rounded-md" />
-          <FormImageDrop ref="bannerImageDrop" :src="setlist?.banner" form-id="poster" title="Banner" class="bg-container-2 flex aspect-[16/9] h-40 items-center justify-center overflow-hidden rounded-md" />
-          <!-- <button class="bg-container-2 flex aspect-[4/5] h-40 items-center justify-center rounded-md">
+          <FormImageDrop ref="posterImageDrop" :src="setlist?.poster" form-id="poster" title="Poster" class="bg-container-2 flex aspect-4/5 h-40 items-center justify-center overflow-hidden rounded-md" />
+          <FormImageDrop ref="bannerImageDrop" :src="setlist?.banner" form-id="poster" title="Banner" class="bg-container-2 flex aspect-16/9 h-40 items-center justify-center overflow-hidden rounded-md" />
+          <!-- <button class="bg-container-2 flex aspect-4/5 h-40 items-center justify-center rounded-md">
             <div v-if="!poster">
               Poster
             </div>
             <img v-else :src="poster" alt="Poster" class="h-full w-full object-cover">
           </button>
-          <button class="bg-container-2 flex aspect-[16/9] h-40 items-center justify-center rounded-md">
+          <button class="bg-container-2 flex aspect-16/9 h-40 items-center justify-center rounded-md">
             <div v-if="!banner">
               Banner
             </div>

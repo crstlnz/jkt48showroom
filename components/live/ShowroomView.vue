@@ -232,7 +232,7 @@ const { locale } = useI18n()
       :class="{
         '[&>canvas]:left-1/2 [&>canvas]:h-full [&>canvas]:-translate-x-1/2': !isFullscreen || isLandscape,
         '[&>canvas]:top-1/2  [&>canvas]:w-full [&>canvas]:-translate-y-1/2': isFullscreen && !isLandscape,
-        '!bg-black': isFullscreen,
+        'bg-black!': isFullscreen,
       }"
     >
       <canvas ref="bgCanvas" class="pointer-events-none" width="1920" height="1080">Your browser does not support the canvas element.</canvas>
@@ -263,7 +263,7 @@ const { locale } = useI18n()
           >
             <div
               class="absolute bottom-[calc(100%_+_5px)] text-xs font-bold md:text-sm"
-              :class="{ 'lg:!text-2xl': isFullscreen }"
+              :class="{ 'lg:text-2xl!': isFullscreen }"
             >
               {{ $dayjs(selectedTime).locale(locale).format("LLLL") }}
             </div>

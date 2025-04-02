@@ -95,8 +95,8 @@ const isXL = greaterOrEqual('xl')
       <template #sidebar>
         <ClientOnly>
           <template #fallback>
-            <div class="bg-container w-full aspect-[4/5] rounded-xl animate-pulse xl:mt-4" />
-            <div class="bg-container w-full aspect-[4/12] rounded-xl animate-pulse" />
+            <div class="bg-container w-full aspect-4/5 rounded-xl animate-pulse xl:mt-4" />
+            <div class="bg-container w-full aspect-4/12 rounded-xl animate-pulse" />
           </template>
           <div v-if="isXL" class="flex flex-col gap-3 md:gap-4">
             <HomeLiveNowSide class="xl:mt-4" />

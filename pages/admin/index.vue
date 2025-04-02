@@ -37,8 +37,8 @@ definePageMeta({ middleware: 'admin' })
     <template #sidebar>
       <ClientOnly>
         <template #fallback>
-          <div class="bg-container w-full aspect-[4/5] rounded-xl animate-pulse xl:mt-4" />
-          <div class="bg-container w-full aspect-[4/12] rounded-xl animate-pulse" />
+          <div class="bg-container w-full aspect-4/5 rounded-xl animate-pulse xl:mt-4" />
+          <div class="bg-container w-full aspect-4/12 rounded-xl animate-pulse" />
         </template>
         <HomeLiveNowSide class="mt-4" />
         <HomeRecents />

@@ -30,7 +30,7 @@ watch(page, (p) => {
       <div v-else-if="data" class="flex flex-col gap-3.5">
         <div v-for="news in data.news" :key="news.id" class="bg-container mx-3 flex flex-col gap-2 rounded-xl p-3 md:mx-4 md:p-4">
           <NuxtImg
-            class="aspect-[56/19] w-[56px] rounded-[3px]"
+            class="aspect-56/19 w-[56px] rounded-[3px]"
             :src="`${$cloudinaryURL}/assets/jkt48${news.label}`"
             alt="Label"
             loading="lazy"
@@ -52,7 +52,7 @@ watch(page, (p) => {
         <PaginationControl
           v-else-if="!error"
           key="pagination"
-          class="justify-center sm:!left-auto"
+          class="justify-center sm:left-auto!"
           :page="data.page"
           :max-dots="7"
           :total="Math.ceil(data.total_count / data.perpage)"

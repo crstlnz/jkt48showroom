@@ -18,7 +18,7 @@ const { isPending, start, stop } = useTimeoutFn(() => {
 </script>
 
 <template>
-  <div class="relative aspect-[3/1] overflow-hidden shadow-sm lg:aspect-[4.5/1] bg-container">
+  <div class="relative aspect-3/1 overflow-hidden shadow-2xs lg:aspect-[4.5/1] bg-container">
     <Transition
       mode="in-out"
       enter-active-class="transition-opacity duration-1000"
@@ -28,7 +28,7 @@ const { isPending, start, stop } = useTimeoutFn(() => {
       leave-from-class="opacity-100"
       leave-to-class="opacity-0"
     >
-      <div v-if="banner[index]" :key="index" :title="banner[index].title" class="aspect-[3/1] overflow-hidden shadow-sm lg:aspect-[4.5/1] bg-container">
+      <div v-if="banner[index]" :key="index" :title="banner[index].title" class="aspect-3/1 overflow-hidden shadow-2xs lg:aspect-[4.5/1] bg-container">
         <a
           aria-label="JKT48 Flying High MV"
           :href="banner[index].url"

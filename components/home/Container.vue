@@ -16,7 +16,7 @@ withDefaults(defineProps<{
 </script>
 
 <template>
-  <div class="bg-container space-y-2 rounded-xl p-3 shadow-sm md:p-4">
+  <div class="bg-container space-y-2 rounded-xl p-3 shadow-2xs md:p-4">
     <div class="flex items-center gap-2">
       <div class="inline-block h-5 w-1 rounded-l-sm" :class="iconClass" />
       <h3 class="flex-1 font-bold text-lg xl:text-xl">

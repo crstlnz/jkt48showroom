@@ -72,13 +72,13 @@ watch(keyId, () => {
   </div>
 </template>
 
-<style lang="scss">
-.followList{
-  .aspect {
-    @apply aspect-[20/6.5] xl:aspect-[20/5]
-  }
-  .item {
-    @apply aspect-[20/6.5] xl:aspect-[20/5] rounded-xl animate-pulse shadow-sm;
-  }
+<style>
+@reference "~/assets/css/tailwindcss.css";
+
+.followList .aspect {
+  @apply aspect-[20/6.5] xl:aspect-20/5
+}
+.followList .item {
+  @apply aspect-[20/6.5] xl:aspect-20/5 rounded-xl animate-pulse shadow-sm;
 }
 </style>

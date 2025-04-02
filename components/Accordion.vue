@@ -10,7 +10,7 @@ defineProps<{
   <div>
     <Disclosure v-slot="{ open }">
       <DisclosureButton
-        class="flex w-full justify-between transition rounded-lg bg-blue-500/90 dark:bg-blue-500/50 px-4 py-2.5 text-left text-base items-center font-medium text-blue-50 dark:text-blue-100 hover:bg-blue-600 dark:hover:bg-blue-400 focus:outline-none focus-visible:ring focus-visible:ring-purple-500/75"
+        class="flex w-full justify-between transition rounded-lg bg-blue-500/90 dark:bg-blue-500/50 px-4 py-2.5 text-left text-base items-center font-medium text-blue-50 dark:text-blue-100 hover:bg-blue-600 dark:hover:bg-blue-400 focus:outline-hidden focus-visible:ring-3 focus-visible:ring-purple-500/75"
       >
         <span>{{ title }}</span>
         <Icon

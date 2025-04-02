@@ -61,7 +61,7 @@ function getLiveUrl(member: ExtINowLive) {
       fit="fill"
       format="webp"
       :alt="`${member.name} banner`"
-      class="bg-container aspect-[15/5] w-full md:aspect-[15/3] object-cover"
+      class="bg-container aspect-15/5 w-full md:aspect-15/3 object-cover"
       :src="member.banner || $getDefaultBanner(member.group)"
     />
     <div class="flex flex-col gap-3 px-3 lg:px-4">

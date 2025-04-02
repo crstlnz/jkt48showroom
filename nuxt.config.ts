@@ -1,3 +1,4 @@
+import tailwindcss from '@tailwindcss/vite'
 import { vite as vidstack } from 'vidstack/plugins'
 
 const isDev = process.env.NODE_ENV === 'development'
@@ -42,7 +43,7 @@ export default defineNuxtConfig({
     'dayjs-nuxt',
     '@nuxtjs/device',
     '@nuxt/icon',
-    '@nuxtjs/tailwindcss',
+    // '@nuxtjs/tailwindcss',
     '@nuxtjs/color-mode',
     '@vueuse/nuxt',
     '@nuxtjs/i18n',
@@ -104,7 +105,7 @@ export default defineNuxtConfig({
     watcher: 'parcel',
   },
   // pwa: !isDev ? pwa : undefined,
-  css: ['~/assets/css/style.scss', '~/assets/css/transition.scss', '~/assets/css/tailwindcss.css'],
+  css: ['~/assets/css/style.css', '~/assets/css/transition.css', '~/assets/css/tailwindcss.css'],
   fonts: {
     provider: 'google',
   },
@@ -112,12 +113,6 @@ export default defineNuxtConfig({
     preference: 'dark',
     fallback: 'light',
     classSuffix: '',
-  },
-  postcss: {
-    plugins: {
-      tailwindcss: {},
-      autoprefixer: {},
-    },
   },
   i18n: {
     baseUrl: process.env.BASE_URL,
@@ -131,6 +126,9 @@ export default defineNuxtConfig({
     lazy: true,
     defaultLocale: 'id',
     vueI18n: '../i18n.config.ts',
+    bundle: {
+      optimizeTranslationDirective: false,
+    },
   },
   typescript: {
     shim: false,
@@ -189,7 +187,19 @@ export default defineNuxtConfig({
   vite: {
     plugins: [
       vidstack({ include: /vidstack\// }),
+      tailwindcss(),
     ],
+    optimizeDeps: {
+      include: [
+        '@use-gesture/vanilla',
+        'popmotion',
+        '@headlessui/vue',
+        '@vueuse/integrations/useFuse',
+        'horoscope',
+        'fuse.js',
+        'blaze-slider',
+      ],
+    },
   },
   compatibilityDate: '2024-08-31',
 })

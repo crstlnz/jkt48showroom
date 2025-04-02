@@ -289,8 +289,11 @@ onMounted(async () => {
   }
 
   .plyr__progress__container{
-      @apply absolute w-full inset-x-0 left-0 right-0 top-1/2 -translate-y-[calc(50%_+_14px)];
-
+      position: absolute;
+      width: 100%;
+      inset-inline: 0;
+      top: 50%;
+      transform: translateY(calc(-50% - 14px));
       input,progress {
         border-radius: 0px !important
       }
@@ -305,12 +308,13 @@ onMounted(async () => {
     }
 
     .plyr__volume {
-      @apply flex-1
+      flex : 1
     }
 }
 
 .plyr {
-  @apply size-full;
+  width: 100%;
+  height: 100%;
 
   .plyr__control {
     &::before {

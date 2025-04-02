@@ -30,7 +30,7 @@ const { data, pending, error } = await useApiFetch<{ jpy_rates: number, fans: Da
             <div class="text-lg font-bold">
               {{ fans.name }}
             </div>
-            <table class="fansdata opacity-75 [&>*]:p-3">
+            <table class="fansdata opacity-75 *:p-3">
               <tbody>
                 <tr>
                   <td>

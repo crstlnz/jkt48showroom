@@ -812,7 +812,7 @@ defineExpose({
     }"
     :class="{
       'w-full h-full': !enableRotate && rotateFill !== 'width',
-      '!cursor-none': !showControl && isPlaying,
+      'cursor-none!': !showControl && isPlaying,
     }"
   >
     <div
@@ -958,7 +958,7 @@ defineExpose({
                 class="relative flex h-full w-16 items-center duration-200 group-hover/volume:w-20 md:w-20"
               >
                 <div
-                  class="absolute inset-0 top-1/2 h-1 z-0 w-16 -translate-y-1/2 overflow-hidden rounded-sm bg-gray-300/25 md:w-20"
+                  class="absolute inset-0 top-1/2 h-1 z-0 w-16 -translate-y-1/2 overflow-hidden rounded-xs bg-gray-300/25 md:w-20"
                 >
                   <div
                     class="h-full bg-slate-200"
@@ -1093,82 +1093,84 @@ defineExpose({
   </div>
 </template>
 
-<style lang="scss">
+<style>
+@reference "~/assets/css/tailwindcss.css";
+
 .volume-slider {
-  -webkit-appearance: none; /* Override default CSS styles */
-  appearance: none;
-  background: transparent; /* Grey background */
-  outline: none; /* Remove outline */
-  border: none;
-
-  &::-webkit-slider-thumb {
-    -webkit-appearance: none; /* Override default look */
-    appearance: none;
-    width: 10px; /* Set a specific slider handle width */
-    height: 10px; /* Slider handle height */
-    background: rgb(226 232 240 / var(--tw-bg-opacity));
-    border: none;
-    border-radius: 100%; /*
-    cursor: pointer; /* Cursor on hover */
-  }
-
-  &::-moz-range-thumb {
-    width: 10px; /* Set a specific slider handle width */
-    height: 10px; /* Slider handle height */
-    background: rgb(226 232 240 / var(--tw-bg-opacity));
-    border: none;
-    border-radius: 100%; /* Green background */
-    cursor: pointer; /* Cursor on hover */
-    appearance: none;
-  }
-
-  &.compact {
-    &::-webkit-slider-thumb {
-      width: 7px; /* Set a specific slider handle width */
-      height: 7px; /* Slider handle height */
-    }
-
-    &::-moz-range-thumb {
-      width: 7px; /* Set a specific slider handle width */
-      height: 7px; /* Slider handle height */
-    }
-  }
-
-  &.hidden-slider {
-    &::-webkit-slider-thumb {
-      visibility: hidden;
-    }
-
-    &::-moz-range-thumb {
-      visibility: hidden;
-    }
-  }
-
-  &::-webkit-progress-value {
-    background: transparent;
-    border: none;
-  }
-
-  &::-moz-range-progress {
-    background: transparent;
-    border: none;
-    appearance: none;
-  }
-  &::-moz-range-track {
-    appearance: none;
-  }
-
-  &:focus-visible {
-    &::-webkit-slider-thumb {
-      @apply ring-2 ring-blue-500;
-      -webkit-appearance: none;
-      appearance: none;
-      cursor: pointer;
-    }
-    &::-moz-range-thumb {
-      @apply ring-2 ring-blue-500;
-      cursor: pointer;
-    }
-  }
+	 -webkit-appearance: none;
+	/* Override default CSS styles */
+	 appearance: none;
+	 background: transparent;
+	/* Grey background */
+	 outline: none;
+	/* Remove outline */
+	 border: none;
+}
+ .volume-slider::-webkit-slider-thumb {
+	 -webkit-appearance: none;
+	/* Override default look */
+	 appearance: none;
+	 width: 10px;
+	/* Set a specific slider handle width */
+	 height: 10px;
+	/* Slider handle height */
+	 background: #000;
+	 border: none;
+	 border-radius: 100%;
+	/* cursor: pointer;
+	/* Cursor on hover */
+}
+ .volume-slider::-moz-range-thumb {
+	 width: 10px;
+	/* Set a specific slider handle width */
+	 height: 10px;
+	/* Slider handle height */
+	 background: #000;
+	 border: none;
+	 border-radius: 100%;
+	/* Green background */
+	 cursor: pointer;
+	/* Cursor on hover */
+	 appearance: none;
+}
+ .volume-slider.compact::-webkit-slider-thumb {
+	 width: 7px;
+	/* Set a specific slider handle width */
+	 height: 7px;
+	/* Slider handle height */
+}
+ .volume-slider.compact::-moz-range-thumb {
+	 width: 7px;
+	/* Set a specific slider handle width */
+	 height: 7px;
+	/* Slider handle height */
+}
+ .volume-slider.hidden-slider::-webkit-slider-thumb {
+	 visibility: hidden;
+}
+ .volume-slider.hidden-slider::-moz-range-thumb {
+	 visibility: hidden;
+}
+ .volume-slider::-webkit-progress-value {
+	 background: transparent;
+	 border: none;
+}
+ .volume-slider::-moz-range-progress {
+	 background: transparent;
+	 border: none;
+	 appearance: none;
+}
+ .volume-slider::-moz-range-track {
+	 appearance: none;
+}
+ .volume-slider:focus-visible::-webkit-slider-thumb {
+	 -webkit-appearance: none;
+	 appearance: none;
+	 cursor: pointer;
+   @apply ring-2 ring-blue-500;
+}
+ .volume-slider:focus-visible::-moz-range-thumb {
+	 cursor: pointer;
+   @apply ring-2 ring-blue-500;
 }
 </style>

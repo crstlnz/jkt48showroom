@@ -12,7 +12,7 @@ const isNew = computed(() => {
 
 <template>
   <div class="relative flex items-center justify-between gap-3 sm:gap-5">
-    <div v-if="isNew" class="absolute right-0 top-0 z-10 flex items-center gap-1 rounded-sm text-sm">
+    <div v-if="isNew" class="absolute right-0 top-0 z-10 flex items-center gap-1 rounded-xs text-sm">
       <Icon name="solar:medal-ribbons-star-bold-duotone" class="text-yellow-500" size="1.5rem" />
       <span class="font-bold">New Record</span>
     </div>

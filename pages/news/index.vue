@@ -63,7 +63,7 @@ const maxDots = computed(() => {
           <PaginationControl
             v-else-if="!error"
             key="pagination"
-            class="justify-center sm:!left-auto"
+            class="justify-center sm:left-auto!"
             :page="data.page"
             :max-dots="maxDots"
             :total="Math.ceil(data.total_count / data.perpage)"

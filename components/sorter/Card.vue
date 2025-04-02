@@ -20,14 +20,14 @@ const { group } = useSettings()
 <template>
   <Component
     :is="tag || 'button'"
-    class="card relative aspect-[4/6] select-none rounded-2xl transition-[transform] duration-200 active:scale-95 disabled:cursor-not-allowed"
+    class="card relative aspect-4/6 select-none rounded-2xl transition-[transform] duration-200 active:scale-95 disabled:cursor-not-allowed"
     :class="{
       flipped: isFlipped || flip,
     }"
     :disabled="isFlipped"
     @click="$emit('click')"
   >
-    <div class="card-inner bg-container relative gap-1 rounded-2xl p-2 shadow-sm md:w-60 md:gap-2 md:p-3">
+    <div class="card-inner bg-container relative gap-1 rounded-2xl p-2 shadow-2xs md:w-60 md:gap-2 md:p-3">
       <div data-section="card-front" class="h-full w-full">
         <div v-if="rank" class="absolute left-1 top-1 z-10 h-5 w-5 rounded-full bg-red-500 text-sm text-white/80 md:left-2 md:top-2">
           {{ rank }}
@@ -49,7 +49,7 @@ const { group } = useSettings()
           </div>
         </div>
         <div v-else>
-          <div class="pulse-color aspect-[15/16] w-full overflow-hidden rounded-lg object-cover" />
+          <div class="pulse-color aspect-15/16 w-full overflow-hidden rounded-lg object-cover" />
         </div>
       </div>
       <div data-section="card-back" class="card-back rotate bg-container absolute inset-0 overflow-hidden rounded-lg">

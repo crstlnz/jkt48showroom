@@ -82,7 +82,7 @@ function add(data: any) {
 <template>
   <div class="flex flex-col gap-1 border-t-2 border-dashed border-b-2 py-2 border-white/10">
     <!-- <label v-if="label" class="pl-2.5" :for="formId">{{ label }}</label> -->
-    <div class="flex flex-wrap gap-3 !bg-transparent" :class="inputClass">
+    <div class="flex flex-wrap gap-3 bg-transparent!" :class="inputClass">
       <div
         v-for="[idx, i] in modelValue?.entries() ?? []" :key="String(i)" type="button" class=" group py-1.5 px-2.5 bg-container-2 rounded-md relative min-w-[115px]"
       >

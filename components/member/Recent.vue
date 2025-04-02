@@ -15,7 +15,7 @@ const date = $fromNow(
     <NuxtLink
       :aria-label="`${recent.member?.name} Live detail`"
       no-prefetch
-      class="relative aspect-square h-[4.5rem] cursor-pointer overflow-hidden rounded-full drop-shadow-sm md:h-[70px]"
+      class="relative aspect-square h-[4.5rem] cursor-pointer overflow-hidden rounded-full drop-shadow-xs md:h-[70px]"
       :to="`/member/${recent.member.url}`"
     >
       <NuxtImg

@@ -1,7 +1,7 @@
 <template>
   <div class="flex animate-pulse gap-3 py-2 text-center md:py-3">
     <div
-      class="relative aspect-square h-[4.5rem] cursor-pointer overflow-hidden rounded-full drop-shadow-sm md:h-[70px]"
+      class="relative aspect-square h-[4.5rem] cursor-pointer overflow-hidden rounded-full drop-shadow-xs md:h-[70px]"
     >
       <div
         class="pulse-color h-full w-full"

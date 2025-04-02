@@ -18,7 +18,7 @@ const { locale } = useI18n()
     <div class="flex items-start gap-3 border-b border-black/10 dark:border-white/10 pt-1 pb-3">
       <NuxtLink :external="live.type === 'youtube'" :to="live.type === 'youtube' ? live.url : `/watch/${live.url}`" class="group rounded-xl overflow-hidden">
         <NuxtImg
-          class="aspect-[4/5] w-[85px] object-cover scale-[100.01%] group-hover:scale-110 transition-transform duration-500"
+          class="aspect-4/5 w-[85px] object-cover scale-[100.01%] group-hover:scale-110 transition-transform duration-500"
           :modifiers="{
             aspectRatio: 4 / 5,
             gravity: 'faceCenter',

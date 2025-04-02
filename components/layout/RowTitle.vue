@@ -43,7 +43,7 @@ watch(search, () => {
       </div>
       <div v-if="enableSearch" class="pointer-events-none inset-x-0 top-1/2 -translate-y-1/2 absolute">
         <div class="bg-container pointer-events-auto float-right flex items-center rounded-2xl p-1.5 text-sm ring-blue-500 focus-within:ring-2 max-sm:focus-within:w-full max-sm:focus-within:pl-3" :class="{ 'pl-3 max-sm:w-full': search.length !== 0 }">
-          <input id="search_shortcut" ref="searchInput" v-model="search" class="flex-1 truncate bg-transparent outline-none focus-visible:!outline-none max-sm:w-0 sm:ml-3" placeholder="Search...">
+          <input id="search_shortcut" ref="searchInput" v-model="search" class="flex-1 truncate bg-transparent outline-hidden focus-visible:outline-hidden! max-sm:w-0 sm:ml-3" placeholder="Search...">
           <button v-if="search.length === 0" aria-label="Search" class="group flex h-7 w-7 items-center justify-center rounded-xl p-1 sm:hover:bg-blue-500" @click="searchInput?.focus()">
             <Icon name="uil:search" class="h-full w-full text-slate-800  dark:text-white/50 dark:group-hover:text-white" />
           </button>

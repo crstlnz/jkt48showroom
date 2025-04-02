@@ -73,7 +73,7 @@ onMounted(() => {
       <div class="flex w-full flex-col gap-4">
         <slot name="sidebar" />
         <footer class="max-sm:text-center max-sm:mt-2.5 pb-10 text-sm text-slate-600 dark:text-zinc-300/50">
-          <Footer class="!items-start pt-3" />
+          <Footer class="items-start! pt-3" />
         </footer>
       </div>
     </LayoutSticky>

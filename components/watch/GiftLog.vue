@@ -12,7 +12,7 @@ const sortedGift = computed(() => {
 
 <template>
   <div class="roundedscrollbar relative h-full overflow-y-scroll">
-    <div class="sticky inset-x-0 top-0 z-10 border-b-2 border-slate-100/60 bg-white/90 p-3 text-xl font-bold backdrop-blur-sm dark:border-dark-2/60 dark:bg-dark-1/90 md:p-5">
+    <div class="sticky inset-x-0 top-0 z-10 border-b-2 border-slate-100/60 bg-white/90 p-3 text-xl font-bold backdrop-blur-xs dark:border-dark-2/60 dark:bg-dark-1/90 md:p-5">
       <div class="flex items-center gap-2">
         <Icon name="noto:wrapped-gift" class="text-yellow-500" size="1.4rem" />
         <span>{{ $t('tabview.gift_log') }}</span>
@@ -42,7 +42,7 @@ const sortedGift = computed(() => {
     </div>
     <div v-else>
       <div class="pb-5 pt-2 text-center">
-        <NuxtImg class="mx-auto aspect-[5/4] w-72 max-w-[75%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`" />
+        <NuxtImg class="mx-auto aspect-5/4 w-72 max-w-[75%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`" />
         <span>{{ $t("data.nodata") }}</span>
       </div>
     </div>

@@ -26,7 +26,7 @@ const { data, pending, hasLives } = storeToRefs(onLives)
     </div>
     <div
       v-else
-      class="aspect-[10/9]"
+      class="aspect-10/9"
     >
       <div class="pt-2 text-center">
         <NuxtImg class="mx-auto aspect-square w-72 max-w-[65%] object-contain" alt="No member onlive" :src="`${$cloudinaryURL}/assets/svg/web/space_copy.svg`" sizes="320px" fit="fill" />

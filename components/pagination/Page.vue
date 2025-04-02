@@ -32,14 +32,14 @@ const showDuration = ref(false)
           <PaginationControl
             v-else
             key="pagination"
-            class="justify-center sm:!left-auto"
+            class="justify-center sm:left-auto!"
             :page="query.page ?? 1"
             :max-dots="7"
             :total="totalPage"
             @page-change="(page : number) => changePage(page)"
           />
           <PaginationFilter
-            class="bg-container mt-4 h-fit overflow-y-auto rounded-xl p-4 shadow-sm lg:max-h-[calc(100vh_-_96px_-_20px)]"
+            class="bg-container mt-4 h-fit overflow-y-auto rounded-xl p-4 shadow-2xs lg:max-h-[calc(100vh_-_96px_-_20px)]"
             :query="query"
             @apply="(filter : Record<any, any>) => setFilter(filter)"
             @show-duration="(show : boolean) => showDuration = show"

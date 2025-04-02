@@ -114,7 +114,7 @@ async function apply() {
       Edit {{ event.title }} {{ $dayjs(event.date).format("DD MMMM YYYY - HH:mm") }}
     </div>
     <div v-for="form in formTheater" :key="form.id" class="flex gap-3">
-      <div class="w-[65px] shrink-0 truncate pt-1.5 md:w-[90px] lg:w-[120px] text-sm md:text-base" :class="{ '!leading-[45px]': isMultiple(form.component) }">
+      <div class="w-[65px] shrink-0 truncate pt-1.5 md:w-[90px] lg:w-[120px] text-sm md:text-base" :class="{ 'leading-[45px]!': isMultiple(form.component) }">
         {{ form.title }}
       </div>
       <Component :is="getForm(form.component ?? 'text')" v-model="form.data" :keys="(form as any).keys" :data="(form as Admin.FormMultipleSelect)?.options || []" form-id="start" :placeholder="(form as Admin.FormText)?.placeholder ?? form.title" input-class="bg-container-2 flex-1 text-sm md:text-base" class="w-0 flex-1" />

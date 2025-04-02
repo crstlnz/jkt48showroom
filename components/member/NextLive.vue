@@ -10,7 +10,7 @@ const date = $fromNow(props.data.date)
   <div class="flex gap-3 py-2 text-center md:py-3">
     <NuxtLink
       aria-label="View profile"
-      class="relative aspect-square h-16 cursor-pointer overflow-hidden rounded-full drop-shadow-sm md:h-20"
+      class="relative aspect-square h-16 cursor-pointer overflow-hidden rounded-full drop-shadow-xs md:h-20"
       :to="`/member/${data.url}`"
     >
       <NuxtImg

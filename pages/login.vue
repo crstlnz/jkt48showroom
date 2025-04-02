@@ -9,9 +9,9 @@ definePageMeta({
 const settings = useSettings()
 const { session } = storeToRefs(settings)
 const i18nHead = useLocaleHead({
-  addDirAttribute: true,
-  identifierAttribute: 'id',
-  addSeoAttributes: true,
+  dir: true,
+  lang: true,
+  seo: true,
 })
 
 const { getFavicon, getTitle } = useAppConfig()
@@ -138,7 +138,7 @@ async function signInHandler() {
 <template>
   <div>
     <SplashScreen>
-      <div class="min-h-[100vh] bg-dark-2 backdrop-blur-sm">
+      <div class="min-h-[100vh] bg-dark-2 backdrop-blur-xs">
         <div class="flex items-center justify-center text-center">
           <NuxtLink to="/" class="my-8 text-3xl font-bold text-white md:my-14 lg:text-4xl">
             {{ getTitle(settings.group) }}
@@ -152,13 +152,13 @@ async function signInHandler() {
           <div />
           <div class="mt-8 flex flex-col gap-3 md:gap-4 md:mt-10">
             <div class="mb-5 relative rounded-xl ring-blue-500 focus-within:ring-2" :class="{ 'ring-1 ring-red-500': usernameError, 'cursor-not-allowed opacity-50': loading }">
-              <input v-model="username" class="w-full rounded-xl bg-dark-3 px-3.5 py-2.5 outline-none focus:!border-none disabled:pointer-events-none" placeholder="Username" :disabled="loading" @keyup.enter="checkSubmit">
+              <input v-model="username" class="w-full rounded-xl bg-dark-3 px-3.5 py-2.5 outline-hidden focus:border-none! disabled:pointer-events-none" placeholder="Username" :disabled="loading" @keyup.enter="checkSubmit">
               <div v-if="usernameError" class="absolute top-[calc(100%_+_5px)] text-sm text-red-500">
                 {{ usernameError }}
               </div>
             </div>
             <div class="mb-5 relative rounded-xl ring-blue-500 focus-within:ring-2" :class="{ 'ring-1 ring-red-500': passwordError, 'cursor-not-allowed opacity-50': loading }">
-              <input v-model="password" class="w-full rounded-xl bg-dark-3 px-3.5 py-2.5 outline-none focus:!border-none disabled:pointer-events-none" placeholder="Password" type="password" :disabled="loading" @keyup.enter="checkSubmit">
+              <input v-model="password" class="w-full rounded-xl bg-dark-3 px-3.5 py-2.5 outline-hidden focus:border-none! disabled:pointer-events-none" placeholder="Password" type="password" :disabled="loading" @keyup.enter="checkSubmit">
               <div v-if="passwordError" class="absolute top-[calc(100%_+_5px)] text-sm text-red-500">
                 {{ passwordError }}
               </div>
@@ -169,7 +169,7 @@ async function signInHandler() {
                 <img :src="errorData.captcha_url" alt="Captcha Image" class="w-full rounded-xl">
               </div>
               <div class="relative rounded-xl ring-blue-500 focus-within:ring-2 sm:mt-3" :class="{ 'ring-1 ring-red-500': captchaError, 'cursor-not-allowed opacity-50': loading }">
-                <input v-model="captcha" class="w-full rounded-xl bg-dark-3 px-3.5 py-2.5 outline-none focus:!border-none disabled:pointer-events-none" placeholder="Captcha" :disabled="loading" @keyup.enter="checkSubmit">
+                <input v-model="captcha" class="w-full rounded-xl bg-dark-3 px-3.5 py-2.5 outline-hidden focus:border-none! disabled:pointer-events-none" placeholder="Captcha" :disabled="loading" @keyup.enter="checkSubmit">
                 <div v-if="captchaError" class="absolute top-[calc(100%_+_5px)] text-sm text-red-500">
                   {{ captchaError }}
                 </div>

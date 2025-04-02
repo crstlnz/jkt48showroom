@@ -178,7 +178,7 @@ watch(rotation, () => {
 <template>
   <div class="size-full">
     <!-- eslint-disable-next-line vue/attribute-hyphenation -->
-    <media-player :id="id" ref="mediaPlayer" playsInline :volume="volume" class="size-full [&_video]:!size-full [&_video]:transition-[transform,object-fit] [&_video]:duration-[400ms] ease-out" :title="props.title" :src="src" :class="{ landscape: videoLandscape, potrait: !videoLandscape }">
+    <media-player :id="id" ref="mediaPlayer" playsInline :volume="volume" class="size-full [&_video]:size-full! [&_video]:transition-[transform,object-fit] [&_video]:duration-[400ms] ease-out" :title="props.title" :src="src" :class="{ landscape: videoLandscape, potrait: !videoLandscape }">
       <ClientOnly>
         <media-provider />
         <media-video-layout ref="videoLayouts" :thumbnails="props.thumbnails" />

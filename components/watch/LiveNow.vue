@@ -24,7 +24,7 @@ const data = computed(() => {
       <div>
         <div
           v-if="error"
-          class="bg-container flex w-full flex-col items-center justify-center gap-2 rounded-xl pb-5 text-xs shadow-sm md:gap-3 md:text-sm xl:gap-5 xl:pb-8 xl:pt-2"
+          class="bg-container flex w-full flex-col items-center justify-center gap-2 rounded-xl pb-5 text-xs shadow-2xs md:gap-3 md:text-sm xl:gap-5 xl:pb-8 xl:pt-2"
         >
           <img class="aspect-square w-72 max-w-[70%]" :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" sizes="320px" fit="fill">
           {{ $t("data.failed") }}
@@ -60,7 +60,7 @@ const data = computed(() => {
         </div>
         <div
           v-else
-          class="bg-container flex w-full flex-col items-center justify-center rounded-xl shadow-sm"
+          class="bg-container flex w-full flex-col items-center justify-center rounded-xl shadow-2xs"
         >
           <div class="flex h-[245.5px] flex-col items-center justify-center gap-2 text-center text-xs max-sm:aspect-square sm:h-[230.88px] md:h-[250px] md:gap-3 md:text-sm lg:h-[270.55px] xl:h-[349.2px] 2xl:h-[318px]">
             <img class="mx-auto w-72 max-w-[80%]" alt="No member onlive" :src="`${$cloudinaryURL}/assets/svg/web/space_copy.svg`" sizes="320px" fit="fill">
