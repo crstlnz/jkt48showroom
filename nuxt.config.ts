@@ -35,7 +35,7 @@ export default defineNuxtConfig({
       proxy: process.env.PROXY,
     },
   },
-  watch: ['~/assets/css/tailwindcss.css'],
+  watch: ['~/assets/css/theme.css', '~/assets/css/style.css'],
   modules: [
     '@nuxt/image',
     'floating-vue/nuxt',
@@ -105,7 +105,7 @@ export default defineNuxtConfig({
     watcher: 'parcel',
   },
   // pwa: !isDev ? pwa : undefined,
-  css: ['~/assets/css/style.css', '~/assets/css/transition.css', '~/assets/css/tailwindcss.css'],
+  css: ['~/assets/css/style.css', '~/assets/css/transition.css'],
   fonts: {
     provider: 'google',
   },

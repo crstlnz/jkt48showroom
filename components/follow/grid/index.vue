@@ -73,7 +73,7 @@ watch(keyId, () => {
 </template>
 
 <style>
-@reference "~/assets/css/tailwindcss.css";
+@reference "~/assets/css/theme.css";
 
 .followList .aspect {
   @apply aspect-[20/6.5] xl:aspect-20/5

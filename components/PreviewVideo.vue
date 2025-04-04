@@ -1,7 +1,17 @@
 <script lang="ts" setup>
 import { getProxiedStream } from '~/utils/proxyStream'
 
-const props = defineProps<{ src: string, useProxy?: boolean }>()
+const props = withDefaults(
+  defineProps<{
+    src: string
+    useProxy?: boolean
+    disableMuteButton?: boolean
+  }>(),
+  {
+    disableMuteButton: false,
+  },
+)
+
 const video = ref<HTMLMediaElement>()
 
 const hls = ref()
@@ -56,15 +66,12 @@ onMounted(() => {
   if (video.value) video.value.muted = true
 })
 
-defineExpose({ play, stop, buffer })
+defineExpose({ isMuted, play, stop, buffer, toggleMute })
 </script>
 
 <template>
   <div class="relative bg-black">
-    <button type="button" aria-label="Mute/Unmute Button" class="absolute bottom-0 right-0 z-25 m-2 flex aspect-square w-5 cursor-pointer select-none items-center justify-center rounded-full bg-slate-500/30 text-white hover:bg-slate-500/40 md:m-3 md:w-6 xl:m-4" @click="toggleMute">
-      <Icon v-if="isMuted" name="ph:speaker-simple-slash-fill" />
-      <Icon v-else name="ph:speaker-simple-high-fill" />
-    </button>
+    <MuteButton v-if="!disableMuteButton" :is-muted="isMuted" @click="toggleMute" />
     <video ref="video" class="h-full w-full overflow-hidden bg-slate-200 object-cover opacity-0 transition-opacity duration-300 dark:bg-dark-1/70" :class="{ 'opacity-100': videoLoaded }" />
   </div>
 </template>

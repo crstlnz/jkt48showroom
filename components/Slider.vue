@@ -43,7 +43,7 @@ defineExpose({ silentUpdate, slider })
 </template>
 
 <style>
-@reference "~/assets/css/tailwindcss.css";
+@reference "~/assets/css/theme.css";
 
 .slider {
 	 -webkit-appearance: none;

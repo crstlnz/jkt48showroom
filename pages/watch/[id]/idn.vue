@@ -141,7 +141,7 @@ const enableComment = useLocalStorage('enable-idn-comment', true)
               />
             </template>
             <VidstackPlayer
-              class="bg-container flex justify-center flex-col flex-1 [&_media-player.landscape_video]:object-contain [&_media-player.potrait_video]:object-fit"
+              class="bg-container flex justify-center flex-col flex-1 idnvideoplayer"
               :class="{ 'landscape-screen': isLandscape }"
               :title="data.name ?? ''"
               :thumbnails="data?.img ?? ''" :src="streamURLs[0].url"
@@ -207,6 +207,22 @@ const enableComment = useLocalStorage('enable-idn-comment', true)
     video  {
       object-fit: contain !important;
     }
+  }
 }
+
+.idnvideoplayer {
+  media-player {
+    &.potrait {
+      video {
+        object-fit: cover;
+      }
+    }
+
+    &.landscape {
+      video {
+        object-fit: contain;
+      }
+    }
+  }
 }
 </style>

@@ -1094,7 +1094,7 @@ defineExpose({
 </template>
 
 <style>
-@reference "~/assets/css/tailwindcss.css";
+@reference "~/assets/css/theme.css";
 
 .volume-slider {
 	 -webkit-appearance: none;

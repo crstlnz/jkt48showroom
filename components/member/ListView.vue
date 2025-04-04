@@ -95,7 +95,7 @@ const config = useAppConfig()
 </template>
 
 <style>
-@reference "~/assets/css/tailwindcss.css";
+@reference "~/assets/css/theme.css";
 
 .memberList .item {
     @apply aspect-10/14 md:aspect-13/16 rounded-xl animate-pulse shadow-sm;

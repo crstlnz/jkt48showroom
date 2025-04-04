@@ -86,7 +86,7 @@ watch(keyId, () => {
 </template>
 
 <style>
-@reference "~/assets/css/tailwindcss.css";
+@reference "~/assets/css/theme.css";
 
 .memberList .aspect {
   @apply aspect-10/14 md:aspect-13/16

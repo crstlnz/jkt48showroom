@@ -76,8 +76,7 @@
     "@nuxtjs/device": "^3.2.4",
     "@nuxtjs/i18n": "9.4.0",
     "@pinia/nuxt": "^0.10.1",
-    "@tailwindcss/postcss": "^4.1.0",
-    "@tailwindcss/vite": "^4.1.0",
+    "@tailwindcss/vite": "^4.1.2",
     "@types/node": "^22.13.11",
     "@unhead/vue": "^2.0.0-rc.8",
     "@vuepic/vue-datepicker": "^11.0.1",
@@ -93,7 +92,7 @@
     "nuxt": "3.16.2",
     "nuxt-security": "2.2.0",
     "sass": "^1.77.8",
-    "tailwindcss": "^4.1.0",
+    "tailwindcss": "^4.1.2",
     "typescript": "5.8.2",
     "v-wave": "^3.0.2",
     "vue-virtual-scroll-grid": "^1.11.0"

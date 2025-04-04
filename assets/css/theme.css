@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+@theme {
+  --z-index-belowNav: 100;
+  --z-index-nav: 150;
+  --z-index-aboveNav: 200;
+  --z-index-notification: 300;
+
+  /* Extend boxShadow */
+  --shadow-all: 0 0 0 1600px rgba(0,0,0,0.65);
+  --shadow-rounded: rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px;
+
+  /* Extend colors */
+  --color-dark-2: #1e2124;
+  --color-dark-1: #282b30;
+  --color-dark-3: #36393e;
+  --color-dark-4: #424549;
+  --color-second-1: #7289da;
+  --color-second-2: #4698eb;
+}
+
