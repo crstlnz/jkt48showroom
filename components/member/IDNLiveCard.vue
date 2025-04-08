@@ -95,7 +95,7 @@ watch(isHovered, (hovered) => {
 <template>
   <div
     ref="container"
-    class="group relative z-0 aspect-20/28 origin-top overflow-hidden rounded-xl shadow-md transition-[transform,scale,translate,box-shadow,z-index] duration-300 will-change-transform md:aspect-20/26"
+    class="group relative z-0 aspect-20/28 origin-top overflow-hidden rounded-xl shadow-md transition-[transform,scale,translate,box-shadow,z-index] duration-300 md:aspect-20/26"
     :class="{ 'lg:scale=[122%] z-50 translate-y-[-10%] scale-[115%] shadow-black/50 drop-shadow-2xl dark:shadow-black/80 md:scale-[118%] xl:scale-125': isPreview, 'shadow-2xs ': !isPreview }"
   >
     <div class="flex h-full w-full flex-col relative">

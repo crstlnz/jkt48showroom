@@ -150,6 +150,16 @@ function generateForm() {
       },
     },
     {
+      title: 'IDN ID',
+      placeholder: 'IDN ID',
+      id: 'idn_username',
+      data: props.memberData?.idn?.id,
+      component: 'text',
+      check: (data: any): boolean => {
+        return props.memberData.idn?.id === data
+      },
+    },
+    {
       title: 'IDN Username',
       placeholder: 'IDN Username',
       id: 'idn_username',
@@ -270,8 +280,8 @@ async function apply() {
 </script>
 
 <template>
-  <div class="flex w-full flex-col gap-3">
-    <div v-for="form in formMemberData" :key="form.id" class="flex gap-3">
+  <div class="flex w-full flex-col gap-3 backface-hidden transform-[translateZ(0)] blur-none">
+    <div v-for="form in formMemberData" :key="form.id" class="flex gap-3 backface-hidden transform-[translateZ(0)] blur-none">
       <div class="w-[65px] shrink-0 truncate pt-1.5 md:w-[90px] lg:w-[120px] text-sm md:text-base" :class="{ 'leading-[45px]!': isMultiple(form.component) }">
         {{ form.title }}
       </div>
