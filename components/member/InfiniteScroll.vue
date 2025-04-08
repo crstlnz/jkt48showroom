@@ -97,20 +97,19 @@ watch(recentHeight, () => {
     </div>
 
     <div v-else>
-      <DynamicScroller
+      <RecycleScroller
         key="loaded"
         :prerender="10"
-        :min-item-size="recentHeight"
+        :item-size="recentHeight"
         :items="dataset"
         key-field="data_id"
+        class="px-3 md:px-4"
         page-mode
       >
-        <template #default="{ item, index, active }">
-          <DynamicScrollerItem :item="item" :active="active" :data-index="index">
-            <div class="pb-3 md:pb-4">
-              <MemberRecentCard :key="item.room_id" :recent="item" />
-            </div>
-          </DynamicScrollerItem>
+        <template #default="{ item }">
+          <div class="pb-3 md:pb-4">
+            <MemberRecentCard :key="item.room_id" :recent="item" />
+          </div>
         </template>
         <template #after>
           <div class="mb-4 flex w-full items-center justify-center py-16">
@@ -120,7 +119,7 @@ watch(recentHeight, () => {
             </div>
           </div>
         </template>
-      </DynamicScroller>
+      </RecycleScroller>
     </div>
   </div>
   <Transition
