@@ -5,10 +5,10 @@ import { useNotifications } from '~/store/notifications'
 
 definePageMeta({
   middleware: 'auth',
+  layout: false,
 })
 
 const { addNotif } = useNotifications()
-definePageMeta({ layout: false })
 const settings = useSettings()
 const { getTitle } = useAppConfig()
 useHead({

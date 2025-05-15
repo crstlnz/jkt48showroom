@@ -9,11 +9,13 @@ function decodeHtml(text: string) {
   const doc = parser.parseFromString(text, 'text/html')
   return doc.body.textContent
 }
+
+const mockloading = ref(false)
 </script>
 
 <template>
   <div class="space-y-3 sm:px-3 md:px-4 pb-5 max-sm:pb-8 max-sm:border-b border-black/5 dark:border-white/5">
-    <div class="flex gap-1.5 items-center max-sm:px-3">
+    <div class="flex gap-1.5 items-center max-sm:px-3" @click="() => mockloading = !mockloading">
       <Icon name="logos:youtube-icon" class="self-center text-lg sm:text-xl" />
       <h2 class="flex-1 text-xl font-bold leading-10 sm:text-2xl">
         {{ $t("page.title.jkt48youtube") }}
@@ -23,7 +25,7 @@ function decodeHtml(text: string) {
       </NuxtLink>
     </div>
     <div
-      v-if="(pending && !data)" key="loading"
+      v-if="(pending && !data) || mockloading" key="loading"
       class="grid grid-rows-1 gap-x-4 gap-y-5 sm:gap-y-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 animate-pulse"
     >
       <div v-for="key in 6" :key="key" class="flex flex-col gap-3 rounded-xl">
@@ -32,14 +34,14 @@ function decodeHtml(text: string) {
           <div
             class="bg-container aspect-square relative group overflow-hidden rounded-full w-9 shrink-0 self-start"
           />
-          <div class="flex flex-1 flex-col gap-1">
-            <div class="flex flex-1 gap-y-2 flex-wrap text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+          <div class="flex flex-1 flex-col">
+            <div class="flex flex-1 gap-y-1 flex-wrap text-xs sm:text-sm text-gray-500 dark:text-gray-400">
               <div class="w-full bg-container rounded-md h-5" />
               <div class="max-sm:hidden w-full bg-container rounded-md h-5" />
             </div>
-            <div class="flex flex-1 flex-col gap-1.5 mt-0.5 sm:mt-2.5">
-              <div class="max-sm:hidden w-1/4 bg-container rounded-md h-3 sm:h-4" />
-              <div class="w-3/4 bg-container rounded-md h-3 sm:h-4" />
+            <div class="flex flex-1 flex-col gap-1 mt-2 sm:mt-1">
+              <div class="max-sm:hidden sm:w-1/4 bg-container rounded-md h-3 sm:h-4" />
+              <div class="w-2/4 bg-container rounded-md h-3 sm:h-4" />
             </div>
           </div>
         </div>
