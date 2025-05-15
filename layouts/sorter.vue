@@ -7,7 +7,7 @@ useHead({
   title: `${getGroupTitle(group)} Oshi Sorter`,
   meta: [
     {
-      hid: 'description',
+      id: 'description',
       name: 'description',
       content: `Sort your favorite ${getGroupTitle(group)} members and discover your top picks. Find your real oshi!`,
     },
