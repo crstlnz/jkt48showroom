@@ -142,7 +142,7 @@ const calculatedGift = computed<RecentUserGifts[]>(() => {
     <div
       class="pulse-color col-span-2 aspect-16/13 flex-1 overflow-hidden shadow-2xs sm:mx-3 md:mx-4 sm:rounded-xl md:aspect-16/10 lg:w-auto 2xl:aspect-16/9"
     >
-      <ClientOnly v-if="data.live_info?.stage_list.length >= 0">
+      <ClientOnly v-if="data.live_info?.stage_list?.length > 0 || (data.live_info?.screenshot?.list?.length ?? 0) > 0">
         <template #fallback>
           <div class="w-full h-full bg-container animate-pulse" />
         </template>
