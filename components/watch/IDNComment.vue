@@ -91,8 +91,8 @@ function appendComments() {
             <div class="truncate text-lg font-bold text-green-500" :title="comment.user.name" :style="{ color: comment.user?.color_code }">
               {{ comment.user?.name }}
             </div>
-            <div class="w-full text-base text-white">
-              {{ comment.chat?.message }}
+            <div class="w-full text-base text-white break-words break-all">
+              {{ `${comment.chat?.message + comment.chat?.message + comment.chat?.message + comment.chat?.message + comment.chat?.message + comment.chat?.message + comment.chat?.message + comment.chat?.message}` }}
             </div>
           </div>
         </div>
