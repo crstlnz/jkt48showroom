@@ -92,7 +92,7 @@ function appendComments() {
               {{ comment.user?.name }}
             </div>
             <div class="w-full text-base text-white break-words break-all">
-              {{ `${comment.chat?.message + comment.chat?.message + comment.chat?.message + comment.chat?.message + comment.chat?.message + comment.chat?.message + comment.chat?.message + comment.chat?.message}` }}
+              {{ `${comment.chat?.message}` }}
             </div>
           </div>
         </div>
