@@ -49,7 +49,6 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     '@pinia/nuxt',
     '@nuxt/fonts',
-    '@nuxt/eslint',
     '@nuxt/scripts',
   ],
   icon: {
@@ -130,15 +129,6 @@ export default defineNuxtConfig({
       optimizeTranslationDirective: false,
     },
   },
-  typescript: {
-    shim: false,
-    strict: true,
-    tsConfig: {
-      compilerOptions: {
-        moduleResolution: 'bundler',
-      },
-    },
-  },
   build: {
     transpile: ['@vuepic/vue-datepicker'],
   },
@@ -147,7 +137,7 @@ export default defineNuxtConfig({
       brotli: true,
     },
     prerender: {
-      routes: ['/about'],
+      // routes: ['/about'],
     },
   },
   devtools: {
@@ -174,11 +164,6 @@ export default defineNuxtConfig({
       '2xl': 1536,
     },
   },
-  eslint: {
-    config: {
-      standalone: false,
-    },
-  },
   vue: {
     compilerOptions: {
       isCustomElement: tag => tag.startsWith('media-'),
@@ -201,5 +186,5 @@ export default defineNuxtConfig({
       ],
     },
   },
-  compatibilityDate: '2024-08-31',
+  compatibilityDate: '2025-10-26',
 })

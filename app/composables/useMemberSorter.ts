@@ -1,0 +1,310 @@
+/* eslint-disable no-unused-vars */
+import { useNotifications } from '~/store/notifications'
+
+enum GameState {
+  IDLE,
+  STARTED,
+  FINISHED,
+}
+
+type RanksContainer = ((string | string[])[])[]
+type RanksCompare = (string | string[])[]
+type PickType = 'one' | 'two' | 'tie'
+
+interface UndoData {
+  one: string | string[] | null
+  two: string | string[] | null
+  check: CompareResult
+}
+
+type CompareResult = {
+  cursor: number
+  data: FillTypeOne | FillTypeTwo | null
+} | null
+
+interface FillTypeOne {
+  initialOne: number
+  initialTwo: number
+  one: RanksCompare
+  two: RanksCompare
+  ranks: [RanksCompare, RanksCompare]
+}
+
+interface FillTypeTwo {
+  rankCursor: number
+  fillData: FillTypeOne | null
+  finish: boolean
+}
+
+interface CompareManager {
+  one: RanksCompare
+  two: RanksCompare
+  initialOne: number
+  initialTwo: number
+  sorted: RanksCompare
+}
+
+function getRandomFromArray<T>(array: T[]) {
+  return array[Math.floor(Math.random() * array.length)] as T
+}
+export default function () {
+  const { addNotif } = useNotifications()
+  const { t } = useI18n()
+  const members = useSessionStorage<ISortMember[]>('sorter-members', [])
+  const state = useSessionStorage('sorter-state', GameState.IDLE)
+  const result = useSessionStorage<(ISortMember | ISortMember[])[]>('sorter-result', () => [])
+  // ranks
+  const ranks = useSessionStorage<RanksContainer>('sorter-ranks', () => [])
+  const memberMap = useSessionStorage('sorter-membermap', new Map<string, ISortMember>())
+
+  const compare = useSessionStorage<CompareManager>('sorter-compare', {
+    one: [],
+    two: [],
+    initialOne: 0,
+    initialTwo: 0,
+    sorted: [],
+  })
+
+  const rankTemp = useSessionStorage<RanksContainer>('sorter-sortedTemp', () => [])
+  const progress = computed(() => {
+    const compareOneProgress = compare.value.one.length / compare.value.initialOne
+    const compareTwoProgress = compare.value.two.length / compare.value.initialTwo
+    return (members.value.length - ranks.value.length - compareOneProgress - compareTwoProgress - rankTemp.value.length) / members.value.length
+  })
+
+  const undoTemp = useSessionStorage<UndoData[]>('sorter-undoTemp', () => [], { deep: true })
+  const cardOne = computed<ISortMember | null>(() => {
+    if (!compare.value.one?.length) return null
+    const id = compare.value.one[0]
+    if (Array.isArray(id)) return memberMap.value.get(getRandomFromArray(id)) || null
+    return memberMap.value.get(id as string) || null
+  })
+
+  const cardTwo = computed<ISortMember | null>(() => {
+    if (!compare.value.two?.length) return null
+    const id = compare.value.two[0]
+    if (Array.isArray(id)) return memberMap.value.get(getRandomFromArray(id)) || null
+    return memberMap.value.get(id as string) || null
+  })
+
+  function pick(type: PickType) {
+    const compareData: { one: string | string[] | null, two: string | string[] | null } = {
+      one: null,
+      two: null,
+    }
+    switch (type) {
+      case 'one':{
+        const card = compare.value.one.shift()
+        compareData.one = card || null
+        if (card) {
+          compare.value.sorted.push(card)
+        }
+        break
+      }
+      case 'two':{
+        const card = compare.value.two.shift()
+        compareData.two = card || null
+        if (card) {
+          compare.value.sorted.push(card)
+        }
+        break
+      }
+      default:{
+        const one = compare.value.one.shift()
+        const two = compare.value.two.shift()
+        compareData.one = one || null
+        compareData.two = two || null
+        const tie: string[] = []
+        if (Array.isArray(one)) {
+          tie.push(...one)
+        }
+        else {
+          tie.push(one as string)
+        }
+
+        if (Array.isArray(two)) {
+          tie.push(...two)
+        }
+        else {
+          tie.push(two as string)
+        }
+        compare.value.sorted.push(tie)
+        break
+      }
+    }
+
+    const check = checkCompare()
+    undoTemp.value.push({
+      ...compareData,
+      check,
+    })
+
+    if ((check?.data as FillTypeTwo)?.finish === true) {
+      finish()
+    }
+  }
+
+  function checkCompare(): CompareResult {
+    if (!compare.value.one.length || !compare.value.two.length) {
+      const cursor = compare.value.sorted.length
+      if (!compare.value.one.length) {
+        compare.value.sorted.push(...compare.value.two)
+      }
+      else {
+        compare.value.sorted.push(...compare.value.one)
+      }
+      rankTemp.value.push(compare.value.sorted)
+      compare.value.sorted = []
+      return {
+        cursor,
+        data: fillCompare(),
+      }
+    }
+    return null
+  }
+
+  function fillCompare(): FillTypeOne | FillTypeTwo | null {
+    if (ranks.value.length >= 2) {
+      const one = ranks.value.shift() as RanksCompare
+      const two = ranks.value.shift() as RanksCompare
+      const fillData: FillTypeOne = {
+        initialOne: compare.value.initialOne,
+        initialTwo: compare.value.initialTwo,
+        one: compare.value.one,
+        two: compare.value.two,
+        ranks: [one, two],
+      }
+      compare.value.one = one || ([] as string[])
+      compare.value.initialOne = compare.value.one.length
+      compare.value.two = two || ([] as string[])
+      compare.value.initialTwo = compare.value.two.length
+      return fillData
+    }
+    else {
+      const cursor = ranks.value.length
+      ranks.value.push(...rankTemp.value)
+      rankTemp.value = []
+      if (ranks.value.length >= 2) {
+        return {
+          rankCursor: cursor,
+          fillData: fillCompare() as FillTypeOne,
+          finish: false,
+        }
+      }
+      else {
+        return {
+          rankCursor: cursor,
+          fillData: null,
+          finish: true,
+        }
+      }
+    }
+  }
+
+  function reset() {
+    compare.value = {
+      one: [],
+      two: [],
+      sorted: [],
+      initialOne: 0,
+      initialTwo: 0,
+    }
+    ranks.value = []
+    rankTemp.value = []
+    result.value = []
+    undoTemp.value = []
+  }
+
+  function prepareStart() {
+    reset()
+    memberMap.value.clear()
+    ranks.value = shuffleArray(members.value).map(i => [i.id])
+    fillCompare()
+    for (const member of members.value) {
+      memberMap.value.set(member.id, member)
+    }
+  }
+
+  const defaultSortMember = { id: '', img: '', is_graduate: true, name: 'Not found!', generation: '' }
+  function finish() {
+    result.value = []
+    for (const ids of (ranks?.value?.[0] ?? [])) {
+      if (Array.isArray(ids)) {
+        result.value.push(ids.map(i => memberMap.value.get(i) || defaultSortMember))
+      }
+      else {
+        result.value.push(memberMap.value.get(ids as string) || defaultSortMember)
+      }
+    }
+    state.value = GameState.FINISHED
+  }
+
+  function start() {
+    if (state.value === GameState.STARTED) return
+    if (members.value.length < 2) return addNotif({ message: t('sorter.pickmemberfirst'), type: 'danger', duration: 2000 })
+    state.value = GameState.STARTED
+    prepareStart()
+  }
+
+  function stop() {
+    state.value = GameState.IDLE
+    reset()
+  }
+
+  function undo() {
+    const undoData = undoTemp.value.pop()
+    if (undoData) {
+      const fillData = undoData.check?.data
+      if (fillData != null) {
+        if ((fillData as FillTypeTwo).rankCursor == null) {
+          const data = fillData as FillTypeOne
+          compare.value.one = data.one
+          compare.value.two = data.two
+          compare.value.initialOne = data.initialOne
+          compare.value.initialTwo = data.initialTwo
+          ranks.value = [...data.ranks, ...ranks.value]
+        }
+        else {
+          const data = fillData as FillTypeTwo
+          if (data.fillData) {
+            compare.value.one = data.fillData.one
+            compare.value.two = data.fillData.two
+            compare.value.initialOne = data.fillData.initialOne
+            compare.value.initialTwo = data.fillData.initialTwo
+            ranks.value = [...data.fillData.ranks, ...ranks.value]
+          }
+          rankTemp.value = ranks.value.slice(data.rankCursor, ranks.value.length)
+          ranks.value = ranks.value.slice(0, data.rankCursor)
+        }
+      }
+
+      if (undoData.check !== null) {
+        const cursor = undoData.check.cursor
+        const temp = rankTemp.value.pop()
+        compare.value.sorted = temp?.slice(0, cursor) || []
+      }
+
+      if (undoData.one) {
+        compare.value.one = [undoData.one, ...compare.value.one]
+      }
+      if (undoData.two) {
+        compare.value.two = [undoData.two, ...compare.value.two]
+      }
+      compare.value.sorted.pop()
+      if (state.value === GameState.FINISHED) state.value = GameState.STARTED
+    }
+    else {
+      stop()
+    }
+  }
+
+  function setState(s: GameState) {
+    state.value = s
+  }
+
+  function setSelectedMember(data: ISortMember[]) {
+    members.value = data
+  }
+
+  return { start, stop, state, GameState, cardOne, cardTwo, pick, result, undo, reset, progress, setState, setSelectedMember }
+}
