@@ -31,7 +31,7 @@ const { locale } = useI18n()
   <div class="bg-container overflow-hidden rounded-xl">
     <div class="flex items-center gap-2 p-3 md:px-4 md:pt-4">
       <div class="inline-block h-5 w-1 rounded-l-sm bg-blue-500" />
-      <h3 class="flex-1 text-xl font-bold lg:text-2xl">
+      <h3 class="flex-1 text-lg font-bold lg:text-xl">
         {{ $t('schedule') }}
       </h3>
     </div>
@@ -46,9 +46,9 @@ const { locale } = useI18n()
       <NuxtImg :src="`${$cloudinaryURL}/assets/img/web/empty-box.png`" alt="" class="w-52 h-40 mb-2 object-contain" />
       {{ $t("data.nodata") }}
     </div>
-    <table v-else class="w-full border-t-2 border-black/5 dark:border-white/5 **:border-black/10 dark:**:border-white/10">
-      <tr v-for="(schedule, index) in groupedSchedule" :key="schedule.date" class="text-sm" :class="{ 'border-b-2': index !== groupedSchedule.length - 1 }">
-        <td class="border-r-2 p-3 text-center align-top">
+    <table v-else class="w-full border-t border-b border-color-1 **:border-black/10 dark:**:border-white/10">
+      <tr v-for="(schedule, index) in groupedSchedule" :key="schedule.date" class="text-sm" :class="{ 'border-b': index !== groupedSchedule.length - 1 }">
+        <td class="border-r p-3 text-center align-top">
           <div v-if="schedule.today" class="whitespace-nowrap leading-10">
             {{ $t("today") }}
           </div>

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const { data, pending, error, refresh, date } = useCachedFetch<IApiNews>('/api/news', { expireIn: 600000 })
+const { data, pending, error, refresh, date } = useCachedFetch<JKT48.IApiNews>('/api/news', { expireIn: 600000 })
 const newsFilter = computed(() => data.value?.news.slice(0, 5) ?? [])
 const { locale } = useI18n()
 </script>
@@ -12,7 +12,7 @@ const { locale } = useI18n()
         {{ $t("error.unknown") }}
       </div>
       <div v-else-if="pending" class="flex flex-col gap-3.5">
-        <div v-for="num in 5" :key="num" class="flex animate-pulse flex-col pb-3" :class="{ 'border-b-2 border-dashed border-black/20 dark:border-white/20': num !== 5 }">
+        <div v-for="num in 5" :key="num" class="flex animate-pulse flex-col pb-3" :class="{ 'border-b border-dashed border-black/20 dark:border-white/20': num !== 5 }">
           <div class="mb-1 flex items-center gap-2 text-sm font-light">
             <div class="pulse-color h-[18px] w-[58px] rounded-[3px]" />
             <div class="pulse-color h-4 w-24 rounded-[3px] text-sm" />
@@ -26,7 +26,7 @@ const { locale } = useI18n()
         <div v-for="[index, news] in newsFilter.entries()" :key="news.id" class="pb-3" :class="{ 'border-b-2 border-dashed border-black/20 dark:border-white/20': index !== newsFilter.length - 1 }">
           <div class="mb-1 flex items-center gap-2 text-sm font-light">
             <NuxtImg
-              class="h-[19px] w-[56px] rounded-[3px]"
+              class="h-[19px] w-14 rounded-[3px]"
               :src="`${$cloudinaryURL}/assets/jkt48${news.label}`"
               alt="Label"
               loading="lazy"

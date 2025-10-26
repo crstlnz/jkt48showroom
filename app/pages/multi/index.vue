@@ -84,7 +84,7 @@ function movePrevious(i: number) {
   const vids = [...videos.value]
   const pick = vids[i]
   vids.splice(i, 1)
-  vids.splice(i - 1, 0, pick)
+  vids.splice(i - 1, 0, pick!)
   for (const [idx, v] of vids.entries()) {
     v.order = idx + 1
   }
@@ -94,7 +94,7 @@ function moveNext(i: number) {
   const vids = [...videos.value]
   const pick = vids[i]
   vids.splice(i, 1)
-  vids.splice(i + 1, 0, pick)
+  vids.splice(i + 1, 0, pick!)
   for (const [idx, v] of vids.entries()) {
     v.order = idx + 1
   }
@@ -237,11 +237,11 @@ function openMediaControl() {
             <span class="leading-6 text-sm lg:text-base">Multi Viewer</span>
           </div>
           <div class="flex gap-3 items-center">
-            <div class="flex md:flex-row border border-black/5 dark:border-white/5 rounded-md overflow-hidden">
-              <button v-ripple type="button" class="flex h-8 w-8 bg-container hover:bg-container border-r border-black/5 dark:border-white/5  p-1.5" @click="() => videosMap.clear()">
+            <div class="flex md:flex-row t border border-color-1 rounded-md overflow-hidden">
+              <button v-ripple type="button" class="flex h-8 w-8 bg-container hover:bg-container border-r border-color-1  p-1.5" @click="() => videosMap.clear()">
                 <Icon name="mingcute:broom-fill" class="w-full h-full" />
               </button>
-              <button v-ripple type="button" class="flex h-8 w-8 bg-container hover:bg-container border-r border-black/5 dark:border-white/5  p-1.5" @click="refreshAll">
+              <button v-ripple type="button" class="flex h-8 w-8 bg-container hover:bg-container border-r border-color-1  p-1.5" @click="refreshAll">
                 <Icon name="material-symbols:sync" class="w-full h-full" />
               </button>
               <button v-ripple type="button" class="flex h-8 w-8 bg-container hover:bg-container p-1.5" @click="openMediaControl">
@@ -252,10 +252,10 @@ function openMediaControl() {
               <div>Row</div>
               <input :value="rowCount" type="number" class="inputRow rounded-md text-center min-w-[20px] bg-transparent outline-hidden" max="8" min="1" placeholder="Row Count" @input="rowCountChange">
               <div class="flex flex-col -my-2 -mr-3">
-                <button v-ripple type="button" class="h-5 w-5 md:w-6 md:h-6 flex border-l border-b border-black/5 dark:border-white/5" @click="changeRow(rowCount + 1)">
+                <button v-ripple type="button" class="h-5 w-5 md:w-6 md:h-6 flex border-l border-b border-color-1" @click="changeRow(rowCount + 1)">
                   <Icon name="material-symbols:arrow-drop-up-rounded" class="w-full h-full" />
                 </button>
-                <button v-ripple type="button" class="h-5 w-5 md:w-6 md:h-6 flex border-l border-black/5 dark:border-white/5" @click="changeRow(rowCount - 1)">
+                <button v-ripple type="button" class="h-5 w-5 md:w-6 md:h-6 flex border-l border-color-1" @click="changeRow(rowCount - 1)">
                   <Icon name="material-symbols:arrow-drop-down-rounded" class="w-full h-full" />
                 </button>
               </div>

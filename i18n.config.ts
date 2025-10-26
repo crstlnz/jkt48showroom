@@ -1,3 +1,4 @@
+// @ts-expect-error gk tau
 export default defineI18nConfig(() => ({
   legacy: false,
   datetimeFormats: {

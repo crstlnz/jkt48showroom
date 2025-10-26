@@ -9,6 +9,9 @@ export default antfu(
       'dist',
       '.output',
       '.nuxt',
+      '**/*.css',
+      '**/*.pcss',
+      '**/*.scss',
     ],
     rules: {
       'no-console': 'warn',

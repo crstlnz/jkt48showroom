@@ -41,7 +41,7 @@ const freeGifts = computed(() => {
           Paid gifts  ({{ Math.round(paidGifts / totalAllGifts * 100) }}%)
         </div>
       </div>
-      <div class="text-yellow-400 flex gap-1.5 items-center">
+      <div class="text-yellow-500 dark:text-yellow-400 flex gap-1.5 items-center">
         <Icon name="bi:stars" />
         <div class="text-sm">
           Free gifts ({{ Math.round(freeGifts / totalAllGifts * 100) }}%)

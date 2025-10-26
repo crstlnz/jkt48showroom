@@ -14,7 +14,7 @@ const mockloading = ref(false)
 </script>
 
 <template>
-  <div class="space-y-3 sm:px-3 md:px-4 pb-5 max-sm:pb-8 max-sm:border-b border-black/5 dark:border-white/5">
+  <div class="space-y-3 sm:px-3 md:px-4 pb-5 max-sm:pb-8 max-sm:border-b border-color-1">
     <div class="flex gap-1.5 items-center max-sm:px-3" @click="() => mockloading = !mockloading">
       <Icon name="logos:youtube-icon" class="self-center text-lg sm:text-xl" />
       <h2 class="flex-1 text-xl font-bold leading-10 sm:text-2xl">

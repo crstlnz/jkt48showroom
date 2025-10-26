@@ -2,7 +2,6 @@ import tailwindcss from '@tailwindcss/vite'
 import { vite as vidstack } from 'vidstack/plugins'
 
 const isDev = process.env.NODE_ENV === 'development'
-
 export default defineNuxtConfig({
   app: {
     head: {
@@ -133,6 +132,12 @@ export default defineNuxtConfig({
     transpile: ['@vuepic/vue-datepicker'],
   },
   nitro: {
+    externals: {
+      external: [
+        'process', // don't bundle "process"
+      ],
+      inline: [],
+    },
     compressPublicAssets: {
       brotli: true,
     },

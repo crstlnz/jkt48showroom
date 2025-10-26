@@ -18,6 +18,10 @@ interface Banner {
   url: string
 }
 
+export interface BannerWithId extends Banner {
+  id: string
+}
+
 interface QueryDateRange {
   start: number
   end: number

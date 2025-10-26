@@ -77,7 +77,7 @@ function changePage(val: number) {
       type="button"
       :disabled="page === 1"
       :class="{ 'hover:bg-second-2 hover:border-second-2 hover:text-white active:scale-90': page !== 1, 'cursor-not-allowed bg-zinc-400/25': page === 1 }"
-      class="relative h-7 w-7 rounded-xl border-2 text-center leading-7 transition-[background-color,border-color,transform] duration-300 dark:border-zinc-400/25 sm:h-8 sm:w-8 sm:leading-8"
+      class="relative h-7 w-7 rounded-xl border text-center leading-7 transition-[background-color,border-color,transform] duration-300 dark:border-zinc-400/25 sm:h-8 sm:w-8 sm:leading-8"
       @click="prev"
     >
       <Icon name="material-symbols:arrow-left-rounded" size="1.5rem" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
@@ -94,7 +94,7 @@ function changePage(val: number) {
       :class="{
         'bg-second-2 border-second-2 text-white': (dot === page),
         'hover:text-second-2': (dot !== page) && typeof dot === 'number',
-        'border-2 dark:border-zinc-400/25': typeof dot === 'number',
+        'border dark:border-zinc-400/25': typeof dot === 'number',
       }"
       class="h-7 w-7 rounded-xl text-center text-xs leading-7 transition-[background-color,border-color] duration-300 sm:h-8 sm:w-8 sm:leading-8"
       @click="() => {
@@ -108,7 +108,7 @@ function changePage(val: number) {
       type="button"
       :disabled="page === total"
       :class="{ 'hover:bg-second-2 hover:border-second-2 hover:text-white active:scale-90': page !== total, 'cursor-not-allowed bg-zinc-400/25 dark:bg-zinc-400/50': page === total }"
-      class="relative h-7 w-7 rounded-xl border-2 text-center leading-7 transition-[background-color,border-color,transform] duration-300 dark:border-zinc-400/25 sm:h-8 sm:w-8 sm:leading-8"
+      class="relative h-7 w-7 rounded-xl border text-center leading-7 transition-[background-color,border-color,transform] duration-300 dark:border-zinc-400/25 sm:h-8 sm:w-8 sm:leading-8"
       @click="next"
     >
       <Icon name="material-symbols:arrow-right-rounded" size="1.5rem" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />

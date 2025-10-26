@@ -118,7 +118,7 @@ const tabList = ref([
       <div v-if="!pending && member" class="roundedscrollbar py-4 md:py-6 px-3 md:px-5 lg:px-8">
         <div class="flex flex-col gap-1.5 w-full">
           <div class="flex h-20 md:h-32 xl:h-36 items-center gap-3 md:gap-5 overflow-x-auto">
-            <div class="aspect-video h-full shrink-0 overflow-hidden rounded-xl border-2 dark:border-dark-2">
+            <div class="aspect-video h-full shrink-0 overflow-hidden rounded-xl border dark:border-dark-2">
               <DeferImage class="h-full w-full object-cover" :src="$fixCloudinary(member?.img || config.errorPicture)" :alt="member.name" />
             </div>
             <MemberFormImage
@@ -127,7 +127,7 @@ const tabList = ref([
               :is-potrait="true"
               :member-data-id="member?.member_data?._id"
               form-id="image"
-              class="aspect-square h-full shrink-0 overflow-hidden rounded-full border-2 dark:border-dark-2"
+              class="aspect-square h-full shrink-0 overflow-hidden rounded-full border dark:border-dark-2"
               image-class="h-full w-full object-cover"
               :src="member?.member_data?.info?.img" :alt="member.name"
               @uploaded="(url) => {
@@ -137,7 +137,7 @@ const tabList = ref([
             />
             <div
               v-else
-              class="bg-container-2 flex aspect-square h-full shrink-0 items-center justify-center overflow-hidden rounded-full border-2 text-center dark:border-dark-2"
+              class="bg-container-2 flex aspect-square h-full shrink-0 items-center justify-center overflow-hidden rounded-full border text-center dark:border-dark-2"
             >
               <div>Member data is not defined!</div>
             </div>
@@ -146,7 +146,7 @@ const tabList = ref([
               form-id="banner"
               post-url="/api/admin/member/banner"
               :member-data-id="member?.member_data?._id"
-              class="aspect-15/5 h-full shrink-0 overflow-hidden rounded-xl border-2 dark:border-dark-2"
+              class="aspect-15/5 h-full shrink-0 overflow-hidden rounded-xl border dark:border-dark-2"
               image-class="h-full w-full object-cover bg-container-2" :src="member?.member_data?.info.banner"
               @uploaded="(url) => {
                 if (member?.member_data)
@@ -155,7 +155,7 @@ const tabList = ref([
             />
             <div
               v-else
-              class="bg-container-2 flex aspect-15/5 h-full shrink-0 items-center justify-center overflow-hidden rounded-xl border-2 text-center dark:border-dark-2"
+              class="bg-container-2 flex aspect-15/5 h-full shrink-0 items-center justify-center overflow-hidden rounded-xl border text-center dark:border-dark-2"
             >
               <div>Member data is not defined!</div>
             </div>
@@ -204,7 +204,7 @@ const tabList = ref([
               </button>
             </div>
             <div class="mt-4">
-              <div class="flex items-stretch overflow-hidden rounded-full border-2 border-slate-200 text-center text-sm md:text-lg hover:[&>div]:bg-container-2 dark:border-dark-3 [&>div]:h-8 md:[&>div]:h-10">
+              <div class="flex items-stretch overflow-hidden rounded-full border border-slate-200 text-center text-sm md:text-lg hover:[&>div]:bg-container-2 dark:border-dark-3 [&>div]:h-8 md:[&>div]:h-10">
                 <div v-for="tab in tabList" :key="tab.key" class="flex-1 cursor-pointer leading-8 md:leading-10" :class="{ 'bg-container-2': tabState === tab.key }" @click="tabState = tab.key">
                   {{ tab.title }}
                 </div>

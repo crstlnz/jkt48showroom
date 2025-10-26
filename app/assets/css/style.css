@@ -5,7 +5,7 @@
 @import "./theme.css" layer(theme);
 
 /*
-  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  The default t bordercolor has changed to `currentColor` in Tailwind CSS v4,
   so we've added these compatibility styles to make sure everything still
   looks the same as it did with Tailwind CSS v3.
 
@@ -24,7 +24,7 @@
 }
 
 @utility nav-btn {
-  @apply w-9 h-9 flex hover:bg-dark-1/10  dark:hover:bg-gray-400/10 rounded-lg;
+  @apply w-9 h-9 flex hover:bg-dark-1/5  dark:hover:bg-gray-400/10 rounded-lg;
 }
 
 @utility burger {
@@ -62,26 +62,30 @@
 
 
 @utility bg-background {
-  @apply bg-slate-100 dark:bg-dark-2;
+  @apply bg-white dark:bg-dark-2;
 }
 
 @utility bg-navbar {
-  @apply bg-slate-100/80 dark:bg-dark-2/80;
+  @apply bg-white/80 dark:bg-dark-2/80;
+}
+
+@utility border-color-1 {
+  @apply border-black/20 dark:border-white/5
 }
 
 @utility bg-container {
-  @apply bg-white dark:bg-dark-1;
+  @apply bg-white border border-black/10 dark:border-none dark:bg-dark-1;
 }
 
 @utility bg-container-2 {
-  @apply bg-slate-200 dark:bg-dark-3;
+  @apply bg-white dark:bg-dark-3;
 }
 
 @utility bg-on-container {
   @apply bg-white dark:bg-dark-2;
 }
 @utility bg-hover {
-  @apply bg-slate-300 dark:bg-slate-200/25;
+  @apply bg-slate-100 dark:bg-slate-200/25;
 }
 
 @utility bg-hover-2 {
@@ -110,6 +114,30 @@
 }
 
 
+
+@utility border-color-1 {
+  @apply border-black/15 dark:border-white/5
+}
+
+@utility border-color-2 {
+  @apply border-black/20 dark:border-white/10
+}
+
+@utility border-lightmode {
+  @apply border border-black/10 dark:border-none
+}
+
+@layer components {
+  button:not(:disabled), a {
+    @apply cursor-pointer
+    
+  }
+
+  button:not(:disabled):hover, a:hover {
+    /* @apply opacity-80 */
+  }
+}
+
 @layer base {
   /* *,
   ::after,
@@ -119,9 +147,8 @@
     @apply border-gray-100 dark:border-dark-2/60
   } */
 
-  button {
-    @apply cursor-pointer
-  }
+ 
+  
 
   html {
     @apply scheme-light dark:scheme-dark;
@@ -129,7 +156,7 @@
 }
 
 @utility background {
-  @apply bg-slate-100 dark:bg-dark-2;
+  @apply bg-white dark:bg-dark-2;
 }
 html {
   padding: 0 !important;
@@ -180,7 +207,7 @@ button:focus {
 body {
   overflow-x: clip;
   overflow-y: scroll;
-  @apply background text-slate-800 dark:text-gray-100;
+  @apply background text-slate-900 dark:text-gray-100;
 }
 
 .burger span {
@@ -339,8 +366,8 @@ span.ripple {
   border-radius: 50%;
   transform: scale(0);
   animation: ripple 1800ms forwards;
-  @apply bg-slate-400/30 dark:bg-zinc-400/20;
   transition: 0.3s;
+  @apply bg-slate-100 dark:bg-zinc-400/20;
 }
 span.ripple.hide {
   opacity: 0;
@@ -427,4 +454,8 @@ img.lazyLoad.isLoaded {
 
 .pswp__img {
   @apply object-cover;
+}
+
+.sortable-ghost {
+  opacity: 1 !important;
 }

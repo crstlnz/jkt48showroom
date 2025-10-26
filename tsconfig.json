@@ -16,7 +16,6 @@
   ],
   "compilerOptions": {
     "types": [
-      "bun-types",
       "@nuxtjs/i18n",
       "vidstack/vue"
     ]

@@ -155,7 +155,7 @@ onMounted(() => {
                   {{ $t('no_video_player') }}
                 </div>
                 <div v-else class="flex flex-col flex-1">
-                  <div class="flex-col max-md:items-stretch md:flex-row border-b-2 border-black/10 dark:border-white/10 py-2 md:px-4 md:py-2.5 flex items-center md:gap-4 justify-between">
+                  <div class="flex-col max-md:items-stretch md:flex-row border-b-2 border-color-2 py-2 md:px-4 md:py-2.5 flex items-center md:gap-4 justify-between">
                     <div class="flex items-center max-md:justify-around">
                       <button v-ripple type="button" class="flex w-8 h-8 md:w-9 md:h-9 hover:bg-hover-2 rounded-full p-1" @click="playAll">
                         <Icon name="ic:round-play-arrow" class="h-full w-full" />
@@ -179,7 +179,7 @@ onMounted(() => {
                     <Slider ref="slider" v-model="allVolume" :hide-slider-value="useAllVolume" class="w-full md:w-[200px]" :min="0" :max="1" :step="0.01" />
                   </div>
                   <div class="overflow-y-auto items-stretch flex-1">
-                    <MultiVideoMediaControl v-for="[idx, player] in videoPlayers.entries()" :key="idx" :player="player" class="border-b-2 border-black/10 dark:border-white/10 py-2 md:px-4 md:py-2.5" />
+                    <MultiVideoMediaControl v-for="[idx, player] in videoPlayers.entries()" :key="idx" :player="player" class="border-b-2 border-color-2 py-2 md:px-4 md:py-2.5" />
                   </div>
                 </div>
               </div>

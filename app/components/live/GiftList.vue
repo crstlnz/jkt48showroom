@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { LogType } from '~/types/common'
+
 defineProps<{
   gifts: LogDetail.IDNGift[] | LogDetail.ShowroomGift[]
   type: LogType
@@ -23,7 +25,7 @@ function getNumColor(num: number) {
 <template>
   <div class="bg-container overflow-hidden rounded-xl p-3 md:p-4">
     <div class="text-lg font-bold md:text-xl">
-      Gift List
+      {{ $t("giftlist") }}
     </div>
     <ul v-if="gifts.length" class="grid-gift-list mt-4 gap-3">
       <li v-for="gift in gifts" :key="gift.id">
@@ -36,12 +38,12 @@ function getNumColor(num: number) {
             </div>
             <div class="flex items-center space-x-1.5 text-sm md:text-base font-light">
               <span class="flex items-center gap-1">
-                <Icon name="solar:star-fall-bold-duotone" />
+                <Icon class="text-yellow-500" name="solar:star-fall-bold-duotone" />
                 {{ $n(gift.point) }}{{ gift.point > 1 ? ' pts' : ' pt' }}
               </span>
               <Icon name="radix-icons:dot-filled" />
               <div class="flex items-center gap-1">
-                <Icon name="ph:users-fill" />
+                <Icon class="text-blue-500 mb-px" name="heroicons:users-solid" />
                 <span> {{ $n(gift.user_count) }}</span>
               </div>
             </div>

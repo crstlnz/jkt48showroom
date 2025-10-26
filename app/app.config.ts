@@ -124,11 +124,6 @@ export default defineAppConfig({
             img: 'https://res.cloudinary.com/haymzm4wp/image/upload/s--haIor69P--/e_improve:outdoor/c_fit,w_1000/assets/img/joejskicp7xgarywsgkj',
             url: 'https://www.youtube.com/watch?v=kvhNCk257WY',
           },
-          {
-            title: 'Bibir yang telah dicuri',
-            img: 'https://res.cloudinary.com/haymzm4wp/image/upload/s--V03eHLn---/f_auto,q_auto/v1/assets/img/jpcep60w3hlmbtilpnpk',
-            url: 'https://www.youtube.com/watch?v=_Qn9B9mD2bI',
-          },
         ]
       }
     }

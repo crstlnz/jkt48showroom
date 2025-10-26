@@ -59,7 +59,7 @@ onClickOutside(dialog, () => {
             <button v-ripple type="button" :aria-label="currentDialog.type === 'alert' ? 'Close' : 'Accept'" class="min-w-[65px] rounded-lg bg-red-500 px-3 py-1" @click="() => confirm(currentDialog)">
               {{ currentDialog.positiveText ?? 'Yes' }}
             </button>
-            <button v-if="currentDialog.type === 'confirm'" v-ripple type="button" aria-label="Cancel" class="min-w-[65px] rounded-lg border px-3 py-1" @click="() => cancel(currentDialog)">
+            <button v-if="currentDialog.type === 'confirm'" v-ripple type="button" aria-label="Cancel" class="min-w-[65px] rounded-lg t borderpx-3 py-1" @click="() => cancel(currentDialog)">
               {{ currentDialog.negativeText ?? 'No' }}
             </button>
           </div>

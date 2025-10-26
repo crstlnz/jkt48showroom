@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { LogType } from '~/types/common'
 // import { useFuse } from '@vueuse/integrations/useFuse'
 import c from '~/app.config'
 import { useSelectedUser } from '~/store/selectedUser'
@@ -136,7 +137,7 @@ watch(search, () => {
 
 <template>
   <DynamicScroller
-    :class="{ 'roundedscrollbar h-full w-full': pageMode !== null || pageMode !== false }"
+    :class="{ 'border dark:border-none rounded-xl border-color-1 roundedscrollbar h-full w-full': pageMode !== null || pageMode !== false }"
     :min-item-size="164"
     :items="giftData"
     key-field="id"
@@ -146,7 +147,7 @@ watch(search, () => {
   >
     <template #before>
       <div
-        class="-z-10 rounded-t-xl border-b-2 border-slate-100/60 bg-white/90 p-3 font-bold backdrop-blur-xs dark:border-dark-2/60 dark:bg-dark-1/90 md:p-4"
+        class="-z-10 rounded-t-xl border-b border-color-1 bg-white/90 p-3 font-bold backdrop-blur-xs dark:bg-dark-1/90 md:p-4"
       >
         <div class="flex items-center">
           <div class="flex-1 text-lg xl:text-xl">
@@ -169,7 +170,7 @@ watch(search, () => {
 
     <template #default="{ item, index, active }">
       <DynamicScrollerItem :key="item.id" :item="item" :active="active" :size-dependencies="[item.gifts]" :data-index="index">
-        <div class="space-y-2 border-b-2 border-slate-100/60 p-3 dark:border-dark-2/60 md:p-4">
+        <div class="space-y-2 border-b border-color-1 p-3 md:p-4">
           <button type="button" class="truncate text-base xl:text-lg font-bold" :title="item.name" @click="(e) => userClick(e, item.id, type)">
             {{ item.name }}
           </button>

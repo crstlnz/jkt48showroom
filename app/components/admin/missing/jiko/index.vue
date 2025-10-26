@@ -12,6 +12,9 @@ function onUpdate(roomId: number) {
 
 <template>
   <div class="flex flex-col gap-3 rounded-xl pt-3">
+    <div class="mb-5 flex flex-col gap-3">
+      <AdminBannerSetting />
+    </div>
     <div class="flex items-center gap-2 text-xl">
       <Icon name="carbon:phrase-sentiment" class="text-pink-500" size="1.8rem" />
       <span>Missing Jikoshoukai</span>

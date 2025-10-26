@@ -124,6 +124,13 @@ declare namespace JKT48 {
     content?: string
   }
 
+  interface IApiNews {
+    news: News[]
+    page: number
+    perpage: number
+    total_count: number
+  }
+
   interface Setlist {
     id: string
     title: string

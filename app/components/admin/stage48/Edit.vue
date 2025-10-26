@@ -49,7 +49,7 @@ async function toggleGraduate(value: boolean) {
               :is-potrait="true"
               :member-data-id="stage48member._id ?? '0'"
               form-id="image"
-              class="aspect-square h-32 shrink-0 overflow-hidden rounded-full border-2 dark:border-dark-2 md:h-36 xl:h-40"
+              class="aspect-square h-32 shrink-0 overflow-hidden rounded-full border dark:border-dark-2 md:h-36 xl:h-40"
               image-class="h-full w-full object-cover"
               :src="stage48member.info.img" :alt="stage48member.name"
               @uploaded="(url) => {
@@ -60,7 +60,7 @@ async function toggleGraduate(value: boolean) {
               form-id="banner"
               post-url="/api/admin/member/banner"
               :member-data-id="stage48member?._id ?? '0'"
-              class="aspect-15/5 h-32 shrink-0 overflow-hidden rounded-xl border-2 dark:border-dark-2 md:h-36 xl:h-40"
+              class="aspect-15/5 h-32 shrink-0 overflow-hidden rounded-xl border dark:border-dark-2 md:h-36 xl:h-40"
               image-class="h-full w-full object-cover bg-container-2" :src="stage48member?.info?.banner"
               @uploaded="(url) => {
                 stage48member.info.banner = url

@@ -15,7 +15,7 @@ const { locale } = useI18n()
 
 <template>
   <div>
-    <div class="flex items-start gap-3 border-b border-black/10 dark:border-white/10 pt-1 pb-3">
+    <div class="flex items-start gap-3 border-b border-color-1 pt-1 pb-3">
       <NuxtLink :external="live.type === 'youtube'" :to="live.type === 'youtube' ? live.url : `/watch/${live.url}`" class="group rounded-xl overflow-hidden">
         <NuxtImg
           class="aspect-4/5 w-[85px] object-cover scale-[100.01%] group-hover:scale-110 transition-transform duration-500"
@@ -43,7 +43,7 @@ const { locale } = useI18n()
         <div
           class="flex-1 flex items-end self-end"
         >
-          <NuxtLink :to="`/watch/${live.url}`" class="bg-red-500 px-2 py-1 rounded-md flex-1 flex items-center gap-2">
+          <NuxtLink :to="`/watch/${live.url}`" class="bg-red-500 text-gray-100 px-2 py-1 rounded-md flex-1 flex items-center gap-2">
             <Icon name="heroicons:video-camera-16-solid" />
             <span>Watch</span>
           </NuxtLink>

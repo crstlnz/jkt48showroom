@@ -309,7 +309,7 @@ watch(telops, (v) => {
         <div class="lg:flex-1 space-y-3 md:space-y-4 lg:w-auto">
           <div class="pulse-color aspect-video animate-pulse overflow-hidden max-lg:shadow-2xs lg:rounded-xl" />
         </div>
-        <div class="relative min-h-[640px] w-full bg-white dark:bg-dark-1 max-lg:flex-1 max-lg:shadow-2xs lg:w-[300px] lg:rounded-xl xl:w-[350px]">
+        <div class="relative min-h-[640px] w-full bg-container max-lg:flex-1 max-lg:shadow-2xs lg:w-[300px] lg:rounded-xl xl:w-[350px]">
           <div class="absolute inset-0 z-0 overflow-hidden">
             <div class="pulse-color h-full w-full animate-pulse lg:rounded-xl" />
           </div>
@@ -438,11 +438,11 @@ watch(telops, (v) => {
         </div>
         <ClientOnly>
           <template #fallback>
-            <div class="animate-pulse relative max-lg:flex-1 h-full min-h-[640px] w-full bg-white dark:bg-dark-1 max-lg:shadow-2xs lg:max-h-[85vh] lg:w-[300px] lg:rounded-xl xl:w-[350px]" />
+            <div class="animate-pulse relative max-lg:flex-1 h-full min-h-[640px] w-full bg-container max-lg:shadow-2xs lg:max-h-[85vh] lg:w-[300px] lg:rounded-xl xl:w-[350px]" />
           </template>
           <div class="space-y-3 max-lg:flex-1 flex flex-col">
             <WatchTabButtons v-if="isLarge" :tab-view="tabView" @set-view="setView" />
-            <div class="relative h-full min-h-[640px] flex-1 overflow-hidden w-full bg-white dark:bg-dark-1 max-lg:shadow-2xs lg:max-h-[85vh] lg:w-[300px] lg:rounded-xl xl:w-[350px]">
+            <div class="relative h-full min-h-[640px] flex-1 overflow-hidden w-full bg-container max-lg:shadow-2xs lg:max-h-[85vh] lg:w-[300px] lg:rounded-xl xl:w-[350px]">
               <div class="absolute inset-0 z-0">
                 <WatchComment
                   v-if="tabView === 'comment'" ref="comment" :is-live="isLive" :data="data" :comments="comments" :delayed-comments="delayedComments" class="h-full w-full" @set-auto-append="(val) => setAutoAppend(val)" @create-comment="createComment" @append-delayed-comments="appendDelayedComments"

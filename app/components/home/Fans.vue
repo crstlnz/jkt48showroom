@@ -54,7 +54,7 @@ const { userClick } = useSelectedUser()
     <BottomSheet ref="bottomSheet" :title="$t('fansranking')" :item-size="80" :items="data" :ignore="['#user-draggable']">
       <template #default="{ item, index }">
         <div
-          class="flex h-20 items-center justify-start gap-4 border-r border-slate-100/60 px-6 py-1 hover:bg-slate-300/30 dark:border-dark-1/80 dark:hover:bg-dark-3/30"
+          class="flex h-20 items-center justify-start gap-4 border-r border-color-1 px-6 py-1 hover:bg-slate-300/30 dark:hover:bg-dark-3/30"
         >
           <div class="font-semibold w-5">
             {{ index + 1 }}
