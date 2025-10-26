@@ -1,15 +1,14 @@
 {
   "name": "jkt48showroom",
   "type": "module",
-  "version": "0.19.1",
+  "version": "0.19.2",
   "engines": {
-    "bun": "1.3.x"
+    "node": "20.x.x"
   },
   "scripts": {
-    "start": "bun .output/server/index.mjs",
-    "build": "NITRO_PRESET=bun nuxt build",
-    "dev": "bun run nuxtdev",
-    "nuxtdev": "nuxt dev --host",
+    "start": "node .output/server/index.mjs",
+    "build": "nuxt build",
+    "dev": "nuxt dev --host",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
