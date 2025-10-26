@@ -132,11 +132,8 @@ export default defineNuxtConfig({
     transpile: ['@vuepic/vue-datepicker'],
   },
   nitro: {
-    externals: {
-      external: [
-        'process', // don't bundle "process"
-      ],
-      inline: [],
+    replace: {
+      'import process from \'node:process\';': '',
     },
     compressPublicAssets: {
       brotli: true,
