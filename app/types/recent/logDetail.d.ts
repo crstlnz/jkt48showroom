@@ -131,5 +131,5 @@ declare namespace LogDetail {
     type: 'idn'
   }
 
-    type Live = Showroom | IDN
+  type Live = Showroom | IDN
 }

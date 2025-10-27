@@ -9,7 +9,7 @@ const scroller = ref<HTMLDivElement | null>(null)
 
 const lastScroll = ref(0)
 
-onComment((comment) => {
+onComment((_comment) => {
   if (autoAppend.value) {
     nextTick(() => {
       scrollToBottom()

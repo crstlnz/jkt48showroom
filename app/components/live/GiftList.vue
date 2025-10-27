@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import type { LogType } from '~/types/common'
-
 defineProps<{
   gifts: LogDetail.IDNGift[] | LogDetail.ShowroomGift[]
   type: LogType

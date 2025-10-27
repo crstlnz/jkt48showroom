@@ -19,7 +19,7 @@ const props = defineProps<{
 const { $avatarURL, $giftUrl } = useNuxtApp()
 const stageList = ref(props.stageList)
 const users = new Map<number, IFansCompact>()
-const filteredUsers = props.users.filter(i => props.stageList[0]?.list?.some(a => a === i.id) || false)
+const filteredUsers = props.users.filter(i => props.stageList[0]?.list?.includes(i.id) || false)
 for (const user of filteredUsers) {
   users.set(user.id, user)
 }

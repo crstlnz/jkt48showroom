@@ -1,5 +1,10 @@
 {
-  "files": [],
+  "compilerOptions": {
+    "types": [
+      "@nuxtjs/i18n",
+      "vidstack/vue"
+    ]
+  },
   "references": [
     {
       "path": "./.nuxt/tsconfig.app.json"
@@ -14,10 +19,5 @@
       "path": "./.nuxt/tsconfig.node.json"
     }
   ],
-  "compilerOptions": {
-    "types": [
-      "@nuxtjs/i18n",
-      "vidstack/vue"
-    ]
-  }
+  "files": []
 }

@@ -111,7 +111,7 @@ const { start } = useTimeoutFn(() => {
 </script>
 
 <template>
-  <div class="relative aspect-3/1 overflow-hidden shadow-2xs lg:aspect-[4.5/1] bg-container">
+  <div class="relative aspect-3/1 overflow-hidden shadow-2xs lg:aspect-[4.5/1] bg-container border-none!">
     <Transition
       mode="in-out"
       enter-active-class="transition-opacity duration-1000"
@@ -121,15 +121,15 @@ const { start } = useTimeoutFn(() => {
       leave-from-class="opacity-100"
       leave-to-class="opacity-0"
     >
-      <div v-if="banner![index]" :key="index" :title="banner![index]?.title" class="aspect-3/1 overflow-hidden shadow-2xs lg:aspect-[4.5/1] bg-container">
+      <div v-if="banner![1]" :key="1" :title="banner![1]?.title" class="aspect-3/1 lg:aspect-[4.5/1] overflow-hidden shadow-2xs bg-container border-none!">
         <a
-          aria-label="JKT48 Flying High MV"
-          :href="banner![index]?.url"
+          :aria-label="banner![1]?.title"
+          :href="banner![1]?.url"
           target="_blank"
-          class="block transition-all duration-300 hover:brightness-75 focus-visible:brightness-75"
+          class="aspect-3/1 lg:aspect-[4.5/1] block transition-all duration-300 hover:brightness-75 focus-visible:brightness-75"
         >
           <NuxtImg
-            sizes="500px sm:600px md:900px lg:1000px"
+            sizes="600px sm:750px md:900px lg:1000px"
             :modifiers="{
               aspectRatio: 4.5 / 1,
             }"
@@ -140,9 +140,9 @@ const { start } = useTimeoutFn(() => {
             fit="fill"
             preload
             format="webp"
-            :alt="banner![index]?.title"
+            :alt="banner![1]?.title"
             class="w-full h-full object-cover"
-            :src="banner![index]?.img"
+            :src="banner![1]?.img"
           />
         </a>
       </div>

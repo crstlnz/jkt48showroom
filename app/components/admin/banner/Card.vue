@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import type { BannerWithId } from '~/types/common'
-
 defineProps<{ banner: BannerWithId }>()
 defineEmits<{ (e: 'remove'): void, (e: 'update', banner: BannerWithId): void }>()
 

@@ -16,12 +16,12 @@ class PodiumGift {
   ) {
     this.x
       = giftAreaPos.x
-      - giftAreaSize.width / 2
-      + Math.random() * giftAreaSize.width
+        - giftAreaSize.width / 2
+        + Math.random() * giftAreaSize.width
     this.y
       = giftAreaPos.y
-      - giftAreaSize.height / 2
-      + Math.random() * giftAreaSize.height
+        - giftAreaSize.height / 2
+        + Math.random() * giftAreaSize.height
     this.img = img
     this.date = date
   }

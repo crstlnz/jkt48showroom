@@ -18,7 +18,7 @@ interface Banner {
   url: string
 }
 
-export interface BannerWithId extends Banner {
+interface BannerWithId extends Banner {
   id: string
 }
 

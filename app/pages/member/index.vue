@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { Switch, SwitchGroup, SwitchLabel } from '@headlessui/vue'
 import { useFuse } from '@vueuse/integrations/useFuse'
-import { useSettings } from '~/store/settings'
 import { useMembers } from '~/store/members'
+import { useSettings } from '~/store/settings'
 
 import { deepCompare } from '~/utils'
 

@@ -136,7 +136,7 @@ const createdVideo = ref(false)
 useScriptTag(
   useAppConfig().hlsUrl,
   () => {
-    createHLS(currentSource.value.url)
+    createHLS(currentSource.value?.url ?? '')
   },
   {
     defer: true,
@@ -149,7 +149,7 @@ const proxyIndex = ref(0)
 onMounted(() => {
   if (!createdVideo.value && typeof Hls !== 'undefined') {
     createdVideo.value = true
-    createHLS(currentSource.value.url)
+    createHLS(currentSource.value?.url ?? '')
   }
 })
 
@@ -158,8 +158,7 @@ const id = useId()
 
 function createHLS(_url: string) {
   if (!video.value) return
-  const url = `${
-    proxied.value ? `${proxyServers.value[proxyIndex.value] ?? ''}` : ''
+  const url = `${proxied.value ? `${proxyServers.value[proxyIndex.value] ?? ''}` : ''
   }${_url}`
 
   if (Hls.isSupported() && !hlsNotWork.value) {
@@ -322,7 +321,7 @@ async function togglePlay() {
 function reload() {
   stopAutoReload()
   try {
-    createHLS(currentSource.value.url)
+    createHLS(currentSource.value?.url ?? '')
   }
   catch (e) {
     console.error(e)
@@ -804,13 +803,10 @@ defineExpose({
 
 <template>
   <div
-    ref="videoPlayer"
-    class="overflow-hidden relative group flex items-center transform-all duration-300"
-    :style="{
+    ref="videoPlayer" class="overflow-hidden relative group flex items-center transform-all duration-300" :style="{
       aspectRatio: enableRotate && rotateFill === 'width' ? aspectRatio : undefined,
 
-    }"
-    :class="{
+    }" :class="{
       'w-full h-full': !enableRotate && rotateFill !== 'width',
       'cursor-none!': !showControl && isPlaying,
     }"
@@ -827,22 +823,15 @@ defineExpose({
           (videoFill === 'width' && !isFullscreen && enableRotate)
           || isFullscreen,
         'h-full': videoFill === 'height' && !isFullscreen && enableRotate,
-        // 'w-full': isFullscreen && enableRotate && isFullscreenLandscape && !isLandscape,
-        // 'w-full': isFullscreen && enableRotate && isFullscreenLandscape,
-      }"
-      @click="videoClick"
+      // 'w-full': isFullscreen && enableRotate && isFullscreenLandscape && !isLandscape,
+      // 'w-full': isFullscreen && enableRotate && isFullscreenLandscape,
+      }" @click="videoClick"
     >
       <video
-        :id="id"
-        ref="video"
-        playsinline
-        :controls="!(!useDefaultControl || enableRotate || hideControl)"
-        :class="{
+        :id="id" ref="video" playsinline :controls="!(!useDefaultControl || enableRotate || hideControl)" :class="{
           'object-cover': !isFullscreen,
-        }"
-        class="inset-0 w-full h-full transition-all duration-500 origin-center"
-        :style="{ transform: enableRotate ? `rotate(${rotation}deg)` : 'none' }"
-        :poster="poster"
+        }" class="inset-0 w-full h-full transition-all duration-500 origin-center"
+        :style="{ transform: enableRotate ? `rotate(${rotation}deg)` : 'none' }" :poster="poster"
       >
         <p class="vjs-no-js">
           To view this video please enable JavaScript, and consider upgrading to
@@ -856,8 +845,7 @@ defineExpose({
       <div
         v-if="!isPlaying && !isLoading"
         class="z-10 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/50 p-1"
-        :class="{ 'pointer-events-none': !isMobile }"
-        @click="
+        :class="{ 'pointer-events-none': !isMobile }" @click="
           () => {
             if (isMobile) togglePlay()
           }
@@ -868,46 +856,32 @@ defineExpose({
       <div
         v-if="isMobile && isPlaying && showControl && !isLoading"
         class="z-10 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/50 p-1"
-        :class="{ 'pointer-events-none': !isMobile }"
-        @click="togglePlay"
+        :class="{ 'pointer-events-none': !isMobile }" @click="togglePlay"
       >
         <Icon name="ic:round-pause" class="text-white/60" size="3rem" />
       </div>
 
       <div
-        v-if="isLoading"
-        id="loading-spinner"
+        v-if="isLoading" id="loading-spinner"
         class="absolute inset-0 z-0 flex items-center justify-center bg-black/30 text-black"
       >
-        <Icon
-          name="svg-spinners:270-ring-with-bg"
-          class="text-white"
-          size="3rem"
-        />
+        <Icon name="svg-spinners:270-ring-with-bg" class="text-white" size="3rem" />
       </div>
 
       <div
-        id="control"
-        ref="videoControl"
-        :class="{
+        id="control" ref="videoControl" :class="{
           'opacity-100': showControl || isFocusControl || isHoverControl,
-        }"
-        class="absolute inset-x-0 bottom-0 z-10 text-slate-200 opacity-0 duration-200 ease-in-out"
+        }" class="absolute inset-x-0 bottom-0 z-10 text-slate-200 opacity-0 duration-200 ease-in-out"
         @click="setShowControl(true)"
       >
         <div :class="{ 'pointer-events-none': isMobile && !showControl }">
           <div class="group flex items-center justify-center">
-            <div
-              class="relative flex h-full w-full duration-200 group-hover/volume:w-20"
-            >
+            <div class="relative flex h-full w-full duration-200 group-hover/volume:w-20">
               <div
                 :class="{ 'h-[3px]': compact, 'h-1': !compact }"
                 class="absolute bottom-0 z-0 w-full overflow-hidden bg-neutral-700/75"
               >
-                <div
-                  class="h-full bg-red-600"
-                  :style="{ width: `${videoProgess}%` }"
-                />
+                <div class="h-full bg-red-600" :style="{ width: `${videoProgess}%` }" />
               </div>
               <div
                 :class="{
@@ -919,101 +893,51 @@ defineExpose({
                 :style="{ left: `${videoProgess}%` }"
               />
               <input
-                ref="seekSlider"
-                :class="{ 'opacity-0': !isMobile, compact }"
-                aria-label="Playback"
-                type="range"
-                min="0"
-                max="10000"
-                step="1"
+                ref="seekSlider" :class="{ 'opacity-0': !isMobile, compact }" aria-label="Playback" type="range"
+                min="0" max="10000" step="1"
                 class="volume-slider hidden-slider z-20 h-4 w-full cursor-pointer transition-opacity duration-300 hover:opacity-100"
-                @change="changeVideoTime"
-                @input="seek"
-                @pointerdown="isSeekDragging = true"
+                @change="changeVideoTime" @input="seek" @pointerdown="isSeekDragging = true"
                 @pointerup="isSeekDragging = false"
               >
             </div>
           </div>
-          <div
-            class="flex w-full bg-black/70 px-1 duration-200 dark:bg-black/75 md:px-2 items-center"
-          >
-            <button
-              class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1"
-              aria-label="Play"
-              type="button"
-              @click="togglePlay"
-            >
+          <div class="flex w-full bg-black/70 px-1 duration-200 dark:bg-black/75 md:px-2 items-center">
+            <button class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1" aria-label="Play" type="button" @click="togglePlay">
               <Icon :name="playIcon" class="h-full w-full" />
             </button>
             <div v-if="!compact" class="group/volume flex items-center gap-1">
-              <button
-                class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1"
-                aria-label="Mute"
-                type="button"
-                @click="toggleMute"
-              >
+              <button class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1" aria-label="Mute" type="button" @click="toggleMute">
                 <Icon :name="volumeIcon" class="h-full w-full" />
               </button>
-              <div
-                class="relative flex h-full w-16 items-center duration-200 group-hover/volume:w-20 md:w-20"
-              >
+              <div class="relative flex h-full w-16 items-center duration-200 group-hover/volume:w-20 md:w-20">
                 <div
                   class="absolute inset-0 top-1/2 h-1 z-0 w-16 -translate-y-1/2 overflow-hidden rounded-xs bg-gray-300/25 md:w-20"
                 >
-                  <div
-                    class="h-full bg-slate-200"
-                    :style="{ width: `${volume * 100}%` }"
-                  />
+                  <div class="h-full bg-slate-200" :style="{ width: `${volume * 100}%` }" />
                 </div>
                 <input
-                  ref="volumeSlider"
-                  v-model="volume"
-                  aria-label="Volume"
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.01"
+                  ref="volumeSlider" v-model="volume" aria-label="Volume" type="range" min="0" max="1" step="0.01"
                   class="volume-slider z-20 h-1 w-16 cursor-pointer md:w-20"
                 >
               </div>
             </div>
             <div class="flex-1" />
-            <div
-              v-if="!compact && isMD"
-              class="flex items-center text-xs md:text-sm"
-            >
+            <div v-if="!compact && isMD" class="flex items-center text-xs md:text-sm">
               {{ $dayjs.duration(currentTimeFloor, 'second').format('mm:ss') }}
               / {{ $dayjs.duration(duration, 'second').format('mm:ss') }}
             </div>
-            <button
-              class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1"
-              aria-label="Reload"
-              type="button"
-              @click="reload"
-            >
+            <button class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1" aria-label="Reload" type="button" @click="reload">
               <Icon name="ic:round-refresh" class="h-full w-full p-[1px]" />
             </button>
             <button
-              v-if="enableRotate"
-              class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1"
-              aria-label="Reload"
-              type="button"
+              v-if="enableRotate" class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1" aria-label="Reload" type="button"
               @click="rotate"
             >
-              <Icon
-                name="ic:outline-rotate-right"
-                class="h-full w-full p-[1px]"
-              />
+              <Icon name="ic:outline-rotate-right" class="h-full w-full p-[1px]" />
             </button>
             <Popover v-if="!compact">
-              <PopoverButton
-                aria-label="Setting"
-                class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1"
-              >
-                <Icon
-                  name="ic:baseline-settings"
-                  class="h-full w-full p-[2px] duration-300"
-                />
+              <PopoverButton aria-label="Setting" class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1">
+                <Icon name="ic:baseline-settings" class="h-full w-full p-[2px] duration-300" />
               </PopoverButton>
               <Transition
                 enter-active-class="transition duration-200 ease-out"
@@ -1023,28 +947,20 @@ defineExpose({
                 leave-from-class="translate-y-0 translate-x-x opacity-100"
                 leave-to-class="translate-y-2 translate-x-1 opacity-0"
               >
-                <PopoverPanel
-                  class="absolute bottom-11 right-4 rounded-md bg-black/70 dark:bg-black/80"
-                >
+                <PopoverPanel class="absolute bottom-11 right-4 rounded-md bg-black/70 dark:bg-black/80">
                   <div>
-                    <div
-                      class="border-b border-white/20 px-3 py-1.5 md:px-4 md:py-2.5"
-                    >
+                    <div class="border-b border-white/20 px-3 py-1.5 md:px-4 md:py-2.5">
                       {{ $t('quality') }}
                     </div>
-                    <div
-                      class="flex w-[220px] flex-col py-1 text-base md:w-[250px]"
-                    >
+                    <div class="flex w-[220px] flex-col py-1 text-base md:w-[250px]">
                       <PopoverButton
-                        v-for="source in sources"
-                        :key="source.id"
+                        v-for="source in sources" :key="source.id"
                         class="flex items-center truncate text-left text-sm hover:bg-black/50"
                         @click="() => changeSource(source)"
                       >
                         <div class="h-10 w-10">
                           <Icon
-                            v-if="currentSource.id === source.id"
-                            name="ic:round-check"
+                            v-if="currentSource?.id === source.id" name="ic:round-check"
                             class="h-full w-full p-2.5"
                           />
                         </div>
@@ -1058,33 +974,20 @@ defineExpose({
               </Transition>
             </Popover>
             <button
-              v-if="pipEnabled"
-              class="group h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1"
-              aria-label="Fullscreen"
-              type="button"
-              @click="togglePictureInPicture"
+              v-if="pipEnabled" class="group h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1" aria-label="Fullscreen"
+              type="button" @click="togglePictureInPicture"
             >
-              <Icon
-                name="ic:round-picture-in-picture"
-                class="h-full w-full p-0.5 duration-300"
-              />
+              <Icon name="ic:round-picture-in-picture" class="h-full w-full p-0.5 duration-300" />
             </button>
             <button
-              class="group h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1"
-              aria-label="Fullscreen"
-              type="button"
+              class="group h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1" aria-label="Fullscreen" type="button"
               @click="toggleFullscreen"
             >
               <Icon
-                v-if="!isFullscreen"
-                name="ic:round-fullscreen"
+                v-if="!isFullscreen" name="ic:round-fullscreen"
                 class="h-full w-full duration-300 hover:scale-125"
               />
-              <Icon
-                v-else
-                name="ic:round-fullscreen-exit"
-                class="h-full w-full duration-300 hover:scale-125"
-              />
+              <Icon v-else name="ic:round-fullscreen-exit" class="h-full w-full duration-300 hover:scale-125" />
             </button>
           </div>
         </div>
@@ -1097,80 +1000,89 @@ defineExpose({
 @reference "~/assets/css/theme.css";
 
 .volume-slider {
-	 -webkit-appearance: none;
-	/* Override default CSS styles */
-	 appearance: none;
-	 background: transparent;
-	/* Grey background */
-	 outline: none;
-	/* Remove outline */
-	 border: none;
+  -webkit-appearance: none;
+  /* Override default CSS styles */
+  appearance: none;
+  background: transparent;
+  /* Grey background */
+  outline: none;
+  /* Remove outline */
+  border: none;
 }
- .volume-slider::-webkit-slider-thumb {
-	 -webkit-appearance: none;
-	/* Override default look */
-	 appearance: none;
-	 width: 10px;
-	/* Set a specific slider handle width */
-	 height: 10px;
-	/* Slider handle height */
-	 background: #000;
-	 border: none;
-	 border-radius: 100%;
-	/* cursor: pointer;
-	/* Cursor on hover */
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  /* Override default look */
+  appearance: none;
+  width: 10px;
+  /* Set a specific slider handle width */
+  height: 10px;
+  /* Slider handle height */
+  background: #000;
+  border: none;
+  border-radius: 100%;
 }
- .volume-slider::-moz-range-thumb {
-	 width: 10px;
-	/* Set a specific slider handle width */
-	 height: 10px;
-	/* Slider handle height */
-	 background: #000;
-	 border: none;
-	 border-radius: 100%;
-	/* Green background */
-	 cursor: pointer;
-	/* Cursor on hover */
-	 appearance: none;
+
+.volume-slider::-moz-range-thumb {
+  width: 10px;
+  /* Set a specific slider handle width */
+  height: 10px;
+  /* Slider handle height */
+  background: #000;
+  border: none;
+  border-radius: 100%;
+  /* Green background */
+  cursor: pointer;
+  /* Cursor on hover */
+  appearance: none;
 }
- .volume-slider.compact::-webkit-slider-thumb {
-	 width: 7px;
-	/* Set a specific slider handle width */
-	 height: 7px;
-	/* Slider handle height */
+
+.volume-slider.compact::-webkit-slider-thumb {
+  width: 7px;
+  /* Set a specific slider handle width */
+  height: 7px;
+  /* Slider handle height */
 }
- .volume-slider.compact::-moz-range-thumb {
-	 width: 7px;
-	/* Set a specific slider handle width */
-	 height: 7px;
-	/* Slider handle height */
+
+.volume-slider.compact::-moz-range-thumb {
+  width: 7px;
+  /* Set a specific slider handle width */
+  height: 7px;
+  /* Slider handle height */
 }
- .volume-slider.hidden-slider::-webkit-slider-thumb {
-	 visibility: hidden;
+
+.volume-slider.hidden-slider::-webkit-slider-thumb {
+  visibility: hidden;
 }
- .volume-slider.hidden-slider::-moz-range-thumb {
-	 visibility: hidden;
+
+.volume-slider.hidden-slider::-moz-range-thumb {
+  visibility: hidden;
 }
- .volume-slider::-webkit-progress-value {
-	 background: transparent;
-	 border: none;
+
+.volume-slider::-webkit-progress-value {
+  background: transparent;
+  border: none;
 }
- .volume-slider::-moz-range-progress {
-	 background: transparent;
-	 border: none;
-	 appearance: none;
+
+.volume-slider::-moz-range-progress {
+  background: transparent;
+  border: none;
+  appearance: none;
 }
- .volume-slider::-moz-range-track {
-	 appearance: none;
+
+.volume-slider::-moz-range-track {
+  appearance: none;
 }
- .volume-slider:focus-visible::-webkit-slider-thumb {
-	 -webkit-appearance: none;
-	 appearance: none;
-	 cursor: pointer;
-   @apply ring-2 ring-blue-500;
+
+.volume-slider:focus-visible::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  @apply ring-2 ring-blue-500;
 }
- .volume-slider:focus-visible::-moz-range-thumb {
-	 cursor: pointer;
-   @apply ring-2 ring-blue-500;
+
+.volume-slider:focus-visible::-moz-range-thumb {
+  cursor: pointer;
+  @apply ring-2 ring-blue-500;
 }
 </style>

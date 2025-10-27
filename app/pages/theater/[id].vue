@@ -6,8 +6,8 @@ const title = computed(() => {
   const shows = data.value?.shows
   if (shows?.length) {
     if (shows.length > 1) {
-      const same = shows.every(i => i.title === shows[0].title)
-      return same ? shows[0].title : 'Theater Detail'
+      const same = shows.every(i => i.title === shows[0]?.title)
+      return same ? shows[0]?.title : 'Theater Detail'
     }
     else {
       return shows[0]?.title
@@ -49,7 +49,7 @@ useHead({
 
 <template>
   <div>
-    <div v-if="status === 'pending'" class="relative min-h-[100vh] w-full">
+    <div v-if="status === 'pending'" class="relative min-h-screen w-full">
       <Icon name="eos-icons:loading" size="3rem" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 " />
     </div>
     <Error
@@ -61,7 +61,7 @@ useHead({
       <div v-if="data.shows?.length" class="px-4 md:px-5 space-y-10">
         <div
           v-for="[idx, theater] in data.shows.entries()" :key="theater.id"
-          class="space-y-4 md:space-y-5 border-b-4 border-dashed border-white/10 pb-10"
+          class="space-y-4 md:space-y-5 border-b-2 border-dashed border-color-1 pb-10"
         >
           <div class="flex flex-col gap-5 md:flex-row md:gap-4">
             <NuxtImg
@@ -91,7 +91,7 @@ useHead({
               </div>
 
               <table
-                class="gap-2 pt-5 text-sm md:text-base font-light max-md:[&_td:first-child]:max-w-[120px] md:[&_td:first-child]:min-w-[150px] [&_td:first-child]:pr-5 [&_td:first-child]:font-light [&_td:first-child]:opacity-50 sm:[&_td:first-child]:min-w-[200px] xl:[&_td:first-child]:min-w-[270px] [&_td]:py-2"
+                class="gap-2 pt-5 text-sm md:text-base font-light max-md:[&_td:first-child]:max-w-[120px] md:[&_td:first-child]:min-w-[150px] [&_td:first-child]:pr-5 [&_td:first-child]:font-light [&_td:first-child]:opacity-75 dark:[&_td:first-child]:opacity-50 sm:[&_td:first-child]:min-w-[200px] xl:[&_td:first-child]:min-w-[270px] [&_td]:py-2"
               >
                 <tbody>
                   <tr>
@@ -224,9 +224,9 @@ useHead({
               v-for="member in theater.members" :key="member.id"
               :to="member.url_key ? `/member/${member.url_key}` : undefined" class="flex flex-col space-y-2 group"
             >
-              <div class="overflow-hidden rounded-xl">
+              <div class="overflow-hidden rounded-xl bg-container">
                 <NuxtImg
-                  class="bg-container block aspect-8/10 size-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  class="block aspect-8/10 size-full object-cover group-hover:scale-110 transition-transform duration-300"
                   :src="member.img ?? pic" alt="Member picture" fit="fill" :modifiers="{
                     aspectRatio: 8 / 10,
                     gravity: 'faceCenter',

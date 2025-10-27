@@ -69,12 +69,8 @@
   @apply bg-white/80 dark:bg-dark-2/80;
 }
 
-@utility border-color-1 {
-  @apply border-black/20 dark:border-white/5
-}
-
 @utility bg-container {
-  @apply bg-white border border-black/10 dark:border-none dark:bg-dark-1;
+  @apply bg-white border border-color-1 dark:border-none dark:bg-dark-1;
 }
 
 @utility bg-container-2 {
@@ -124,7 +120,7 @@
 }
 
 @utility border-lightmode {
-  @apply border border-black/10 dark:border-none
+  @apply border border-black/20 dark:border-none
 }
 
 @layer components {

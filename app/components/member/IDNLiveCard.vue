@@ -4,7 +4,7 @@ import { DeferImage } from '#components'
 import { useElementHover, useTimeoutFn } from '@vueuse/core'
 
 const props = defineProps<{ live: INowLive }>()
-const emit = defineEmits(['refreshliveinfo'])
+defineEmits(['refreshliveinfo'])
 const $device = useDevice()
 const openMenu = ref(false)
 const container = ref(null)
@@ -15,7 +15,7 @@ const isHovered = useElementHover(hover, { triggerOnRemoval: true })
 const isSupported = ref(true)
 const playing = ref(false)
 const preview = ref<typeof PreviewVideo>()
-const streamingURL = computed(() => props.live.streaming_url_list?.[0].url)
+const streamingURL = computed(() => props.live.streaming_url_list?.[0]?.url)
 
 useScriptTag(useAppConfig().hlsUrl, () => {
   isSupported.value = Hls.isSupported()
@@ -117,14 +117,14 @@ watch(isHovered, (hovered) => {
           'opacity-100': isPreview,
         }"
         :is-muted="preview?.isMuted ?? true"
-        class="absolute bottom-1 right-1 transition-[opacity] duration-300" @click="() => preview?.toggleMute()"
+        class="absolute bottom-1 right-1 transition-opacity duration-300" @click="() => preview?.toggleMute()"
       />
       <NuxtLink ref="hover" :to="`/watch/${live.url_key}/idn`" :class="{ 'cursor-pointer': isSupported }" class="disable-highlight relative w-full h-full" @click="() => isHovered = false">
         <div :class="isHovered && !isPreview && isSupported ? 'visible opacity-100' : 'invisible opacity-0'" class="absolute bottom-10 left-3 md:bottom-11 md:left-4 z-40 rounded-md bg-black px-2 py-1 text-xs text-white dark:bg-slate-100 dark:text-black">
           Keep Hover
         </div>
-        <div section="preview-on" :class="{ 'visible opacity-100': isPreview, 'invisible opacity-0': !isPreview }" class="absolute h-full w-full inset-x-0 top-0 z-20 transition-opacity duration-[400ms]">
-          <LazyPreviewVideo ref="preview" disable-mute-button :use-proxy="true" :src="streamingURL" :playing="playing" class="w-full h-full scale-" />
+        <div section="preview-on" :class="{ 'visible opacity-100': isPreview, 'invisible opacity-0': !isPreview }" class="absolute h-full w-full inset-x-0 top-0 z-20 transition-opacity duration-400">
+          <LazyPreviewVideo ref="preview" disable-mute-button :use-proxy="true" :src="streamingURL ?? ''" :playing="playing" class="w-full h-full scale-" />
         </div>
         <div section="preview-off" :class="{ 'bg-slate-200 dark:bg-dark-1/60': isHovered && !isPreview && isSupported }" class="relative top-0 w-full h-full overflow-hidden rounded-t-xl transition-colors">
           <div class="relative inset-0 flex h-full items-end justify-center">

@@ -1,4 +1,4 @@
-export function convertIDNLive(room: INowLive): Omit< Multi.Video, 'order'> {
+export function convertIDNLive(room: INowLive): Omit<Multi.Video, 'order'> {
   const { idnLiveUrl, idnLiveIcon } = useAppConfig()
   return {
     id: `idn-${room.room_id}`,
@@ -15,7 +15,7 @@ export function convertIDNLive(room: INowLive): Omit< Multi.Video, 'order'> {
   }
 }
 
-export function convertShowroom(room: INowLive): Omit< Multi.Video, 'order'> {
+export function convertShowroom(room: INowLive): Omit<Multi.Video, 'order'> {
   const { liveURL, showroomIcon } = useAppConfig()
   return {
     id: `showroom-${room.room_id}`,

@@ -30,13 +30,13 @@ onMounted(async () => {
   })
 
   player.value.subscribe(({ error }) => {
-    console.log('error code', error?.code)
+    console.error('error code', error?.code)
   })
 })
 </script>
 
 <template>
-  <media-player ref="player" :poster="props.poster" :title="props.title" :src="props.sources[0].url" :auto-play="false" plays-inline>
+  <media-player ref="player" :poster="props.poster" :title="props.title" :src="props.sources[0]?.url" :auto-play="false" plays-inline>
     <ClientOnly>
       <media-provider />
       <media-video-layout />

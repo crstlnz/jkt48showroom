@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import type { ISortMember } from '~/types/common'
 import { useSettings } from '~/store/settings'
 
 const props = defineProps<{

@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 interface ControlProps {
-  page: number
-  total: number
-  maxDots: number
+  page?: number
+  total?: number
+  maxDots?: number
   separator?: string
 }
 

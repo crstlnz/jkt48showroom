@@ -48,19 +48,19 @@ onMounted(() => {
           </button>
 
           <button v-ripple type="button" class="w-7 h-7 md:h-7 md:w-7 flex hover:bg-hover-2 rounded-full p-1" @click="player.refresh()">
-            <Icon name="ic:round-refresh" class="h-full w-full p-[1px]" />
+            <Icon name="ic:round-refresh" class="h-full w-full p-px" />
           </button>
 
           <button v-ripple type="button" class="w-7 h-7 md:h-7 md:w-7 flex hover:bg-hover-2 rounded-full p-1" @click="player.video?.syncLive()">
-            <Icon name="ic:round-fast-forward" class="h-full w-full p-[1px]" />
+            <Icon name="ic:round-fast-forward" class="h-full w-full p-px" />
           </button>
 
           <button v-ripple type="button" class="w-7 h-7 md:h-7 md:w-7 flex hover:bg-hover-2 rounded-full p-1" @click="toggleMute">
-            <Icon v-if="!player.video?.isMuted" name="ic:round-volume-up" class="h-full w-full p-[1px]" />
-            <Icon v-else name="ic:round-volume-off" class="h-full w-full p-[1px]" />
+            <Icon v-if="!player.video?.isMuted" name="ic:round-volume-up" class="h-full w-full p-px" />
+            <Icon v-else name="ic:round-volume-off" class="h-full w-full p-px" />
           </button>
           <button v-ripple type="button" class="w-7 h-7 md:h-7 md:w-7 flex hover:bg-hover-2 rounded-full p-1" @click="player.remove">
-            <Icon name="ic:baseline-delete" class="h-full w-full p-[1px]" />
+            <Icon name="ic:baseline-delete" class="h-full w-full p-px" />
           </button>
         </div>
         <Slider ref="slider" v-model="volume" class="w-full md:w-[200px] max-w-full" :min="0" :max="1" :step="0.01" />

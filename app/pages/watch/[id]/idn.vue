@@ -73,12 +73,12 @@ useHead({
   title: () => title.value,
 })
 
-const videoIsLandscape = ref(true)
+// const videoIsLandscape = ref(true)
 const { isMobile } = useDevice()
 
-function setVideoLandscape(val: boolean) {
-  videoIsLandscape.value = val
-}
+// function setVideoLandscape(val: boolean) {
+//   videoIsLandscape.value = val
+// }
 
 const enableComment = useLocalStorage('enable-idn-comment', true)
 </script>
@@ -137,14 +137,14 @@ const enableComment = useLocalStorage('enable-idn-comment', true)
           <Suspense>
             <template #fallback>
               <div
-                class="max-h-[100vh] bg-black/50 flex-1 bg-container"
+                class="max-h-screen bg-black/50 flex-1 bg-container"
               />
             </template>
             <VidstackPlayer
               class="bg-container flex justify-center flex-col flex-1 idnvideoplayer"
               :class="{ 'landscape-screen': isLandscape }"
               :title="data.name ?? ''"
-              :thumbnails="data?.img ?? ''" :src="streamURLs[0].url"
+              :thumbnails="data?.img ?? ''" :src="streamURLs[0]?.url ?? ''"
             />
           </Suspense>
           <div v-if="!isLandscape" class="p-2">

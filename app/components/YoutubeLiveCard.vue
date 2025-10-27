@@ -3,14 +3,12 @@ import type { PreviewVideo } from '#components'
 import { DeferImage } from '#components'
 import { useElementHover, useTimeoutFn } from '@vueuse/core'
 
-const props = defineProps<{ live: YoutubeLive }>()
+defineProps<{ live: YoutubeLive }>()
 defineEmits(['refreshliveinfo'])
-const $device = useDevice()
 const openMenu = ref(false)
 const container = ref(null)
 const listener = ref<(() => void)>()
 // const date = ref(props.live.started_at)
-const dayjs = useDayjs()
 // const dateString = $formatSR(date)
 // const dateString = computed(() => dayjs(date.value).format('h:mm A'))
 
@@ -100,7 +98,6 @@ watch(isHovered, (hovered) => {
   }
 })
 
-const pending = ref(false)
 // async function refreshDate() {
 //   pending.value = true
 //   try {

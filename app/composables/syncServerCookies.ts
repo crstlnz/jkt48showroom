@@ -1,6 +1,6 @@
 import type { EventHandlerRequest, H3Event } from 'h3'
-import CookieParser from '@/library/cookieParser'
 import { appendResponseHeader } from 'h3'
+import CookieParser from '@/library/cookieParser'
 
 export default function () {
   const event = useRequestEvent()

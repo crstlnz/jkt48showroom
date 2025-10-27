@@ -157,9 +157,9 @@ useHead({
               v-for="member in data.members" :key="member.id"
               :to="member.url_key ? `/member/${member.url_key}` : undefined" class="flex flex-col space-y-2 group"
             >
-              <div class="overflow-hidden rounded-xl">
+              <div class="overflow-hidden rounded-xl bg-container">
                 <NuxtImg
-                  class="bg-container block aspect-8/10 size-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  class="rounded-xl block aspect-8/10 size-full object-cover group-hover:scale-110 transition-transform duration-300"
                   :src="member.img ?? pic" alt="Member picture" fit="fill" :modifiers="{
                     aspectRatio: 8 / 10,
                     gravity: 'faceCenter',

@@ -71,7 +71,6 @@ export default function (chat_room_id: string, max_comment = 100) {
     socket.value.onmessage = (msg) => {
       const raw = msg.data
       if (raw.includes(':Welcome')) {
-        console.log('Socket open!')
         socket.value!.send(`@label=1 JOIN #${chat_room_id}`)
       }
       else if (raw.includes('PING :')) {

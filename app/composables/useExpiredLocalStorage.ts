@@ -6,7 +6,7 @@ interface DataJSON<T> {
 }
 
 export default function<T> (key: string, expiredIn: number) {
-  const data = useLocalStorage< DataJSON<T> | null>(key, null, { serializer: new JSONSerializer<DataJSON<T> | null>(null) })
+  const data = useLocalStorage<DataJSON<T> | null>(key, null, { serializer: new JSONSerializer<DataJSON<T> | null>(null) })
 
   const isValid = computed(() => {
     if (data.value) {

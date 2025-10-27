@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { useSettings } from '~/store/settings'
-
 import { useNotifications } from '~/store/notifications'
+
+import { useSettings } from '~/store/settings'
 
 definePageMeta({
   middleware: 'auth',

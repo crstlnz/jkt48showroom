@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import type { BannerWithId } from '~/types/common'
 import { useSortable } from '@vueuse/integrations/useSortable'
 
 const props = defineProps<{ banners: BannerWithId[] }>()

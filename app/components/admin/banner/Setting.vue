@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import type { Banner, BannerWithId } from '~/types/common'
 import { useNotifications } from '~/store/notifications'
 
 type GroupType = 'jkt48' | 'hinatazaka46'
@@ -39,8 +38,6 @@ watch(data, (d) => {
   if (d) {
     const def = getDefault()
     for (const key of Object.keys(d)) {
-      console.log('WAe', groupBanners.value[key as GroupType]?.banners)
-      console.log('awe', def[key as GroupType].banners)
       for (const banner of def[key as GroupType].banners) {
         const id = groupBanners.value[key as GroupType]?.banners?.find(i => i.img === banner.img && i.title === banner.title && i.url === banner.url)?.id
         if (id) banner.id = id

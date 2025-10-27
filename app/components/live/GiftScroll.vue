@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import type { LogType } from '~/types/common'
 // import { useFuse } from '@vueuse/integrations/useFuse'
 import c from '~/app.config'
 import { useSelectedUser } from '~/store/selectedUser'

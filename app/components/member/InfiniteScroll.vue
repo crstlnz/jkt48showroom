@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import VirtualList from 'vue-virtual-sortable'
-
 const props = defineProps<{
   roomId: number
 }>()
