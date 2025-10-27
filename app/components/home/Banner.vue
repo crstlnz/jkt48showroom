@@ -121,10 +121,10 @@ const { start } = useTimeoutFn(() => {
       leave-from-class="opacity-100"
       leave-to-class="opacity-0"
     >
-      <div v-if="banner![1]" :key="1" :title="banner![1]?.title" class="aspect-3/1 lg:aspect-[4.5/1] overflow-hidden shadow-2xs bg-container border-none!">
+      <div v-if="banner![index]" :key="1" :title="banner![index]?.title" class="aspect-3/1 lg:aspect-[4.5/1] overflow-hidden shadow-2xs bg-container border-none!">
         <a
-          :aria-label="banner![1]?.title"
-          :href="banner![1]?.url"
+          :aria-label="banner![index]?.title"
+          :href="banner![index]?.url"
           target="_blank"
           class="aspect-3/1 lg:aspect-[4.5/1] block transition-all duration-300 hover:brightness-75 focus-visible:brightness-75"
         >
@@ -140,9 +140,9 @@ const { start } = useTimeoutFn(() => {
             fit="fill"
             preload
             format="webp"
-            :alt="banner![1]?.title"
+            :alt="banner![index]?.title"
             class="w-full h-full object-cover"
-            :src="banner![1]?.img"
+            :src="banner![index]?.img"
           />
         </a>
       </div>
