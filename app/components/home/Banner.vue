@@ -121,7 +121,7 @@ const { start } = useTimeoutFn(() => {
       leave-from-class="opacity-100"
       leave-to-class="opacity-0"
     >
-      <div v-if="banner![index]" :key="1" :title="banner![index]?.title" class="aspect-3/1 lg:aspect-[4.5/1] overflow-hidden shadow-2xs bg-container border-none!">
+      <div v-if="banner![index]" :key="index" :title="banner![index]?.title" class="aspect-3/1 lg:aspect-[4.5/1] overflow-hidden shadow-2xs bg-container border-none!">
         <a
           :aria-label="banner![index]?.title"
           :href="banner![index]?.url"
