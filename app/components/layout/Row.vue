@@ -3,6 +3,7 @@ withDefaults(defineProps<{
   title: string
   subTitle?: string
   mobileSide?: boolean
+  noPadding?: boolean
 }>(), {
   mobileSide: true,
 })
@@ -67,7 +68,9 @@ onMounted(() => {
           </template>
         </LayoutRowTitle>
       </div>
-      <slot />
+      <div :class="{ 'pt-3 xl:pt-4': !noPadding }">
+        <slot />
+      </div>
     </div>
     <LayoutSticky v-if="!isMobile || (isMobile && mobileSide)" class="px-3 md:px-4 xl:w-[320px] 2xl:w-[350px]" stop-sticky="xl">
       <div class="flex w-full flex-col gap-4">
