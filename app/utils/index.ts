@@ -353,8 +353,8 @@ export function deepCompare(obj1: any, obj2: any): boolean {
 
 export function getProxyServer(): string[] {
   return [
+    ...(useRuntimeConfig().public.proxy ?? '').split(',').map(i => `${i}/?url=`),
     `${useRuntimeConfig().public.api}/api/stream?url=`,
-    // ...(useRuntimeConfig().public.proxy ?? '')
     //   ?.split(',')
     //   ?.map(i => i.trim())
     //   ?.filter(i => i !== ''),
