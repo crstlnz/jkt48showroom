@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { cacheFetch } from '~/utils/cacheFetch'
+import { cachedFetch } from '../utils/cachedFetch'
 import { useNotifications } from './notifications'
 import { useSettings } from './settings'
 
@@ -128,7 +128,7 @@ export const useSocket = defineStore('socket', () => {
 
   async function registerAdmin() {
     try {
-      const res = await cacheFetch.fetch('admin-token', async () => {
+      const res = await cachedFetch.fetch('admin-token', async () => {
         return await $apiFetch('/api/admin/get_token')
       }, 60 * 1000 * 2 - 1)
       socket?.send(`admin ${res}`)

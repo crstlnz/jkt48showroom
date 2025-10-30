@@ -137,12 +137,12 @@ watch(width, () => {
 })
 
 // useCSRF()
-useAuth()
+const { user } = useAuth()
 </script>
 
 <template>
   <div>
-    <UserCount />
+    <UserCount v-if="user?.is_admin" />
     <NuxtLoadingIndicator />
     <Dialog />
     <LiveUserDraggable />

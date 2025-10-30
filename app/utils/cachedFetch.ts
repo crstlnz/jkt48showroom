@@ -73,6 +73,6 @@ class Cache {
 }
 
 // singleton global cache
-export const cacheFetch = new Cache()
+export const cachedFetch = new Cache()
 
 export default Cache
