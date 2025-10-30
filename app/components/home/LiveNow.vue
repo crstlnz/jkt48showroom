@@ -84,7 +84,7 @@ const { data, pending, liveCount, error } = storeToRefs(onLives)
             <component
               :is="live.type === 'showroom' ? LazyMemberLiveCard : LazyMemberIDNLiveCard"
               v-if="live.type !== 'youtube'"
-              :key="live.room_id"
+              :key="live.room_id || live.url_key || live.slug"
               class="bg-background"
               :live="live"
             />

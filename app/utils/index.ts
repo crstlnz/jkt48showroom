@@ -123,9 +123,9 @@ export function getDominantColorClient(
 
       // Loop through each pixel and sum up the red, green, and blue components
       for (let i = 0; i < pixelData.length; i += 4) {
-        totalR += pixelData[i]
-        totalG += pixelData[i + 1]
-        totalB += pixelData[i + 2]
+        totalR += pixelData[i]!
+        totalG += pixelData[i + 1]!
+        totalB += pixelData[i + 2]!
       }
 
       // Calculate the average red, green, and blue values
@@ -179,7 +179,7 @@ export function deepEqual(obj1: DeepData, obj2: DeepData): boolean {
     if (!Array.isArray(obj1) || !Array.isArray(obj2)) return false
     if (obj1.length !== obj2.length) return false
     for (const [idx, obj] of obj1.entries()) {
-      if (!deepEqual(obj, obj2[idx])) return false
+      if (!deepEqual(obj, obj2[idx]!)) return false
     }
   }
   else {
@@ -195,7 +195,7 @@ export function deepEqual(obj1: DeepData, obj2: DeepData): boolean {
     const keys2 = Object.keys(obj2)
     if (keys1.length !== keys2.length) return false
     for (const key of keys1) {
-      if (!deepEqual(obj1[key], obj2[key])) return false
+      if (!deepEqual(obj1[key]!, obj2[key]!)) return false
     }
   }
 
@@ -217,16 +217,16 @@ export function parseCookieString(cookieString: string): {
 
     cookies.forEach((cookie) => {
       const parts = cookie.trim().split(';')
-      const [name, value] = parts[0].trim().split('=')
+      const [name, value] = parts[0]?.trim().split('=') ?? ['', '']
       const attributes: { [key: string]: string } = {}
 
       parts.slice(1).forEach((attr) => {
         const [attrName, attrValue] = attr.trim().split('=')
-        attributes[attrName.toLowerCase()] = attrValue
+        attributes[attrName!.toLowerCase()] = attrValue ?? ''
       })
 
-      cookieObj[name] = {
-        value: decodeURIComponent(value),
+      cookieObj[name!] = {
+        value: decodeURIComponent(value!),
         attributes,
       }
     })

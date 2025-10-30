@@ -140,7 +140,7 @@ async function refreshDate() {
         <div :class="isHovered && !isPreview && isSupported ? 'visible opacity-100' : 'invisible opacity-0'" class="absolute bottom-2 right-2 z-10 rounded-md bg-black px-2 py-1 text-xs text-white dark:bg-slate-100 dark:text-black">
           Keep Hover
         </div>
-        <div section="preview-on" :class="{ 'visible opacity-100': isPreview, 'invisible opacity-0': !isPreview }" class="absolute inset-x-0 top-0 z-20 transition-opacity duration-[400ms]">
+        <div section="preview-on" :class="{ 'visible opacity-100': isPreview, 'invisible opacity-0': !isPreview }" class="absolute inset-x-0 top-0 z-20 transition-opacity duration-400">
           <LazyPreviewVideo v-if="!live.is_premium" ref="preview" :src="streamingURL" :playing="playing" class="aspect-video" />
           <div v-else class="flex aspect-video h-full w-full items-center justify-center bg-black/90 font-bold text-white">
             {{ $t("premium_live") }}

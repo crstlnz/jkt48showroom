@@ -7,7 +7,9 @@ const route = useRoute()
 const isPremium = ref(false)
 const { data, pending, error, refresh: refreshWatchData } = await useApiFetch<Watch.WatchData>(`/api/watch/${route.params.id}`, {
   onResponseError(e) {
+    // @ts-expect-error error
     if (e.response._data?.status === 404) {
+      // @ts-expect-error error
       isPremium.value = e.response?._data?.message === 'Live is premium!'
       if (!isPremium.value) {
         throw createError({ statusCode: 404, message: 'Page not found!' })
@@ -281,7 +283,10 @@ const telop = ref<Watch.Telops | null>(null)
 const telopIndex = ref(0)
 const { resume: resumeTelop, pause: pauseTelop } = useIntervalFn(() => {
   telopIndex.value += 1
-  telop.value = telops.value?.[telopIndex.value % telops.value.length]
+  const data = telops.value?.[telopIndex.value % telops.value.length]
+  if (data) {
+    telop.value = data
+  }
 }, 10000, {
   immediate: false,
   immediateCallback: false,
@@ -289,7 +294,10 @@ const { resume: resumeTelop, pause: pauseTelop } = useIntervalFn(() => {
 
 watch(telops, (v) => {
   telopIndex.value = 0
-  telop.value = v?.[telopIndex.value]
+  const data = v?.[telopIndex.value]
+  if (data) {
+    telop.value = data
+  }
   if (v.length > 1) {
     resumeTelop()
   }

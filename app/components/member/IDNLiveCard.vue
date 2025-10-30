@@ -16,7 +16,8 @@ const isSupported = ref(true)
 const playing = ref(false)
 const preview = ref<typeof PreviewVideo>()
 const streamingURL = computed(() => props.live.streaming_url_list?.[0]?.url)
-
+const instance = getCurrentInstance()
+const key = instance?.vnode.key as string
 useScriptTag(useAppConfig().hlsUrl, () => {
   isSupported.value = Hls.isSupported()
 })
@@ -134,6 +135,7 @@ watch(isHovered, (hovered) => {
               no-prefetch
             >
               <DeferImage
+                :key="key"
                 alt="Profile Picture"
                 lazy="false"
                 class="relative h-full w-full brightness-100 transition-all duration-200"

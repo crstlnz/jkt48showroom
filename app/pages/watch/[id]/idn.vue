@@ -5,14 +5,13 @@ import { useOnLives } from '~/store/onLives'
 
 const route = useRoute()
 // const { data, pending, error } = await useApiFetch<IDNLivesDetail>(`/api/watch/${route.params.id}/idn`)
-const { tryRefresh } = useOnLives()
+const { data: lives } = useOnLives()
 const { members, tryRefresh: tryRefreshMember } = useMembers()
 const { data, pending, error } = await useAsyncData<IDNLivesDetail>(
   `idn-${route.params.id}`,
   async () => {
     await tryRefreshMember()
-    const lives = await tryRefresh()
-    const live = lives?.data?.find(i => i.type === 'idn' && i.url_key === route.params.id) as INowLive | undefined
+    const live = lives?.find(i => i.type === 'idn' && i.url_key === route.params.id) as INowLive | undefined
     const member = members?.find(i => i.idn_username === route.params.id)
     const member_info = member
       ? {

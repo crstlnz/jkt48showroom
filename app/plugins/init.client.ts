@@ -12,6 +12,8 @@ export default defineNuxtPlugin(({ hook }) => {
   })
 
   const onLives = useOnLives()
+  onLives.init()
+
   const isOnline = useOnline()
   watch(isOnline, (online) => {
     if (!online) {
@@ -21,32 +23,32 @@ export default defineNuxtPlugin(({ hook }) => {
     }
   })
 
-  const { onFocus, onUnfocus } = useUserFocus({
-    time: 1000,
-    idleTime: 30000,
-  })
+  // const { onFocus, onUnfocus } = useUserFocus({
+  //   time: 1000,
+  //   idleTime: 30000,
+  // })
 
-  function tryRefreshLive() {
-    onLives.tryRefresh()
-  }
+  // function tryRefreshLive() {
+  //   onLives.tryRefresh()
+  // }
 
-  const { resume, pause } = useIntervalFn(() => {
-    tryRefreshLive()
-  }, 15000, { immediate: true, immediateCallback: true })
+  // const { resume, pause } = useIntervalFn(() => {
+  //   tryRefreshLive()
+  // }, 15000, { immediate: true, immediateCallback: true })
 
-  onUnfocus(() => {
-    pause()
-  })
+  // onUnfocus(() => {
+  //   pause()
+  // })
 
-  onFocus(() => {
-    resume()
-  })
+  // onFocus(() => {
+  //   resume()
+  // })
 
-  hook('app:created', () => {
-    tryRefreshLive()
-  })
+  // hook('app:created', () => {
+  //   tryRefreshLive()
+  // })
 
-  hook('page:start', () => { // when the page is change try refresh the state
-    tryRefreshLive()
-  })
+  // hook('page:start', () => { // when the page is change try refresh the state
+  //   tryRefreshLive()
+  // })
 })
