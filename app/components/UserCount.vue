@@ -1,17 +1,23 @@
 <script lang="ts" setup>
+import { OnClickOutside } from '@vueuse/components'
 import { useSocket } from '~/store/socket'
 
 const isOpen = ref(false)
 const { userCount, adminCount } = storeToRefs(useSocket())
+const re = ref()
 </script>
 
 <template>
   <div
+    ref="re"
     :class="{
       'hover:translate-y-[40%] translate-y-[60%] size-20': !isOpen,
       'translate-0 w-[150px] h-20': isOpen,
     }" class="z-aboveNav transition-all duration-300 ease-linear -translate-x-1/2 bottom-0 left-1/2 flex fixed  text-center justify-center align-middle items-center"
   >
+    <OnClickOutside v-if="isOpen" class="hidden" :options="{ ignore: [re] }" @trigger="() => isOpen = false">
+      <div />
+    </OnClickOutside>
     <div class="relative size-full group">
       <div
         :class="{
