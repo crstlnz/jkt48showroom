@@ -59,7 +59,6 @@ export const useSocket = defineStore('socket', () => {
       socket = new WebSocket(wsUrl)
 
       socket.onopen = () => {
-        pending.value = false
         console.log('✅ WebSocket connected')
         reconnectAttempts = 0
         socket!.send(`listen ${settings.group}`)
@@ -81,6 +80,9 @@ export const useSocket = defineStore('socket', () => {
               userCount.value = msg.data.data.user_count ?? 0
               adminCount.value = msg.data.data.admin_count ?? 0
             }
+          }
+          else if (event.data === 'ok-listen') {
+            pending.value = false
           }
         }
         catch {
