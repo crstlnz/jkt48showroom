@@ -2,7 +2,9 @@ import { useSocket } from './socket'
 
 export const useOnLives = defineStore('onLives', () => {
   const lives = ref<ExtINowLive[] | null>(null)
-  const { error, pending, onLives, init } = useSocket()
+  const socket = useSocket()
+  const { onLives, init } = socket
+  const { error, pending } = storeToRefs(socket)
 
   onLives((data) => {
     lives.value = data

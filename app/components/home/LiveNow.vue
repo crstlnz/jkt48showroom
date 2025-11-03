@@ -67,7 +67,7 @@ const { data, pending, liveCount, error } = storeToRefs(onLives)
         {{ $t("data.failed") }}
       </div>
       <div
-        v-else-if="pending && !data?.length"
+        v-else-if="pending"
         class="bg-container grid-live-now gap-4 rounded-xl p-4"
       >
         <PulseLiveCard />
