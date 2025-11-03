@@ -59,6 +59,7 @@ export const useSocket = defineStore('socket', () => {
       socket = new WebSocket(wsUrl)
 
       socket.onopen = () => {
+        pending.value = false
         console.log('✅ WebSocket connected')
         reconnectAttempts = 0
         socket!.send(`listen ${settings.group}`)
@@ -68,10 +69,12 @@ export const useSocket = defineStore('socket', () => {
 
       socket.onmessage = (event) => {
         refreshTimeout()
-        console.log('📩 Message:', event.data)
         try {
+          if (event.data.startsWith('ok-listen')) {
+            pending.value = false
+            return
+          }
           const msg = JSON.parse(event.data)
-          console.log(msg.type, msg.data)
           if (msg.type === 'jkt48' || msg.type === 'hinatazaka46') {
             livesBus.emit(msg.data ?? [] as ExtINowLive[])
           }
@@ -80,9 +83,6 @@ export const useSocket = defineStore('socket', () => {
               userCount.value = msg.data.data.user_count ?? 0
               adminCount.value = msg.data.data.admin_count ?? 0
             }
-          }
-          else if (event.data === 'ok-listen') {
-            pending.value = false
           }
         }
         catch {
