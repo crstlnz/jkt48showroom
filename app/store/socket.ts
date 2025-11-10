@@ -59,7 +59,6 @@ export const useSocket = defineStore('socket', () => {
       socket = new WebSocket(wsUrl)
 
       socket.onopen = () => {
-        pending.value = false
         console.log('✅ WebSocket connected')
         reconnectAttempts = 0
         socket!.send(`listen ${settings.group}`)

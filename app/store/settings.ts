@@ -4,9 +4,14 @@ import ExpiredSerializer from '~/library/serializer/expired'
 export const useSettings = defineStore('settings', () => {
   // const { status } = useAuth()
   const version = ref('')
+  const apiKey = ref('')
 
   function setVersion(ver: string) {
     version.value = ver
+  }
+
+  function setApiKey(key: string) {
+    apiKey.value = key
   }
 
   const status = ref(null)
@@ -71,7 +76,7 @@ export const useSettings = defineStore('settings', () => {
   watch(() => route.fullPath, (p) => {
     path.value = p
   })
-  return { domain, version, setVersion, setDomain, currentURL, getWebTitle, group, csrfToken, firstDate, session: skipHydrate(session) }
+  return { setApiKey, domain, version, setVersion, setDomain, currentURL, getWebTitle, group, csrfToken, firstDate, session: skipHydrate(session) }
 })
 
 if (import.meta.hot) {
