@@ -6,11 +6,12 @@ import { useOnLives } from '~/store/onLives'
 const route = useRoute()
 // const { data, pending, error } = await useApiFetch<IDNLivesDetail>(`/api/watch/${route.params.id}/idn`)
 const onLives = useOnLives()
-const { data: lives } = storeToRefs(onLives)
+const { data: lives, pending: pendingSocket } = storeToRefs(onLives)
 const { members, tryRefresh: tryRefreshMember } = useMembers()
-const { data, pending, error, refresh } = await useAsyncData<IDNLivesDetail>(
+const { data, pending, error, status, refresh } = useAsyncData<IDNLivesDetail>(
   `idn-${route.params.id}`,
   async () => {
+    await until(pendingSocket).toMatch(v => v === false)
     await tryRefreshMember()
     const live = lives.value?.find(i => i.type === 'idn' && i.url_key === route.params.id) as INowLive | undefined
     const member = members?.find(i => i.idn_username === route.params.id)
@@ -41,7 +42,7 @@ const { data, pending, error, refresh } = await useAsyncData<IDNLivesDetail>(
       }
     }
   },
-  { server: false },
+  { server: false, lazy: true },
 )
 
 watch(lives, () => {
@@ -89,7 +90,7 @@ const enableComment = useLocalStorage('enable-idn-comment', true)
 
 <template>
   <div class="h-full">
-    <div v-if="pending" class="flex justify-center items-center w-full aspect-4/5 sm:aspect-video">
+    <div v-if="status !== 'success' || pending" class="flex justify-center items-center w-full aspect-4/5 sm:aspect-video">
       <div class="aspect-video w-20 max-w-[40%]">
         <Icon name="svg-spinners:ring-resize" class="w-full h-full" />
       </div>

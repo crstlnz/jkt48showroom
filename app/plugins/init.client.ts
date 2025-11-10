@@ -1,7 +1,7 @@
 import { useOnLives } from '~/store/onLives'
 import { createGtagEvent } from '~/utils/gtag'
 
-export default defineNuxtPlugin(({ hook }) => {
+export default defineNuxtPlugin(() => {
   const route = useRoute()
   const { authenticated } = useAuth()
   watch(() => route.fullPath, (path) => {
