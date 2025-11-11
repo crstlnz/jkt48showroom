@@ -4,7 +4,7 @@ import type { MediaPlayerElement } from 'vidstack/elements'
 import 'vidstack/bundle'
 
 const props = defineProps<{ title: string, src: string, thumbnails?: string }>()
-const player = ref<MediaPlayerElement>()
+// const player = ref<MediaPlayerElement>()
 const volume = useLocalStorage('volume', 100)
 const hlsLoaded = ref(false)
 const { load: loadHls } = useScriptTag(
@@ -24,25 +24,33 @@ const proxyIndex = ref(0)
 
 onMounted(async () => {
   await loadHls()
-  player.value = document.querySelector('media-player') as MediaPlayerElement
+  // player.value = document.querySelector('media-player') as MediaPlayerElement
 })
 
-useEventListener(player, 'hls-error', (event: any) => {
+useEventListener(mediaPlayer, 'hls-error', (event: any) => {
   if (event.detail.type === 'networkError') {
-    if (!proxied.value) {
-      proxied.value = true
-    }
-    else if (proxyIndex.value < proxyServers.value.length - 1) {
-      proxyIndex.value += 1
-    }
+    proxyFallback()
   }
 })
 
-useEventListener(player, 'volume-change', (e: MediaVolumeChangeEvent) => {
+function proxyFallback() {
+  if (!proxied.value) {
+    proxied.value = true
+  }
+  else if (proxyIndex.value < proxyServers.value.length - 1) {
+    proxyIndex.value += 1
+  }
+}
+
+useEventListener(mediaPlayer, 'volume-change', (e: MediaVolumeChangeEvent) => {
   volume.value = e.detail.volume
 })
 
-useEventListener(player, 'can-play', () => {
+useEventListener(mediaPlayer, 'error', (e) => {
+  proxyFallback()
+})
+
+useEventListener(mediaPlayer, 'can-play', () => {
   play()
 })
 
@@ -54,9 +62,9 @@ const src = computed(() => {
 
 async function play(retry: number = 0, tryRetry = true) {
   if (import.meta.server) return
-  if (!player.value) return
+  if (!mediaPlayer.value) return
   try {
-    await player.value.play()
+    await mediaPlayer.value.play()
   }
   catch (e) {
     if (!tryRetry) return
@@ -66,7 +74,7 @@ async function play(retry: number = 0, tryRetry = true) {
       }, 100)
     }
     else {
-      player.value.muted = true
+      mediaPlayer.value.muted = true
       play(retry + 1, false)
     }
     console.error(e)
@@ -74,7 +82,7 @@ async function play(retry: number = 0, tryRetry = true) {
 }
 
 onBeforeUnmount(() => {
-  player.value?.destroy()
+  mediaPlayer.value?.destroy()
 })
 
 const videoLandscape = ref(false)
