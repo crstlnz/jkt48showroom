@@ -10,7 +10,7 @@ export default defineNuxtPlugin(async () => {
   try {
     const { setVersion, setApiKey } = useSettings()
     setVersion(pkg.version)
-    setApiKey(createJWT({}, 60000, app.private.jwt_secret))
+    setApiKey(createJWT({}, 86400000, app.private.jwt_secret))
   }
   catch (e) {
     console.error(e)
