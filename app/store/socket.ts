@@ -47,7 +47,6 @@ export const useSocket = defineStore('socket', () => {
       }, 10000) // cek tiap 10 detik
     }
   }
-
   function init() {
     try {
       const protocol = location.protocol === 'https:' ? 'wss' : 'ws'
@@ -56,7 +55,7 @@ export const useSocket = defineStore('socket', () => {
       if (socket) {
         manualClose()
       }
-      socket = new WebSocket(wsUrl)
+      socket = new WebSocket(`${wsUrl}?token=${settings.apiKey}`)
 
       socket.onopen = () => {
         console.log('✅ WebSocket connected')

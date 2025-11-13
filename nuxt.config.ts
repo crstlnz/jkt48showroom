@@ -26,6 +26,9 @@ export default defineNuxtConfig({
     pageTransition: { name: 'page', mode: 'out-in' },
   },
   runtimeConfig: {
+    private: {
+      jwt_secret: process.env.JWT_SECRET,
+    },
     public: {
       isDev,
       cloudinary: process.env.CLOUDINARY_BASE_URL,

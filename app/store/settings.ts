@@ -76,7 +76,7 @@ export const useSettings = defineStore('settings', () => {
   watch(() => route.fullPath, (p) => {
     path.value = p
   })
-  return { setApiKey, domain, version, setVersion, setDomain, currentURL, getWebTitle, group, csrfToken, firstDate, session: skipHydrate(session) }
+  return { setApiKey, apiKey, domain, version, setVersion, setDomain, currentURL, getWebTitle, group, csrfToken, firstDate, session: skipHydrate(session) }
 })
 
 if (import.meta.hot) {
