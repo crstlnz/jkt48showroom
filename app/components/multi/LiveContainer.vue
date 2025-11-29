@@ -67,7 +67,7 @@ const lives = computed<Omit<Multi.Video, 'order'>[]>(() => {
 })
 
 function forceRefresh() {
-  onLives.refresh()
+  // onLives.refresh()
 }
 </script>
 
@@ -81,14 +81,11 @@ function forceRefresh() {
       leave-from-class="translate-y-0 translate-x-x opacity-100"
       leave-to-class="translate-y-2 translate-x-1 opacity-0"
     >
-      <PopoverPanel class="absolute -bottom-3 flex flex-col -right-3 z-0 rounded-[28px] overflow-hidden bg-white drop-shadow-lg border-black/10 t borderdark:border-white/10 dark:bg-dark-2 w-[450px] md:min-w-[450px] max-w-[calc(100vw_-_8px)] min-h-[60dvh] max-h-[85dvh]">
+      <PopoverPanel class="absolute -bottom-3 flex flex-col -right-3 z-0 rounded-[28px] overflow-hidden bg-white border border-color-1 drop-shadow-lg dark:bg-dark-1 w-[450px] md:min-w-[450px] max-w-[calc(100vw-8px)] min-h-[60dvh] max-h-[85dvh]">
         <div class="flex justify-between px-6 py-6 text-lg 2xl:text-xl font-bold">
           <div>
             Daftar Live
           </div>
-          <button v-ripple type="button" class="w-8 h-8 hover:bg-black/10 dark:hover:bg-white/5 flex items-center justify-center rounded-full" @click="forceRefresh">
-            <Icon name="ic:round-refresh" class="h-full w-full p-1" />
-          </button>
         </div>
         <div v-if="pending " class="p-10 flex justify-center">
           <Icon name="svg-spinners:ring-resize" size="1.7rem" />
