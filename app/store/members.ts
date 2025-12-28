@@ -28,6 +28,10 @@ export const useMembers = defineStore('members', () => {
     }
   }
 
+  onMounted(() => {
+    tryRefresh()
+  })
+
   return {
     members,
     isValid,
