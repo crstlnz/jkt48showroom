@@ -183,14 +183,14 @@ watch(search, () => {
               >
             </button>
             <div class="min-w-0 flex-1">
-              <div :key="item.id" class="flex flex-wrap gap-2 pb-[8px] md:gap-2.5">
+              <div :key="item.id" class="flex flex-wrap gap-2 pb-2 md:gap-2.5">
                 <div v-for="gift in item.gifts" :key="item.id + gift.id" v-tooltip="$currency(gift.point)" class="relative">
                   <div :class="{ 'max-h-[45px] max-w-[45px]': type === 'showroom', 'max-h-[54px] max-w-[54px]': type === 'idn' }">
                     <img :key="`${item.id}${gift.id}`" :src="gift.img" alt="Gift" class="aspect-square">
                     <div
                       v-if="gift.num > 1"
                       :class="getNumColor(gift.num)"
-                      class="text-stroke absolute bottom-[-10px] right-0 rounded-full text-right text-sm font-extrabold leading-6"
+                      class="text-stroke absolute -bottom-2.5 right-0 rounded-full text-right text-sm font-extrabold leading-6"
                     >
                       x{{ gift.num >= 1000 ? `${(gift.num / 1000).toFixed(0)}k` : gift.num }}
                     </div>

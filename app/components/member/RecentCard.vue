@@ -123,25 +123,40 @@ onMounted(() => {
         ref="thumbnail"
         class="group relative flex aspect-video t border border-black/10 h-20 items-center justify-center gap-0.5 overflow-hidden rounded-xl font-bold text-white drop-shadow-xs sm:h-24 md:h-28 lg:h-32 xl:h-36"
       >
-        <NuxtImg :src="recent.type === 'showroom' ? $showroomIcon : $idnLiveIcon" size="64px" :alt="recent.type === 'showroom' ? 'Showroom Logo' : 'IDN Logo'" class="h-3 md:h-4 xl:h-5 object-contain max-w-[90px] absolute z-10 left-2 bottom-1 md:bottom-1.5 xl:bottom-2 md:left-2.5 xl:left-3" />
         <div v-if="isHovered" :class="{ 'recentcardprogress': !finishLoading, 'progressfinish w-full': showLoading && finishLoading }" class="absolute left-0 top-0 z-10 h-1 bg-blue-500/70" />
         <Transition name="screenshot-slide" mode="in-out">
           <img v-if="ss" :key="ss" :src="ss" alt="Screenshot's" class="absolute z-10 w-full h-full object-cover">
         </Transition>
-        <NuxtImg
-          :key="recent.room_id"
-          loading="lazy"
-          fit="fill"
-          format="webp"
-          sizes="144px sm:172px md:200px lg:228px xl:256px"
-          :placeholder="[32, 18, 75, 100]"
-          :modifiers="{
-            aspectRatio: 16 / 9,
-          }"
-          class="relative h-full w-full cursor-pointer bg-slate-200 object-cover text-xs transition-all duration-200 dark:bg-dark-3 md:text-sm lg:text-base"
-          :alt="`${recent.member?.name}Display Picture`"
-          :src="recent.member?.img ?? recent.member.img_alt ?? $errorPicture"
-        />
+        <div class="aspect-video bg-dark-2 flex size-full">
+          <div class="bg-white flex-1 flex justify-center items-center flex-col px-3 gap-2.5 text-black/60">
+            <div>
+              <div class="text-base text-center font-extrabold">
+                {{ recent.member.name.replace("(JKT48)", "").replace("（JKT48）", "").split("/")?.[0] }}
+              </div>
+              <div class="text-base text-center">
+                {{ recent.member.name.replace("(JKT48)", "").replace("（JKT48）", "").split("/")?.[1] }}
+              </div>
+            </div>
+            <NuxtImg :src="recent.type === 'showroom' ? $showroomIcon : $idnLiveIcon" size="64px" :alt="recent.type === 'showroom' ? 'Showroom Logo' : 'IDN Logo'" class="transition-all h-3 md:h-4 xl:h-5 object-contain max-w-[90px] right-2 bottom-1 md:bottom-1.5 xl:bottom-2 md:left-2.5 xl:left-3" />
+          </div>
+          <div class="h-full aspect-9/11">
+            <NuxtImg
+              :key="recent.room_id"
+              loading="lazy"
+              fit="fill"
+              format="webp"
+              sizes="144px sm:172px md:200px lg:228px xl:256px"
+              :placeholder="[32, 18, 75, 100]"
+              :modifiers="{
+                aspectRatio: 9 / 11,
+                gravity: 'faceCenter',
+              }"
+              class="relative h-full aspect-9/11 cursor-pointer bg-slate-200 object-cover text-xs transition-all duration-200 dark:bg-dark-3 md:text-sm lg:text-base"
+              :alt="`${recent.member?.name}Display Picture`"
+              :src="recent.member?.img_alt ?? recent.member.img ?? $errorPicture"
+            />
+          </div>
+        </div>
       </div>
       <div class="flex min-w-0 flex-1 flex-col space-y-0.5 sm:space-y-1 md:space-y-2">
         <div class="truncate">

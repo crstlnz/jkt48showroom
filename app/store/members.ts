@@ -4,9 +4,10 @@ export const useMembers = defineStore('members', () => {
   const error = ref<Error | null>(null)
   const loading = ref(false)
   const settings = useSettings()
-  const { data: members, trySet, isValid } = useExpiredLocalStorage<IMember[]>(`membersv20-${settings.group}`, 86400000)
+  const v = 'v21'
+  const { data: members, trySet, isValid } = useExpiredLocalStorage<IMember[]>(`members${v}-${settings.group}`, 86400000)
   async function fetch() {
-    await trySet(async () => await $apiFetch('/api/member?v=v20', { query: { group: settings.group, _v: 'v20' } }))
+    await trySet(async () => await $apiFetch(`/api/member?v=${v}`, { query: { group: settings.group, _v: v } }))
   }
 
   async function load() {
