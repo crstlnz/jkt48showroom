@@ -114,6 +114,8 @@ async function preloadImage(src: string) {
 onMounted(() => {
   doc.value = document
 })
+
+const nickname = computed(() => props.recent.member.name.replace('(JKT48)', '').replace('（JKT48）', '').split('/')?.[1])
 </script>
 
 <template>
@@ -128,16 +130,19 @@ onMounted(() => {
           <img v-if="ss" :key="ss" :src="ss" alt="Screenshot's" class="absolute z-10 w-full h-full object-cover">
         </Transition>
         <div class="aspect-video bg-dark-2 flex size-full">
-          <div class="bg-white flex-1 flex justify-center items-center flex-col px-3 gap-2.5 text-black/60">
-            <div>
-              <div class="text-base text-center font-extrabold">
+          <div class="bg-white items-stretch flex-1 flex justify-center flex-col gap-2.5 text-black/60">
+            <div class="flex flex-col min-w-0 px-1 md:px-3">
+              <div class="text-xs lg:text-base text-center font-extrabold">
                 {{ recent.member.name.replace("(JKT48)", "").replace("（JKT48）", "").split("/")?.[0] }}
               </div>
-              <div class="text-base text-center">
-                {{ recent.member.name.replace("(JKT48)", "").replace("（JKT48）", "").split("/")?.[1] }}
+              <div v-if="nickname" class="text-xs lg:text-base text-center whitespace-nowrap truncate w-full relative text-transparent">
+                |
+                <div class="absolute inset-0 truncate text-black/60">
+                  {{ nickname }}
+                </div>
               </div>
             </div>
-            <NuxtImg :src="recent.type === 'showroom' ? $showroomIcon : $idnLiveIcon" size="64px" :alt="recent.type === 'showroom' ? 'Showroom Logo' : 'IDN Logo'" class="transition-all h-3 md:h-4 xl:h-5 object-contain max-w-[90px] right-2 bottom-1 md:bottom-1.5 xl:bottom-2 md:left-2.5 xl:left-3" />
+            <NuxtImg :src="recent.type === 'showroom' ? $showroomIcon : $idnLiveIcon" size="64px" :alt="recent.type === 'showroom' ? 'Showroom Logo' : 'IDN Logo'" class="shrink-0 transition-all h-2 md:h-4 xl:h-5 object-contain max-w-[90px] right-2 bottom-1 md:bottom-1.5 xl:bottom-2 md:left-2.5 xl:left-3" />
           </div>
           <div class="h-full aspect-9/11">
             <NuxtImg
