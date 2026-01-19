@@ -142,7 +142,7 @@ const nickname = computed(() => props.recent.member.name.replace('(JKT48)', '').
                 </div>
               </div>
             </div>
-            <NuxtImg :src="recent.type === 'showroom' ? $showroomIcon : $idnLiveIcon" size="64px" :alt="recent.type === 'showroom' ? 'Showroom Logo' : 'IDN Logo'" class="shrink-0 transition-all h-2 md:h-4 xl:h-5 object-contain max-w-[90px] right-2 bottom-1 md:bottom-1.5 xl:bottom-2 md:left-2.5 xl:left-3" />
+            <NuxtImg :src="recent.type === 'showroom' ? $showroomIcon : $idnLiveIcon" size="64px" :alt="recent.type === 'showroom' ? 'Showroom Logo' : 'IDN Logo'" class="self-center shrink-0 transition-all h-2 md:h-4 xl:h-5 object-contain max-w-[90px] right-2 bottom-1 md:bottom-1.5 xl:bottom-2 md:left-2.5 xl:left-3" />
           </div>
           <div class="h-full aspect-9/11">
             <NuxtImg
