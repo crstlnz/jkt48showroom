@@ -134,6 +134,7 @@ const { start } = useTimeoutFn(() => {
               aspectRatio: 4.5 / 1,
             }"
             :placeholder="[45, 10, 75, 50]"
+            fetchpriority="high"
             densities="x1"
             width="450"
             height="100"
