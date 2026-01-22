@@ -4,6 +4,7 @@ import { useNotifications } from './notifications'
 import { useSettings } from './settings'
 
 export const useSocket = defineStore('socket', () => {
+  const { user } = useAuth()
   const pending = ref(true)
   const error = ref(false)
   const config = useRuntimeConfig()
@@ -61,7 +62,9 @@ export const useSocket = defineStore('socket', () => {
         console.log('✅ WebSocket connected')
         reconnectAttempts = 0
         socket!.send(`listen ${settings.group}`)
-        registerAdmin()
+        if (user.value?.is_admin) {
+          registerAdmin()
+        }
         refreshTimeout()
       }
 

@@ -23,15 +23,6 @@ export default defineNuxtConfig({
       link: [
         {
           rel: 'preconnect',
-          href: 'https://fonts.googleapis.com',
-        },
-        {
-          rel: 'preconnect',
-          href: 'https://fonts.gstatic.com',
-          crossorigin: 'anonymous',
-        },
-        {
-          rel: 'preconnect',
           href: 'https://api.crstlnz.my.id',
           crossorigin: 'anonymous',
         },
