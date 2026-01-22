@@ -146,6 +146,7 @@ const enableComment = useLocalStorage('enable-idn-comment', true)
               />
             </template>
             <VidstackPlayer
+              :key="data.chat_room_id ?? data.room_id"
               class="bg-container flex justify-center flex-col flex-1 idnvideoplayer"
               :class="{ 'landscape-screen': isLandscape }"
               :title="data.name ?? ''"
