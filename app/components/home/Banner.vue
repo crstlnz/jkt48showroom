@@ -126,9 +126,11 @@ watch(isHovered, (v) => {
     <div class="m-2 absolute max-md:left-1/2 max-md:-translate-x-1/2 md:right-0 bottom-0 z-10 flex">
       <button
         v-for="[i, b] in banner?.entries()" :key="b.url + i" v-element-hover="[(s) => { if (s) { index = i; console.log('hovered', index) } }, { delayEnter: 500 }]" :index="i"
-        type="button" aria-label="Banner button" :class="{ 'bg-white/75': index !== i, 'bg-blue-500/75': index === i }"
-        class="m-0.5 size-2 transition-colors duration-200 rounded-full" @click="() => index = i"
-      />
+        type="button" aria-label="Banner button" class="p-0.5"
+        @click="() => index = i"
+      >
+        <div :class="{ 'bg-white/75': index !== i, 'bg-blue-500/75': index === i }" class="size-2 transition-colors duration-200 rounded-full" />
+      </button>
     </div>
     <Transition
       mode="in-out"
