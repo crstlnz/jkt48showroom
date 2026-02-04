@@ -86,7 +86,7 @@ watch(res, (val) => {
   // }
 })
 
-const SortList = useAppConfig().sortList
+const { sortList: SortList, imgCDN } = useAppConfig()
 function getTitle(query: any) {
   const sort = SortList.find(i => (query?.sort ?? 'date') === i.id) ?? SortList[0]
   return ((query?.order ?? 0) < 0 ? sort!.title.asc : sort!.title.desc) ?? ''
@@ -185,7 +185,7 @@ const recentHeight = computed(() => {
         <LayoutPopupButton v-if="!isXL || isMobile" class="bg-container flex aspect-square h-10 w-10 items-center justify-center rounded-2xl transition-colors sm:hover:bg-blue-500 sm:hover:text-slate-100">
           <Icon name="ph:magnifying-glass-bold" />
           <template #panel="{ close }">
-            <div class="flex flex-col items-stretch py-3 text-lg max-sm:py-5 sm:min-w-[350px]">
+            <div class="flex flex-col items-stretch py-3 text-lg max-sm:py-5 sm:min-w-87.5">
               <PaginationFilter
                 key="filterDiv"
                 :must-calculate-height="true"
@@ -215,7 +215,7 @@ const recentHeight = computed(() => {
         :class="{
           'bottom-20!': isMobile,
         }"
-        class="fixed bottom-20 left-1/2 z-belowNav flex w-[180px] max-w-[80%] -translate-x-1/2 overflow-hidden rounded-xl bg-second-2/95 font-bold text-white transition sm:bottom-10"
+        class="fixed bottom-20 left-1/2 z-belowNav flex w-45 max-w-[80%] -translate-x-1/2 overflow-hidden rounded-xl bg-second-2/95 font-bold text-white transition sm:bottom-10"
       >
         <button
           type="button"
@@ -243,9 +243,9 @@ const recentHeight = computed(() => {
             class="flex flex-col justify-center px-10 pt-10 text-center"
           >
             <div class="space-y-5">
-              <div class="mx-auto w-4/5 lg:w-[350px]">
-                <Image v-if="error" :src="`${$imgCDN}/assets/img/web/security-error.png`" alt="An Error Occured!" class="mx-auto w-full aspect-5/4 object-contain" />
-                <Image v-else :src="`${$imgCDN}/assets/img/web/empty-box.png`" alt="Empty!" class="mx-auto w-full aspect-5/4 object-contain" />
+              <div class="mx-auto w-4/5 lg:w-87.5">
+                <Image v-if="error" :src="`${imgCDN}/assets/img/web/security-error.png`" alt="An Error Occured!" class="mx-auto w-full aspect-5/4 object-contain" />
+                <Image v-else :src="`${imgCDN}/assets/img/web/empty-box.png`" alt="Empty!" class="mx-auto w-full aspect-5/4 object-contain" />
               </div>
               <div v-if="error">
                 <h2 class="mb-1 text-xl lg:text-3xl">

@@ -1,7 +1,6 @@
 import { useSettings } from '~/store/settings'
 import { createJWT } from '~/utils/jwt'
-// @ts-expect-error error
-import pkg from '../package.json'
+import pkg from '../../package.json'
 
 export default defineNuxtPlugin(async () => {
   const { checkAuth } = useAuth()
