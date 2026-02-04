@@ -15,12 +15,12 @@ const date = $fromNow(
     <NuxtLink
       :aria-label="`${recent.member?.name} Live detail`"
       no-prefetch
-      class="relative aspect-square h-18 cursor-pointer overflow-hidden rounded-full drop-shadow-xs md:h-[70px]"
+      class="relative aspect-square h-18 cursor-pointer overflow-hidden rounded-full drop-shadow-xs md:h-17.5"
       :to="`/member/${recent.member.url}`"
     >
       <Image
         class="h-full w-full"
-        :src="recent.member?.img || $errorPicture"
+        :src="recent.member?.img_alt || $errorPicture"
         :alt="`${recent.member?.name}Display Picture`"
         loading="lazy"
         fit="fill"
@@ -46,7 +46,7 @@ const date = $fromNow(
         </NuxtLink>
         <div
           v-if="recent.member?.is_graduate"
-          class="graduated h-6 w-6 rounded-full bg-red-500 p-[3px] text-white"
+          class="graduated h-6 w-6 rounded-full bg-red-500 p-0.75 text-white"
           title="Graduated"
         >
           <svg
