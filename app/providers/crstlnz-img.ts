@@ -56,10 +56,10 @@ export default defineProvider<{ baseURL?: string }>({
     const mergeModifiers = { ...defaultModifiers, ...modifiers } as any
     if (mergeModifiers.aspectRatio) {
       if (mergeModifiers.width) {
-        mergeModifiers.height = mergeModifiers.width / mergeModifiers.aspectRatio
+        mergeModifiers.height = Math.round(mergeModifiers.width / mergeModifiers.aspectRatio)
       }
       else if (mergeModifiers.height) {
-        mergeModifiers.width = mergeModifiers.height * mergeModifiers.aspectRatio
+        mergeModifiers.width = Math.round(mergeModifiers.height * mergeModifiers.aspectRatio)
       }
       mergeModifiers.aspectRatio = undefined
     }

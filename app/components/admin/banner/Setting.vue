@@ -8,7 +8,7 @@ interface GroupBanner {
   banners: BannerWithId[]
 }
 
-const { data, refresh } = await useApiFetch<Record<string, Banner[]>>('/api/banner')
+const { data, refresh } = await useApiFetch<Record<string, Banner[]>>('/api/admin/banner')
 
 const mappedData = computed(() => {
   const wew = {} as Record<GroupType, GroupBanner>
