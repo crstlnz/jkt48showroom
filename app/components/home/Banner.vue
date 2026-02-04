@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { vElementHover } from '@vueuse/components'
 import { useSettings } from '~/store/settings'
 
 const { getBanner } = useAppConfig()
@@ -39,7 +40,8 @@ function deepEqual(a: any, b: any): boolean {
 // NOTE: Use useNuxtData to get SSR data injected during server render
 const ssrBanners = ref<Record<string, Banner[]> | null>(null)
 const nuxtApp = useNuxtApp()
-
+const container = ref()
+const isHovered = useElementHover(container)
 if (import.meta.server) {
   // On server, fetch data so SSR context matches
   const { data } = await useApiFetch<Record<string, Banner[]>>('/api/banner')
@@ -99,7 +101,7 @@ if (!banner.value) {
 
 const index = ref(0)
 
-const { start } = useTimeoutFn(() => {
+const { start, stop } = useTimeoutFn(() => {
   if (banner.value && index.value + 1 >= banner.value.length) {
     index.value = 0
   }
@@ -108,13 +110,29 @@ const { start } = useTimeoutFn(() => {
   }
   start()
 }, 6000)
+
+watch(isHovered, (v) => {
+  if (v) {
+    stop()
+  }
+  else {
+    start()
+  }
+})
 </script>
 
 <template>
-  <div class="relative aspect-3/1 overflow-hidden shadow-2xs lg:aspect-[4.5/1] bg-container border-none!">
+  <div ref="container" class="relative aspect-3/1 overflow-hidden shadow-2xs lg:aspect-[4.5/1] bg-container border-none!">
+    <div class="m-2 absolute max-md:left-1/2 max-md:-translate-x-1/2 md:right-0 bottom-0 z-10 flex">
+      <button
+        v-for="[i, b] in banner?.entries()" :key="b.url + i" v-element-hover="[(s) => { if (s) { index = i; console.log('hovered', index) } }, { delayEnter: 500 }]" :index="i"
+        type="button" aria-label="Banner button" :class="{ 'bg-white/75': index !== i, 'bg-blue-500/75': index === i }"
+        class="m-0.5 size-2 transition-colors duration-200 rounded-full" @click="() => index = i"
+      />
+    </div>
     <Transition
       mode="in-out"
-      enter-active-class="transition-opacity duration-1000"
+      enter-active-class="transition-opacity duration-0"
       enter-from-class="opacity-0"
       enter-to-class="opacity-100"
       leave-active-class="absolute inset-0 transition-opacity duration-1000"
@@ -126,7 +144,7 @@ const { start } = useTimeoutFn(() => {
           :aria-label="banner![index]?.title"
           :href="banner![index]?.url"
           target="_blank"
-          class="aspect-3/1 lg:aspect-[4.5/1] block transition-all duration-300 hover:brightness-75 focus-visible:brightness-75"
+          class="aspect-3/1 lg:aspect-[4.5/1] block transition-all duration-300 focus-visible:brightness-75"
         >
           <Image
             sizes="600px sm:750px md:900px lg:1000px"
