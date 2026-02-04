@@ -17,7 +17,7 @@ const { locale } = useI18n()
         :src="member.img"
         :alt="`${member.name} Profile Picture`"
         loading="lazy"
-        fit="fill"
+        fit="cover"
         :modifiers="{
           aspectRatio: 1,
           gravity: 'faceCenter',
@@ -28,7 +28,7 @@ const { locale } = useI18n()
       />
     </component>
     <div class="flex flex-col">
-      <component :is="member.url_key ? NuxtLink : 'div'" :to="member.url_key ? `/member/${member.url_key}` : undefined" class="w-[105px] max-w-full  font-bold opacity-90 text-lg">
+      <component :is="member.url_key ? NuxtLink : 'div'" :to="member.url_key ? `/member/${member.url_key}` : undefined" class="w-26.25 max-w-full  font-bold opacity-90 text-lg">
         {{ member.name }}
       </component>
       <div class="text-base opacity-80 mb-1.5">

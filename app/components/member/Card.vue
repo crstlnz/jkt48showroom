@@ -36,7 +36,7 @@ const socials = computed(() => {
             aspectRatio: 1,
             gravity: 'faceCenter',
           }"
-          width="96px"
+          sizes="96px"
           :placeholder="[10, 10, 75, 5]"
           format="webp"
         />

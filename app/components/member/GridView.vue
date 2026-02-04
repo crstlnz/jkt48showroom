@@ -24,7 +24,7 @@ watch(keyId, () => {
 </script>
 
 <template>
-  <div class="memberList px-3 md:px-4 min-h-[100vh]">
+  <div class="memberList px-3 md:px-4 min-h-screen">
     <div v-if="error">
       <Error message="Something error :(" :img-src="`${$imgCDN}/assets/svg/web/error.svg`" />
     </div>
