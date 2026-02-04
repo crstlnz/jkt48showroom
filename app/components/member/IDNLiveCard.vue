@@ -18,7 +18,8 @@ const preview = ref<typeof PreviewVideo>()
 const streamingURL = computed(() => props.live.streaming_url_list?.[0]?.url)
 const instance = getCurrentInstance()
 const key = instance?.vnode.key as string
-useScriptTag(useAppConfig().hlsUrl, () => {
+const { hlsUrl, idnLiveIcon } = useAppConfig()
+useScriptTag(hlsUrl, () => {
   isSupported.value = Hls.isSupported()
 })
 
@@ -148,7 +149,7 @@ watch(isHovered, (hovered) => {
     </div>
     <div class="absolute top-0 left-0 z-20 p-3 md:p-4 pointer-events-none">
       <NuxtLink class="pointer-events-auto" :to="$idnLiveUrl(live?.url_key ?? '0', live?.slug ?? '0')" target="_blank" :external="true" no-prefetch>
-        <NuxtImg src="https://upload.wikimedia.org/wikipedia/commons/b/ba/IDN_Live.svg" size="64px" class="w-16" />
+        <Image :src="idnLiveIcon" size="64px" class="w-16" />
       </NuxtLink>
     </div>
     <div class="absolute bottom-0 left-0 z-20 font-semibold w-full pointer-events-none">

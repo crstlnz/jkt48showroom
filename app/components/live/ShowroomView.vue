@@ -94,7 +94,7 @@ const stageNum = computed(() => {
 
 function getFansRankList(): IUIStageFans[] {
   if (!stageList.value?.length) return []
-  return stageList.value[stageNum.value].list.map<IUIStageFans>((i) => {
+  return stageList.value[stageNum.value]?.list.map<IUIStageFans>((i) => {
     const fans = users.get(i)
     return {
       id: i,
@@ -102,7 +102,7 @@ function getFansRankList(): IUIStageFans[] {
       avatar: $avatarURL(fans?.avatar_id ?? 1),
       isCurrentUser: String(user.value?.id || -1) === String(fans?.id || -2),
     }
-  })
+  }) ?? []
 }
 
 watch(selectedTime, (time) => {
@@ -118,8 +118,8 @@ watch(stageNum, () => {
   }, 50)
 })
 
-const podiumGifts = computed<IPodiumGift[]>(() => {
-  const gifts: IPodiumGift[] = []
+const podiumGifts = computed<Database.IPodiumGift[]>(() => {
+  const gifts: Database.IPodiumGift[] = []
   for (const fansGift of props?.giftData?.log ?? []) {
     for (const gift of fansGift.gifts) {
       const g = props?.giftData?.list.find(i => gift.id === i.id)
@@ -251,7 +251,7 @@ const { locale } = useI18n()
                 '-rotate-180': showSlider,
               }"
               name="ph:caret-down-bold"
-              class="transition-transform duration-[250ms]"
+              class="transition-transform duration-250"
             />
           </button>
           <div
@@ -259,10 +259,10 @@ const { locale } = useI18n()
               'pointer-events-none invisible translate-y-[120%] opacity-0': !showSlider,
               'pointer-events-auto visible': showSlider,
             }"
-            class="relative flex flex-1 items-center transition-[transform,visibility,opacity] duration-[300ms]"
+            class="relative flex flex-1 items-center transition-[transform,visibility,opacity] duration-300"
           >
             <div
-              class="absolute bottom-[calc(100%_+_5px)] text-xs font-bold md:text-sm"
+              class="absolute bottom-[calc(100%+5px)] text-xs font-bold md:text-sm"
               :class="{ 'lg:text-2xl!': isFullscreen }"
             >
               {{ $dayjs(selectedTime).locale(locale).format("LLLL") }}
@@ -288,7 +288,7 @@ const { locale } = useI18n()
               leave-from-class="translate-y-0 translate-x-x opacity-100"
               leave-to-class="translate-y-2 translate-x-1 opacity-0"
             >
-              <PopoverPanel class="absolute bottom-[calc(100%_+_8px)] right-2 rounded-md bg-[rgba(28,28,28,.9)]">
+              <PopoverPanel class="absolute bottom-[calc(100%+8px)] right-2 rounded-md bg-[rgba(28,28,28,.9)]">
                 <div class="flex flex-col py-1.5 text-base">
                   <SwitchGroup>
                     <div role="button" class="flex hover:bg-gray-300/25">

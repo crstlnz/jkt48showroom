@@ -81,8 +81,8 @@ const calculatedGift = computed<RecentUserGifts[]>(() => {
           <div class="absolute top-3 left-3 font-bold text-xl md:text-lg text-shadow text-white">
             {{ data.idn.title }}
           </div>
-          <NuxtImg :src="$idnLiveIcon" size="64px" class="absolute right-3 bottom-3 mt-[6px] h-6 md:h-5 object-contain max-w-[90px]" />
-          <NuxtImg
+          <Image :src="$idnLiveIcon" size="64px" class="absolute right-3 bottom-3 mt-[6px] h-6 md:h-5 object-contain max-w-[90px]" />
+          <Image
             sizes="200px sm:250px md:300px lg:247.5px"
             :placeholder="[45, 10, 10, 70]"
             fit="fill"

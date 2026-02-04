@@ -44,8 +44,8 @@ const { locale } = useI18n()
     >
       <div v-for="recent in data.recents.slice(0, 6)" :key="recent.data_id" class="bg-container flex gap-3 rounded-xl p-3 md:p-4 max-sm:nth-[n+4]:hidden max-xl:nth-[n+5]:hidden">
         <NuxtLink :to="`/member/${recent.member.url}`" class="aspect-96/135 relative group overflow-hidden rounded-xl w-24 2xl:w-28">
-          <NuxtImg v-if="recent.type === 'idn'" alt="IDN Logo" :src="$idnLiveIcon" size="64px" class="absolute z-10 left-2 top-2 mt-1 h-4 md:h-4 w-[51px] object-contain" />
-          <NuxtImg
+          <Image v-if="recent.type === 'idn'" alt="IDN Logo" :src="$idnLiveIcon" size="64px" class="absolute z-10 left-2 top-2 mt-1 h-4 md:h-4 w-[51px] object-contain" />
+          <Image
             provider="cloudinary"
             :src="recent.member.img_alt ?? recent.member.img ?? $errorPicture"
             :alt="`${recent.member.name} profile picture`"
@@ -87,8 +87,8 @@ const { locale } = useI18n()
     </div>
     <div v-else key="nodata" class="bg-container rounded-xl p-3 md:p-4 w-full">
       <div class="space-y-4 overflow-hidden py-4 text-center dark:bg-dark-1">
-        <NuxtImg
-          :src="`${$cloudinaryURL}/assets/svg/web/no_data.svg`"
+        <Image
+          :src="`${$imgCDN}/assets/svg/web/no_data.svg`"
           alt="Empty"
           class="mx-auto aspect-square w-[200px] max-w-[80%] dark:brightness-110"
         />

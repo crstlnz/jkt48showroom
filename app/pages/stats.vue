@@ -20,8 +20,8 @@ useHead({
 
 <template>
   <LayoutSingleRow :title="title">
-    <Error v-if="error && error.statusCode === 404" class="mx-5" message="Data not found :(" :img-src="`${$cloudinaryURL}/assets/svg/web/no_data.svg`" />
-    <Error v-else-if="error" class="mx-5" message="An error occured!" :img-src="`${$cloudinaryURL}/assets/svg/web/error.svg`" />
+    <Error v-if="error && error.statusCode === 404" class="mx-5" message="Data not found :(" :img-src="`${$imgCDN}/assets/svg/web/no_data.svg`" />
+    <Error v-else-if="error" class="mx-5" message="An error occured!" :img-src="`${$imgCDN}/assets/svg/web/error.svg`" />
     <div v-else-if="pending">
       Loading
     </div>

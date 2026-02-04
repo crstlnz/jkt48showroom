@@ -30,12 +30,12 @@ const props = defineProps<{
 const slider = ref()
 const slideImgs = ref<HTMLElement[]>([])
 const blaze = ref<BlazeSlider>()
-const { cloudinaryURL } = useAppConfig()
+const { imgCDN } = useAppConfig()
 const screenshotList = ref<{ id: number, width?: number, height?: number }[]>(props.screenshots.list.map(i => ({ id: i })))
 const screenshots = computed(() => {
   return screenshotList.value.map((i) => {
     return {
-      url: `${cloudinaryURL}/${props.screenshots.folder}/${i.id}.${props.screenshots.format}`,
+      url: `${imgCDN}/${props.screenshots.folder}/${i.id}.${props.screenshots.format}`,
       width: i.width ?? 400,
       height: i.height ?? 800,
     }

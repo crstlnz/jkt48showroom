@@ -36,7 +36,7 @@ useHead({
     <div v-if="pending" class="relative min-h-[100vh] w-full">
       <Icon name="eos-icons:loading" size="3rem" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 " />
     </div>
-    <Error v-else-if="error || !data" :message="error ? (error.statusCode === 404 ? $t('error.pagenotfound') : $t('error.unknown')) : $t('error.pagenotfound')" :img-src="!data || error?.statusCode === 404 ? `${$cloudinaryURL}/assets/svg/web/404.svg` : `${$cloudinaryURL}/assets/svg/web/error.svg`" />
+    <Error v-else-if="error || !data" :message="error ? (error.statusCode === 404 ? $t('error.pagenotfound') : $t('error.unknown')) : $t('error.pagenotfound')" :img-src="!data || error?.statusCode === 404 ? `${$imgCDN}/assets/svg/web/404.svg` : `${$imgCDN}/assets/svg/web/error.svg`" />
     <LayoutRow v-else title="News" :mobile-side="false">
       <template #default>
         <div class="px-3 md:px-4">
@@ -44,9 +44,9 @@ useHead({
             {{ data?.title }}
           </h3>
           <div class="mb-5 mt-2 flex items-center gap-2">
-            <NuxtImg
+            <Image
               class="h-[19px] w-[56px] rounded-[3px]"
-              :src="`${$cloudinaryURL}/assets/jkt48${data.label}`"
+              :src="`${$imgCDN}/assets/jkt48${data.label}`"
               alt="Label"
               loading="lazy"
               fit="fill"

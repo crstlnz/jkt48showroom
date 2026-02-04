@@ -35,11 +35,11 @@ const maxDots = computed(() => {
         <div v-for="num in 10" :key="num" class="bg-container mx-3 flex h-[194.66px] animate-pulse flex-col gap-2 rounded-xl p-3 md:mx-4 md:p-4" />
       </div>
       <div v-else-if="error">
-        <Error :message="$t('error.unknown')" :img-src="`${$cloudinaryURL}/assets/svg/web/error.svg`" />
+        <Error :message="$t('error.unknown')" :img-src="`${$imgCDN}/assets/svg/web/error.svg`" />
       </div>
       <div v-else-if="data" class="flex flex-col gap-3.5">
         <div v-for="theater in data.theater" :key="theater.id" class="bg-container mx-3 flex gap-3 rounded-xl p-3 md:mx-4 md:p-4">
-          <NuxtImg
+          <Image
             class="aspect-[4/5.5] w-32 rounded-md bg-black/10 object-cover"
             :src="theater.poster ?? $errorPicture"
             alt="Label"

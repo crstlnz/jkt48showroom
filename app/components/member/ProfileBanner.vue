@@ -52,7 +52,7 @@ function getLiveUrl(member: ExtINowLive) {
     <ImageViewer
       ref="imageViewer"
     />
-    <NuxtImg
+    <Image
       sizes="500px sm:600px md:900px lg:1000px"
       :modifiers="{
         aspectRatio: 4.5 / 1,
@@ -77,7 +77,7 @@ function getLiveUrl(member: ExtINowLive) {
               <div class="absolute inset-0 z-10 rounded-full bg-red-500" />
               <div class="absolute inset-0 -z-10 animate-ping rounded-full bg-red-500" />
             </div>
-            <NuxtImg
+            <Image
               class="aspect-square border border-black/10 size-full object-cover rounded-full"
               :src="member.img_alt ?? member.img ?? $errorPicture"
               :alt="`${member.name} Profile Picture`"

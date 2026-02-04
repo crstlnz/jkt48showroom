@@ -63,7 +63,7 @@ const { data, pending, liveCount, error } = storeToRefs(onLives)
         v-if="error"
         class="bg-container flex w-full flex-col items-center justify-center gap-2 rounded-xl pb-5 text-xs shadow-2xs md:gap-3 md:text-sm xl:gap-5 xl:pb-8 xl:pt-2"
       >
-        <NuxtImg class="aspect-square w-72 max-w-[70%]" :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" sizes="320px" fit="fill" />
+        <Image class="aspect-square w-72 max-w-[70%]" :src="`${$imgCDN}/assets/svg/web/error.svg`" sizes="320px" fit="fill" />
         {{ $t("data.failed") }}
       </div>
       <div
@@ -101,7 +101,7 @@ const { data, pending, liveCount, error } = storeToRefs(onLives)
       >
         <div class="aspect-20/28 md:aspect-20/26 opacity-0" />
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex h-[245.5px] flex-col items-center justify-center gap-2 text-center text-xs max-sm:aspect-square sm:h-[230.88px] md:h-[250px] md:gap-3 md:text-sm lg:h-[270.55px] xl:h-[349.2px] 2xl:h-[318px]">
-          <NuxtImg class="mx-auto w-64 lg:w-72 max-w-[70%] md:max-w-[80%] aspect-5/4 object-contain" alt="No member onlive" :src="`${$cloudinaryURL}/assets/svg/web/space_copy.svg`" sizes="320px" fit="fill" />
+          <Image class="mx-auto w-64 lg:w-72 max-w-[70%] md:max-w-[80%] aspect-5/4 object-contain" alt="No member onlive" :src="`${$imgCDN}/assets/svg/web/space_copy.svg`" sizes="320px" fit="fill" />
           <span class="mt-4 md:mt-5">{{ $t("nolive") }}</span>
         </div>
       </div>

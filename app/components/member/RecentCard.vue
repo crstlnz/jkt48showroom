@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { imgCDN } from '~/app.config'
+
 const props = withDefaults(defineProps<{
   recent: IRecent
   showDuration?: boolean
@@ -86,7 +88,7 @@ async function fetchScreenshot() {
     try {
       const data = await $apiFetch<Database.IScreenshot>(`/api/screenshots/${props.recent.data_id}`)
       screenshots.value = data.list.map((id) => {
-        return `${cloudinaryURL}/${data.folder}/${id}.${data.format}`
+        return `${imgCDN}/${data.folder}/${id}.${data.format}`
       })
       startScreenshotSlide()
     }
@@ -142,10 +144,10 @@ const nickname = computed(() => props.recent.member.name.replace('(JKT48)', '').
                 </div>
               </div>
             </div>
-            <NuxtImg :src="recent.type === 'showroom' ? $showroomIcon : $idnLiveIcon" size="64px" :alt="recent.type === 'showroom' ? 'Showroom Logo' : 'IDN Logo'" class="self-center shrink-0 transition-all h-2 md:h-4 xl:h-5 object-contain max-w-[90px] right-2 bottom-1 md:bottom-1.5 xl:bottom-2 md:left-2.5 xl:left-3" />
+            <Image :src="recent.type === 'showroom' ? $showroomIcon : $idnLiveIcon" size="64px" :alt="recent.type === 'showroom' ? 'Showroom Logo' : 'IDN Logo'" class="self-center shrink-0 transition-all h-2 md:h-4 xl:h-5 object-contain max-w-[90px] right-2 bottom-1 md:bottom-1.5 xl:bottom-2 md:left-2.5 xl:left-3" />
           </div>
           <div class="h-full aspect-9/11">
-            <NuxtImg
+            <Image
               :key="recent.room_id"
               loading="lazy"
               fit="fill"

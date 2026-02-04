@@ -98,22 +98,22 @@ const enableComment = useLocalStorage('enable-idn-comment', true)
     <div v-else-if="error">
       <Error
         :message="error.statusMessage || ''" :img-src="error.statusCode === 404
-          ? `${$cloudinaryURL}/assets/svg/web/404.svg`
-          : `${$cloudinaryURL}/assets/svg/web/error.svg`
+          ? `${$imgCDN}/assets/svg/web/404.svg`
+          : `${$imgCDN}/assets/svg/web/error.svg`
         "
       />
     </div>
     <div v-else-if="!data?.is_live" class="flex flex-col gap-6">
       <div class="flex flex-col gap-5 items-center flex-1 bg-container py-7 md:py-16 px-10">
-        <NuxtImg
-          :src="`${$cloudinaryURL}/assets/svg/web/video_files.svg`"
+        <Image
+          :src="`${$imgCDN}/assets/svg/web/video_files.svg`"
           class="mx-auto w-[450px] max-w-[70%] dark:brightness-90" alt=""
         />
         <div>{{ $t('streamoffline') }}</div>
       </div>
       <div class="flex gap-3 mx-6">
         <NuxtLink :to="`/member/${data?.member_info?.key}`" class="w-28 md:w-36 max-w-[40%]">
-          <NuxtImg
+          <Image
             :src="data?.member_info?.img || $errorPicture" size="64px"
             class="w-full aspect-5/6 object-cover rounded-xl"
           />

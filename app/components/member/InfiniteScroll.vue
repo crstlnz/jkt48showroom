@@ -83,7 +83,7 @@ watch(recentHeight, () => {
     </div>
 
     <div v-if="error" class="bg-container flex aspect-video w-full flex-col items-center justify-center gap-10 rounded-xl">
-      <NuxtImg class="mx-auto w-80 max-w-[80%]" :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" sizes="320px" fit="fill" />
+      <Image class="mx-auto w-80 max-w-[80%]" :src="`${$imgCDN}/assets/svg/web/error.svg`" sizes="320px" fit="fill" />
       <span class="text-lg">{{ $t("data.failed") }}</span>
     </div>
 
@@ -92,7 +92,7 @@ watch(recentHeight, () => {
     </div>
 
     <div v-else-if="!dataset || !dataset.length" class="bg-container flex aspect-video w-full flex-col items-center justify-center rounded-xl pb-8">
-      <NuxtImg class="mx-auto w-96 max-w-[80%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`" />
+      <Image class="mx-auto w-96 max-w-[80%]" :src="`${$imgCDN}/assets/svg/web/empty-box.svg`" />
       <span class="text-lg">{{ $t("data.nodata") }}</span>
     </div>
 

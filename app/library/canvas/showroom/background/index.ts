@@ -63,7 +63,7 @@ class ShowroomBackground extends CanvasUtil {
     }
   }
 
-  setPodiumGifts(giftData: IPodiumGift[]) {
+  setPodiumGifts(giftData: Database.IPodiumGift[]) {
     this.podiumGifts = []
     const map = new Map()
     for (const gift of giftData) {

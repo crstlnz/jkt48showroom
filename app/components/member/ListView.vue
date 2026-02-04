@@ -10,7 +10,7 @@ const config = useAppConfig()
 <template>
   <div class="memberList">
     <div v-if="error">
-      <Error message="Something error :(" :img-src="`${$cloudinaryURL}/assets/svg/web/error.svg`" />
+      <Error message="Something error :(" :img-src="`${$imgCDN}/assets/svg/web/error.svg`" />
     </div>
     <div
       v-else-if="pending"
@@ -23,7 +23,7 @@ const config = useAppConfig()
       />
     </div>
     <div v-else-if="!members?.length">
-      <Error message="Data not found :(" :img-src="`${$cloudinaryURL}/assets/svg/web/no_data.svg`" />
+      <Error message="Data not found :(" :img-src="`${$imgCDN}/assets/svg/web/no_data.svg`" />
     </div>
 
     <ClientOnly v-else>
@@ -51,7 +51,7 @@ const config = useAppConfig()
           <div :key="index" class="pb-3">
             <div class="bg-container flex gap-3 rounded-xl p-3">
               <NuxtLink :key="member.room_id" :to="`/member/${member.url}`" class="h-20 w-20 shrink-0 overflow-hidden rounded-full">
-                <NuxtImg
+                <Image
                   class="h-20 w-20 object-cover"
                   :src="member.img_alt ?? member.img ?? config.errorPicture"
                   :alt="`${member.name} Profile Picture`"

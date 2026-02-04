@@ -185,7 +185,7 @@ function setButton(key: string) {
     <div v-else key="data" class="space-y-3 md:space-y-4">
       <div v-if="(data?.stats?.length ?? 0) <= 1" class="rounded-xl bg-white p-3 shadow-2xs dark:bg-dark-1 md:p-4 xl:p-5 ">
         <div class="pb-6 text-center">
-          <NuxtImg :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`" :alt="$t('data.notenough')" class="mx-auto aspect-4/3 w-72 max-w-[80%]" />
+          <Image :src="`${$imgCDN}/assets/svg/web/empty-box.svg`" :alt="$t('data.notenough')" class="mx-auto aspect-4/3 w-72 max-w-[80%]" />
           {{ $t('data.notenough') }}
         </div>
       </div>
@@ -206,7 +206,7 @@ function setButton(key: string) {
             class="group h-16 w-16 overflow-hidden rounded-full md:h-20 md:w-20"
             :title="stat.img.title"
           >
-            <NuxtImg
+            <Image
               class="h-full w-full"
               :src="stat.img.src || $errorPicture"
               :alt="stat.img.title"

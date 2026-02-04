@@ -31,7 +31,7 @@ defineProps<{
     </div>
     <div v-else>
       <div class="pb-5 pt-2 text-center">
-        <NuxtImg class="mx-auto aspect-5/4 w-72 max-w-[75%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`" />
+        <Image class="mx-auto aspect-5/4 w-72 max-w-[75%]" :src="`${$imgCDN}/assets/svg/web/empty-box.svg`" />
         <span>{{ $t("data.nodata") }}</span>
       </div>
     </div>
@@ -40,7 +40,7 @@ defineProps<{
     </div>
     <div v-else-if="error">
       <div class="pb-5 pt-2 text-center">
-        <img class="mx-auto aspect-square w-72 max-w-[65%] object-contain" :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" sizes="320px" fit="fill">
+        <img class="mx-auto aspect-square w-72 max-w-[65%] object-contain" :src="`${$imgCDN}/assets/svg/web/error.svg`" sizes="320px" fit="fill">
         <span>{{ $t("data.failed") }}</span>
       </div>
     </div> -->

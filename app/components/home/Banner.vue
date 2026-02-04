@@ -128,7 +128,7 @@ const { start } = useTimeoutFn(() => {
           target="_blank"
           class="aspect-3/1 lg:aspect-[4.5/1] block transition-all duration-300 hover:brightness-75 focus-visible:brightness-75"
         >
-          <NuxtImg
+          <Image
             sizes="600px sm:750px md:900px lg:1000px"
             :modifiers="{
               aspectRatio: 4.5 / 1,

@@ -45,7 +45,7 @@ const { locale } = useI18n()
     <!-- end of pending section -->
     <div v-else-if="error" class="flex justify-center items-center pb-4 aspect-video">
       <div class="flex flex-col items-center">
-        <NuxtImg :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" sizes="320px" fit="fill" alt="" class="p-5" />
+        <Image :src="`${$imgCDN}/assets/svg/web/error.svg`" sizes="320px" fit="fill" alt="" class="p-5" />
         {{ $t("error.unknown") }}
       </div>
     </div>
@@ -93,9 +93,9 @@ const { locale } = useI18n()
       <div class="flex flex-col gap-3 md:gap-4">
         <component :is="!event.url.startsWith('/calendar') ? NuxtLink : 'div'" v-for="event in data.other_schedule" :key="event.id" :to="event.url.startsWith('/theater/schedule/id/') ? `/theater/${$getTheaterId(event.url)}` : `${$jkt48url}${event.url}`" class="bg-container rounded-xl p-3 md:p-4 space-y-1">
           <div class="flex items-center gap-2">
-            <NuxtImg
+            <Image
               class="aspect-56/19 w-14 object-cover self-center"
-              :src="`${$cloudinaryURL}/assets/jkt48${event.label}`"
+              :src="`${$imgCDN}/assets/jkt48${event.label}`"
               alt="Label"
               loading="lazy"
               quality="100"

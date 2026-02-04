@@ -93,8 +93,8 @@ const mockloading = ref(false)
     </div>
     <div v-else key="nodata" class="bg-container rounded-xl p-3 md:p-4 w-full">
       <div class="space-y-4 overflow-hidden py-4 text-center dark:bg-dark-1">
-        <NuxtImg
-          :src="`${$cloudinaryURL}/assets/svg/web/no_data.svg`" alt="Empty"
+        <Image
+          :src="`${$imgCDN}/assets/svg/web/no_data.svg`" alt="Empty"
           class="mx-auto aspect-square w-[200px] max-w-[80%] dark:brightness-110"
         />
         <div class="text-base">

@@ -8,7 +8,7 @@ const member = ref(props.member)
 
 <template>
   <div class="h-32 p-3 md:p-4 rounded-xl bg-container flex gap-3 md:gap-3">
-    <NuxtImg
+    <Image
       :key="member._id"
       sizes="96px"
       :placeholder="[45, 10, 55, 70]"

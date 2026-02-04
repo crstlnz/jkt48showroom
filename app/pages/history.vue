@@ -237,8 +237,8 @@ const recentHeight = computed(() => {
           >
             <div class="space-y-5">
               <div class="mx-auto aspect-video w-4/5 lg:w-[350px]">
-                <NuxtImg v-if="error" :src="`${$cloudinaryURL}/assets/img/web/security-error.png`" alt="An Error Occured!" class="mx-auto w-full" />
-                <NuxtImg v-else :src="`${$cloudinaryURL}/assets/img/web/empty-box.png`" alt="Empty!" class="mx-auto w-full" />
+                <Image v-if="error" :src="`${$imgCDN}/assets/img/web/security-error.png`" alt="An Error Occured!" class="mx-auto w-full" />
+                <Image v-else :src="`${$imgCDN}/assets/img/web/empty-box.png`" alt="Empty!" class="mx-auto w-full" />
               </div>
               <div v-if="error">
                 <h2 class="mb-1 text-xl lg:text-3xl">
@@ -303,7 +303,7 @@ const recentHeight = computed(() => {
                           {{ $dayjs(item.live_info?.date?.end).locale(locale).fromNow() }}
                         </div>
                       </div>
-                      <NuxtImg
+                      <Image
                         provider="cloudinary"
                         :src="item.member.img_alt ?? item.member.img"
                         :alt="`${item.member.name} profile picture`"

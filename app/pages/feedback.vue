@@ -99,8 +99,8 @@ useEventListener(feedbackForm, 'submit', async (e) => {
               https://dc.crstlnz.my.id
             </NuxtLink>
             <div class="grid md:flex grid-cols-2 md:gap-2 md:flex-wrap mt-2">
-              <NuxtImg sizes="200px" class="aspect-[5/8.8] object-cover" src="https://res.cloudinary.com/haymzm4wp/image/upload/v1705166721/assets/img/ss-tutorial01.png" />
-              <NuxtImg sizes="200px" class="aspect-[5/8.8] object-cover" src="https://res.cloudinary.com/haymzm4wp/image/upload/v1705166721/assets/img/ss-tutorial02.png" />
+              <Image sizes="200px" class="aspect-[5/8.8] object-cover" src="https://res.cloudinary.com/haymzm4wp/image/upload/v1705166721/assets/img/ss-tutorial01.png" />
+              <Image sizes="200px" class="aspect-[5/8.8] object-cover" src="https://res.cloudinary.com/haymzm4wp/image/upload/v1705166721/assets/img/ss-tutorial02.png" />
             </div>
           </Accordion>
           <Accordion title="Force Close saat menonton member pada aplikasi Wots48" class="mt-2">

@@ -7,7 +7,7 @@ const { data, pending, error, refresh } = await useApiFetch<ShowroomAPI.Follow>(
   <LayoutSingleRow :title="$t('follow.title')" :mobile-side="false">
     <template #default>
       <div v-if="error">
-        <Error :message="$t('data.error')" :img-src="`${$cloudinaryURL}/assets/svg/web/error.svg`" :redirect-msg="$t('backtohome')" />
+        <Error :message="$t('data.error')" :img-src="`${$imgCDN}/assets/svg/web/error.svg`" :redirect-msg="$t('backtohome')" />
       </div>
       <div v-else-if="!pending && !data?.rooms?.length">
         <Error :message="$t('data.nodata')" img-src="/svg/ufo.svg" :redirect-msg="$t('backtohome')" />

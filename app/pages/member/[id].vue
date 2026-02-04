@@ -88,12 +88,12 @@ useHead({
     <div v-if="pending" class="flex min-h-[100vh] w-full flex-1 items-center justify-center">
       <Icon name="svg-spinners:ring-resize" size="2.5rem" />
     </div>
-    <Error v-else-if="error || !member" :message="error ? (error.statusCode === 404 ? $t('error.pagenotfound') : $t('error.unknown')) : $t('error.pagenotfound')" :img-src="!member || error?.statusCode === 404 ? `${$cloudinaryURL}/assets/svg/web/404.svg` : `${$cloudinaryURL}/assets/svg/web/error.svg`" />
+    <Error v-else-if="error || !member" :message="error ? (error.statusCode === 404 ? $t('error.pagenotfound') : $t('error.unknown')) : $t('error.pagenotfound')" :img-src="!member || error?.statusCode === 404 ? `${$imgCDN}/assets/svg/web/404.svg` : `${$imgCDN}/assets/svg/web/error.svg`" />
     <LayoutRow v-else :title="member?.fullname ?? member?.name ?? ''">
       <template #default>
         <div>
           <div v-if="!member" class="flex aspect-video w-full flex-col items-center justify-center">
-            <NuxtImg class="mx-auto aspect-square w-72 max-w-[80%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`" />
+            <Image class="mx-auto aspect-square w-72 max-w-[80%]" :src="`${$imgCDN}/assets/svg/web/empty-box.svg`" />
             <span>{{ $t("data.nodata") }}</span>
           </div>
           <div v-else class="flex flex-col gap-3 md:gap-4">
@@ -256,7 +256,7 @@ useHead({
                       <Icon name="solar:ranking-bold-duotone" class="text-yellow-500" />
                       <span>Summary Ranking</span>
                     </div>
-                    <NuxtImg class="mx-auto aspect-square w-72 max-w-[80%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`" />
+                    <Image class="mx-auto aspect-square w-72 max-w-[80%]" :src="`${$imgCDN}/assets/svg/web/empty-box.svg`" />
                     <span>{{ $t("data.nodata") }}</span>
                   </div>
                   <SummaryRanking v-else-if="member.showroom_id" :room-id="member?.showroom_id" class="xl:mt-5" />
@@ -288,7 +288,7 @@ useHead({
                 <Icon name="solar:ranking-bold-duotone" class="text-yellow-500" />
                 <span>Summary Ranking</span>
               </div>
-              <NuxtImg class="mx-auto aspect-square w-72 max-w-[80%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`" />
+              <Image class="mx-auto aspect-square w-72 max-w-[80%]" :src="`${$imgCDN}/assets/svg/web/empty-box.svg`" />
               <span>{{ $t("data.nodata") }}</span>
             </div>
             <SummaryRanking v-else :room-id="member?.showroom_id" />

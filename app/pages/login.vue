@@ -199,7 +199,7 @@ async function signInHandler() {
 
 <style lang="scss">
 #login-bg {
- background-image: url("https://res.cloudinary.com/haymzm4wp/image/upload/v1680725695/assets/img/fd91131ea693096d6be5e8aa99d18f9e_xohduk.jpg");
+ background-image: url("https://img.crstlnz.my.id/assets/img/fd91131ea693096d6be5e8aa99d18f9e_xohduk.jpg");
  background-color: #cccccc;
  background-repeat: no-repeat;
  background-size: cover;

@@ -28,7 +28,7 @@ onState((state) => {
     <Error
       v-else-if="error"
       :message="error ? (error.statusCode === 404 ? $t('error.pagenotfound') : $t('error.unknown')) : $t('error.pagenotfound')"
-      :img-src="error?.statusCode === 404 ? `${$cloudinaryURL}/assets/svg/web/404.svg` : `${$cloudinaryURL}/assets/svg/web/error.svg`"
+      :img-src="error?.statusCode === 404 ? `${$imgCDN}/assets/svg/web/404.svg` : `${$imgCDN}/assets/svg/web/error.svg`"
     />
     <LayoutSingleRow v-else title="Sousenkyo 2024">
       <template #default>
@@ -40,9 +40,9 @@ onState((state) => {
         </Transition>
         <div>
           <div v-if="!members?.length" class="flex aspect-video w-full flex-col items-center justify-center">
-            <NuxtImg
+            <Image
               class="mx-auto aspect-square w-72 max-w-[80%]"
-              :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`"
+              :src="`${$imgCDN}/assets/svg/web/empty-box.svg`"
             />
             <span>{{ $t("data.nodata") }}</span>
           </div>

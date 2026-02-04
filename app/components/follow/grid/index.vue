@@ -28,7 +28,7 @@ watch(keyId, () => {
 <template>
   <div class="followList px-3 md:px-4 min-h-[calc(100vh_-_60px)]">
     <div v-if="error">
-      <Error message="Something error :(" :img-src="`${$cloudinaryURL}/assets/svg/web/error.svg`" />
+      <Error message="Something error :(" :img-src="`${$imgCDN}/assets/svg/web/error.svg`" />
     </div>
     <div
       v-else-if="pending"
@@ -41,7 +41,7 @@ watch(keyId, () => {
       />
     </div>
     <div v-else-if="!members?.length">
-      <Error message="Data not found :(" :img-src="`${$cloudinaryURL}/assets/svg/web/no_data.svg`" />
+      <Error message="Data not found :(" :img-src="`${$imgCDN}/assets/svg/web/no_data.svg`" />
     </div>
 
     <ClientOnly v-else>

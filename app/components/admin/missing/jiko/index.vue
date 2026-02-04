@@ -20,7 +20,7 @@ function onUpdate(roomId: number) {
       <span>Missing Jikoshoukai</span>
     </div>
     <div v-if="errorJiko" class="flex aspect-15/6 flex-col items-center justify-center gap-5">
-      <NuxtImg class="mx-auto aspect-square w-72 max-w-[65%] object-contain" :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" sizes="320px" fit="fill" />
+      <Image class="mx-auto aspect-square w-72 max-w-[65%] object-contain" :src="`${$imgCDN}/assets/svg/web/error.svg`" sizes="320px" fit="fill" />
       <span>{{ $t("data.failed") }}</span>
     </div>
     <div v-else-if="pendingJiko" class="flex aspect-15/6 items-center justify-center">

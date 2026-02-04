@@ -15,7 +15,7 @@ const title = computed(() => {
   }
   return ''
 })
-const pic = 'https://res.cloudinary.com/haymzm4wp/image/upload/v1696626938/assets/img/default-anime-avatar_ms7sea.webp'
+const pic = '/assets/img/default-anime-avatar_ms7sea.webp'
 const config = useAppConfig()
 
 const description = computed(() => {
@@ -55,7 +55,7 @@ useHead({
     <Error
       v-else-if="error || !data"
       :message="error ? (error.statusCode === 404 ? $t('error.pagenotfound') : $t('error.unknown')) : $t('error.pagenotfound')"
-      :img-src="!data || error?.statusCode === 404 ? `${$cloudinaryURL}/assets/svg/web/404.svg` : `${$cloudinaryURL}/assets/svg/web/error.svg`"
+      :img-src="!data || error?.statusCode === 404 ? `${$imgCDN}/assets/svg/web/404.svg` : `${$imgCDN}/assets/svg/web/error.svg`"
     />
     <LayoutSingleRow v-else :title="`${title} - ${$dayjs(data?.date).locale(locale).format('DD MMMM YYYY')}`">
       <div v-if="data.shows?.length" class="px-4 md:px-5 space-y-10">
@@ -64,10 +64,10 @@ useHead({
           class="space-y-4 md:space-y-5 border-b-2 border-dashed border-color-1 pb-10"
         >
           <div class="flex flex-col gap-5 md:flex-row md:gap-4">
-            <NuxtImg
+            <Image
               class="bg-container aspect-9/12 w-full shrink-0 overflow-hidden rounded-xl object-cover md:w-48 xl:w-80 sm self-start"
               :src="theater.setlist?.poster ?? config.errorPicture" alt="Theater Poster" :modifiers="{
-                aspectRatio: 9 / 12,
+                aspectRatio: '9/12',
               }" :placeholder="[10, 14, 75, 50]" loading="lazy" fit="fill"
               sizes="150px xs:170px sm:500px md:192px xl:320px" format="webp"
             />
@@ -79,8 +79,8 @@ useHead({
                 <h3 class="text-xl">
                   {{ theater.title }}
                 </h3>
-                <NuxtImg
-                  class="self-center rounded-md" :src="`${$cloudinaryURL}/assets/jkt48${theater.team.img}`"
+                <Image
+                  class="self-center rounded-md" :src="`${$imgCDN}/assets/jkt48${theater.team.img}`"
                   alt="Team Label" loading="lazy" fit="fill" width="56px" format="webp"
                 />
                 <AdminEditTheaterButton :theater-data="theater" />
@@ -115,11 +115,11 @@ useHead({
                     <div
                       class="grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(130px,1fr))] md:flex flex-wrap gap-4 md:gap-5"
                     >
-                      <NuxtImg
+                      <Image
                         v-for="member in theater.seitansai" :key="member.id"
                         class="bg-container block aspect-8/10 w-[100px] md:w-[120px] overflow-hidden rounded-xl object-cover"
                         :src="member.img || pic" alt="Default member picture" fit="fill" :modifiers="{
-                          aspectRatio: 8 / 10,
+                          aspectRatio: '8/10',
                           gravity: 'faceCenter',
                         }" sizes="100px md:180px" :placeholder="[8, 10, 75, 5]" format="webp"
                       />
@@ -141,11 +141,11 @@ useHead({
                     <div
                       class="grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(130px,1fr))] md:flex flex-wrap gap-4 md:gap-5"
                     >
-                      <NuxtImg
+                      <Image
                         v-for="member in theater.graduation" :key="member.id"
                         class="bg-container block aspect-8/10 w-[100px] md:w-[120px] overflow-hidden rounded-xl object-cover"
                         :src="member.img || pic" alt="Default member picture" fit="fill" :modifiers="{
-                          aspectRatio: 8 / 10,
+                          aspectRatio: '8/10',
                           gravity: 'faceCenter',
                         }" sizes="100px md:180px" :placeholder="[8, 10, 75, 5]" format="webp"
                       />
@@ -225,10 +225,10 @@ useHead({
               :to="member.url_key ? `/member/${member.url_key}` : undefined" class="flex flex-col space-y-2 group"
             >
               <div class="overflow-hidden rounded-xl bg-container">
-                <NuxtImg
+                <Image
                   class="block aspect-8/10 size-full object-cover group-hover:scale-110 transition-transform duration-300"
                   :src="member.img ?? pic" alt="Member picture" fit="fill" :modifiers="{
-                    aspectRatio: 8 / 10,
+                    aspectRatio: '8/10',
                     gravity: 'faceCenter',
                   }" sizes="100px md:180px" :placeholder="[8, 10, 75, 5]" format="webp"
                 />
@@ -243,10 +243,10 @@ useHead({
             class="grid grid-cols-[repeat(auto-fill,minmax(100px,1fr))] gap-4 md:grid-cols-[repeat(auto-fill,minmax(150px,1fr))] md:gap-5"
           >
             <div v-for="num in 16" :key="num" class="relative flex flex-col space-y-2">
-              <NuxtImg
+              <Image
                 class="bg-container block aspect-8/10 h-full w-full overflow-hidden rounded-xl object-cover opacity-60 brightness-50"
                 :src="pic" alt="Default member picture" fit="fill" :modifiers="{
-                  aspectRatio: 8 / 10,
+                  aspectRatio: '8/10',
                   gravity: 'faceCenter',
                 }" sizes="100px md:180px" :placeholder="[8, 10, 75, 5]" format="webp"
               />

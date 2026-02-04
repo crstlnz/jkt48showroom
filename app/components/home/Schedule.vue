@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { NuxtLink } from '#components'
+import { imgCDN } from '~/app.config'
 
 const { data, pending, error, date, refresh } = useCachedFetch<JKT48.Schedule[]>('/api/next_schedule', { expireIn: 1800000 })
 const dayjs = useDayjs()
@@ -39,11 +40,11 @@ const { locale } = useI18n()
       <Icon name="svg-spinners:ring-resize" size="2rem" />
     </div>
     <div v-else-if="error && !data" class="aspect-4/2 flex items-center justify-center mb-7 pt-5 flex-col gap-5">
-      <NuxtImg :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" sizes="320px" fit="fill" class="w-[220px] max-w-[80%]" />
+      <Image :src="`${$imgCDN}/assets/svg/web/error.svg`" sizes="320px" fit="fill" class="w-[220px] max-w-[80%]" />
       <div>{{ $t("error.unknown") }}</div>
     </div>
     <div v-else-if="!data?.length" class="flex flex-col items-center pb-4">
-      <NuxtImg :src="`${$cloudinaryURL}/assets/img/web/empty-box.png`" alt="" class="w-52 h-40 mb-2 object-contain" />
+      <Image :src="`${$imgCDN}/assets/img/web/empty-box.png`" alt="" class="w-52 h-40 mb-2 object-contain" />
       {{ $t("data.nodata") }}
     </div>
     <table v-else class="w-full border-t border-b border-color-1 **:border-black/10 dark:**:border-white/10">
@@ -63,9 +64,9 @@ const { locale } = useI18n()
         </td>
         <td class="w-full p-3">
           <component :is="!event.url.startsWith('/calendar') ? NuxtLink : 'div'" v-for="event in schedule.events" :key="event.id" :to="event.url.startsWith('/theater/schedule/id/') ? `/theater/${$getTheaterId(event.url)}` : `${$jkt48url}${event.url}`" class="flex gap-2">
-            <NuxtImg
-              class="aspect-56/19 w-14 object-cover self-center"
-              :src="`${$cloudinaryURL}/assets/jkt48${event.label}`"
+            <Image
+              class="aspect-56/19 w-14 object-cover self-center shrink-0"
+              :src="`${imgCDN}/assets/jkt48${event.label}`"
               alt="Label"
               loading="lazy"
               quality="100"

@@ -12,7 +12,7 @@ const { locale } = useI18n()
       {{ $dayjs(theater.date).locale(locale).format("DD MMM YYYY") }}
     </div>
     <div class="flex-1">
-      <NuxtImg
+      <Image
         sizes="200px sm:250px md:300px lg:247.5px"
         :placeholder="[45, 10, 55, 70]"
         fit="fill"

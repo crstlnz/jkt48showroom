@@ -25,7 +25,7 @@ const { locale } = useI18n()
       <div v-else-if="$dayjs(theater.date).isTomorrow()" class="absolute top-0 left-0 m-3 bg-orange-500 font-semibold text-white px-2.5 py-1 rounded-xl t border border-black/20">
         {{ $t('tomorrow') }}
       </div>
-      <NuxtImg
+      <Image
         class="w-full object-cover rounded-xl aspect-[5/2.5]"
         :src="theater.banner ?? theater.poster ?? $errorPicture"
         alt="Label"

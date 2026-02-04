@@ -2,7 +2,7 @@ import type ShowroomBackground from '.'
 import config from '~/app.config'
 import CanvasUtil from '../canvasUtil'
 
-const { cloudinaryURL } = config
+const { imgCDN } = config
 
 class ScreenshotManager {
   list: Map<number, ScreenshotContainer>
@@ -81,7 +81,7 @@ class ScreenshotManager {
   loadScreenshots(setSS = false) {
     this.isLoaded = true
     for (const id of this.ids) {
-      const url = `${cloudinaryURL}/${this.folder}/${id}.${this.format}`
+      const url = `${imgCDN}/${this.folder}/${id}.${this.format}`
       const container = new ScreenshotContainer(url, () => {
         if (id === this.id) {
           if (setSS) this.screenshot = container.img
@@ -102,9 +102,9 @@ class ScreenshotManager {
     const num = this.ids.length
     for (let i = 0; i < num; i++) {
       if (this.processId !== processId) return
-      if (this.ids[i] <= date) {
-        if (Math.abs(this.ids[i] - date) <= 60000 * 4.5) {
-          this.id = this.ids[i]
+      if (this.ids[i]! <= date) {
+        if (Math.abs(this.ids[i]! - date) <= 60000 * 4.5) {
+          this.id = this.ids[i]!
           const screenshotContainer = this.list.get(this.id)
           if (screenshotContainer) {
             this.screenshot = screenshotContainer.load()

@@ -89,7 +89,7 @@ watch(res, (val) => {
 const SortList = useAppConfig().sortList
 function getTitle(query: any) {
   const sort = SortList.find(i => (query?.sort ?? 'date') === i.id) ?? SortList[0]
-  return ((query?.order ?? 0) < 0 ? sort.title.asc : sort.title.desc) ?? ''
+  return ((query?.order ?? 0) < 0 ? sort!.title.asc : sort!.title.desc) ?? ''
 }
 
 title.value = getTitle(query.value)
@@ -213,9 +213,9 @@ const recentHeight = computed(() => {
       <div
         v-if="!isTop"
         :class="{
-          'bottom-[80px]!': isMobile,
+          'bottom-20!': isMobile,
         }"
-        class="fixed bottom-[80px] left-1/2 z-belowNav flex w-[180px] max-w-[80%] -translate-x-1/2 overflow-hidden rounded-xl bg-second-2/95 font-bold text-white transition sm:bottom-10"
+        class="fixed bottom-20 left-1/2 z-belowNav flex w-[180px] max-w-[80%] -translate-x-1/2 overflow-hidden rounded-xl bg-second-2/95 font-bold text-white transition sm:bottom-10"
       >
         <button
           type="button"
@@ -244,8 +244,8 @@ const recentHeight = computed(() => {
           >
             <div class="space-y-5">
               <div class="mx-auto w-4/5 lg:w-[350px]">
-                <NuxtImg v-if="error" :src="`${$cloudinaryURL}/assets/img/web/security-error.png`" alt="An Error Occured!" class="mx-auto w-full aspect-5/4 object-contain" />
-                <NuxtImg v-else :src="`${$cloudinaryURL}/assets/img/web/empty-box.png`" alt="Empty!" class="mx-auto w-full aspect-5/4 object-contain" />
+                <Image v-if="error" :src="`${$imgCDN}/assets/img/web/security-error.png`" alt="An Error Occured!" class="mx-auto w-full aspect-5/4 object-contain" />
+                <Image v-else :src="`${$imgCDN}/assets/img/web/empty-box.png`" alt="Empty!" class="mx-auto w-full aspect-5/4 object-contain" />
               </div>
               <div v-if="error">
                 <h2 class="mb-1 text-xl lg:text-3xl">
@@ -281,7 +281,7 @@ const recentHeight = computed(() => {
               <template #after>
                 <div class="mb-4 flex w-full items-center justify-center py-16">
                   <Icon v-if="!isEnded" name="svg-spinners:ring-resize" size="3rem" />
-                  <div v-else class="flex h-[3rem] items-center justify-center text-lg">
+                  <div v-else class="flex h-12 items-center justify-center text-lg">
                     {{ $t("data.nomore") }}
                   </div>
                 </div>

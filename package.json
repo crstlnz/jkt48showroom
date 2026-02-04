@@ -1,7 +1,7 @@
 {
   "name": "jkt48showroom",
   "type": "module",
-  "version": "0.19.8",
+  "version": "0.20.0",
   "engines": {
     "node": "20.x.x"
   },
@@ -18,7 +18,7 @@
   "dependencies": {
     "@headlessui/tailwindcss": "^0.2.2",
     "@headlessui/vue": "^1.7.23",
-    "@nuxt/image": "1.7.1",
+    "@nuxt/image": "2.0.0",
     "@tanstack/vue-virtual": "^3.13.12",
     "@use-gesture/vanilla": "^10.3.1",
     "blaze-slider": "^1.9.3",
@@ -28,7 +28,7 @@
     "fuse.js": "^7.1.0",
     "horoscope": "^2.0.1",
     "jsonwebtoken": "^9.0.2",
-    "nuxt": "4.2.2",
+    "nuxt": "4.3.0",
     "photoswipe": "^5.4.4",
     "pinia": "^3.0.3",
     "popmotion": "^11.0.5",
@@ -85,10 +85,10 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.9.1",
     "@vuepic/vue-datepicker": "^11.0.2",
-    "@vueuse/components": "14.1.0",
-    "@vueuse/core": "14.1.0",
-    "@vueuse/integrations": "14.1.0",
-    "@vueuse/nuxt": "14.1.0",
+    "@vueuse/components": "14.2.0",
+    "@vueuse/core": "14.2.0",
+    "@vueuse/integrations": "14.2.0",
+    "@vueuse/nuxt": "14.2.0",
     "dayjs-nuxt": "^2.1.11",
     "eslint": "9.38.0",
     "floating-vue": "5.2.2",

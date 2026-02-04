@@ -238,7 +238,7 @@ export class FansRankings {
       if (!this.parent.isAnimated) this.parent.requestDraw()
     }
 
-    this.userBG.src = 'https://res.cloudinary.com/haymzm4wp/image/upload/v1700467900/assets/img/aura_zbndth.png'
+    this.userBG.src = 'https://img.crstlnz.my.id/assets/img/aura_zbndth.png'
 
     this.ctx = context.ctx
     this.parent = context
@@ -250,8 +250,8 @@ export class FansRankings {
     for (let i = 0; i < 100; i++) {
       const pos = stagePositions[i]
       const fansAva = new FansAvatar(
-        pos[0] * this.canvas.width,
-        pos[1] * this.canvas.height,
+        pos![0]! * this.canvas.width,
+        pos![1]! * this.canvas.height,
       )
       if (fansAva.avatar) {
         fansAva.avatar.onload = onload
@@ -287,18 +287,18 @@ export class FansRankings {
       const fans = stageFans[i]
       const fansAvatar = this.ranks[i]
       if (fans) {
-        if (fansAvatar.id === fans.id) continue
-        fansAvatar.setId(fans.id, fans.name).setAvatarSrc(fans.avatar).setCurrentUser(fans.isCurrentUser)
+        if (fansAvatar!.id === fans.id) continue
+        fansAvatar!.setId(fans.id, fans.name).setAvatarSrc(fans.avatar).setCurrentUser(fans.isCurrentUser)
         const nameBox = await FansAvatar.generateUsername(
           fans.name,
           i,
           this.canvas.width,
         )
         if (this.processId !== processId) return
-        if (nameBox)fansAvatar.setNameBox(nameBox, this.parent)
+        if (nameBox)fansAvatar!.setNameBox(nameBox, this.parent)
       }
       else {
-        fansAvatar.setId(0, undefined).clearAvatar()
+        fansAvatar!.setId(0, undefined).clearAvatar()
         if (!this.parent.isAnimated) this.parent.requestDraw()
       }
     }

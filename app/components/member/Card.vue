@@ -27,8 +27,8 @@ const socials = computed(() => {
   >
     <div class="h-24 w-24 self-center overflow-hidden rounded-full shrink-0">
       <NuxtLink :to="`/member/${member.url}`">
-        <NuxtImg
-          class="h-full w-full"
+        <Image
+          class="h-full w-full object-cover"
           :src="member.img_alt ?? member.img ?? config.errorPicture"
           :alt="`${member.name} Profile Picture`"
           fit="fill"

@@ -8,7 +8,7 @@ const { locale } = useI18n()
   <HomeContainer :title="$t('news')" icon-class="bg-blue-500" more="/news" more-screen-reader-only="News" class="relative" :more-text="$t('more')">
     <div class="pt-1 pb-1.5 relative">
       <div v-if="error" class="flex flex-col items-center pb-4">
-        <NuxtImg :src="`${$cloudinaryURL}/assets/svg/web/error.svg`" sizes="320px" fit="fill" alt="" class="p-5" />
+        <Image :src="`${$imgCDN}/assets/svg/web/error.svg`" sizes="320px" fit="fill" alt="" class="p-5" />
         {{ $t("error.unknown") }}
       </div>
       <div v-else-if="pending" class="flex flex-col gap-3.5">
@@ -25,9 +25,9 @@ const { locale } = useI18n()
       <div v-else-if="data" class="flex flex-col gap-3.5">
         <div v-for="[index, news] in newsFilter.entries()" :key="news.id" class="pb-3" :class="{ 'border-b-2 border-dashed border-black/20 dark:border-white/20': index !== newsFilter.length - 1 }">
           <div class="mb-1 flex items-center gap-2 text-sm font-light">
-            <NuxtImg
+            <Image
               class="h-[19px] w-14 rounded-[3px]"
-              :src="`${$cloudinaryURL}/assets/jkt48${news.label}`"
+              :src="`${$imgCDN}/assets/jkt48${news.label}`"
               alt="Label"
               loading="lazy"
               fit="fill"
@@ -42,7 +42,7 @@ const { locale } = useI18n()
         </div>
       </div>
       <div v-else class="flex flex-col items-center pb-4">
-        <img :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`" alt="">
+        <img :src="`${$imgCDN}/assets/svg/web/empty-box.svg`" alt="">
         {{ $t("data.nodata") }}
       </div>
     </div>

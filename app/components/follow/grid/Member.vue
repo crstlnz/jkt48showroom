@@ -62,7 +62,7 @@ async function follow() {
 <template>
   <div class="flex gap-3 bg-container p-3 rounded-xl">
     <div class="aspect-video">
-      <NuxtImg
+      <Image
         sizes="200px sm:250px md:300px lg:247.5px"
         :placeholder="[45, 10, 55, 70]"
         fit="fill"

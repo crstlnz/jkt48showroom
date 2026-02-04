@@ -1,3 +1,4 @@
+import { baseURL } from 'process'
 import tailwindcss from '@tailwindcss/vite'
 import { vite as vidstack } from 'vidstack/plugins'
 
@@ -159,12 +160,18 @@ export default defineNuxtConfig({
     },
   },
   image: {
-    provider: 'cloudinary',
-    cloudinary: {
-      baseURL: process.env.CLOUDINARY_BASE_URL,
+    domains: ['img.crstlnz.my.id'],
+    providers: {
+      crstlnz: {
+        name: 'crstlnz', // optional value to overrider provider name
+        provider: '~/providers/crstlnz-img.ts', // Path to custom provider
+        options: {
+          // ... provider options
+          baseURL: 'https://img.crstlnz.my.id',
+        },
+      },
     },
     quality: 80,
-    placeholder: 10,
     format: ['webp'],
     screens: {
       'xs': 320,

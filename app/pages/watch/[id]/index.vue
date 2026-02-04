@@ -310,7 +310,7 @@ watch(telops, (v) => {
 <template>
   <div class="h-full w-full lg:px-3 lg:pb-20 lg:pt-4">
     <div v-if="isPremium">
-      <Error :message="$t('premium_live')" :alt="$t('premium_live')" :img-src="`${$cloudinaryURL}/assets/svg/web/video_files.svg`" :redirect-msg="`${$t('watch_on')} Showroom`" :external="true" :url="$liveURL(String(route.params.id))" />
+      <Error :message="$t('premium_live')" :alt="$t('premium_live')" :img-src="`${$imgCDN}/assets/svg/web/video_files.svg`" :redirect-msg="`${$t('watch_on')} Showroom`" :external="true" :url="$liveURL(String(route.params.id))" />
     </div>
     <div v-else-if="pending" class="h-full w-full">
       <div class="relative flex w-full flex-col gap-3 md:gap-4 lg:flex-row h-full">
@@ -325,7 +325,7 @@ watch(telops, (v) => {
       </div>
     </div>
     <div v-else-if="error" class="h-full w-full">
-      <Error :message="$t('error.unknown')" :alt="$t('error.unknown')" :img-src="`${$cloudinaryURL}/assets/svg/web/error.svg`" url="/" />
+      <Error :message="$t('error.unknown')" :alt="$t('error.unknown')" :img-src="`${$imgCDN}/assets/svg/web/error.svg`" url="/" />
     </div>
 
     <div v-else class="h-full w-full">
@@ -351,7 +351,7 @@ watch(telops, (v) => {
               </div>
               <div v-if="!isLive" class="flex h-full w-full items-center justify-center">
                 <div class="space-y-4 md:space-y-6 lg:space-y-10">
-                  <NuxtImg :src="`${$cloudinaryURL}/assets/svg/web/video_files.svg`" class="mx-auto w-[250px] max-w-[70%] dark:brightness-90" alt="" />
+                  <Image :src="`${$imgCDN}/assets/svg/web/video_files.svg`" class="mx-auto w-[250px] max-w-[70%] dark:brightness-90" alt="" />
                   <div class="text-center text-xl font-semibold">
                     {{ $t('streamoffline') }}
                   </div>

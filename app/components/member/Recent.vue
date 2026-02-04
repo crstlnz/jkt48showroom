@@ -18,7 +18,7 @@ const date = $fromNow(
       class="relative aspect-square h-18 cursor-pointer overflow-hidden rounded-full drop-shadow-xs md:h-[70px]"
       :to="`/member/${recent.member.url}`"
     >
-      <NuxtImg
+      <Image
         class="h-full w-full"
         :src="recent.member?.img || $errorPicture"
         :alt="`${recent.member?.name}Display Picture`"

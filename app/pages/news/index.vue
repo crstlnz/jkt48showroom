@@ -35,13 +35,13 @@ const maxDots = computed(() => {
         <div v-for="num in 10" :key="num" class="bg-container mx-3 flex h-[106px] animate-pulse flex-col gap-2 rounded-xl p-3 md:mx-4 md:p-4" />
       </div>
       <div v-else-if="error">
-        <Error :message="$t('error.unknown')" :img-src="`${$cloudinaryURL}/assets/svg/web/error.svg`" />
+        <Error :message="$t('error.unknown')" :img-src="`${$imgCDN}/assets/svg/web/error.svg`" />
       </div>
       <div v-else-if="data" class="flex flex-col gap-3.5">
         <div v-for="news in data.news" :key="news.id" class="bg-container mx-3 flex flex-col gap-2 rounded-xl p-3 md:mx-4 md:p-4">
-          <NuxtImg
+          <Image
             class="h-[19px] w-[56px] rounded-[3px]"
-            :src="`${$cloudinaryURL}/assets/jkt48${news.label}`"
+            :src="`${$imgCDN}/assets/jkt48${news.label}`"
             alt="Label"
             loading="lazy"
             fit="fill"

@@ -257,7 +257,7 @@ declare namespace Database {
   }
 
   interface IStage {
-    date: string | Date
+    date: string
     list: number[]
   }
 

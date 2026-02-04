@@ -13,7 +13,7 @@ const date = $fromNow(props.data.date)
       class="relative aspect-square h-16 cursor-pointer overflow-hidden rounded-full drop-shadow-xs md:h-20"
       :to="`/member/${data.url}`"
     >
-      <NuxtImg
+      <Image
         class="h-full w-full"
         :src="data.img_alt || data.img || $errorPicture"
         :alt="data.name"

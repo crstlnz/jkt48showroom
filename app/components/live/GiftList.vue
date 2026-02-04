@@ -50,7 +50,7 @@ function getNumColor(num: number) {
       </li>
     </ul>
     <div v-else class="mb-7 text-center">
-      <NuxtImg class="mx-auto w-72 max-w-[80%]" :src="`${$cloudinaryURL}/assets/svg/web/empty-box.svg`" />
+      <Image class="mx-auto w-72 max-w-[80%]" :src="`${$imgCDN}/assets/svg/web/empty-box.svg`" />
       <span>{{ $t("data.nodata") }}</span>
     </div>
   </div>

@@ -56,7 +56,7 @@ watch(escape, (v) => {
 <template>
   <div class="fixed inset-0 z-aboveNav bg-black/50 overscroll-contain flex justify-center items-center">
     <div v-on-click-outside="() => $emit('dismiss')" class="mx-3 md:mx-4 p-3 flex-wrap md:p-4 rounded-xl flex gap-3 md:gap-3 items-center justify-center bg-container max-w-[90%] md:max-w-[60%]">
-      <NuxtImg
+      <Image
         :key="member._id"
         sizes="120px"
         :placeholder="[45, 10, 55, 70]"
