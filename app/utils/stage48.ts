@@ -1,5 +1,5 @@
 const jkt48gen = 13
-const hinatazaka46gen = 4
+const hinatazaka46gen = 5
 
 function getOrdinal(number: number): string {
   const lastDigit = number % 10
@@ -49,7 +49,7 @@ const generation = generateGen()
 
 export function parseGeneration(key: string, short = false) {
   try {
-    return getGeneration(Number.parseInt(key.split('-')[0].replace('gen', '')), short)
+    return getGeneration(Number.parseInt(key.split('-')?.[0]?.replace('gen', '') ?? ''), short)
   }
   catch {
     return null

@@ -227,9 +227,9 @@ function openMediaControl() {
 <template>
   <div>
     <SplashScreen>
-      <div key="multiviewer" class="min-h-[100vh] flex flex-col">
+      <div key="multiviewer" class="min-h-screen flex flex-col">
         <MultiMediaControl ref="mediaControl" :video-players="videoPlayers" />
-        <nav class="flex items-center gap-4 p-4 md:p-5 justify-between mx-auto max-w-[648px] w-full">
+        <nav class="flex items-center gap-4 p-4 md:p-5 justify-between mx-auto max-w-162 w-full">
           <div class="text-base font-bold flex flex-col sm:flex-row sm:items-end sm:gap-0.5">
             <NuxtLink to="/" :class="$getGroup(group) === 'jkt48' ? 'text-red-500' : 'text-sky-400'" class="text-3xl lg:text-4xl max-sm:leading-8">
               {{ $getGroupTitle(group) }}
@@ -250,7 +250,7 @@ function openMediaControl() {
             </div>
             <div class="flex gap-2 bg-white dark:bg-white/5 px-3 py-2 rounded-md items-center overflow-hidden text-sm md:text-base">
               <div>Row</div>
-              <input :value="rowCount" type="number" class="inputRow rounded-md text-center min-w-[20px] bg-transparent outline-hidden" max="8" min="1" placeholder="Row Count" @input="rowCountChange">
+              <input :value="rowCount" type="number" class="inputRow rounded-md text-center min-w-5 bg-transparent outline-hidden [&::-webkit-outer-spin-button]:appearance-none" max="8" min="1" placeholder="Row Count" @input="rowCountChange">
               <div class="flex flex-col -my-2 -mr-3">
                 <button v-ripple type="button" class="h-5 w-5 md:w-6 md:h-6 flex border-l border-b border-color-1" @click="changeRow(rowCount + 1)">
                   <Icon name="material-symbols:arrow-drop-up-rounded" class="w-full h-full" />
