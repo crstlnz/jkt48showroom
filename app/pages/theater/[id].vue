@@ -15,7 +15,9 @@ const title = computed(() => {
   }
   return ''
 })
-const pic = '/assets/img/default-anime-avatar_ms7sea.webp'
+
+const { imgCDN } = useAppConfig()
+const pic = `${imgCDN}/assets/img/default-anime-avatar_ms7sea.webp`
 const config = useAppConfig()
 
 const description = computed(() => {
@@ -91,7 +93,7 @@ useHead({
               </div>
 
               <table
-                class="gap-2 pt-5 text-sm md:text-base font-light max-md:[&_td:first-child]:max-w-[120px] md:[&_td:first-child]:min-w-[150px] [&_td:first-child]:pr-5 [&_td:first-child]:font-light [&_td:first-child]:opacity-75 dark:[&_td:first-child]:opacity-50 sm:[&_td:first-child]:min-w-[200px] xl:[&_td:first-child]:min-w-[270px] [&_td]:py-2"
+                class="gap-2 pt-5 text-sm md:text-base font-light max-md:[&_td:first-child]:max-w-30 md:[&_td:first-child]:min-w-37.5 [&_td:first-child]:pr-5 [&_td:first-child]:font-light [&_td:first-child]:opacity-75 dark:[&_td:first-child]:opacity-50 sm:[&_td:first-child]:min-w-50 xl:[&_td:first-child]:min-w-67.5 [&_td]:py-2"
               >
                 <tbody>
                   <tr>
@@ -117,7 +119,7 @@ useHead({
                     >
                       <Image
                         v-for="member in theater.seitansai" :key="member.id"
-                        class="bg-container block aspect-8/10 w-[100px] md:w-[120px] overflow-hidden rounded-xl object-cover"
+                        class="bg-container block aspect-8/10 w-25 md:w-30 overflow-hidden rounded-xl object-cover"
                         :src="member.img || pic" alt="Default member picture" fit="fill" :modifiers="{
                           aspectRatio: '8/10',
                           gravity: 'faceCenter',
@@ -143,7 +145,7 @@ useHead({
                     >
                       <Image
                         v-for="member in theater.graduation" :key="member.id"
-                        class="bg-container block aspect-8/10 w-[100px] md:w-[120px] overflow-hidden rounded-xl object-cover"
+                        class="bg-container block aspect-8/10 w-25 md:w-30 overflow-hidden rounded-xl object-cover"
                         :src="member.img || pic" alt="Default member picture" fit="fill" :modifiers="{
                           aspectRatio: '8/10',
                           gravity: 'faceCenter',
@@ -162,7 +164,7 @@ useHead({
                     </div>
                   </div>
                 </div>
-                <div class="flex flex-col gap-2 w-full md:w-[200px] lg:w-[250px] xl:w-[280px]">
+                <div class="flex flex-col gap-2 w-full md:w-50 lg:w-62.5 xl:w-70">
                   <div class="font-semibold mt-2 flex items-center gap-2">
                     <Icon
                       :name="getTheaterState(theater.date) === 'ended' ? 'pepicons-pop:internet' : 'ep:ticket'"
