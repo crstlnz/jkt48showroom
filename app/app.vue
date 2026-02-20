@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useSettings } from '~/store/settings'
-import useWebviewDetector from './composables/useWebviewDetector'
+import useEmbeddedClientDetector from './composables/useEmbeddedClientDetector'
 
 const colorMode = useColorMode()
 const themeColor = computed(() => {
@@ -91,7 +91,7 @@ if (typeof window !== 'undefined') {
   window.__vue5513 = true
 }
 
-// const { $pwa } = useNuxtApp()
+const { $pwa } = useNuxtApp()
 const keys = useMagicKeys({
   passive: false,
   onEventFired(e) {
@@ -140,7 +140,7 @@ watch(width, () => {
 // useCSRF()
 const { user } = useAuth()
 
-const { isWebview } = useWebviewDetector()
+const { isEmbeddedClient } = await useEmbeddedClientDetector()
 const showWebviewBlock = ref(false)
 const openingExternalBrowser = ref(false)
 const browserUrl = ref(url.href)
@@ -294,7 +294,7 @@ async function openInExternalBrowser() {
 // }
 
 // onMounted(async () => {
-//   if (!isWebview.value) return
+//   if (!isEmbeddedClient.value) return
 //   const success = await openInExternalBrowser()
 //   showWebviewBlock.value = !success
 // })
@@ -302,18 +302,49 @@ async function openInExternalBrowser() {
 
 <template>
   <div>
-    <!-- <div
-      v-if="isWebview"
-      class="fixed inset-0 z-99999 flex items-center justify-center bg-container px-6 flex-col gap-1"
-    >
-      <span>Buka di web asli di</span> <a class="text-blue-500" href="https://48live.my.id">https://48live.my.id</a>
-    </div> -->
     <div
-      v-if="isWebview"
+      v-if="isEmbeddedClient"
       class="fixed bottom-0 bg-red-500 w-full z-9999 px-3 py-1.5 text-center"
     >
       Buka aplikasi asli di <a class="text-blue-200 font-bold" href="https://48live.my.id">https://48live.my.id</a>
     </div>
+    <!-- <div
+      v-if="showPwaPrompt"
+      class="fixed bottom-4 left-1/2 z-99998 w-[calc(100%-1.5rem)] max-w-md -translate-x-1/2 rounded-2xl bg-white dark:bg-dark-1 p-4 shadow-xl border border-color-2"
+    >
+      <div class="flex items-start gap-3">
+        <div
+          :class="pwaPromptIconClass"
+          class="flex size-9 shrink-0 items-center justify-center rounded-lg"
+        >
+          <Icon :name="pwaPromptIcon" class="size-5" />
+        </div>
+        <div class="min-w-0 flex-1">
+          <div class="text-sm font-semibold leading-5">
+            {{ $t(`${pwaPromptPrefix}.title`) }}
+          </div>
+          <div class="mt-0.5 text-xs leading-4 opacity-80">
+            {{ $t(`${pwaPromptPrefix}.description`) }}
+          </div>
+        </div>
+      </div>
+      <div class="mt-3 flex items-center justify-end gap-2">
+        <button
+          type="button"
+          class="rounded-lg bg-hover px-3 py-1.5 text-xs font-semibold transition-colors hover:opacity-90"
+          @click="dismissPwaPrompt"
+        >
+          {{ $t(`${pwaPromptPrefix}.later`) }}
+        </button>
+        <button
+          type="button"
+          class="rounded-lg bg-blue-500 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-blue-600"
+          @click="applyPwaPromptAction"
+        >
+          {{ $t(`${pwaPromptPrefix}.action`) }}
+        </button>
+      </div>
+    </div> -->
     <UserCount v-if="user?.is_admin" />
     <NuxtLoadingIndicator />
     <Dialog />
