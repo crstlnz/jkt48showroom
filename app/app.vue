@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useSettings } from '~/store/settings'
-import useEmbeddedClientDetector from './composables/useEmbeddedClientDetector'
+import useEmbeddedClientDetector from './composables/useIsEmbed'
 
 const colorMode = useColorMode()
 const themeColor = computed(() => {
@@ -140,7 +140,7 @@ watch(width, () => {
 // useCSRF()
 const { user } = useAuth()
 
-const { isEmbeddedClient } = await useEmbeddedClientDetector()
+const { isEmbed } = await useIsEmbed()
 const showWebviewBlock = ref(false)
 const openingExternalBrowser = ref(false)
 const browserUrl = ref(url.href)
@@ -303,7 +303,7 @@ async function openInExternalBrowser() {
 <template>
   <div>
     <div
-      v-if="isEmbeddedClient"
+      v-if="isEmbed"
       class="fixed bottom-0 bg-red-500 w-full z-9999 px-3 py-1.5 text-center"
     >
       Buka aplikasi asli di <a class="text-blue-200 font-bold" href="https://48live.my.id">https://48live.my.id</a>

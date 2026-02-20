@@ -43,7 +43,6 @@ export default defineNuxtConfig({
       api: process.env.API,
       showroom_api: process.env.SHOWROOM_API,
       proxy: process.env.PROXY,
-      webviewAppPackages: process.env.WEBVIEW_APP_PACKAGES?.trim().split(',') ?? [],
     },
   },
   watch: ['~/assets/css/theme.css', '~/assets/css/style.css'],
