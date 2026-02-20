@@ -329,9 +329,6 @@ export default defineNuxtConfig({
     prerender: {
       routes: ['/offline'],
     },
-    rollupConfig: {
-      external: ['@vueuse/core', '@vueuse/shared'],
-    },
   },
   devtools: {
     enabled: true,
