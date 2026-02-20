@@ -91,6 +91,63 @@ stats:
   monthly: 4 Minggu
   quarterly: 3 Bulan
   error: An error occured!
+stats_page:
+  currency_prefix: Rp
+  loading: Memuat data...
+  month_label: Bulan Statistik
+  last_month: Bulan Terakhir
+  data_range: Rentang Data
+  summary:
+    total_live: Total Live
+    live_count: '{count} Live'
+    by_member: oleh {count} member
+    total_gift: Total Gift
+    avg_gift_per_live: Rata-rata {value}/live
+    avg_duration: Rata-rata Durasi
+    active_days: 'Hari aktif: {count}'
+    avg_viewers: Rata-rata Viewers
+    unique_gifters: 'Unique gifters: {count}'
+  section:
+    timeline_daily: Timeline Harian
+    highlights: Highlights
+    platform_share: Platform Share
+    top_gift_member: Top Gift Member
+    most_live: Most Live
+    engagement: Engagement
+    top_gifter: Top Gifter
+    weekday_breakdown: Rincian Hari
+    prime_hours: Jam Utama
+  chart:
+    live_count: Jumlah Live
+    avg_viewers: Rata-rata Viewers
+    total_gift_idr: Total Gift (IDR)
+    axis:
+      live: Live
+      viewers: Penonton
+      gift_idr: Gift (IDR)
+    weekday_short:
+      sun: Min
+      mon: Sen
+      tue: Sel
+      wed: Rab
+      thu: Kam
+      fri: Jum
+      sat: Sab
+  highlights:
+    items: '{count} item'
+    no_data: Tidak ada data highlight.
+    metric:
+      comments: komentar
+      duration: durasi
+      gift: gift
+      viewers: viewers
+  platform:
+    idn_live: 'IDN Live ({percent}%)'
+    showroom: 'Showroom ({percent}%)'
+  leaderboard:
+    lives: live
+    score: skor
+    live_count: '{count} live'
 page:
   title:
     member: Daftar Member
@@ -252,3 +309,14 @@ no_upcoming_theater: Tidak ada theater selanjutnya
 watch_sousenkyo: Tonton Sekarang
 comment_disabled: Komen dimatikan
 watch: Nonton
+pwa:
+  install:
+    title: Install aplikasi
+    description: Install aplikasi ini agar akses lebih cepat dan dukungan offline lebih baik.
+    action: Install
+    later: Nanti
+  update:
+    title: Update aplikasi tersedia
+    description: Versi baru sudah siap. Muat ulang untuk menerapkan update.
+    action: Update sekarang
+    later: Nanti

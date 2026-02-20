@@ -17,10 +17,17 @@ export default defineNuxtPlugin(() => {
   const isOnline = useOnline()
   watch(isOnline, (online) => {
     if (!online) {
-      if (route.path !== '/') {
-        navigateTo('/')
+      if (route.path !== '/offline') {
+        navigateTo('/offline')
       }
+      return
     }
+
+    if (route.path === '/offline') {
+      navigateTo('/')
+    }
+  }, {
+    immediate: true,
   })
 
   // const { onFocus, onUnfocus } = useUserFocus({

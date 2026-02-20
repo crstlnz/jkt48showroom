@@ -91,6 +91,63 @@ stats:
   monthly: 4 Weeks
   quarterly: 3 Months
   error: An error occured!
+stats_page:
+  currency_prefix: Rp
+  loading: Loading data...
+  month_label: Statistics Month
+  last_month: Last Month
+  data_range: Data Range
+  summary:
+    total_live: Total Lives
+    live_count: '{count} Lives'
+    by_member: by {count} members
+    total_gift: Total Gift
+    avg_gift_per_live: Avg {value}/live
+    avg_duration: Average Duration
+    active_days: 'Active days: {count}'
+    avg_viewers: Average Viewers
+    unique_gifters: 'Unique gifters: {count}'
+  section:
+    timeline_daily: Daily Timeline
+    highlights: Highlights
+    platform_share: Platform Share
+    top_gift_member: Top Gift Member
+    most_live: Most Live
+    engagement: Engagement
+    top_gifter: Top Gifter
+    weekday_breakdown: Weekday Breakdown
+    prime_hours: Prime Hours
+  chart:
+    live_count: Live Count
+    avg_viewers: Avg Viewers
+    total_gift_idr: Total Gift (IDR)
+    axis:
+      live: Live
+      viewers: Viewers
+      gift_idr: Gift (IDR)
+    weekday_short:
+      sun: Sun
+      mon: Mon
+      tue: Tue
+      wed: Wed
+      thu: Thu
+      fri: Fri
+      sat: Sat
+  highlights:
+    items: '{count} items'
+    no_data: No highlight data.
+    metric:
+      comments: comments
+      duration: duration
+      gift: gift
+      viewers: viewers
+  platform:
+    idn_live: 'IDN Live ({percent}%)'
+    showroom: 'Showroom ({percent}%)'
+  leaderboard:
+    lives: lives
+    score: score
+    live_count: '{count} live'
 page:
   title:
     member: Member List
@@ -252,3 +309,14 @@ no_upcoming_theater: No upcoming theater
 watch_sousenkyo: Watch now
 comment_disabled: Comment disabled
 watch: Watch
+pwa:
+  install:
+    title: Install app
+    description: Install this app for faster access and better offline support.
+    action: Install
+    later: Later
+  update:
+    title: App update available
+    description: New version is ready. Refresh to apply update.
+    action: Update now
+    later: Later
