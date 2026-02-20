@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { useSettings } from '~/store/settings'
-import useEmbeddedClientDetector from './composables/useIsEmbed'
 
 const colorMode = useColorMode()
 const themeColor = computed(() => {
@@ -68,29 +67,6 @@ useSeoMeta({
   ogType: 'website',
 })
 
-// TODO: Remove when https://github.com/vuejs/core/issues/5513 fixed
-const key = ref(0)
-const messages = [
-  'Uncaught NotFoundError: Failed to execute \'insertBefore\' on \'Node\': The node before which the new node is to be inserted is not a child of this node.', // chromium based
-  'NotFoundError: The object can not be found here.', // safari
-]
-if (typeof window !== 'undefined') {
-  // @ts-expect-error using arbitrary window key
-  if (!window.__vue5513) {
-    window.addEventListener('error', (event) => {
-      if (messages.includes(event.message)) {
-        event.preventDefault()
-        console.warn(
-          'Rerendering layout because of https://github.com/vuejs/core/issues/5513',
-        )
-        key.value++
-      }
-    })
-  }
-  // @ts-expect-error using arbitrary window key
-  window.__vue5513 = true
-}
-
 const { $pwa } = useNuxtApp()
 const keys = useMagicKeys({
   passive: false,
@@ -144,64 +120,64 @@ const { isEmbed } = await useIsEmbed()
 const showWebviewBlock = ref(false)
 const openingExternalBrowser = ref(false)
 const browserUrl = ref(url.href)
-// const pwaNeedRefresh = computed(() => $pwa?.needRefresh ?? false)
-// const pwaCanInstall = computed(() =>
-//   ($pwa?.showInstallPrompt ?? false)
-//   && !($pwa?.isPWAInstalled ?? false),
-// )
-// const activePwaPrompt = computed<'update' | 'install' | null>(() => {
-//   if (pwaNeedRefresh.value) return 'update'
-//   if (pwaCanInstall.value) return 'install'
-//   return null
-// })
-// const showPwaPrompt = computed(() =>
-//   !showWebviewBlock.value && activePwaPrompt.value !== null,
-// )
-// const pwaPromptPrefix = computed(() =>
-//   activePwaPrompt.value === 'update' ? 'pwa.update' : 'pwa.install',
-// )
-// const pwaPromptIcon = computed(() =>
-//   activePwaPrompt.value === 'update'
-//     ? 'material-symbols:system-update-alt-rounded'
-//     : 'material-symbols:download-rounded',
-// )
-// const pwaPromptIconClass = computed(() =>
-//   activePwaPrompt.value === 'update'
-//     ? 'bg-green-500/15 text-green-500'
-//     : 'bg-blue-500/15 text-blue-500',
-// )
+const pwaNeedRefresh = computed(() => $pwa?.needRefresh ?? false)
+const pwaCanInstall = computed(() =>
+  ($pwa?.showInstallPrompt ?? false)
+  && !($pwa?.isPWAInstalled ?? false),
+)
+const activePwaPrompt = computed<'update' | 'install' | null>(() => {
+  if (pwaNeedRefresh.value) return 'update'
+  if (pwaCanInstall.value) return 'install'
+  return null
+})
+const showPwaPrompt = computed(() =>
+  !showWebviewBlock.value && activePwaPrompt.value !== null,
+)
+const pwaPromptPrefix = computed(() =>
+  activePwaPrompt.value === 'update' ? 'pwa.update' : 'pwa.install',
+)
+const pwaPromptIcon = computed(() =>
+  activePwaPrompt.value === 'update'
+    ? 'material-symbols:system-update-alt-rounded'
+    : 'material-symbols:download-rounded',
+)
+const pwaPromptIconClass = computed(() =>
+  activePwaPrompt.value === 'update'
+    ? 'bg-green-500/15 text-green-500'
+    : 'bg-blue-500/15 text-blue-500',
+)
 
-// async function installPwa() {
-//   await $pwa?.install()
-// }
+async function installPwa() {
+  await $pwa?.install()
+}
 
-// function dismissPwaInstall() {
-//   $pwa?.cancelInstall()
-// }
+function dismissPwaInstall() {
+  $pwa?.cancelInstall()
+}
 
-// function applyPwaUpdate() {
-//   $pwa?.updateServiceWorker(true)
-// }
+function applyPwaUpdate() {
+  $pwa?.updateServiceWorker(true)
+}
 
-// function dismissPwaUpdate() {
-//   $pwa?.cancelPrompt()
-// }
+function dismissPwaUpdate() {
+  $pwa?.cancelPrompt()
+}
 
-// function dismissPwaPrompt() {
-//   if (activePwaPrompt.value === 'update') {
-//     dismissPwaUpdate()
-//     return
-//   }
-//   dismissPwaInstall()
-// }
+function dismissPwaPrompt() {
+  if (activePwaPrompt.value === 'update') {
+    dismissPwaUpdate()
+    return
+  }
+  dismissPwaInstall()
+}
 
-// function applyPwaPromptAction() {
-//   if (activePwaPrompt.value === 'update') {
-//     applyPwaUpdate()
-//     return
-//   }
-//   installPwa()
-// }
+function applyPwaPromptAction() {
+  if (activePwaPrompt.value === 'update') {
+    applyPwaUpdate()
+    return
+  }
+  installPwa()
+}
 
 function wait(ms: number) {
   return new Promise<void>(resolve => window.setTimeout(resolve, ms))
@@ -308,7 +284,7 @@ async function openInExternalBrowser() {
     >
       Buka aplikasi asli di <a class="text-blue-200 font-bold" href="https://48live.my.id">https://48live.my.id</a>
     </div>
-    <!-- <div
+    <div
       v-if="showPwaPrompt"
       class="fixed bottom-4 left-1/2 z-99998 w-[calc(100%-1.5rem)] max-w-md -translate-x-1/2 rounded-2xl bg-white dark:bg-dark-1 p-4 shadow-xl border border-color-2"
     >
@@ -344,7 +320,7 @@ async function openInExternalBrowser() {
           {{ $t(`${pwaPromptPrefix}.action`) }}
         </button>
       </div>
-    </div> -->
+    </div>
     <UserCount v-if="user?.is_admin" />
     <NuxtLoadingIndicator />
     <Dialog />
@@ -352,7 +328,6 @@ async function openInExternalBrowser() {
     <NotificationView />
     <NuxtLayout>
       <NuxtPage
-        :key="key"
         :transition="{
           name: 'page',
           mode: 'out-in',
