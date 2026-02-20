@@ -91,7 +91,7 @@ if (typeof window !== 'undefined') {
   window.__vue5513 = true
 }
 
-const { $pwa } = useNuxtApp()
+// const { $pwa } = useNuxtApp()
 const keys = useMagicKeys({
   passive: false,
   onEventFired(e) {
@@ -144,64 +144,64 @@ const { isWebview } = useWebviewDetector()
 const showWebviewBlock = ref(false)
 const openingExternalBrowser = ref(false)
 const browserUrl = ref(url.href)
-const pwaNeedRefresh = computed(() => $pwa?.needRefresh ?? false)
-const pwaCanInstall = computed(() =>
-  ($pwa?.showInstallPrompt ?? false)
-  && !($pwa?.isPWAInstalled ?? false),
-)
-const activePwaPrompt = computed<'update' | 'install' | null>(() => {
-  if (pwaNeedRefresh.value) return 'update'
-  if (pwaCanInstall.value) return 'install'
-  return null
-})
-const showPwaPrompt = computed(() =>
-  !showWebviewBlock.value && activePwaPrompt.value !== null,
-)
-const pwaPromptPrefix = computed(() =>
-  activePwaPrompt.value === 'update' ? 'pwa.update' : 'pwa.install',
-)
-const pwaPromptIcon = computed(() =>
-  activePwaPrompt.value === 'update'
-    ? 'material-symbols:system-update-alt-rounded'
-    : 'material-symbols:download-rounded',
-)
-const pwaPromptIconClass = computed(() =>
-  activePwaPrompt.value === 'update'
-    ? 'bg-green-500/15 text-green-500'
-    : 'bg-blue-500/15 text-blue-500',
-)
+// const pwaNeedRefresh = computed(() => $pwa?.needRefresh ?? false)
+// const pwaCanInstall = computed(() =>
+//   ($pwa?.showInstallPrompt ?? false)
+//   && !($pwa?.isPWAInstalled ?? false),
+// )
+// const activePwaPrompt = computed<'update' | 'install' | null>(() => {
+//   if (pwaNeedRefresh.value) return 'update'
+//   if (pwaCanInstall.value) return 'install'
+//   return null
+// })
+// const showPwaPrompt = computed(() =>
+//   !showWebviewBlock.value && activePwaPrompt.value !== null,
+// )
+// const pwaPromptPrefix = computed(() =>
+//   activePwaPrompt.value === 'update' ? 'pwa.update' : 'pwa.install',
+// )
+// const pwaPromptIcon = computed(() =>
+//   activePwaPrompt.value === 'update'
+//     ? 'material-symbols:system-update-alt-rounded'
+//     : 'material-symbols:download-rounded',
+// )
+// const pwaPromptIconClass = computed(() =>
+//   activePwaPrompt.value === 'update'
+//     ? 'bg-green-500/15 text-green-500'
+//     : 'bg-blue-500/15 text-blue-500',
+// )
 
-async function installPwa() {
-  await $pwa?.install()
-}
+// async function installPwa() {
+//   await $pwa?.install()
+// }
 
-function dismissPwaInstall() {
-  $pwa?.cancelInstall()
-}
+// function dismissPwaInstall() {
+//   $pwa?.cancelInstall()
+// }
 
-function applyPwaUpdate() {
-  $pwa?.updateServiceWorker(true)
-}
+// function applyPwaUpdate() {
+//   $pwa?.updateServiceWorker(true)
+// }
 
-function dismissPwaUpdate() {
-  $pwa?.cancelPrompt()
-}
+// function dismissPwaUpdate() {
+//   $pwa?.cancelPrompt()
+// }
 
-function dismissPwaPrompt() {
-  if (activePwaPrompt.value === 'update') {
-    dismissPwaUpdate()
-    return
-  }
-  dismissPwaInstall()
-}
+// function dismissPwaPrompt() {
+//   if (activePwaPrompt.value === 'update') {
+//     dismissPwaUpdate()
+//     return
+//   }
+//   dismissPwaInstall()
+// }
 
-function applyPwaPromptAction() {
-  if (activePwaPrompt.value === 'update') {
-    applyPwaUpdate()
-    return
-  }
-  installPwa()
-}
+// function applyPwaPromptAction() {
+//   if (activePwaPrompt.value === 'update') {
+//     applyPwaUpdate()
+//     return
+//   }
+//   installPwa()
+// }
 
 function wait(ms: number) {
   return new Promise<void>(resolve => window.setTimeout(resolve, ms))
@@ -313,43 +313,6 @@ async function openInExternalBrowser() {
       class="fixed bottom-0 bg-red-500 w-full z-9999 px-3 py-1.5 text-center"
     >
       Buka aplikasi asli di <a class="text-blue-200 font-bold" href="https://48live.my.id">https://48live.my.id</a>
-    </div>
-    <div
-      v-if="showPwaPrompt"
-      class="fixed bottom-4 left-1/2 z-99998 w-[calc(100%-1.5rem)] max-w-md -translate-x-1/2 rounded-2xl bg-white dark:bg-dark-1 p-4 shadow-xl border border-color-2"
-    >
-      <div class="flex items-start gap-3">
-        <div
-          :class="pwaPromptIconClass"
-          class="flex size-9 shrink-0 items-center justify-center rounded-lg"
-        >
-          <Icon :name="pwaPromptIcon" class="size-5" />
-        </div>
-        <div class="min-w-0 flex-1">
-          <div class="text-sm font-semibold leading-5">
-            {{ $t(`${pwaPromptPrefix}.title`) }}
-          </div>
-          <div class="mt-0.5 text-xs leading-4 opacity-80">
-            {{ $t(`${pwaPromptPrefix}.description`) }}
-          </div>
-        </div>
-      </div>
-      <div class="mt-3 flex items-center justify-end gap-2">
-        <button
-          type="button"
-          class="rounded-lg bg-hover px-3 py-1.5 text-xs font-semibold transition-colors hover:opacity-90"
-          @click="dismissPwaPrompt"
-        >
-          {{ $t(`${pwaPromptPrefix}.later`) }}
-        </button>
-        <button
-          type="button"
-          class="rounded-lg bg-blue-500 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-blue-600"
-          @click="applyPwaPromptAction"
-        >
-          {{ $t(`${pwaPromptPrefix}.action`) }}
-        </button>
-      </div>
     </div>
     <UserCount v-if="user?.is_admin" />
     <NuxtLoadingIndicator />

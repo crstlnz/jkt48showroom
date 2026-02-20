@@ -61,7 +61,7 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@nuxt/fonts',
     '@nuxt/scripts',
-    '@vite-pwa/nuxt',
+    // '@vite-pwa/nuxt',
   ],
   icon: {
     mode: 'svg',
@@ -115,182 +115,182 @@ export default defineNuxtConfig({
     asyncContext: true,
     watcher: 'parcel',
   },
-  pwa: {
-    registerType: 'autoUpdate',
-    client: {
-      installPrompt: true,
-    },
-    includeAssets: [
-      'favicon.ico',
-      'img/192x192-logo.png',
-      'img/512x512-logo.png',
-      'img/512x512-masklogo.png',
-    ],
-    manifest: {
-      id: '/',
-      name: 'JKT48 Live',
-      short_name: 'JKT48 Live',
-      description: 'A Fanmade Website for JKT48 Live.',
-      lang: 'id-ID',
-      categories: ['entertainment', 'music'],
-      theme_color: '#1e2124',
-      background_color: '#1e2124',
-      display: 'standalone',
-      scope: '/',
-      start_url: '/',
-      icons: [
-        {
-          src: '/img/192x192-logo.png',
-          sizes: '192x192',
-          type: 'image/png',
-        },
-        {
-          src: '/img/512x512-logo.png',
-          sizes: '512x512',
-          type: 'image/png',
-        },
-        {
-          src: '/img/512x512-masklogo.png',
-          sizes: '512x512',
-          type: 'image/png',
-          purpose: 'maskable',
-        },
-      ],
-      shortcuts: [
-        {
-          name: 'Home',
-          short_name: 'Home',
-          url: '/',
-          icons: [
-            {
-              src: '/img/192x192-logo.png',
-              sizes: '192x192',
-              type: 'image/png',
-            },
-          ],
-        },
-        {
-          name: 'Live Now',
-          short_name: 'Live',
-          url: '/?tab=live',
-          icons: [
-            {
-              src: '/img/192x192-logo.png',
-              sizes: '192x192',
-              type: 'image/png',
-            },
-          ],
-        },
-        {
-          name: 'Recent',
-          short_name: 'Recent',
-          url: '/recent',
-          icons: [
-            {
-              src: '/img/192x192-logo.png',
-              sizes: '192x192',
-              type: 'image/png',
-            },
-          ],
-        },
-      ],
-    },
-    workbox: {
-      cleanupOutdatedCaches: true,
-      // Keep app shell fallback so `useOnline()` watcher can control redirect to /offline.
-      navigateFallback: '/',
-      navigateFallbackDenylist: [/^\/api\//],
-      runtimeCaching: [
-        {
-          urlPattern: ({ request }) => request.mode === 'navigate',
-          handler: 'NetworkFirst',
-          options: {
-            cacheName: 'html-pages-cache',
-            networkTimeoutSeconds: 7,
-            cacheableResponse: {
-              statuses: [0, 200],
-            },
-            expiration: {
-              maxEntries: 100,
-              maxAgeSeconds: 60 * 60 * 24 * 7,
-            },
-          },
-        },
-        {
-          urlPattern: /\/api\/_nuxt_icon\/.*/i,
-          handler: 'CacheFirst',
-          options: {
-            cacheName: 'nuxt-icons-cache',
-            cacheableResponse: {
-              statuses: [0, 200],
-            },
-            expiration: {
-              maxEntries: 128,
-              maxAgeSeconds: 60 * 60 * 24 * 30,
-            },
-          },
-        },
-        {
-          urlPattern: /^https:\/\/api\.crstlnz\.my\.id\/.*/i,
-          handler: 'NetworkFirst',
-          options: {
-            cacheName: 'api-cache',
-            networkTimeoutSeconds: 10,
-            cacheableResponse: {
-              statuses: [0, 200],
-            },
-            expiration: {
-              maxEntries: 200,
-              maxAgeSeconds: 60 * 60 * 24,
-            },
-          },
-        },
-        {
-          urlPattern: /\/api\/.*/i,
-          handler: 'NetworkFirst',
-          options: {
-            cacheName: 'local-api-cache',
-            networkTimeoutSeconds: 10,
-            cacheableResponse: {
-              statuses: [0, 200],
-            },
-            expiration: {
-              maxEntries: 200,
-              maxAgeSeconds: 60 * 60 * 24,
-            },
-          },
-        },
-        {
-          urlPattern: /^https:\/\/img\.crstlnz\.my\.id\/.*/i,
-          handler: 'CacheFirst',
-          options: {
-            cacheName: 'images-cache',
-            cacheableResponse: {
-              statuses: [0, 200],
-            },
-            expiration: {
-              maxEntries: 300,
-              maxAgeSeconds: 60 * 60 * 24 * 30,
-            },
-          },
-        },
-        {
-          urlPattern: /^https:\/\/fonts\.(?:googleapis|gstatic)\.com\/.*/i,
-          handler: 'CacheFirst',
-          options: {
-            cacheName: 'google-fonts-cache',
-            cacheableResponse: {
-              statuses: [0, 200],
-            },
-            expiration: {
-              maxEntries: 30,
-              maxAgeSeconds: 60 * 60 * 24 * 365,
-            },
-          },
-        },
-      ],
-    },
-  },
+  // pwa: {
+  //   registerType: 'autoUpdate',
+  //   client: {
+  //     installPrompt: true,
+  //   },
+  //   includeAssets: [
+  //     'favicon.ico',
+  //     'img/192x192-logo.png',
+  //     'img/512x512-logo.png',
+  //     'img/512x512-masklogo.png',
+  //   ],
+  //   manifest: {
+  //     id: '/',
+  //     name: 'JKT48 Live',
+  //     short_name: 'JKT48 Live',
+  //     description: 'A Fanmade Website for JKT48 Live.',
+  //     lang: 'id-ID',
+  //     categories: ['entertainment', 'music'],
+  //     theme_color: '#1e2124',
+  //     background_color: '#1e2124',
+  //     display: 'standalone',
+  //     scope: '/',
+  //     start_url: '/',
+  //     icons: [
+  //       {
+  //         src: '/img/192x192-logo.png',
+  //         sizes: '192x192',
+  //         type: 'image/png',
+  //       },
+  //       {
+  //         src: '/img/512x512-logo.png',
+  //         sizes: '512x512',
+  //         type: 'image/png',
+  //       },
+  //       {
+  //         src: '/img/512x512-masklogo.png',
+  //         sizes: '512x512',
+  //         type: 'image/png',
+  //         purpose: 'maskable',
+  //       },
+  //     ],
+  //     shortcuts: [
+  //       {
+  //         name: 'Home',
+  //         short_name: 'Home',
+  //         url: '/',
+  //         icons: [
+  //           {
+  //             src: '/img/192x192-logo.png',
+  //             sizes: '192x192',
+  //             type: 'image/png',
+  //           },
+  //         ],
+  //       },
+  //       {
+  //         name: 'Live Now',
+  //         short_name: 'Live',
+  //         url: '/?tab=live',
+  //         icons: [
+  //           {
+  //             src: '/img/192x192-logo.png',
+  //             sizes: '192x192',
+  //             type: 'image/png',
+  //           },
+  //         ],
+  //       },
+  //       {
+  //         name: 'Recent',
+  //         short_name: 'Recent',
+  //         url: '/recent',
+  //         icons: [
+  //           {
+  //             src: '/img/192x192-logo.png',
+  //             sizes: '192x192',
+  //             type: 'image/png',
+  //           },
+  //         ],
+  //       },
+  //     ],
+  //   },
+  //   workbox: {
+  //     cleanupOutdatedCaches: true,
+  //     // Keep app shell fallback so `useOnline()` watcher can control redirect to /offline.
+  //     navigateFallback: '/',
+  //     navigateFallbackDenylist: [/^\/api\//],
+  //     runtimeCaching: [
+  //       {
+  //         urlPattern: ({ request }) => request.mode === 'navigate',
+  //         handler: 'NetworkFirst',
+  //         options: {
+  //           cacheName: 'html-pages-cache',
+  //           networkTimeoutSeconds: 7,
+  //           cacheableResponse: {
+  //             statuses: [0, 200],
+  //           },
+  //           expiration: {
+  //             maxEntries: 100,
+  //             maxAgeSeconds: 60 * 60 * 24 * 7,
+  //           },
+  //         },
+  //       },
+  //       {
+  //         urlPattern: /\/api\/_nuxt_icon\/.*/i,
+  //         handler: 'CacheFirst',
+  //         options: {
+  //           cacheName: 'nuxt-icons-cache',
+  //           cacheableResponse: {
+  //             statuses: [0, 200],
+  //           },
+  //           expiration: {
+  //             maxEntries: 128,
+  //             maxAgeSeconds: 60 * 60 * 24 * 30,
+  //           },
+  //         },
+  //       },
+  //       {
+  //         urlPattern: /^https:\/\/api\.crstlnz\.my\.id\/.*/i,
+  //         handler: 'NetworkFirst',
+  //         options: {
+  //           cacheName: 'api-cache',
+  //           networkTimeoutSeconds: 10,
+  //           cacheableResponse: {
+  //             statuses: [0, 200],
+  //           },
+  //           expiration: {
+  //             maxEntries: 200,
+  //             maxAgeSeconds: 60 * 60 * 24,
+  //           },
+  //         },
+  //       },
+  //       {
+  //         urlPattern: /\/api\/.*/i,
+  //         handler: 'NetworkFirst',
+  //         options: {
+  //           cacheName: 'local-api-cache',
+  //           networkTimeoutSeconds: 10,
+  //           cacheableResponse: {
+  //             statuses: [0, 200],
+  //           },
+  //           expiration: {
+  //             maxEntries: 200,
+  //             maxAgeSeconds: 60 * 60 * 24,
+  //           },
+  //         },
+  //       },
+  //       {
+  //         urlPattern: /^https:\/\/img\.crstlnz\.my\.id\/.*/i,
+  //         handler: 'CacheFirst',
+  //         options: {
+  //           cacheName: 'images-cache',
+  //           cacheableResponse: {
+  //             statuses: [0, 200],
+  //           },
+  //           expiration: {
+  //             maxEntries: 300,
+  //             maxAgeSeconds: 60 * 60 * 24 * 30,
+  //           },
+  //         },
+  //       },
+  //       {
+  //         urlPattern: /^https:\/\/fonts\.(?:googleapis|gstatic)\.com\/.*/i,
+  //         handler: 'CacheFirst',
+  //         options: {
+  //           cacheName: 'google-fonts-cache',
+  //           cacheableResponse: {
+  //             statuses: [0, 200],
+  //           },
+  //           expiration: {
+  //             maxEntries: 30,
+  //             maxAgeSeconds: 60 * 60 * 24 * 365,
+  //           },
+  //         },
+  //       },
+  //     ],
+  //   },
+  // },
   css: ['~/assets/css/style.css', '~/assets/css/transition.css'],
   fonts: {
     provider: 'google',
