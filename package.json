@@ -29,7 +29,7 @@
     "fuse.js": "^7.1.0",
     "horoscope": "^2.0.1",
     "jsonwebtoken": "^9.0.2",
-    "nuxt": "4.3.0",
+    "nuxt": "4.3.1",
     "photoswipe": "^5.4.4",
     "pinia": "^3.0.3",
     "popmotion": "^11.0.5",
