@@ -367,7 +367,9 @@ export default defineNuxtConfig({
   },
   vite: {
     plugins: [
+      // @ts-expect-error vite 7
       vidstack({ include: /vidstack\// }),
+      // @ts-expect-error vite 7
       tailwindcss(),
     ],
     optimizeDeps: {
