@@ -35,6 +35,9 @@ importers:
       dotenv:
         specifier: ^16.4.5
         version: 16.6.1
+      estree-walker:
+        specifier: ^3.0.3
+        version: 3.0.3
       events:
         specifier: ^3.3.0
         version: 3.3.0

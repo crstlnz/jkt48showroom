@@ -197,7 +197,6 @@ export default defineNuxtConfig({
     },
     workbox: {
       cleanupOutdatedCaches: true,
-      // Keep app shell fallback so `useOnline()` watcher can control redirect to /offline.
       navigateFallback: '/',
       navigateFallbackDenylist: [/^\/api\//],
       runtimeCaching: [

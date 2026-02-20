@@ -25,6 +25,7 @@
     "blaze-slider": "^1.9.3",
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.5",
+    "estree-walker": "^3.0.3",
     "events": "^3.3.0",
     "fuse.js": "^7.1.0",
     "horoscope": "^2.0.1",
