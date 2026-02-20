@@ -101,8 +101,5 @@
     "v-wave": "^3.0.2",
     "vue-virtual-scroll-grid": "^1.11.0"
   },
-  "packageManager": "pnpm@10.19.0",
-  "resolutions": {
-    "vite": "7.1.12"
-  }
+  "packageManager": "pnpm@10.19.0"
 }
