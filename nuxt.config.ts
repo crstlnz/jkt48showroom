@@ -383,6 +383,11 @@ export default defineNuxtConfig({
         'blaze-slider',
       ],
     },
+    build: {
+      commonjsOptions: {
+        transformMixedEsModules: true,
+      },
+    },
   },
   compatibilityDate: '2025-10-26',
 })
