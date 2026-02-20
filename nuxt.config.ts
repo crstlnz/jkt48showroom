@@ -381,6 +381,7 @@ export default defineNuxtConfig({
         'horoscope',
         'fuse.js',
         'blaze-slider',
+        '@vueuse/core',
       ],
     },
     build: {
