@@ -21,6 +21,7 @@
     "@nuxt/image": "2.0.0",
     "@tanstack/vue-virtual": "^3.13.12",
     "@use-gesture/vanilla": "^10.3.1",
+    "@vite-pwa/nuxt": "^1.1.1",
     "blaze-slider": "^1.9.3",
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.5",
