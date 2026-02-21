@@ -164,7 +164,7 @@ useHead({
                     </div>
                   </div>
                 </div>
-                <div class="flex flex-col gap-2 w-full md:w-50 lg:w-62.5 xl:w-70">
+                <div id="ticketBox" class="flex flex-col gap-2 w-full md:w-50 lg:w-62.5 xl:w-70">
                   <div class="font-semibold mt-2 flex items-center gap-2">
                     <Icon
                       :name="getTheaterState(theater.date) === 'ended' ? 'pepicons-pop:internet' : 'ep:ticket'"

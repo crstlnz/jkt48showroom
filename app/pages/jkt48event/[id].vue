@@ -79,7 +79,7 @@ useHead({
               </div>
 
               <table
-                class="gap-2 pt-5 text-sm md:text-base font-light max-md:[&_td:first-child]:max-w-[120px] md:[&_td:first-child]:min-w-[150px] [&_td:first-child]:pr-5 [&_td:first-child]:font-light [&_td:first-child]:opacity-50 sm:[&_td:first-child]:min-w-[200px] xl:[&_td:first-child]:min-w-[270px] [&_td]:py-2"
+                class="gap-2 pt-5 text-sm md:text-base font-light max-md:[&_td:first-child]:max-w-30 md:[&_td:first-child]:min-w-37.5 [&_td:first-child]:pr-5 [&_td:first-child]:font-light [&_td:first-child]:opacity-50 sm:[&_td:first-child]:min-w-50 xl:[&_td:first-child]:min-w-67.5 [&_td]:py-2"
               >
                 <tbody>
                   <tr>
@@ -94,8 +94,8 @@ useHead({
                 </tbody>
               </table>
 
-              <div class="flex gap-3 justify-end md:items-end flex-col md:flex-row">
-                <div class="flex flex-col gap-2 w-full md:w-[200px] lg:w-[250px] xl:w-[280px]">
+              <div id="ticketBox" class="flex gap-3 justify-end md:items-end flex-col md:flex-row">
+                <div class="flex flex-col gap-2 w-full md:w-50 lg:w-62.5 xl:w-70">
                   <div class="font-semibold mt-2 flex items-center gap-2">
                     <Icon
                       :name="getTheaterState(data.date) === 'ended' ? 'pepicons-pop:internet' : 'ep:ticket'"
