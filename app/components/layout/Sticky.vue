@@ -28,36 +28,42 @@ useEventListener('resize', () => {
 const padding = 40
 function calculateSticky() {
   if (!stopSticky.value) return
-  if (stickyElement.value && stickyContainer.value && marginElement.value) {
-    const rect = stickyElement.value.getBoundingClientRect()
-    const containerRect = stickyContainer.value.getBoundingClientRect()
-    const pos = lastScroll.value
-    lastScroll.value = window.scrollY
-    if (height.value > stickyElement.value.clientHeight) {
-      if (scrollState.value === 'overflow') return
-      scrollState.value = 'overflow'
-      marginElement.value.style.marginTop = ''
-      stickyElement.value.style.top = `${stickyContainer.value.offsetTop}px`
+  requestAnimationFrame(() => {
+    if (stickyElement.value && stickyContainer.value && marginElement.value) {
+      const rect = stickyElement.value.getBoundingClientRect()
+      const containerRect = stickyContainer.value.getBoundingClientRect()
+      const pos = lastScroll.value
+      lastScroll.value = window.scrollY
+      if (height.value > stickyElement.value.clientHeight) {
+        if (scrollState.value === 'overflow') return
+        scrollState.value = 'overflow'
+        marginElement.value.style.marginTop = ''
+        stickyElement.value.style.top = `${stickyContainer.value.offsetTop}px`
+      }
+      else
+        if (window.scrollY > pos) {
+          marginElement.value.style.marginTop = `${rect.top - containerRect.top}px`
+          if (scrollState.value === 'down') return
+          scrollState.value = 'down'
+          stickyElement.value.style.top = `-${stickyElement.value.clientHeight - height.value + padding}px`
+          stickyElement.value.style.bottom = ''
+        }
+        else {
+          if (scrollState.value === 'up') return
+          marginElement.value.style.marginTop = `${rect.top - containerRect.top}px`
+          scrollState.value = 'up'
+          stickyElement.value.style.top = ''
+          stickyElement.value.style.bottom = `-${stickyElement.value.clientHeight - height.value + stickyContainer.value.offsetTop}px`
+        }
     }
-    else
-      if (window.scrollY > pos) {
-        marginElement.value.style.marginTop = `${rect.top - containerRect.top}px`
-        if (scrollState.value === 'down') return
-        scrollState.value = 'down'
-        stickyElement.value.style.top = `-${stickyElement.value.clientHeight - height.value + padding}px`
-        stickyElement.value.style.bottom = ''
-      }
-      else {
-        if (scrollState.value === 'up') return
-        marginElement.value.style.marginTop = `${rect.top - containerRect.top}px`
-        scrollState.value = 'up'
-        stickyElement.value.style.top = ''
-        stickyElement.value.style.bottom = `-${stickyElement.value.clientHeight - height.value + stickyContainer.value.offsetTop}px`
-      }
-  }
+  })
 }
 
 useEventListener('scroll', () => {
+  calculateSticky()
+})
+
+onMounted(() => {
   calculateSticky()
 })
 </script>

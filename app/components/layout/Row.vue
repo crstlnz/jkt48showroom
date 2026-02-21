@@ -70,7 +70,7 @@ onMounted(() => {
         <slot />
       </div>
     </div>
-    <LayoutSticky v-if="!isMobile || (isMobile && mobileSide)" class="px-3 md:px-4 xl:w-[320px] 2xl:w-[350px]" stop-sticky="xl">
+    <LayoutSticky v-if="!isMobile || (isMobile && mobileSide)" class="px-3 md:px-4 xl:w-[320px] 2xl:w-87.5" stop-sticky="xl">
       <div class="flex w-full flex-col gap-4">
         <slot name="sidebar" />
         <footer class="max-sm:text-center max-sm:mt-2.5 pb-10 text-sm text-slate-600 dark:text-zinc-300/50">
