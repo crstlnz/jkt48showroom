@@ -6,6 +6,7 @@ import { useSettings } from '~/store/settings'
 
 const props = defineProps<{
   menus: MenuItem[]
+  userMenus: MenuItem[]
 }>()
 
 defineEmits(['toggleDark'])
@@ -158,9 +159,9 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="w-full min-h-[100vh]">
+  <div class="w-full min-h-screen">
     <nav id="navbar" class="fixed inset-x-0 bottom-0 z-nav border-t-2 bg-white drop-shadow-md dark:border-dark-3 dark:bg-dark-2">
-      <div class="relative flex h-[60px] gap-4 overflow-hidden px-4">
+      <div class="relative flex h-15 gap-4 overflow-hidden px-4">
         <div v-for="menu in menus" :key="menu.title" class="relative flex min-w-0 flex-1 flex-col items-center">
           <NuxtLink v-ripple :to="menu.url" class="relative top-1/2 h-20 w-20 shrink-0 -translate-y-1/2 cursor-pointer rounded-full" :aria-label="menu.title">
             <div class="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center">
@@ -244,7 +245,6 @@ onBeforeUnmount(() => {
             </NuxtLink>
           </div>
           <div class="flex flex-col gap-2 pt-5">
-            <LangSwitch class="bg-container flex flex-1 items-center justify-start gap-3 rounded-full p-3" :compact="false" :full-title="true" />
             <NuxtLink v-ripple to="/history" class="flex gap-3 rounded-full p-3 text-left">
               <Icon name="ic:round-history" class="h-5 w-5" />
               <span class="text-lg font-semibold leading-5">
@@ -261,6 +261,7 @@ onBeforeUnmount(() => {
         </div>
         <div class="flex justify-between items-center">
           <div class="flex gap-1.5">
+            <LangSwitch class="bg-container flex flex-1 items-center justify-start gap-3 rounded-full p-3" :compact="true" />
             <button
               v-ripple
               type="button"
@@ -278,7 +279,7 @@ onBeforeUnmount(() => {
         </div>
       </div>
     </div>
-    <div class="w-full pb-[60px]">
+    <div class="w-full pb-15">
       <slot />
     </div>
   </div>

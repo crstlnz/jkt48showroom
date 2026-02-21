@@ -3,8 +3,8 @@ import { createJWT } from '~/utils/jwt'
 import pkg from '../../package.json'
 
 export default defineNuxtPlugin(async () => {
-  const { checkAuth } = useAuth()
-  await checkAuth()
+  // const { checkAuth } = useAuth()
+  // await checkAuth()
   const app = useRuntimeConfig()
   try {
     const { setVersion, setApiKey } = useSettings()

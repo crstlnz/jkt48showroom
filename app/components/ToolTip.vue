@@ -104,7 +104,7 @@ function getRemainingSpace(el: HTMLElement): ElementSpace {
     <slot />
     <Transition name="fade">
       <div v-if="isOpen" ref="tooltip" class="fixed" :style="{ left: `${pos.x}px`, top: `${pos.y}px` }">
-        <div class="bg-container relative rounded-xl shadow-rounded after:left-2" :style="{}">
+        <div class="bg-dark-1 relative rounded-xl border border-color-2 after:left-2" :style="{}">
           <slot name="tooltip" />
           <div
             :style="{

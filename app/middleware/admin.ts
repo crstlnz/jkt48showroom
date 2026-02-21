@@ -1,7 +1,14 @@
-export default defineNuxtRouteMiddleware(() => {
-  const { status, user } = useAuth()
-  if (status.value === 'authenticated' && (user.value as any)?.is_admin) {
+export default defineNuxtRouteMiddleware(async () => {
+  if (import.meta.server) return
+
+  const { status, user, checkAuth } = useAuth()
+  if (status.value !== 'authenticated') {
+    await checkAuth()
+  }
+
+  if (status.value === 'authenticated' && user.value?.is_admin) {
     return
   }
-  return createError({ statusCode: 404, message: 'Page not found!' })
+
+  return navigateTo('/')
 })

@@ -1,7 +1,10 @@
 <script lang="ts" setup>
-defineProps<{
+withDefaults(defineProps<{
+  compact?: boolean
   fullTitle?: boolean
-}>()
+}>(), {
+  compact: false,
+})
 
 const { locale, locales, setLocale } = useI18n()
 const otherLocale = computed(() => {
@@ -20,11 +23,14 @@ const { isMobile } = useResponsive()
     v-ripple
     :title="$t('changelang')"
     type="button"
+    :class="{
+      'size-12 relative': compact,
+    }"
     href="#"
     @click.prevent.stop="setLocale(otherLocale.code)"
   >
-    <Icon name="ph:translate-bold" class="h-5 w-5" />
-    <span class="text-lg font-semibold leading-5" :class="{ 'max-2xl:hidden': !isMobile }">
+    <Icon v-if="!compact" name="ph:translate-bold" class="h-5 w-5" />
+    <span class="text-lg font-semibold leading-5" :class="{ 'max-2xl:hidden': !isMobile, 'absolute left-1/2 top-1/2 -translate-1/2': compact }">
       {{ fullTitle ? (currentLocale.name === "ID" ? 'Indonesia' : 'English') : currentLocale.name }}
     </span>
   </button>

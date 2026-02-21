@@ -12,8 +12,8 @@ defineProps<{
 <template>
   <div class="mx-auto mt-12 text-center md:mt-14 lg:mt-16 xl:mt-24">
     <div class="space-y-6 md:space-y-9 xl:space-y-10">
-      <div class="mx-auto w-[80%] md:w-[250px] lg:w-[350px] xl:w-[500px]">
-        <Image :src="imgSrc" :alt="alt ?? 'Error!'" class="mx-auto aspect-100/67 w-full dark:brightness-125 object-contain" />
+      <div class="mx-auto w-[80%] md:w-62.5 lg:w-87.5 xl:w-125">
+        <img :src="imgSrc" :alt="alt ?? 'Error!'" class="mx-auto aspect-100/67 w-full dark:brightness-125 object-contain">
       </div>
       <div>
         <h2 class="mb-1 text-xl font-semibold text-slate-800 dark:text-slate-100 md:text-2xl xl:text-4xl">

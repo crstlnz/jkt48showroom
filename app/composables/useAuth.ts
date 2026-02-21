@@ -4,7 +4,8 @@ export function useAuth() {
   const nuxtApp = tryUseNuxtApp()
   const payload = nuxtApp?.payload
   const data = useState<ShowroomLogin.User | null>('authUser', () => import.meta.client ? payload?.data?.auth?.user || null : null)
-  const pending = useState('authPending', () => import.meta.client ? payload?.data?.auth?.pending ?? true : false)
+  // const pending = useState('authPending', () => import.meta.client ? payload?.data?.auth?.pending ?? true : false)
+  const pending = useState('authPending', () => true)
   const error = useState('authError', () => import.meta.client ? (payload?.data?.auth?.error ? new Error(payload?.data?.auth?.error) : null) : null)
 
   if (import.meta.server && payload) {
@@ -45,8 +46,8 @@ export function useAuth() {
   async function checkAuthOnClient() {
     if (import.meta.server) return
     if (authenticated.value) return
-    const cookie = document.cookie
-    if (!cookie.includes('_st=') && !cookie?.includes('_rt=')) return
+    // const cookie = document.cookie
+    // if (!cookie.includes('_st=') && !cookie?.includes('_rt=')) return
     pending.value = true
     error.value = null
     try {
@@ -71,7 +72,7 @@ export function useAuth() {
 
   async function checkAuth() {
     if (import.meta.server) {
-      await checkAuthOnServer()
+      // await checkAuthOnServer()
     }
     else {
       await checkAuthOnClient()

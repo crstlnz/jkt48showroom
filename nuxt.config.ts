@@ -365,6 +365,9 @@ export default defineNuxtConfig({
     },
   },
   vite: {
+    server: {
+      allowedHosts: isDev ? (process.env.ALLOWED_HOSTS?.split(',')?.map(i => i.trim()) ?? []) : undefined,
+    },
     plugins: [
       // @ts-expect-error vite 7
       vidstack({ include: /vidstack\// }),

@@ -50,8 +50,6 @@ useEventListener(doc, 'scroll', () => {
   }
 })
 
-const container = ref<HTMLElement>()
-
 onMounted(() => {
   doc.value = document
 })
@@ -59,8 +57,8 @@ onMounted(() => {
 
 <template>
   <div class="flex min-h-full max-md:gap-3 max-xl:gap-4 w-full max-xl:flex-col">
-    <div ref="container" class="xl:min-h-screen relative min-w-0 flex-1 border-color-1 xl:border-r xl:pb-20 max-md:mt-14 max-xl:mt-16">
-      <div ref="navBar" :class="{ '-translate-y-full': !navShow, 'left-[81px] right-0 top-0': !isMobile, 'left-0 right-0 top-0': isMobile }" class="disable-highlight fixed z-nav h-14 md:h-16 cursor-pointer xl:sticky transition-[transform] duration-500">
+    <div class="xl:min-h-screen relative min-w-0 flex-1 border-color-1 xl:border-r xl:pb-20 max-md:mt-14 max-xl:mt-16">
+      <div ref="navBar" :class="{ '-translate-y-full': !navShow, 'left-20.25 right-0 top-0': !isMobile, 'left-0 right-0 top-0': isMobile }" class="disable-highlight fixed z-nav h-14 md:h-16 cursor-pointer xl:sticky transition-[transform] duration-500">
         <div class="bg-navbar absolute inset-0 backdrop-blur-md border-b border-color-1" />
         <LayoutRowTitle :show-back="showBack" :title="title" :sub-title="subTitle" class="z-10" @back="back" @scroll-top="scrollTop">
           <template #actionSection>

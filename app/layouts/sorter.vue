@@ -28,12 +28,12 @@ useSeoMeta({
   <div>
     <ClientOnly>
       <template #fallback>
-        <div class="flex h-[100vh] w-[100vw] items-center justify-center">
-          <Image class="h-20 w-20" :src="getIcon(group)" alt="Logo" />
+        <div class="flex h-screen w-screen items-center justify-center">
+          <img class="h-20 w-20" :src="getIcon(group)" alt="Logo">
         </div>
       </template>
       <template #default>
-        <div class="flex min-h-[100vh] flex-col">
+        <div class="flex min-h-screen flex-col">
           <div class="mt-8 flex items-center gap-2 self-center text-4xl font-bold md:mt-10">
             <Icon name="solar:square-sort-vertical-bold-duotone" class="text-red-400" size="3rem" />
             <span>Oshi Sorter!</span>

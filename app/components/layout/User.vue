@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+defineProps<{
+  userMenus: MenuItem[]
+}>()
 const { user, status } = useAuth()
 const hiddenUsername = useCookie('_h_usrnme', {
   default: () => true,
@@ -41,10 +44,10 @@ function toggleUsername(e: Event) {
     <div v-else key="authenticated">
       <ToolTip class="w-full rounded-full" :offset="5">
         <template #tooltip>
-          <div class="relative min-w-[250px] py-3">
+          <div class="relative min-w-62.5 py-3">
             <div class="flex flex-col text-sm *:p-3">
-              <NuxtLink to="/history" class="inline-block text-left hover:bg-white/5">
-                History
+              <NuxtLink v-for="menu in userMenus" :key="menu.locale_id" :to="menu.url" class="inline-block text-left hover:bg-white/5">
+                {{ $t(menu.locale_id) }}
               </NuxtLink>
               <NuxtLink to="/logout" class="inline-block text-left hover:bg-white/5">
                 Logout {{ user?.name }}
