@@ -1,7 +1,7 @@
 {
   "name": "jkt48showroom",
   "type": "module",
-  "version": "0.21.0",
+  "version": "0.21.1",
   "engines": {
     "node": "20.x.x"
   },

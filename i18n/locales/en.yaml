@@ -99,14 +99,14 @@ stats_page:
   data_range: Data Range
   summary:
     total_live: Total Lives
-    live_count: '{count} Lives'
+    live_count: "{count} Lives"
     by_member: by {count} members
     total_gift: Total Gift
     avg_gift_per_live: Avg {value}/live
     avg_duration: Average Duration
-    active_days: 'Active days: {count}'
+    active_days: "Active days: {count}"
     avg_viewers: Average Viewers
-    unique_gifters: 'Unique gifters: {count}'
+    unique_gifters: "Unique gifters: {count}"
   section:
     timeline_daily: Daily Timeline
     highlights: Highlights
@@ -134,7 +134,7 @@ stats_page:
       fri: Fri
       sat: Sat
   highlights:
-    items: '{count} items'
+    items: "{count} items"
     no_data: No highlight data.
     metric:
       comments: comments
@@ -142,12 +142,12 @@ stats_page:
       gift: gift
       viewers: viewers
   platform:
-    idn_live: 'IDN Live ({percent}%)'
-    showroom: 'Showroom ({percent}%)'
+    idn_live: "IDN Live ({percent}%)"
+    showroom: "Showroom ({percent}%)"
   leaderboard:
     lives: lives
     score: score
-    live_count: '{count} live'
+    live_count: "{count} live"
 page:
   title:
     member: Member List
@@ -218,7 +218,7 @@ form:
       captcha: Fill the captcha!
 tooltip:
   activeuser: Total of active user that interact with live, like following, sending gift, or comment.
-  usercomment: '{msg} users commented.'
+  usercomment: "{msg} users commented."
 height: Height
 bloodtype: Blood type
 otherlive: Other live
@@ -239,12 +239,12 @@ recent_detail_description: Explore the gift recap and fan rankings from {name} l
 member_profile_description: Profile lengkap {name} {group} dan semua rekap live showroom
 reorder:
   failed: Reorder failed!
-  success: '{name} reordered to top!'
+  success: "{name} reordered to top!"
 follow:
   title: Follow
   failed: Follow failed!
-  following: 'You have followed {name}!'
-  unfollow: 'You have unfollowed {name}!'
+  following: "You have followed {name}!"
+  unfollow: "You have unfollowed {name}!"
 follower: Follower
 room_level: Room level
 watch_count: Watch count
@@ -253,8 +253,8 @@ times: x
 pleaselogin: Login!
 loginwithshowroom: Login with Showroom
 selectvideofirst: Add the video from the bottom right!
-logininfo: 'Logging in will not store your data on this website. By logging in, you can access the commenting feature in showroom live, bookmarks, and various other information that utilizes your showroom account.'
-loginfailedinfo: 'If login failed, try to refresh this page!'
+logininfo: "Logging in will not store your data on this website. By logging in, you can access the commenting feature in showroom live, bookmarks, and various other information that utilizes your showroom account."
+loginfailedinfo: "If login failed, try to refresh this page!"
 watch_on: Watch on
 add: Add
 delete: Delete
@@ -300,7 +300,7 @@ ticket:
   online: Online Ticket
   offline: Offline Ticket
 at: at
-member_count: 'No members | 1 Member | {count} Members'
+member_count: "No members | 1 Member | {count} Members"
 upcoming: Upcoming
 ongoing: Ongoing
 ended: Ended
@@ -312,7 +312,7 @@ watch: Watch
 pwa:
   install:
     title: Install app
-    description: Install this app for faster access and better offline support.
+    description: Add this app to your home screen for faster access.
     action: Install
     later: Later
   update:

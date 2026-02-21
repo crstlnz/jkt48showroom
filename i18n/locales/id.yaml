@@ -99,14 +99,14 @@ stats_page:
   data_range: Rentang Data
   summary:
     total_live: Total Live
-    live_count: '{count} Live'
+    live_count: "{count} Live"
     by_member: oleh {count} member
     total_gift: Total Gift
     avg_gift_per_live: Rata-rata {value}/live
     avg_duration: Rata-rata Durasi
-    active_days: 'Hari aktif: {count}'
+    active_days: "Hari aktif: {count}"
     avg_viewers: Rata-rata Viewers
-    unique_gifters: 'Unique gifters: {count}'
+    unique_gifters: "Unique gifters: {count}"
   section:
     timeline_daily: Timeline Harian
     highlights: Highlights
@@ -134,7 +134,7 @@ stats_page:
       fri: Jum
       sat: Sab
   highlights:
-    items: '{count} item'
+    items: "{count} item"
     no_data: Tidak ada data highlight.
     metric:
       comments: komentar
@@ -142,12 +142,12 @@ stats_page:
       gift: gift
       viewers: viewers
   platform:
-    idn_live: 'IDN Live ({percent}%)'
-    showroom: 'Showroom ({percent}%)'
+    idn_live: "IDN Live ({percent}%)"
+    showroom: "Showroom ({percent}%)"
   leaderboard:
     lives: live
     score: skor
-    live_count: '{count} live'
+    live_count: "{count} live"
 page:
   title:
     member: Daftar Member
@@ -218,7 +218,7 @@ form:
       captcha: Isi captcha!
 tooltip:
   activeuser: User aktif yang berinteraksi dengan member, seperti memberi gift, memfollow member, atau mengirimkan komen.
-  usercomment: '{msg} user memberi komentar.'
+  usercomment: "{msg} user memberi komentar."
 height: Tinggi
 bloodtype: Golongan darah
 otherlive: Live lainnya
@@ -239,12 +239,12 @@ recent_detail_description: Lihat rekap gift dan fans ranking live Showroom {name
 member_profile_description: Berikut profile lengkap dari {name} {group}
 reorder:
   failed: Gagal mengurutkan ke atas!
-  success: '{name} diurutkan ke atas!'
+  success: "{name} diurutkan ke atas!"
 follow:
   title: Follow
   failed: Gagal mengikuti!
-  following: 'Anda telah mengikuti {name}!'
-  unfollow: 'Anda telah berhenti mengikuti {name}!'
+  following: "Anda telah mengikuti {name}!"
+  unfollow: "Anda telah berhenti mengikuti {name}!"
 follower: Pengikut
 room_level: Room level
 watch_count: Jumlah Nonton
@@ -253,8 +253,8 @@ times: kali
 pleaselogin: Login!
 loginwithshowroom: Login with Showroom
 selectvideofirst: Tambah videonya di kanan bawah!
-logininfo: 'Login tidak akan menyimpan data Anda pada web ini. Dengan login, anda dapat mengakses fitur komen pada showroom, markah, serta beberapa informasi yang menggunakan akun showroom.'
-loginfailedinfo: 'Jika login gagal, coba untuk merefresh halaman ini!'
+logininfo: "Login tidak akan menyimpan data Anda pada web ini. Dengan login, anda dapat mengakses fitur komen pada showroom, markah, serta beberapa informasi yang menggunakan akun showroom."
+loginfailedinfo: "Jika login gagal, coba untuk merefresh halaman ini!"
 watch_on: Tonton di
 add: Tambah
 delete: Hapus
@@ -300,7 +300,7 @@ ticket:
   online: Tiket Online
   offline: Tiket Offline
 at: di
-member_count: 'Tidak ada member | {count} Members'
+member_count: "Tidak ada member | {count} Members"
 upcoming: Akan datang
 ongoing: Sedang berlangsung
 ended: Telah selesai
@@ -312,7 +312,7 @@ watch: Nonton
 pwa:
   install:
     title: Install aplikasi
-    description: Install aplikasi ini agar akses lebih cepat dan dukungan offline lebih baik.
+    description: Tambahkan aplikasi ini ke layar utama untuk akses yang lebih cepat.
     action: Install
     later: Nanti
   update:
