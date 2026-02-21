@@ -15,6 +15,7 @@ export async function $apiFetch<T>(request: RequestInfo, options?: FetchOptions<
     const opts: FetchOptions<'json'> = {
       baseURL: config.public.api,
       ...options,
+      credentials: 'include',
     }
 
     const { getHeaders, setCookie } = syncServerCookies()
