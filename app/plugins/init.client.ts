@@ -12,7 +12,6 @@ export default defineNuxtPlugin(() => {
   })
 
   const onLives = useOnLives()
-  onLives.init()
 
   const isOnline = useOnline()
   watch(isOnline, (online) => {
@@ -30,6 +29,7 @@ export default defineNuxtPlugin(() => {
     immediate: true,
   })
 
-  console.log('Checking auth...')
-  checkAuth()
+  checkAuth().finally(() => {
+    onLives.init()
+  })
 })
