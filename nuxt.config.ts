@@ -34,16 +34,11 @@ export default defineNuxtConfig({
     pageTransition: { name: 'page', mode: 'out-in' },
   },
   runtimeConfig: {
-    private: {
-      jwt_secret: process.env.JWT_SECRET,
-    },
     public: {
       isDev,
-      cloudinary: process.env.CLOUDINARY_BASE_URL,
-      api: process.env.API,
-      showroom_api: process.env.SHOWROOM_API,
-      proxy: process.env.PROXY,
-      webviewAppPackages: process.env.WEBVIEW_APP_PACKAGES?.trim().split(',') ?? [],
+      api: process.env.NUXT_PUBLIC_API,
+      showroomApi: process.env.NUXT_PUBLIC_SHOWROOM_API,
+      proxy: process.env.NUXT_PUBLIC_PROXY,
     },
   },
   watch: ['~/assets/css/theme.css', '~/assets/css/style.css'],

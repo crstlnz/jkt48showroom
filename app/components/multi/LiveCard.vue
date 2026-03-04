@@ -12,11 +12,11 @@ defineEmits<{ (e: 'liveClick', video: Omit<Multi.Video, 'order'>): void }>()
     <Image :src="live.image" sizes="64px md:80px" class="aspect-5/6 rounded-md w-16 md:w-20 object-cover bg-container" />
     <div class="w-0 flex-1 truncate flex flex-col justify-start items-start self-start gap-1">
       <NuxtLink :to="live.original_url" :external="true" target="_blank">
-        <Image :src="live.icon" size="64px" class="h-5 object-contain max-w-[90px]" />
+        <Image :src="live.icon" size="64px" class="h-5 object-contain max-w-22.5" />
       </NuxtLink>
       <div class="flex items-stretch self-stretch">
         <div class="flex-1 w-0 truncate">
-          {{ live.name }}
+          {{ live.name }} {{ live.stream_url }}
         </div>
       </div>
     </div>

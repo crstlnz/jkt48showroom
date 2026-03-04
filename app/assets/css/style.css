@@ -376,7 +376,7 @@ span.ripple.hide {
 }
 button,
 a {
-  @apply outline-0 focus-visible:ring-2 ring-blue-500;
+  @apply outline-0 focus-visible:ring-2 focus-visible:ring-blue-500;
 }
 
 .speech-pointer-bottom {

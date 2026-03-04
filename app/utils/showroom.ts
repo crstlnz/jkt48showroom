@@ -1,8 +1,8 @@
 const f = $fetch.create({})
 async function ofetch<T>(url: string, params?: Record<string, string | number>) {
   const { user } = useAuth()
-  const baseUrl = import.meta.server ? process.env.SHOWROOM_API : useRuntimeConfig().public.showroom_api
-  const apiUrl = new URL(url, baseUrl)
+  const baseUrl = import.meta.server ? process.env.SHOWROOM_API : useRuntimeConfig().public.showroomApi
+  const apiUrl = new URL(url, String(baseUrl))
   return await f<T>(apiUrl.href, {
     query: {
       ...params,

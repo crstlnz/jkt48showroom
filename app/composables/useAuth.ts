@@ -32,7 +32,9 @@ export function useAuth() {
     pending.value = true
     try {
       if (cookie?.includes('_st=') || cookie?.includes('_rt=')) {
-        data.value = await $apiFetch<ShowroomLogin.User>('/api/user')
+        data.value = await $apiFetch<ShowroomLogin.User>('/api/user', {
+          credentials: 'include',
+        })
       }
       if (payload) payload.data.auth.user = data.value
     }
@@ -55,7 +57,9 @@ export function useAuth() {
         data.value = payload.data.auth.user
       }
       else {
-        data.value = await $apiFetch<ShowroomLogin.User>('/api/user')
+        data.value = await $apiFetch<ShowroomLogin.User>('/api/user', {
+          credentials: 'include',
+        })
       }
     }
     catch (e: unknown) {
@@ -85,6 +89,7 @@ export function useAuth() {
       await $apiFetch('/api/auth/login', {
         body,
         method: 'POST',
+        credentials: 'include',
       })
     }
     catch (e) {

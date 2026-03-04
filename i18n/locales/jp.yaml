@@ -1,1 +1,10 @@
-dummy: d
+test:
+units:
+  day_short: 日
+  hour_short: 時
+  minute_short: 分
+  second_short: 秒
+  day_full: 日
+  hour_full: 時間
+  minute_full: 分
+  second_full: 秒

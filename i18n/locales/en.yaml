@@ -98,7 +98,7 @@ stats_page:
   last_month: Last Month
   data_range: Data Range
   summary:
-    total_live: Total Lives
+    total_live: Total Gold
     live_count: "{count} Lives"
     by_member: by {count} members
     total_gift: Total Gift
@@ -320,3 +320,45 @@ pwa:
     description: New version is ready. Refresh to apply update.
     action: Update now
     later: Later
+competition:
+  title: SR Competition
+  title_full: Japan TV Competition
+  time_remaining: Event time remaining
+  ends_at: Ends at
+  last_updated: Last updated
+  snapshot_hour: Snapshot hour
+  snapshot_taken: Snapshot taken
+  detail: Detail
+  point: Point
+  gap_above: Gap above
+  gap_below: Gap below
+  gap_above_hint: Point difference from the rank above.
+  gap_below_hint: Point difference from the rank below.
+  rank_shift_hint: Rank change compared to previous.
+  rank_label: "Rank #{rank}"
+  total_points: Total points
+  total_lives: Total Gold
+  total_lives_live_hint: +1 because the member is currently live. Total Gold will increase after the stream ends.
+  active_members: Active members
+  avg_points_per_live: Average points/live
+  avg_gift_per_live: Average gift/live
+  avg_peak_viewers: Average viewers
+  avg_comments_per_live: Average comments/live
+  avg_duration_per_live: Average duration/live
+  point_per_live: Points per live
+  target_room: Target room
+  top_ranking: Top Ranking
+  ranking_list: Ranking list
+  active_days: Active days
+  last_live: Last live
+  event_ended: Event ended
+  loading: Loading
+units:
+  day_short: d
+  hour_short: h
+  minute_short: m
+  second_short: s
+  day_full: days
+  hour_full: hours
+  minute_full: minutes
+  second_full: seconds

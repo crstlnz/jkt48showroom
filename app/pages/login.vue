@@ -138,13 +138,13 @@ async function signInHandler() {
 <template>
   <div>
     <SplashScreen>
-      <div class="min-h-[100vh] bg-dark-2 backdrop-blur-xs">
+      <div class="min-h-screen bg-dark-2 backdrop-blur-xs">
         <div class="flex items-center justify-center text-center">
           <NuxtLink to="/" class="my-8 text-3xl font-bold text-white md:my-14 lg:text-4xl">
             {{ getTitle(settings.group) }}
           </NuxtLink>
         </div>
-        <div class="mx-auto w-[650px] max-w-[calc(100%_-_24px)] rounded-3xl bg-dark-1 px-4 py-8 text-white/75 drop-shadow-md md:px-8">
+        <div class="mx-auto w-162.5 max-w-[calc(100%-24px)] rounded-3xl bg-dark-1 px-4 py-8 text-white/75 drop-shadow-md md:px-8">
           <div class="flex items-center justify-center gap-1.5 text-center text-lg md:text-xl xl:text-2xl font-bold">
             <Icon name="solar:login-3-bold-duotone" class="text-red-500 text-4xl md:text-5xl xl:text-6xl" />
             <span>Login to Showroom</span>
@@ -153,13 +153,13 @@ async function signInHandler() {
           <div class="mt-8 flex flex-col gap-3 md:gap-4 md:mt-10">
             <div class="mb-5 relative rounded-xl ring-blue-500 focus-within:ring-2" :class="{ 'ring-1 ring-red-500': usernameError, 'cursor-not-allowed opacity-50': loading }">
               <input v-model="username" class="w-full rounded-xl bg-dark-3 px-3.5 py-2.5 outline-hidden focus:border-none! disabled:pointer-events-none" placeholder="Username" :disabled="loading" @keyup.enter="checkSubmit">
-              <div v-if="usernameError" class="absolute top-[calc(100%_+_5px)] text-sm text-red-500">
+              <div v-if="usernameError" class="absolute top-[calc(100%+5px)] text-sm text-red-500">
                 {{ usernameError }}
               </div>
             </div>
             <div class="mb-5 relative rounded-xl ring-blue-500 focus-within:ring-2" :class="{ 'ring-1 ring-red-500': passwordError, 'cursor-not-allowed opacity-50': loading }">
               <input v-model="password" class="w-full rounded-xl bg-dark-3 px-3.5 py-2.5 outline-hidden focus:border-none! disabled:pointer-events-none" placeholder="Password" type="password" :disabled="loading" @keyup.enter="checkSubmit">
-              <div v-if="passwordError" class="absolute top-[calc(100%_+_5px)] text-sm text-red-500">
+              <div v-if="passwordError" class="absolute top-[calc(100%+5px)] text-sm text-red-500">
                 {{ passwordError }}
               </div>
             </div>
@@ -170,7 +170,7 @@ async function signInHandler() {
               </div>
               <div class="relative rounded-xl ring-blue-500 focus-within:ring-2 sm:mt-3" :class="{ 'ring-1 ring-red-500': captchaError, 'cursor-not-allowed opacity-50': loading }">
                 <input v-model="captcha" class="w-full rounded-xl bg-dark-3 px-3.5 py-2.5 outline-hidden focus:border-none! disabled:pointer-events-none" placeholder="Captcha" :disabled="loading" @keyup.enter="checkSubmit">
-                <div v-if="captchaError" class="absolute top-[calc(100%_+_5px)] text-sm text-red-500">
+                <div v-if="captchaError" class="absolute top-[calc(100%+5px)] text-sm text-red-500">
                   {{ captchaError }}
                 </div>
               </div>

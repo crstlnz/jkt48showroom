@@ -47,7 +47,7 @@ export default function (opts: RecentFetchOpts | null = null, q: RecentsQuery | 
     refresh,
   } = useApiFetch<IApiRecents>(
     opts?.userHistory ? '/api/user/history' : '/api/recent',
-    { key, query, watch: false, deep: false, server: false, lazy: true, immediate: isResurrected() },
+    { key, query, watch: false, deep: false, server: false, lazy: true, immediate: isResurrected(), credentials: 'include' },
   )
 
   const mustPending = ref(false)

@@ -98,7 +98,7 @@ stats_page:
   last_month: Bulan Terakhir
   data_range: Rentang Data
   summary:
-    total_live: Total Live
+    total_live: Total Gold
     live_count: "{count} Live"
     by_member: oleh {count} member
     total_gift: Total Gift
@@ -320,3 +320,45 @@ pwa:
     description: Versi baru sudah siap. Muat ulang untuk menerapkan update.
     action: Update sekarang
     later: Nanti
+competition:
+  title: SR Competition
+  title_full: Japan TV Competition
+  time_remaining: Sisa waktu event
+  ends_at: Berakhir
+  last_updated: Diperbarui
+  snapshot_hour: Jam snapshot
+  snapshot_taken: Snapshot diambil
+  detail: Detail
+  point: Poin
+  gap_above: Gap atas
+  gap_below: Gap bawah
+  gap_above_hint: Selisih poin dengan peringkat di atas.
+  gap_below_hint: Selisih poin dengan peringkat di bawah.
+  rank_shift_hint: Perubahan peringkat dibanding sebelumnya.
+  rank_label: "Rank #{rank}"
+  total_points: Total poin
+  total_lives: Total Gold
+  total_lives_live_hint: +1 karena member sedang live. Total Gold akan bertambah setelah stream selesai.
+  active_members: Member aktif
+  avg_points_per_live: Rata-rata poin/live
+  avg_gift_per_live: Rata-rata gift/live
+  avg_peak_viewers: Rata-rata penonton
+  avg_comments_per_live: Rata-rata komentar/live
+  avg_duration_per_live: Rata-rata durasi/live
+  point_per_live: Poin per live
+  target_room: Room target
+  top_ranking: Ranking Teratas
+  ranking_list: Daftar ranking
+  active_days: Hari aktif
+  last_live: Live terakhir
+  event_ended: Event selesai
+  loading: Memuat
+units:
+  day_short: h
+  hour_short: j
+  minute_short: m
+  second_short: d
+  day_full: hari
+  hour_full: jam
+  minute_full: menit
+  second_full: detik

@@ -3,7 +3,7 @@ definePageMeta({ middleware: 'auth' })
 const route = useRoute()
 const router = useRouter()
 const page = ref(Number(route.query.page) || 1)
-const { data, pending, error } = await useApiFetch<IBookmarks>('/api/user/likes', { params: { page } })
+const { data, pending, error } = await useApiFetch<IBookmarks>('/api/user/likes', { params: { page }, credentials: 'include' })
 const { greaterOrEqual } = useResponsive()
 const isXl = greaterOrEqual('xl')
 

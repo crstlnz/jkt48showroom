@@ -13,6 +13,7 @@ async function reorder() {
     form.set('room_id', props.room.room_id)
     await $apiFetch('/api/user/follow/reorder', {
       method: 'POST',
+      credentials: 'include',
       body: form,
     })
     emit('update')
@@ -39,6 +40,7 @@ async function follow() {
     form.set('flag', String(isLike.value ? 0 : 1))
     await $apiFetch('/api/user/follow', {
       method: 'POST',
+      credentials: 'include',
       body: form,
     })
     isLike.value = !isLike.value

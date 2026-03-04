@@ -26,7 +26,7 @@ watch(keyId, () => {
 </script>
 
 <template>
-  <div class="followList px-3 md:px-4 min-h-[calc(100vh_-_60px)]">
+  <div class="followList px-3 md:px-4 min-h-[calc(100vh-60px)]">
     <div v-if="error">
       <Error message="Something error :(" :img-src="`${$imgCDN}/assets/svg/web/error.svg`" />
     </div>

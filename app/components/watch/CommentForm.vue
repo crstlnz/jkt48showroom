@@ -50,6 +50,7 @@ async function sendComment() {
     formData.set('is_delay', '0')
     await $apiFetch<Watch.APIComment>('/api/user/comment', {
       method: 'POST',
+      credentials: 'include',
       body: formData,
     })
     // if (res?.ok !== 1) throw new Error('Failed!')

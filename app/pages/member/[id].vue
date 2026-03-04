@@ -22,6 +22,7 @@ async function follow() {
     form.set('flag', String(isFollow.value ? 0 : 1))
     await $apiFetch('/api/user/follow', {
       method: 'POST',
+      credentials: 'include',
       body: form,
     })
     isFollow.value = !isFollow.value
@@ -85,7 +86,7 @@ useHead({
 
 <template>
   <div>
-    <div v-if="pending" class="flex min-h-[100vh] w-full flex-1 items-center justify-center">
+    <div v-if="pending" class="flex min-h-screen w-full flex-1 items-center justify-center">
       <Icon name="svg-spinners:ring-resize" size="2.5rem" />
     </div>
     <Error v-else-if="error || !member" :message="error ? (error.statusCode === 404 ? $t('error.pagenotfound') : $t('error.unknown')) : $t('error.pagenotfound')" :img-src="!member || error?.statusCode === 404 ? `${$imgCDN}/assets/svg/web/404.svg` : `${$imgCDN}/assets/svg/web/error.svg`" />
@@ -105,7 +106,7 @@ useHead({
                 <Icon v-tooltip="$t('data_disclaimer')" name="heroicons:information-circle" class="absolute right-0 top-0.5 md:right-3 md:top-3 text-lg outline-hidden" />
                 <div class="flex items-center gap-1.5 md:gap-2 md:text-xl">
                   <Icon name="solar:folder-with-files-bold-duotone" class="text-blue-500" />
-                  <span>Total Live</span>
+                  <span>Total Gold</span>
                 </div>
                 <div class="max-md:bg-container-2 max-md:p-3 max-md:rounded-xl w-full md:space-y-1 text-sm">
                   <div class="flex justify-between">

@@ -104,6 +104,7 @@ const searchInput = ref()
       <!-- <HomeContainer v-if="group === 'jkt48'" :title="$t('schedule')" icon-class="bg-blue-500" more="/schedule" more-label="More schedule" :more-text="$t('more')">
 
       </HomeContainer> -->
+      <HomeJKT48ShowroomCompetition v-if="group === 'jkt48'" />
       <HomeSchedule v-if="group === 'jkt48'" />
       <HomeNews v-if="group === 'jkt48'" />
       <HomeRecents v-if="group !== 'jkt48'" />

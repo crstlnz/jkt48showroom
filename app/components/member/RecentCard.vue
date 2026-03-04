@@ -10,7 +10,6 @@ const props = withDefaults(defineProps<{
 })
 
 const doc = ref<Document>()
-const { cloudinaryURL } = useAppConfig()
 const showDetailedDate = computed(() => {
   const oneMonthAgo = new Date()
   oneMonthAgo.setDate(0)

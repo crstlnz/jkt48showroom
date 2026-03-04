@@ -3,13 +3,10 @@ import { createJWT } from '~/utils/jwt'
 import pkg from '../../package.json'
 
 export default defineNuxtPlugin(async () => {
-  // const { checkAuth } = useAuth()
-  // await checkAuth()
-  const app = useRuntimeConfig()
   try {
     const { setVersion, setApiKey } = useSettings()
     setVersion(pkg.version)
-    setApiKey(createJWT({}, 86400000, app.private.jwt_secret))
+    setApiKey(createJWT({}, 86400000, process.env.JWT_SECRET!))
   }
   catch (e) {
     console.error(e)

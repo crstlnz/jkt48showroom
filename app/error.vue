@@ -27,7 +27,7 @@ function getError(code: number): ErrorMessage {
   const msg: ErrorMessage = {
     message: 'An error occurred!',
     alt: 'An error occurred!',
-    img: `${config.cloudinaryURL}/assets/svg/web/error.svg`,
+    img: `${config.imgCDN}/assets/svg/web/error.svg`,
     key: 'error.unknown',
   }
 
@@ -36,7 +36,7 @@ function getError(code: number): ErrorMessage {
       msg.message = 'Page not found!'
       msg.key = 'error.pagenotfound'
       msg.alt = '404 Not Found!'
-      msg.img = `${config.cloudinaryURL}/assets/svg/web/404.svg`
+      msg.img = `${config.imgCDN}/assets/svg/web/404.svg`
       break
     case 503:
       msg.message = 'Service temporarily unavailable, Try again later!'
