@@ -32,7 +32,6 @@ jobs:
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
-            ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
 
   deploy:
     runs-on: ubuntu-latest
