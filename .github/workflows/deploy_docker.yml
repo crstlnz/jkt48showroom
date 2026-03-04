@@ -50,7 +50,7 @@ jobs:
             ${{ secrets.CI_USER }}@${{ secrets.CI_HOST }} \
             "cd ${{ vars.DEPLOY_APP_DIR }} && \
             echo '🔄 Pulling latest Docker image...' && \
-            docker compose pull api && \
+            docker compose pull ${{ env.IMAGE_NAME }} && \
             echo '♻️ Restarting containers...' && \
             docker compose up -d && \
             echo '✅ Deployment complete!'"
