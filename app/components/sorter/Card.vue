@@ -18,25 +18,25 @@ const { group } = useSettings()
 
 const cardTone = computed(() => {
   if (!props.rank) return ''
-  if (props.rank === 1) return 'ring-2 ring-amber-300 bg-gradient-to-b from-amber-300/65 via-yellow-200/25 to-amber-600/35'
-  if (props.rank === 2) return 'ring-2 ring-slate-200 bg-gradient-to-b from-slate-200/65 via-slate-100/25 to-slate-500/35'
-  if (props.rank === 3) return 'ring-2 ring-orange-400 bg-gradient-to-b from-orange-400/65 via-orange-200/25 to-orange-700/35'
+  if (props.rank === 1) return 'ring-2 ring-amber-300/80 bg-gradient-to-b from-amber-200/60 via-amber-100/25 to-amber-400/30'
+  if (props.rank === 2) return 'ring-2 ring-slate-300/80 bg-gradient-to-b from-slate-200/60 via-slate-100/25 to-slate-400/30'
+  if (props.rank === 3) return 'ring-2 ring-orange-300/80 bg-gradient-to-b from-orange-200/60 via-orange-100/25 to-orange-400/30'
   return ''
 })
 
 const imageTone = computed(() => {
   if (!props.rank) return ''
-  if (props.rank === 1) return 'ring-2 ring-amber-200/80'
-  if (props.rank === 2) return 'ring-2 ring-slate-100/80'
-  if (props.rank === 3) return 'ring-2 ring-orange-200/80'
+  if (props.rank === 1) return 'ring-2 ring-amber-200/75'
+  if (props.rank === 2) return 'ring-2 ring-slate-200/75'
+  if (props.rank === 3) return 'ring-2 ring-orange-200/75'
   return ''
 })
 
 const cardBackTone = computed(() => {
   if (!props.rank) return ''
-  if (props.rank === 1) return 'bg-gradient-to-b from-amber-300 to-amber-500'
+  if (props.rank === 1) return 'bg-gradient-to-b from-amber-200 to-amber-400'
   if (props.rank === 2) return 'bg-gradient-to-b from-slate-200 to-slate-400'
-  if (props.rank === 3) return 'bg-gradient-to-b from-orange-400 to-orange-600'
+  if (props.rank === 3) return 'bg-gradient-to-b from-orange-200 to-orange-400'
   return ''
 })
 </script>
@@ -57,19 +57,19 @@ const cardBackTone = computed(() => {
           v-if="rank && rank <= 3"
           class="pointer-events-none absolute inset-1 rounded-xl"
           :class="{
-            'bg-linear-to-b from-amber-300/70 via-yellow-200/25 to-transparent': rank === 1,
-            'bg-linear-to-b from-slate-200/70 via-slate-100/25 to-transparent': rank === 2,
-            'bg-linear-to-b from-orange-400/70 via-orange-200/25 to-transparent': rank === 3,
+            'bg-linear-to-b from-amber-300/55 via-amber-100/20 to-transparent': rank === 1,
+            'bg-linear-to-b from-slate-300/55 via-slate-100/20 to-transparent': rank === 2,
+            'bg-linear-to-b from-orange-300/55 via-orange-100/20 to-transparent': rank === 3,
           }"
         />
         <div
           v-if="rank"
           class="absolute left-1 top-1 z-10 flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[11px] font-bold md:left-2 md:top-2"
           :class="{
-            'bg-amber-300 text-black': rank === 1,
-            'bg-slate-200 text-black': rank === 2,
-            'bg-orange-500 text-white': rank === 3,
-            'bg-red-500 text-white/80': rank > 3,
+            'h-6 min-w-6 border border-amber-300 bg-amber-300 text-amber-950 shadow-[0_2px_8px_rgba(251,191,36,0.25)] md:h-7 md:min-w-7 md:text-xs': rank === 1,
+            'h-6 min-w-6 border border-slate-300 bg-slate-300 text-slate-800 shadow-[0_2px_8px_rgba(148,163,184,0.25)] md:h-7 md:min-w-7 md:text-xs': rank === 2,
+            'h-6 min-w-6 border border-orange-300 bg-orange-300 text-orange-950 shadow-[0_2px_8px_rgba(251,146,60,0.25)] md:h-7 md:min-w-7 md:text-xs': rank === 3,
+            'h-5 min-w-5 border border-red-400 bg-red-500 text-white shadow-[0_1px_6px_rgba(244,63,94,0.22)] md:h-6 md:min-w-6 md:text-xs': rank > 3,
           }"
         >
           {{ rank }}
