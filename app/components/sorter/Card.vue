@@ -92,7 +92,7 @@ onBeforeUnmount(() => {
 <template>
   <Component
     :is="tag || 'button'"
-    class="card relative aspect-4/6 select-none rounded-2xl transition-[transform] duration-200 active:scale-95 disabled:cursor-not-allowed"
+    class="card relative aspect-4/6 select-none rounded-2xl transition-all duration-200 hover:scale-95 active:scale-[99%] disabled:cursor-not-allowed"
     :class="{
       flipped: isFlipped || flip,
     }"
@@ -105,7 +105,7 @@ onBeforeUnmount(() => {
       <div data-section="card-front" class="h-full w-full">
         <div
           v-if="rank && rank <= 3"
-          class="rare-shimmer pointer-events-none absolute inset-1 rounded-xl"
+          class="rare-shimmer pointer-events-none absolute inset-1 z-20 rounded-xl"
           :class="[
             { 'rare-shimmer-active': shimmerActive },
             {
@@ -137,7 +137,7 @@ onBeforeUnmount(() => {
           {{ rank }}
         </div>
         <div v-if="member" class="flex h-full w-full flex-col gap-1">
-          <DeferImage :key="member.id" :src="member.img" :alt="$t('sorter.profile_picture', { name: member.name })" class="h-0 w-full flex-1 select-none overflow-hidden rounded-lg object-cover" :class="imageTone" :draggable="false" />
+          <DeferImage :key="member.id" :src="member.img" :alt="$t('sorter.profile_picture', { name: member.name })" class="h-0 brightness-95 w-full flex-1 select-none overflow-hidden rounded-lg object-cover" :class="imageTone" :draggable="false" />
           <div class="w-full pt-0.5 flex-0.5">
             <div class="w-full truncate text-left text-sm font-bold md:text-base leading-5">
               {{ member.name }}
