@@ -9,6 +9,11 @@ const props = defineProps<{
   tag?: string
 }>()
 defineEmits(['click'])
+const SHIMMER_DURATION_MS = 2700
+const isHovering = ref(false)
+const isFinishingShimmer = ref(false)
+const shimmerStartedAt = ref<number | null>(null)
+let stopShimmerTimeout: ReturnType<typeof setTimeout> | null = null
 
 const isFlipped = computed(() => {
   return !props.member
@@ -39,6 +44,49 @@ const cardBackTone = computed(() => {
   if (props.rank === 3) return 'bg-gradient-to-b from-orange-200 to-orange-400'
   return ''
 })
+
+const hasRareShimmer = computed(() => {
+  return !!props.rank && props.rank <= 3
+})
+
+const shimmerActive = computed(() => {
+  return hasRareShimmer.value && (isHovering.value || isFinishingShimmer.value)
+})
+
+function clearStopShimmerTimeout() {
+  if (stopShimmerTimeout) {
+    clearTimeout(stopShimmerTimeout)
+    stopShimmerTimeout = null
+  }
+}
+
+function onCardMouseEnter() {
+  if (!hasRareShimmer.value) return
+  isHovering.value = true
+  isFinishingShimmer.value = false
+  clearStopShimmerTimeout()
+  if (!shimmerStartedAt.value) shimmerStartedAt.value = Date.now()
+}
+
+function onCardMouseLeave() {
+  if (!hasRareShimmer.value) return
+  isHovering.value = false
+  isFinishingShimmer.value = true
+  const startedAt = shimmerStartedAt.value ?? Date.now()
+  const elapsed = Date.now() - startedAt
+  const remaining = SHIMMER_DURATION_MS - (elapsed % SHIMMER_DURATION_MS)
+  clearStopShimmerTimeout()
+  stopShimmerTimeout = setTimeout(() => {
+    if (!isHovering.value) {
+      isFinishingShimmer.value = false
+      shimmerStartedAt.value = null
+    }
+  }, remaining)
+}
+
+onBeforeUnmount(() => {
+  clearStopShimmerTimeout()
+})
 </script>
 
 <template>
@@ -49,10 +97,24 @@ const cardBackTone = computed(() => {
       flipped: isFlipped || flip,
     }"
     :disabled="isFlipped"
+    @mouseenter="onCardMouseEnter"
+    @mouseleave="onCardMouseLeave"
     @click="$emit('click')"
   >
     <div class="card-inner bg-container relative gap-1 rounded-2xl px-2 pt-2 shadow-2xs md:w-60 md:gap-2 md:px-3 md:pt-3 pb-0.5 md:pb-1" :class="cardTone">
       <div data-section="card-front" class="h-full w-full">
+        <div
+          v-if="rank && rank <= 3"
+          class="rare-shimmer pointer-events-none absolute inset-1 rounded-xl"
+          :class="[
+            { 'rare-shimmer-active': shimmerActive },
+            {
+              'rare-shimmer-gold': rank === 1,
+              'rare-shimmer-silver': rank === 2,
+              'rare-shimmer-bronze': rank === 3,
+            },
+          ]"
+        />
         <div
           v-if="rank && rank <= 3"
           class="pointer-events-none absolute inset-1 rounded-xl"
@@ -102,3 +164,50 @@ const cardBackTone = computed(() => {
     </div>
   </Component>
 </template>
+
+<style scoped>
+.rare-shimmer {
+  overflow: hidden;
+}
+
+.rare-shimmer::before {
+  content: '';
+  position: absolute;
+  top: -35%;
+  left: -45%;
+  width: 55%;
+  height: 170%;
+  transform: rotate(18deg);
+  opacity: 0;
+}
+
+.rare-shimmer-active::before {
+  animation: rare-sweep 2.7s ease-in-out infinite;
+}
+
+.rare-shimmer-gold::before {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+}
+
+.rare-shimmer-silver::before {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+}
+
+.rare-shimmer-bronze::before {
+  background: linear-gradient(90deg, transparent, rgba(255, 244, 230, 0.42), transparent);
+}
+
+@keyframes rare-sweep {
+  0% {
+    transform: translateX(0) rotate(18deg);
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.55;
+  }
+  100% {
+    transform: translateX(260%) rotate(18deg);
+    opacity: 0;
+  }
+}
+</style>
