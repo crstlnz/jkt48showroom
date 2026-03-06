@@ -196,6 +196,29 @@ day: Day | Days
 month: Month | Months
 year: Year | Years
 sorter:
+  title: Rank result
+  reset: Reset
+  restart: Restart
+  undo: Undo
+  share: Share
+  generating: Generating...
+  progress: Progress
+  tie: Tie!
+  filters: Filters
+  start: Start
+  vs: VS
+  active: Active
+  graduate: Graduate
+  all_member: All Member
+  active_member: Active Member
+  graduate_member: Graduate Member
+  all_generation: All Generation
+  profile_picture: "{name} Profile Picture"
+  share_result_title: Oshi Sorter Result
+  share_download_success: Result image downloaded
+  share_download_failed: Failed to generate share image
+  unknown_member: Not found!
+  layout_description: Sort your favorite {group} members and discover your top picks. Find your real oshi!
   viewresult: View Result
   selectmember: Select members first!
   clickstart: Click start to continue...
@@ -338,7 +361,10 @@ competition:
   rank_label: "Rank #{rank}"
   total_points: Total points
   total_lives: Total Gold
-  total_lives_live_hint: +1 because the member is currently live. Total Gold will increase after the stream ends.
+  total_live_count: Total lives
+  total_live_duration: Total live duration
+  total_lives_live_hint: +1 because the member is currently live. Total live will increase after the stream ends.
+  live_now_status: currently live
   active_members: Active members
   avg_points_per_live: Average points/live
   avg_gift_per_live: Average gift/live

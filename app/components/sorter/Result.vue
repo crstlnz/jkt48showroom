@@ -42,7 +42,7 @@ watch(computedResult, async (val) => {
 </script>
 
 <template>
-  <div class="mx-auto grid w-[1024px] max-w-[95%] grid-cols-[repeat(auto-fill,minmax(90px,1fr))] justify-evenly gap-2 md:grid-cols-[repeat(auto-fill,minmax(150px,1fr))] md:gap-4">
+  <div class="mx-auto grid w-5xl grid-cols-[repeat(auto-fill,minmax(105px,1fr))] justify-evenly gap-2.5 md:grid-cols-[repeat(auto-fill,minmax(150px,1fr))] md:gap-4">
     <SorterCard v-for="member in result" :key="member.member.id" :flip="member.flip" :member="member.member" class="" :rank="member.rank" @click="member.flip = !member.flip" />
   </div>
 </template>

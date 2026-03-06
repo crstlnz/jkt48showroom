@@ -89,7 +89,7 @@ function getMemberUrl(room: CompetitionRoom): string | null {
         <div
           v-for="num in 6"
           :key="num"
-          class="bg-container rounded-lg border border-black/10 py-2 dark:border-white/10"
+          class="bg-container border-none! py-2"
         >
           <div class="flex animate-pulse items-center gap-2.5">
             <div class="pulse-color size-9 rounded-full" />
@@ -120,7 +120,7 @@ function getMemberUrl(room: CompetitionRoom): string | null {
         <div
           v-for="entry in rankingEntries"
           :key="`${entry.item.room.room_id}-${entry.item.rank}`"
-          class="bg-container rounded-lg border border-black/10 py-2 dark:border-white/10"
+          class="bg-container border-none! py-2"
           :class="{ 'border-amber-500/35 dark:border-amber-500/35': entry.item.rank === 1 }"
         >
           <div class="flex items-center gap-2.5">

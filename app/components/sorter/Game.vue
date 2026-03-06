@@ -4,16 +4,25 @@ defineProps<{
 }>()
 
 const filterList = useSessionStorage<string[]>('sorter-filterlist', [], { deep: true, listenToStorageChanges: true })
+const { t } = useI18n()
 const { start, state, stop, GameState, setSelectedMember, cardOne, cardTwo, pick, undo, progress } = useMemberSorter()
 watch(state, (val) => {
   if (val === GameState.FINISHED) navigateTo('/sorter/result')
 })
+
+function localizeFilter(filter: string) {
+  if (['All Member', 'Semua Member'].includes(filter)) return t('sorter.all_member')
+  if (['Active Member', 'Member Aktif'].includes(filter)) return t('sorter.active_member')
+  if (['Graduate Member', 'Member Graduate'].includes(filter)) return t('sorter.graduate_member')
+  if (['All Generation', 'Semua Generasi'].includes(filter)) return t('sorter.all_generation')
+  return filter
+}
 </script>
 
 <template>
   <div>
     <button type="button" class="fixed right-2 top-2 z-aboveNav rounded-md bg-red-500 px-2 py-0.5 text-xs text-white/80 active:scale-95 md:right-3 md:top-3" @click="stop">
-      Reset
+      {{ $t('sorter.reset') }}
     </button>
     <div
       class="flex flex-col"
@@ -21,7 +30,7 @@ watch(state, (val) => {
       <div class="flex w-full items-center justify-evenly">
         <SorterCard :flip="state !== GameState.STARTED" class="max-md:flex-1 w-0 md:w-44 lg:w-60" :member="cardOne" @click="() => pick('one')" />
         <div class="text-xs max-sm:mx-2 md:text-base">
-          VS
+          {{ $t('sorter.vs') }}
         </div>
         <SorterCard :flip="state !== GameState.STARTED" class="reverse max-md:flex-1 w-0 md:w-44 lg:w-60" :member="cardTwo" @click="() => pick('two')" />
       </div>
@@ -43,23 +52,23 @@ watch(state, (val) => {
         >
           <div class="relative overflow-hidden rounded-xl bg-blue-500/50 text-white/90">
             <div class="z-10 px-3 py-0.5 text-center text-sm">
-              Progress  {{ decimalFormat(progress * 100) }}%
+              {{ $t('sorter.progress') }} {{ decimalFormat(progress * 100) }}%
             </div>
             <div class="absolute inset-y-0 -z-10  bg-blue-500" :style="{ width: `${progress * 100}%` }" />
           </div>
           <Button class="rounded-full bg-green-500 p-2.5 text-lg font-bold text-white/90" @click="() => pick('tie')">
-            Tie!
+            {{ $t('sorter.tie') }}
           </Button>
           <Button class="rounded-full bg-red-500 p-2.5 text-lg font-bold text-white/90" @click="undo">
-            Undo
+            {{ $t('sorter.undo') }}
           </Button>
           <div class="mt-5">
             <div class="mb-2 text-lg font-bold">
-              Filters
+              {{ $t('sorter.filters') }}
             </div>
             <div class="flex flex-wrap gap-2 md:gap-3">
               <div v-for="filter in filterList" :key="filter" class="rounded-full bg-blue-400/25 px-3 py-1 text-sm dark:bg-blue-400/10 md:text-base">
-                {{ filter }}
+                {{ localizeFilter(filter) }}
               </div>
             </div>
           </div>

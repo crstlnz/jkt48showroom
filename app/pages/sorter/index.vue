@@ -36,6 +36,6 @@ const data = computed<ISortMember[]>(() => {
       <Image class="mx-auto w-96 max-w-[80%]" :src="`${$imgCDN}/assets/svg/web/empty-box.svg`" />
       <span>{{ $t("data.nodata") }}</span>
     </div>
-    <SorterGame v-else :members="data" class="mx-auto flex w-[768px] max-w-[95%] flex-col flex-wrap items-stretch justify-center gap-3 self-start" />
+    <SorterGame v-else :members="data" class="mx-auto flex w-3xl max-w-[95%] flex-col flex-wrap items-stretch justify-center gap-3 self-start" />
   </div>
 </template>

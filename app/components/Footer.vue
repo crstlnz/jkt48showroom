@@ -2,6 +2,7 @@
 import { useSettings } from '~/store/settings'
 
 const { version } = useSettings()
+const config = useRuntimeConfig()
 </script>
 
 <template>
@@ -39,7 +40,7 @@ const { version } = useSettings()
       </NuxtLink>
     </div>
     <div class="text-[10px] px-2 font-bold mt-1">
-      Version : {{ version }}
+      Version : {{ version }}{{ config.public.isDev ? '-dev' : '' }}
     </div>
   </div>
 </template>

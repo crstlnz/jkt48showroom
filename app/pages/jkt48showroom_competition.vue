@@ -19,6 +19,7 @@ interface CompetitionRoom {
   name: string
   nickname?: string
   slug?: string
+  key?: string
 }
 
 interface CompetitionLiveStats {
@@ -139,6 +140,14 @@ const eventEndAtMs = computed(() => {
   return endedAt * 1000
 })
 
+const eventDurationSeconds = computed(() => {
+  const startedAt = Number(data.value?.event?.started_at)
+  const endedAt = Number(data.value?.event?.ended_at)
+  if (!Number.isFinite(startedAt) || !Number.isFinite(endedAt)) return null
+  if (startedAt <= 0 || endedAt <= startedAt) return null
+  return Math.floor(endedAt - startedAt)
+})
+
 const remainingMs = computed(() => {
   if (!eventEndAtMs.value) return null
   return eventEndAtMs.value - now.value
@@ -199,6 +208,9 @@ function formatGiftGold(value: number | string | null | undefined) {
 
 function getMemberUrl(room: CompetitionRoom): string | null {
   if (!room.slug) return null
+  if (isLive(room.room_id)) {
+    return `/watch/${room.key}`
+  }
   return `/member/${room.slug}`
 }
 
@@ -229,6 +241,11 @@ function hasRankShift(entry: CompetitionRankingDetail) {
 function hasLiveStats(live: CompetitionLiveStats | null | undefined) {
   const liveCount = Number(live?.live_count || 0)
   return Number.isFinite(liveCount) && liveCount > 0
+}
+
+function getTotalLiveCountTooltip(entry: CompetitionRankingDetail) {
+  if (!isLive(entry.room.room_id)) return null
+  return t('competition.total_lives_live_hint')
 }
 
 function isLive(roomId: number | null | undefined) {
@@ -491,7 +508,7 @@ function getPointProgress(point: number | null | undefined) {
             </div>
           </div>
         </div>
-        <div v-if="!onLivesPending && showroomLives.length && (data.event.ended_at * 1000) < Date.now()" class="space-y-2 md:space-y-3">
+        <div v-if="!onLivesPending && showroomLives.length && (data.event.ended_at * 1000) > Date.now()" class="space-y-2 md:space-y-3">
           <div class="flex items-center justify-between">
             <h3 class="text-base md:text-lg font-bold">
               Showroom Live
@@ -694,6 +711,19 @@ function getPointProgress(point: number | null | undefined) {
                 <p class="text-xs opacity-65">
                   {{ $t('competition.rank_label', { rank: entry.rank }) }}
                 </p>
+                <p class="group text-[11px] opacity-60">
+                  <span v-if="isLive(entry.room.room_id)" class="text-red-500 dark:text-red-400">
+                    {{ $t('competition.last_live') }}: {{ $t('competition.live_now_status') }}
+                  </span>
+                  <template v-else>
+                    <span class="group-hover:hidden">
+                      {{ $t('competition.last_live') }}: {{ formatFromNow(entry.live.last_live_at) }}
+                    </span>
+                    <span class="hidden group-hover:inline">
+                      {{ $t('competition.last_live') }}: {{ formatDateTime(entry.live.last_live_at) }}
+                    </span>
+                  </template>
+                </p>
               </div>
 
               <div class="flex-1 text-right shrink-0">
@@ -729,7 +759,31 @@ function getPointProgress(point: number | null | undefined) {
               />
             </div>
 
-            <div class="mt-2 grid grid-cols-2 md:grid-cols-3 gap-1.5 text-[11px] md:text-xs">
+            <div class="mt-2 grid grid-cols-2 md:grid-cols-4 gap-1.5 text-[11px] md:text-xs">
+              <SRCompetitionStatCard
+                :label="$t('competition.total_live_count')"
+                variant="soft"
+              >
+                <template #value>
+                  <span v-if="!isLive(entry.room.room_id)" v-tooltip="getTotalLiveCountTooltip(entry)">
+                    {{ entry.live.live_count }}
+                  </span>
+                  <span v-else v-tooltip="getTotalLiveCountTooltip(entry)" class="inline-flex items-center gap-1">
+                    <span class="text-white">{{ formatNumber(entry.live.live_count) }}</span>
+                    <span class="text-emerald-500 dark:text-emerald-400">(+1)</span>
+                  </span>
+                </template>
+              </SRCompetitionStatCard>
+              <SRCompetitionStatCard
+                :label="$t('competition.total_live_duration')"
+                :value="hasLiveStats(entry.live) ? formatDurationSeconds(entry.live.total_duration / 1000) : '-'"
+                variant="soft"
+              />
+              <SRCompetitionStatCard
+                :label="$t('competition.avg_duration_per_live')"
+                :value="hasLiveStats(entry.live) ? formatDurationSeconds(entry.live.avg_duration / 1000) : '-'"
+                variant="soft"
+              />
               <SRCompetitionStatCard
                 :label="$t('competition.total_lives')"
                 variant="soft"
@@ -758,21 +812,6 @@ function getPointProgress(point: number | null | undefined) {
                 :value="hasLiveStats(entry.live) ? formatNumber(entry.live.point_per_live) : '-'"
                 variant="soft"
               />
-              <div class="group">
-                <SRCompetitionStatCard
-                  :label="$t('competition.last_live')"
-                  variant="soft"
-                >
-                  <template #value>
-                    <span class="group-hover:hidden">
-                      {{ formatFromNow(entry.live.last_live_at) }}
-                    </span>
-                    <span class="hidden group-hover:inline">
-                      {{ formatDateTime(entry.live.last_live_at) }}
-                    </span>
-                  </template>
-                </SRCompetitionStatCard>
-              </div>
             </div>
           </article>
         </div>

@@ -6,6 +6,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{ (e: 'filtered', members: ISortMember[], filterList: string[]): void }>()
+const { t } = useI18n()
 const filteredMembers = useSessionStorage<ISortMember[]>('sorter-members', [])
 const filterList = useSessionStorage<string[]>('sorter-filterlist', [], { deep: true, listenToStorageChanges: true })
 
@@ -74,13 +75,13 @@ function toggleGeneration(key: string) {
 function getFilterList(): string[] {
   const filterList: string[] = []
   if (!filterGraduate.value === filterActive.value) {
-    filterList.push(filterActive.value ? 'Active Member' : 'Graduate Member')
+    filterList.push(filterActive.value ? t('sorter.active_member') : t('sorter.graduate_member'))
   }
   else {
-    filterList.push('All Member')
+    filterList.push(t('sorter.all_member'))
   }
   if (allGeneration.value) {
-    filterList.push('All Generation')
+    filterList.push(t('sorter.all_generation'))
   }
   else {
     filterList.push(...filterGeneration.value.map(i => (parseGeneration(i, true)) || ''))
@@ -130,7 +131,7 @@ function updateFilter() {
         <label
           class="inline-block pl-[0.15rem] hover:cursor-pointer"
           for="active"
-        >Active</label>
+        >{{ $t('sorter.active') }}</label>
       </div>
 
       <div class="flex items-start">
@@ -144,7 +145,7 @@ function updateFilter() {
         <label
           class="inline-block pl-[0.15rem] hover:cursor-pointer"
           for="graduate"
-        >Graduate</label>
+        >{{ $t('sorter.graduate') }}</label>
       </div>
 
       <div class="flex items-start">
@@ -159,7 +160,7 @@ function updateFilter() {
         <label
           class="inline-block pl-[0.15rem] hover:cursor-pointer"
           for="allgen"
-        >All Generation</label>
+        >{{ $t('sorter.all_generation') }}</label>
       </div>
     </div>
     <Button
@@ -169,7 +170,7 @@ function updateFilter() {
       }"
       class="mt-3 rounded-full bg-red-500 p-2.5 text-lg font-bold text-white/90" @click="updateFilter"
     >
-      Start
+      {{ $t('sorter.start') }}
     </Button>
   </div>
 </template>

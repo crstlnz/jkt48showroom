@@ -1,7 +1,7 @@
 {
   "name": "jkt48showroom",
   "type": "module",
-  "version": "0.23.0",
+  "version": "0.23.1",
   "engines": {
     "node": "20.x.x"
   },
@@ -13,7 +13,9 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "docker:build": "docker build -t crstlnz/jkt48showroom:latest .",
+    "docker:push": "docker push crstlnz/jkt48showroom:latest"
   },
   "dependencies": {
     "@headlessui/tailwindcss": "^0.2.2",
@@ -29,6 +31,8 @@
     "events": "^3.3.0",
     "fuse.js": "^7.1.0",
     "horoscope": "^2.0.1",
+    "html2canvas": "^1.4.1",
+    "html2canvas-pro": "^2.0.2",
     "jsonwebtoken": "^9.0.2",
     "nuxt": "4.3.1",
     "photoswipe": "^5.4.4",

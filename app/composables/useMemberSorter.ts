@@ -47,6 +47,15 @@ interface CompareManager {
 function getRandomFromArray<T>(array: T[]) {
   return array[Math.floor(Math.random() * array.length)] as T
 }
+
+function cloneRankEntry(entry: string | string[]) {
+  if (Array.isArray(entry)) return [...entry]
+  return entry
+}
+
+function cloneRanksCompare(data: RanksCompare): RanksCompare {
+  return data.map(cloneRankEntry)
+}
 export default function () {
   const { addNotif } = useNotifications()
   const { t } = useI18n()
@@ -55,7 +64,7 @@ export default function () {
   const result = useSessionStorage<(ISortMember | ISortMember[])[]>('sorter-result', () => [])
   // ranks
   const ranks = useSessionStorage<RanksContainer>('sorter-ranks', () => [])
-  const memberMap = useSessionStorage('sorter-membermap', new Map<string, ISortMember>())
+  const memberMap = shallowRef(new Map<string, ISortMember>())
 
   const compare = useSessionStorage<CompareManager>('sorter-compare', {
     one: [],
@@ -64,6 +73,15 @@ export default function () {
     initialTwo: 0,
     sorted: [],
   })
+
+  function rebuildMemberMap() {
+    const nextMap = new Map<string, ISortMember>()
+    for (const member of members.value) {
+      nextMap.set(member.id, member)
+    }
+    memberMap.value = nextMap
+  }
+  watch(members, rebuildMemberMap, { immediate: true })
 
   const rankTemp = useSessionStorage<RanksContainer>('sorter-sortedTemp', () => [])
   const progress = computed(() => {
@@ -95,7 +113,7 @@ export default function () {
     switch (type) {
       case 'one':{
         const card = compare.value.one.shift()
-        compareData.one = card || null
+        compareData.one = card ? cloneRankEntry(card) : null
         if (card) {
           compare.value.sorted.push(card)
         }
@@ -103,7 +121,7 @@ export default function () {
       }
       case 'two':{
         const card = compare.value.two.shift()
-        compareData.two = card || null
+        compareData.two = card ? cloneRankEntry(card) : null
         if (card) {
           compare.value.sorted.push(card)
         }
@@ -112,8 +130,13 @@ export default function () {
       default:{
         const one = compare.value.one.shift()
         const two = compare.value.two.shift()
-        compareData.one = one || null
-        compareData.two = two || null
+        compareData.one = one ? cloneRankEntry(one) : null
+        compareData.two = two ? cloneRankEntry(two) : null
+        if (!one || !two) {
+          if (one) compare.value.sorted.push(one)
+          if (two) compare.value.sorted.push(two)
+          break
+        }
         const tie: string[] = []
         if (Array.isArray(one)) {
           tie.push(...one)
@@ -170,9 +193,9 @@ export default function () {
       const fillData: FillTypeOne = {
         initialOne: compare.value.initialOne,
         initialTwo: compare.value.initialTwo,
-        one: compare.value.one,
-        two: compare.value.two,
-        ranks: [one, two],
+        one: cloneRanksCompare(compare.value.one),
+        two: cloneRanksCompare(compare.value.two),
+        ranks: [cloneRanksCompare(one), cloneRanksCompare(two)],
       }
       compare.value.one = one || ([] as string[])
       compare.value.initialOne = compare.value.one.length
@@ -217,12 +240,9 @@ export default function () {
 
   function prepareStart() {
     reset()
-    memberMap.value.clear()
+    rebuildMemberMap()
     ranks.value = shuffleArray(members.value).map(i => [i.id])
     fillCompare()
-    for (const member of members.value) {
-      memberMap.value.set(member.id, member)
-    }
   }
 
   const defaultSortMember = { id: '', img: '', is_graduate: true, name: 'Not found!', generation: '' }
@@ -258,20 +278,20 @@ export default function () {
       if (fillData != null) {
         if ((fillData as FillTypeTwo).rankCursor == null) {
           const data = fillData as FillTypeOne
-          compare.value.one = data.one
-          compare.value.two = data.two
+          compare.value.one = cloneRanksCompare(data.one)
+          compare.value.two = cloneRanksCompare(data.two)
           compare.value.initialOne = data.initialOne
           compare.value.initialTwo = data.initialTwo
-          ranks.value = [...data.ranks, ...ranks.value]
+          ranks.value = [cloneRanksCompare(data.ranks[0]), cloneRanksCompare(data.ranks[1]), ...ranks.value]
         }
         else {
           const data = fillData as FillTypeTwo
           if (data.fillData) {
-            compare.value.one = data.fillData.one
-            compare.value.two = data.fillData.two
+            compare.value.one = cloneRanksCompare(data.fillData.one)
+            compare.value.two = cloneRanksCompare(data.fillData.two)
             compare.value.initialOne = data.fillData.initialOne
             compare.value.initialTwo = data.fillData.initialTwo
-            ranks.value = [...data.fillData.ranks, ...ranks.value]
+            ranks.value = [cloneRanksCompare(data.fillData.ranks[0]), cloneRanksCompare(data.fillData.ranks[1]), ...ranks.value]
           }
           rankTemp.value = ranks.value.slice(data.rankCursor, ranks.value.length)
           ranks.value = ranks.value.slice(0, data.rankCursor)
@@ -285,10 +305,10 @@ export default function () {
       }
 
       if (undoData.one) {
-        compare.value.one = [undoData.one, ...compare.value.one]
+        compare.value.one = [cloneRankEntry(undoData.one), ...compare.value.one]
       }
       if (undoData.two) {
-        compare.value.two = [undoData.two, ...compare.value.two]
+        compare.value.two = [cloneRankEntry(undoData.two), ...compare.value.two]
       }
       compare.value.sorted.pop()
       if (state.value === GameState.FINISHED) state.value = GameState.STARTED
