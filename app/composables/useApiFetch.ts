@@ -1,15 +1,21 @@
 import { defu } from 'defu'
+import { useSettings } from '~/store/settings'
 import syncServerCookies from './syncServerCookies'
 
-export function useApiFetch<T>(...args: Parameters<typeof useFetch<T>>) {
-  const [url, options = {}] = args
+type UseApiFetchOptions<T> = NonNullable<Parameters<typeof useFetch<T>>[1]> & {
+  useApiKey?: boolean
+}
+
+export function useApiFetch<T>(url: Parameters<typeof useFetch<T>>[0], options: UseApiFetchOptions<T> = {}) {
+  const { apiKey } = useSettings()
+  const { useApiKey = false, ...fetchOptions } = options
 
   const config = useRuntimeConfig()
   if (!config.public.api) throw new Error('Api url not defined!')
   const { getHeaders, setCookie } = syncServerCookies()
-  const onResponse = options?.onResponse
-  const onRequest = options?.onRequest
-  const defaults: NonNullable<typeof options> = {
+  const onResponse = fetchOptions?.onResponse
+  const onRequest = fetchOptions?.onRequest
+  const defaults: NonNullable<typeof fetchOptions> = {
     baseURL: config.public.api as string,
     key: typeof url === 'string' ? url : 'api-fetch',
     server: true,
@@ -29,12 +35,18 @@ export function useApiFetch<T>(...args: Parameters<typeof useFetch<T>>) {
     },
     onRequest(ctx) {
       if (typeof onRequest === 'function') onRequest(ctx)
+      const headers = new Headers(ctx.options.headers)
       if (import.meta.server) {
-        ctx.options.headers = new Headers(getHeaders())
+        const serverHeaders = new Headers(getHeaders())
+        serverHeaders.forEach((value, key) => headers.set(key, value))
       }
+      if (useApiKey && apiKey) {
+        headers.set('x-api-key', apiKey)
+      }
+      ctx.options.headers = headers
     },
   }
   // for nice deep defaults, please use unjs/defu
-  const params = defu(options, defaults)
+  const params = defu(fetchOptions, defaults)
   return useFetch(url, params)
 }

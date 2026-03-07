@@ -221,7 +221,8 @@ sorter:
   layout_description: Urutkan member {group} favoritmu dan temukan pilihan teratasmu. Temukan oshi aslimu!
   viewresult: Lihat hasil
   selectmember: Pilih membernya dulu!
-  clickstart: Tekan start untuk memulai...
+  clickstart: Tekan mulai untuk memulai...
+  reveal_all_on_finish: Tampilkan semua member saat sorting selesai
   selected: Terpilih {count} member!
   pickmemberfirst: Minimal pilih 2 member!
 selectdate: Pilih tanggal
@@ -372,6 +373,7 @@ competition:
   avg_comments_per_live: Rata-rata komentar/live
   avg_duration_per_live: Rata-rata durasi/live
   point_per_live: Poin per live
+  top_fans: Top fans
   target_room: Room target
   top_ranking: Ranking Teratas
   ranking_list: Daftar ranking

@@ -200,6 +200,51 @@ button:focus {
   opacity: 0;
 }
 
+.rare-shimmer {
+  overflow: hidden;
+}
+
+.rare-shimmer::before {
+  content: '';
+  position: absolute;
+  top: -35%;
+  left: -45%;
+  width: 55%;
+  height: 170%;
+  transform: rotate(18deg);
+  opacity: 0;
+}
+
+.rare-shimmer-active::before {
+  animation: rare-sweep 2.7s ease-in-out 1;
+}
+
+.rare-shimmer-gold::before {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+}
+
+.rare-shimmer-silver::before {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+}
+
+.rare-shimmer-bronze::before {
+  background: linear-gradient(90deg, transparent, rgba(255, 244, 230, 0.42), transparent);
+}
+
+@keyframes rare-sweep {
+  0% {
+    transform: translateX(0) rotate(18deg);
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.55;
+  }
+  100% {
+    transform: translateX(260%) rotate(18deg);
+    opacity: 0;
+  }
+}
+
 body {
   overflow-x: clip;
   overflow-y: scroll;

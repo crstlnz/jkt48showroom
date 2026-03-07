@@ -222,6 +222,7 @@ sorter:
   viewresult: View Result
   selectmember: Select members first!
   clickstart: Click start to continue...
+  reveal_all_on_finish: Reveal all members when sorting is finished
   selected: Selected {count} members!
   pickmemberfirst: Minimum 2 members are selected!
 selectdate: Select date
@@ -372,6 +373,7 @@ competition:
   avg_comments_per_live: Average comments/live
   avg_duration_per_live: Average duration/live
   point_per_live: Points per live
+  top_fans: Top fans
   target_room: Target room
   top_ranking: Top Ranking
   ranking_list: Ranking list

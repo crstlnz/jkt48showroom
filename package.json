@@ -15,7 +15,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "docker:build": "docker build -t crstlnz/jkt48showroom:latest .",
-    "docker:push": "docker push crstlnz/jkt48showroom:latest"
+    "docker:push": "docker push crstlnz/jkt48showroom:latest",
+    "docker" : "bun docker:build && bun docker:push"
   },
   "dependencies": {
     "@headlessui/tailwindcss": "^0.2.2",

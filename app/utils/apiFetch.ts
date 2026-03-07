@@ -7,9 +7,8 @@ const fetcher = ofetch.create({
   credentials: 'include',
 })
 
-export async function $apiFetch<T>(request: RequestInfo, options?: FetchOptions<'json', any> | undefined): Promise<T> {
+export async function $apiFetch<T>(request: RequestInfo, options?: FetchOptions<'json', any> & { includeApiKey?: boolean } | undefined): Promise<T> {
   const nuxtApp = tryUseNuxtApp()
-
   const fetch = async () => {
     const config = useRuntimeConfig()
     const opts: FetchOptions<'json'> = {

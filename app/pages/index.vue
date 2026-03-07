@@ -59,6 +59,7 @@ const searchInput = ref()
       <HomeBanner />
       <div class="flex flex-col gap-3 md:gap-4">
         <HomeLiveNow />
+        <HomeJKT48ShowroomCompetitionCard v-if="group === 'jkt48'" class="mx-3 md:mx-4" />
         <HomeRecentGrids v-if="group === 'jkt48'" />
         <HomeYoutubeVideo v-if="group === 'jkt48'" />
         <!-- <HomeStats /> -->

@@ -1,5 +1,13 @@
 <script lang="ts" setup>
+import {
+  Dialog,
+  DialogPanel,
+  DialogTitle,
+  TransitionChild,
+  TransitionRoot,
+} from '@headlessui/vue'
 import { useOnLives } from '~/store/onLives'
+import { useSettings } from '~/store/settings'
 
 interface CompetitionEvent {
   event_name: string
@@ -38,6 +46,17 @@ interface CompetitionLiveStats {
   point_per_hour: number
   first_live_at: string | Date | null
   last_live_at: string | Date | null
+}
+
+interface CompetitionTopFan {
+  user_id: string
+  name: string
+  avatar_url: string
+  point: number
+  gold: number
+  visit_count: number
+  total_comments: number
+  contribution_rank: number
 }
 
 interface CompetitionRankingDetail {
@@ -88,7 +107,9 @@ interface CompetitionDetailResponse {
   rankings: CompetitionRankingDetail[]
 }
 
-const { data, pending, error, refresh } = await useApiFetch<CompetitionDetailResponse>('/api/showroom_competition_detail')
+const { data, pending, error, refresh } = await useShowroomCompetitionDetail<CompetitionDetailResponse>()
+const { apiKey } = storeToRefs(useSettings())
+const config = useRuntimeConfig()
 const { t, locale } = useI18n()
 const dayjs = useDayjs()
 const onLives = useOnLives()
@@ -128,6 +149,27 @@ const showroomLiveRoomIdSet = computed(() => {
 })
 
 const topThreeRankings = computed(() => sortedRankings.value.slice(0, 3))
+const isTopFansDialogOpen = ref(false)
+const topFansByRoom = ref<Record<number, CompetitionTopFan[]>>({})
+const topFansPendingRoomId = ref<number | null>(null)
+const topFansErrorByRoom = ref<Record<number, boolean>>({})
+const activeTopFansRoomId = ref<number | null>(null)
+const activeTopFansEntry = computed(() => {
+  if (!activeTopFansRoomId.value) return null
+  return sortedRankings.value.find(entry => entry.room.room_id === activeTopFansRoomId.value) || null
+})
+const activeTopFansList = computed(() => {
+  if (!activeTopFansRoomId.value) return []
+  return topFansByRoom.value[activeTopFansRoomId.value] || []
+})
+const activeTopFansPending = computed(() => {
+  if (!activeTopFansRoomId.value) return false
+  return topFansPendingRoomId.value === activeTopFansRoomId.value
+})
+const activeTopFansError = computed(() => {
+  if (!activeTopFansRoomId.value) return false
+  return Boolean(topFansErrorByRoom.value[activeTopFansRoomId.value])
+})
 
 const leadingPoint = computed(() => {
   const point = Number(sortedRankings.value[0]?.point || 0)
@@ -138,14 +180,6 @@ const eventEndAtMs = computed(() => {
   const endedAt = Number(data.value?.event?.ended_at)
   if (!Number.isFinite(endedAt) || endedAt <= 0) return null
   return endedAt * 1000
-})
-
-const eventDurationSeconds = computed(() => {
-  const startedAt = Number(data.value?.event?.started_at)
-  const endedAt = Number(data.value?.event?.ended_at)
-  if (!Number.isFinite(startedAt) || !Number.isFinite(endedAt)) return null
-  if (startedAt <= 0 || endedAt <= startedAt) return null
-  return Math.floor(endedAt - startedAt)
 })
 
 const remainingMs = computed(() => {
@@ -334,6 +368,51 @@ function getPointProgress(point: number | null | undefined) {
   if (!Number.isFinite(value) || value <= 0) return 0
   return Math.min(100, Math.max(0, (value / leadingPoint.value) * 100))
 }
+
+async function fetchTopFans(roomId: number) {
+  if (!Number.isFinite(roomId) || roomId <= 0) return
+  if (topFansPendingRoomId.value === roomId) return
+
+  topFansPendingRoomId.value = roomId
+  topFansErrorByRoom.value = { ...topFansErrorByRoom.value, [roomId]: false }
+
+  try {
+    const result = await $fetch<CompetitionTopFan[]>('/api/showroom_competition_top_fans', {
+      baseURL: config.public.api as string,
+      query: { room_id: roomId },
+      headers: apiKey.value ? { 'x-api-key': apiKey.value } : undefined,
+    })
+
+    topFansByRoom.value = {
+      ...topFansByRoom.value,
+      [roomId]: (Array.isArray(result) ? result : []).slice(0, 100),
+    }
+  }
+  catch {
+    topFansErrorByRoom.value = { ...topFansErrorByRoom.value, [roomId]: true }
+    topFansByRoom.value = { ...topFansByRoom.value, [roomId]: [] }
+  }
+  finally {
+    if (topFansPendingRoomId.value === roomId) {
+      topFansPendingRoomId.value = null
+    }
+  }
+}
+
+async function openTopFansDialog(entry: CompetitionRankingDetail) {
+  const roomId = Number(entry.room.room_id)
+  if (!Number.isFinite(roomId) || roomId <= 0) return
+
+  activeTopFansRoomId.value = roomId
+  isTopFansDialogOpen.value = true
+  if (!topFansByRoom.value[roomId] && topFansPendingRoomId.value !== roomId) {
+    await fetchTopFans(roomId)
+  }
+}
+
+function closeTopFansDialog() {
+  isTopFansDialogOpen.value = false
+}
 </script>
 
 <template>
@@ -517,16 +596,13 @@ function getPointProgress(point: number | null | undefined) {
               {{ formatNumber(showroomLives.length) }} {{ $t("member", showroomLives.length) }}
             </p>
           </div>
-
           <div v-if="onLivesError" key="lives-error" class="bg-container flex w-full flex-col items-center justify-center gap-2 rounded-xl p-4 text-xs md:text-sm">
             <Image class="aspect-square w-32 max-w-[45%]" :src="`${$imgCDN}/assets/svg/web/error.svg`" sizes="200px" fit="fill" />
             {{ $t("data.failed") }}
           </div>
-
           <div v-else-if="onLivesPending" key="lives-pending" class="bg-container grid-live-now gap-4 rounded-xl p-4">
             <PulseLiveCard />wew
           </div>
-
           <div v-else-if="showroomLives.length" key="onlives" class="bg-container rounded-xl p-2.5 md:p-3">
             <div key="live-list" class="grid grid-cols-1 gap-2 md:grid-cols-2">
               <SRCompetitionLiveMiniCard
@@ -537,7 +613,6 @@ function getPointProgress(point: number | null | undefined) {
             </div>
           </div>
         </div>
-
         <div class="grid grid-cols-2 xl:grid-cols-3 gap-2 md:gap-3">
           <div
             v-for="card in summaryCards"
@@ -557,108 +632,7 @@ function getPointProgress(point: number | null | undefined) {
             </div>
           </div>
         </div>
-
-        <div v-if="topThreeRankings.length" class="space-y-2 md:space-y-3">
-          <div class="flex items-end justify-between">
-            <h3 class="text-base md:text-lg font-bold">
-              {{ $t('competition.top_ranking') }}
-            </h3>
-            <p class="text-xs opacity-70">
-              #1 - #3
-            </p>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-3">
-            <article
-              v-for="entry in topThreeRankings"
-              :key="`top-${entry.room.room_id}-${entry.rank}`"
-              class="bg-container rounded-xl border border-black/10 p-3 dark:border-white/10 md:p-4"
-              :class="{ 'border-amber-500/35 dark:border-amber-500/35': entry.rank === 1 }"
-            >
-              <div class="flex items-center justify-between gap-3">
-                <NuxtLink v-if="getMemberUrl(entry.room)" :to="getMemberUrl(entry.room) || ''" class="relative shrink-0">
-                  <Image
-                    :src="entry.room.image_alt || entry.room.image_square"
-                    :alt="entry.room.nickname || entry.room.name"
-                    class="h-24 w-18 rounded-lg bg-black/5 object-cover"
-                    loading="lazy"
-                    fit="cover"
-                    format="webp"
-                    :modifiers="{
-                      aspectRatio: 3 / 4,
-                      gravity: 'faceCenter',
-                    }"
-                    sizes="72"
-                  />
-                  <span
-                    v-if="isLive(entry.room.room_id)"
-                    class="absolute right-0 translate-0.5 bottom-0 z-10 inline-flex size-3 items-center justify-center rounded-full bg-red-500"
-                  >
-                    <span class="size-full bg-red-500 rounded-full animate-ping" />
-                  </span>
-                </NuxtLink>
-                <div v-else class="relative shrink-0">
-                  <Image
-                    :src="entry.room.image_alt || entry.room.image_square"
-                    :alt="entry.room.nickname || entry.room.name"
-                    class="h-24 w-18 rounded-lg bg-black/5 object-cover ring-2"
-                    :class="isLive(entry.room.room_id) ? 'ring-red-500/70' : 'ring-black/10 dark:ring-white/10'"
-                    loading="lazy"
-                    fit="cover"
-                    format="webp"
-                    :modifiers="{
-                      aspectRatio: 3 / 4,
-                      gravity: 'faceCenter',
-                    }"
-                    sizes="72"
-                  />
-                  <span
-                    v-if="isLive(entry.room.room_id)"
-                    class="absolute right-0 translate-0.5 bottom-0 z-10 inline-flex size-3 items-center justify-center rounded-full bg-red-500"
-                  >
-                    <span class="size-full bg-red-500 rounded-full animate-ping" />
-                  </span>
-                </div>
-                <div class="min-w-0 flex-1">
-                  <NuxtLink
-                    v-if="getMemberUrl(entry.room)"
-                    :to="getMemberUrl(entry.room) || ''"
-                    class="truncate font-semibold block"
-                  >
-                    {{ entry.room.nickname || entry.room.name }}
-                  </NuxtLink>
-                  <p v-else class="truncate font-semibold">
-                    {{ entry.room.nickname || entry.room.name }}
-                  </p>
-                  <p class="text-xs opacity-65">
-                    {{ $t('competition.rank_label', { rank: entry.rank }) }}
-                  </p>
-                </div>
-                <div class="shrink-0 text-right">
-                  <span class="ml-auto inline-flex size-6 items-center justify-center rounded-full border text-[10px] font-semibold" :class="getRankClass(entry.rank)">
-                    <Icon v-if="getRankIcon(entry.rank)" :name="getRankIcon(entry.rank) || ''" class="size-3.5" />
-                    <span v-else>{{ entry.rank }}</span>
-                  </span>
-                  <p class="text-[10px] opacity-65">
-                    {{ $t('competition.total_points') }}
-                  </p>
-                  <p class="text-sm font-semibold md:text-base" :class="{ 'text-amber-500': entry.rank === 1 }">
-                    {{ hasLiveStats(entry.live) ? formatNumber(entry.point) : '-' }}
-                  </p>
-                </div>
-              </div>
-
-              <div class="mt-3 h-1.5 overflow-hidden rounded-full bg-black/7 dark:bg-white/10">
-                <div
-                  class="h-full rounded-full transition-all duration-500"
-                  :class="entry.rank === 1 ? 'bg-amber-500/90' : entry.rank === 2 ? 'bg-slate-500/90' : 'bg-orange-500/90'"
-                  :style="{ width: `${getPointProgress(entry.point)}%` }"
-                />
-              </div>
-            </article>
-          </div>
-        </div>
-
+        <HomeJKT48ShowroomCompetitionCard />
         <div class="space-y-2 md:space-y-3">
           <div class="flex items-center justify-between">
             <h3 class="text-base md:text-lg font-bold">
@@ -668,19 +642,17 @@ function getPointProgress(point: number | null | undefined) {
               {{ $t('total_member') }}: {{ formatNumber(sortedRankings.length) }}
             </p>
           </div>
-
           <article
             v-for="entry in sortedRankings"
             :key="`${entry.room.room_id}-${entry.rank}`"
             class="bg-container rounded-lg border border-black/10 p-3 dark:border-white/10"
             :class="{ 'border-amber-500/35 dark:border-amber-500/35': entry.rank === 1 }"
           >
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3 relative">
               <span class="flex size-10 shrink-0 items-center justify-center rounded-full border text-sm font-semibold" :class="getRankClass(entry.rank)">
                 <Icon v-if="getRankIcon(entry.rank)" :name="getRankIcon(entry.rank) || ''" class="size-5" />
                 <span v-else>{{ entry.rank }}</span>
               </span>
-
               <NuxtLink v-if="getMemberUrl(entry.room)" :to="getMemberUrl(entry.room) || ''">
                 <SRCompetitionLiveAvatar
                   :src="entry.room.image_alt || entry.room.image_square"
@@ -696,7 +668,6 @@ function getPointProgress(point: number | null | undefined) {
                 :is-live="isLive(entry.room.room_id)"
                 size="sm"
               />
-
               <div class="min-w-0">
                 <NuxtLink
                   v-if="getMemberUrl(entry.room)"
@@ -748,6 +719,14 @@ function getPointProgress(point: number | null | undefined) {
                       {{ formatRankShiftCount(entry.trend?.rank_diff) }}
                     </b>
                   </span>
+                  <button
+                    type="button"
+                    class="mb-1 inline-flex items-center gap-1 rounded-md border border-black/10 bg-black/3 px-2 py-0.5 text-[10px] font-semibold transition-colors hover:bg-black/6 dark:border-white/10 dark:bg-white/4 dark:hover:bg-white/8"
+                    @click="() => openTopFansDialog(entry)"
+                  >
+                    <Icon name="ph:users-three-fill" class="size-3.5" />
+                    Top Fans
+                  </button>
                 </div>
               </div>
             </div>
@@ -817,6 +796,134 @@ function getPointProgress(point: number | null | undefined) {
         </div>
       </template>
     </div>
+    <TransitionRoot appear :show="isTopFansDialogOpen" as="template">
+      <Dialog as="div" class="relative z-notification" @close="closeTopFansDialog">
+        <TransitionChild
+          as="template"
+          enter="duration-300 ease-out"
+          enter-from="opacity-0"
+          enter-to="opacity-100"
+          leave="duration-150 ease-in"
+          leave-from="opacity-100"
+          leave-to="opacity-0"
+        >
+          <div class="fixed inset-0 bg-black/45" />
+        </TransitionChild>
+
+        <div class="fixed inset-0 w-screen overflow-y-auto p-3 md:p-4">
+          <div class="flex min-h-full items-center justify-center text-left">
+            <TransitionChild
+              as="template"
+              enter="duration-300 ease-out"
+              enter-from="opacity-0 scale-[98%]"
+              enter-to="opacity-100 scale-100"
+              leave="duration-150 ease-in"
+              leave-from="opacity-100 scale-100"
+              leave-to="opacity-0 scale-[98%]"
+            >
+              <DialogPanel class="w-full max-w-2xl overflow-hidden rounded-2xl border border-black/10 bg-container shadow-xl dark:border-white/10">
+                <div class="flex items-start justify-between gap-3 border-b border-black/8 p-4 dark:border-white/10">
+                  <div class="flex min-w-0 items-center gap-3">
+                    <img
+                      v-if="activeTopFansEntry"
+                      :src="activeTopFansEntry.room.image_alt || activeTopFansEntry.room.image_square || $errorPicture"
+                      :alt="activeTopFansEntry.room.nickname || activeTopFansEntry.room.name"
+                      class="h-20 w-14 shrink-0 rounded-lg object-cover"
+                      loading="lazy"
+                    >
+                    <div class="min-w-0">
+                      <DialogTitle class="text-base font-bold md:text-lg">
+                        {{ activeTopFansEntry?.room.nickname || activeTopFansEntry?.room.name || '-' }}
+                      </DialogTitle>
+                      <p class="truncate text-xs opacity-75 md:text-sm">
+                        Top Fans
+                      </p>
+                      <div v-if="activeTopFansEntry" class="mt-1 inline-flex items-center rounded-md bg-black/8 px-1.5 py-0.5 text-[10px] font-semibold dark:bg-white/12">
+                        Live Count: {{ formatNumber(activeTopFansEntry.live.live_count) }}
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    class="inline-flex size-8 items-center justify-center rounded-lg border border-black/10 transition-colors hover:bg-black/5 dark:border-white/10 dark:hover:bg-white/5"
+                    @click="closeTopFansDialog"
+                  >
+                    <Icon name="ic:round-close" class="size-4.5" />
+                  </button>
+                </div>
+
+                <div class="max-h-[70vh] overflow-y-auto p-3">
+                  <div v-if="activeTopFansPending" class="flex h-24 items-center justify-center gap-2.5 text-sm opacity-75">
+                    <Icon name="svg-spinners:ring-resize" class="size-4" />
+                    Loading top fans...
+                  </div>
+                  <div v-else-if="activeTopFansError" class="flex h-24 items-center justify-center text-sm opacity-75">
+                    {{ $t('data.failed') }}
+                  </div>
+                  <div v-else-if="!activeTopFansList.length" class="flex h-24 items-center justify-center text-sm opacity-75">
+                    {{ $t('data.nodata') }}
+                  </div>
+                  <div v-else class="space-y-2">
+                    <div
+                      v-for="[index, fan] in activeTopFansList.entries()"
+                      :key="`${activeTopFansRoomId}-${fan.user_id}-${index}`"
+                      class="group flex items-center gap-2.5 rounded-xl border px-2.5 py-2 transition-colors"
+                      :class="index === 0
+                        ? 'border-amber-400/50 bg-amber-500/10'
+                        : index === 1
+                          ? 'border-slate-400/45 bg-slate-500/10'
+                          : index === 2
+                            ? 'border-orange-400/45 bg-orange-500/10'
+                            : 'border-black/8 bg-black/2 hover:bg-black/4 dark:border-white/8 dark:bg-white/2 dark:hover:bg-white/4'"
+                    >
+                      <span
+                        class="inline-flex h-6 min-w-6 items-center justify-center rounded-full px-1.5 text-[11px] font-bold"
+                        :class="index === 0
+                          ? 'bg-amber-500 text-black'
+                          : index === 1
+                            ? 'bg-slate-400 text-black'
+                            : index === 2
+                              ? 'bg-orange-500 text-black'
+                              : 'bg-black/8 text-foreground/80 dark:bg-white/12'"
+                      >
+                        {{ index + 1 }}
+                      </span>
+                      <img
+                        :src="fan.avatar_url || $errorPicture"
+                        :alt="`${fan.name} avatar`"
+                        class="size-10 shrink-0 rounded-full border border-black/8 object-cover dark:border-white/10"
+                        loading="lazy"
+                      >
+                      <div class="min-w-0 flex-1">
+                        <p class="truncate text-sm font-semibold leading-tight">
+                          {{ fan.name }}
+                        </p>
+                        <div class="mt-0.5 flex flex-wrap items-center gap-1.5 text-[10px]">
+                          <span class="rounded-md bg-black/8 px-1.5 py-0.5 font-semibold dark:bg-white/12">
+                            {{ formatGiftGold(fan.gold) }}
+                          </span>
+                          <span class="rounded-md bg-black/8 px-1.5 py-0.5 dark:bg-white/12">
+                            Visit {{ formatNumber(fan.visit_count) }}
+                          </span>
+                        </div>
+                      </div>
+                      <div class="shrink-0 text-right">
+                        <p class="text-sm font-semibold">
+                          {{ formatNumber(fan.point) }}
+                        </p>
+                        <p class="text-[10px] opacity-70">
+                          Point
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </DialogPanel>
+            </TransitionChild>
+          </div>
+        </div>
+      </Dialog>
+    </TransitionRoot>
     <template #sidebar>
       <div class="xl:mt-4">
         <HomeRecents />

@@ -207,7 +207,7 @@ defineExpose({ open, close, isOpen })
         <div
           ref="sheet"
           :class="{ 'transition-transform': !isDrag }"
-          class="sheet-content fixed! bottom-0 left-0 z-aboveNav max-h-[90vh] w-full touch-none overflow-hidden rounded-t-3xl ease-in-out md:left-auto md:right-10 md:w-[450px] md:rounded-t-2xl md:shadow-rounded lg:right-20"
+          class="sheet-content fixed! bottom-0 left-0 z-aboveNav max-h-[90vh] border border-color-1 w-full touch-none overflow-hidden rounded-t-3xl ease-in-out md:left-auto md:right-10 md:w-112.5 md:rounded-t-2xl lg:right-20"
         >
           <RecycleScroller
             ref="scroller"
@@ -223,15 +223,15 @@ defineExpose({ open, close, isOpen })
               >
                 <div
                   v-if="$device.isMobile"
-                  class="absolute left-1/2 top-1.5 h-[3px] w-14 -translate-x-1/2 rounded-xs bg-slate-400/40 dark:bg-dark-3/90"
+                  class="absolute left-1/2 top-1.5 h-0.75 w-14 -translate-x-1/2 rounded-xs bg-slate-400/40 dark:bg-dark-3/90"
                 />
-                <h2 ref="navbar" class="flex-1 select-none px-5 text-xl font-bold leading-[4.5rem]">
+                <h2 ref="navbar" class="flex-1 select-none px-5 text-xl font-bold leading-18">
                   {{ title }}
                 </h2>
                 <button
                   v-if="!$device.isMobile"
                   type="button"
-                  class="group disable-highlight scale-100 px-5 transition-transform active:bg-slate-100 dark:active:bg-dark-2"
+                  class="group disable-highlight scale-100 px-5 transition-transform "
                   @click="close"
                 >
                   <svg

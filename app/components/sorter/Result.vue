@@ -4,6 +4,7 @@ const props = defineProps<{
 }>()
 
 defineEmits<{ (e: 'restart'): void }>()
+const revealAllOnFinish = useLocalStorage('sorter-reveal-all-finish', true)
 const computedResult = computed(() => {
   const res: { rank: number, flip: boolean, member: ISortMember }[] = []
   for (const [index, member] of props.result.entries()) {
@@ -28,14 +29,19 @@ const computedResult = computed(() => {
 })
 
 const result = ref<{ rank: number, flip: boolean, member: ISortMember }[]>([])
-watch(computedResult, async (val) => {
-  result.value = val
-  if (val) {
+watch([computedResult, revealAllOnFinish], async ([val, reveal]) => {
+  if (!reveal) {
+    result.value = val.map(item => ({ ...item, flip: true }))
+    return
+  }
+
+  result.value = val.map(item => ({ ...item, flip: true }))
+  if (val.length) {
     await sleep(500)
     for (const [index] of result.value.entries()) {
       const card = result.value[index]
       if (card) card.flip = false
-      await sleep(50)
+      await sleep(170)
     }
   }
 }, { immediate: true })

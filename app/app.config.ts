@@ -29,7 +29,7 @@ const urls = {
     const deepLinkValue = encodeURIComponent(`idnapp://live/?room=${slug}`)
     return `https://click.idn.media/VKUf?af_dp=${af_dp}&af_web_dp=${webUrl}&c=detail-liveroom&deep_link_value=${deepLinkValue}&pid=idnapp`
   },
-  defaultCardBackground: `${imgCDN}/assets/img/jkt48pt_vbvdpw.png`,
+  defaultCardBackground: `${imgCDN}/assets/img/jkt48fightcard.png`,
   giftUrl: (id: string | number, type: GiftSize = 'small') => `https://static.showroom-live.com/image/gift/${id}_${type === 'small' ? 's' : 'm'}.png`,
   avatarURL: (id: number | string) => `https://static.showroom-live.com/image/avatar/${id}.png`,
   profileURL: (roomId: number | string) => `https://www.showroom-live.com/room/profile?room_id=${roomId}`,

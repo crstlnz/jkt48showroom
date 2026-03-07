@@ -33,7 +33,7 @@ withDefaults(defineProps<{
       dense ? 'py-1' : 'py-1.5',
       variant === 'bordered'
         ? 'border border-black/10 dark:border-white/10'
-        : 'bg-black/[0.03] dark:bg-white/[0.04]',
+        : 'bg-black/3 dark:bg-white/4',
     ]"
   >
     <p class="opacity-65">

@@ -13,6 +13,7 @@ const i18nHead = useLocaleHead({
 })
 
 const url = useRequestURL()
+const route = useRoute()
 const settings = useSettings()
 const { getFavicon } = useAppConfig()
 
@@ -113,13 +114,14 @@ watch(width, () => {
   navRect.value = navElement.value!.getBoundingClientRect()
 })
 
-// useCSRF()
 const { user } = useAuth()
 
 const { isEmbed } = await useIsEmbed()
 const showWebviewBlock = ref(false)
-const openingExternalBrowser = ref(false)
-const browserUrl = ref(url.href)
+const pwaPromptExcludedPages = [
+  '/sorter/*',
+  '/sorter',
+]
 const pwaNeedRefresh = computed(() => $pwa?.needRefresh ?? false)
 const pwaCanInstall = computed(() =>
   ($pwa?.showInstallPrompt ?? false)
@@ -130,8 +132,21 @@ const activePwaPrompt = computed<'update' | 'install' | null>(() => {
   if (pwaCanInstall.value) return 'install'
   return null
 })
+
+const isPwaPromptExcludedPage = computed(() => {
+  const currentPath = route.path
+  return pwaPromptExcludedPages.some((page) => {
+    if (page.endsWith('/*')) {
+      return currentPath.startsWith(page.slice(0, -1))
+    }
+    return currentPath === page
+  })
+})
+
 const showPwaPrompt = computed(() =>
-  !showWebviewBlock.value && activePwaPrompt.value !== null,
+  !showWebviewBlock.value
+  && activePwaPrompt.value !== null
+  && !isPwaPromptExcludedPage.value,
 )
 const pwaPromptPrefix = computed(() =>
   activePwaPrompt.value === 'update' ? 'pwa.update' : 'pwa.install',
@@ -179,101 +194,7 @@ function applyPwaPromptAction() {
   installPwa()
 }
 
-function wait(ms: number) {
-  return new Promise<void>(resolve => window.setTimeout(resolve, ms))
-}
-
-function createAndroidIntentURL(targetUrl: string) {
-  try {
-    const parsed = new URL(targetUrl)
-    const scheme = parsed.protocol.replace(':', '')
-    return `intent://${parsed.host}${parsed.pathname}${parsed.search}${parsed.hash}#Intent;scheme=${scheme};package=com.android.chrome;end`
-  }
-  catch {
-    return ''
-  }
-}
-
-function createIOSChromeURL(targetUrl: string) {
-  if (targetUrl.startsWith('https://')) {
-    return `googlechromes://${targetUrl.slice('https://'.length)}`
-  }
-  if (targetUrl.startsWith('http://')) {
-    return `googlechrome://${targetUrl.slice('http://'.length)}`
-  }
-  return ''
-}
-
-function getDeepLinks(targetUrl: string) {
-  const userAgent = navigator.userAgent
-  const deepLinks: string[] = []
-
-  if (/Android/i.test(userAgent)) {
-    const intentURL = createAndroidIntentURL(targetUrl)
-    if (intentURL) deepLinks.push(intentURL)
-  }
-
-  if (/iPhone|iPad|iPod/i.test(userAgent)) {
-    const iosChromeURL = createIOSChromeURL(targetUrl)
-    if (iosChromeURL) deepLinks.push(iosChromeURL)
-  }
-
-  return deepLinks
-}
-
-function openDeepLink(urlToOpen: string) {
-  const iframe = document.createElement('iframe')
-  iframe.style.display = 'none'
-  iframe.src = urlToOpen
-  document.body.appendChild(iframe)
-  window.setTimeout(() => {
-    iframe.remove()
-  }, 1000)
-}
-
-async function openInExternalBrowser() {
-  if (import.meta.server || openingExternalBrowser.value) return false
-
-  openingExternalBrowser.value = true
-  browserUrl.value = window.location.href
-  let movedToExternalBrowser = false
-
-  const onVisibilityChange = () => {
-    if (document.visibilityState === 'hidden') {
-      movedToExternalBrowser = true
-    }
-  }
-
-  document.addEventListener('visibilitychange', onVisibilityChange)
-
-  try {
-    for (const deepLink of getDeepLinks(browserUrl.value)) {
-      openDeepLink(deepLink)
-      await wait(450)
-      if (movedToExternalBrowser) return true
-    }
-
-    window.open(browserUrl.value, '_blank', 'noopener,noreferrer')
-    await wait(1400)
-    return movedToExternalBrowser || document.visibilityState === 'hidden'
-  }
-  finally {
-    document.removeEventListener('visibilitychange', onVisibilityChange)
-    openingExternalBrowser.value = false
-  }
-}
-
-// async function retryOpenInBrowser() {
-//   showWebviewBlock.value = false
-//   const success = await openInExternalBrowser()
-//   showWebviewBlock.value = !success
-// }
-
-// onMounted(async () => {
-//   if (!isEmbeddedClient.value) return
-//   const success = await openInExternalBrowser()
-//   showWebviewBlock.value = !success
-// })
+const { isMobile } = useDevice()
 </script>
 
 <template>
@@ -286,7 +207,8 @@ async function openInExternalBrowser() {
     </div>
     <div
       v-if="showPwaPrompt"
-      class="fixed bottom-4 left-1/2 z-99998 w-[calc(100%-1.5rem)] max-w-md -translate-x-1/2 rounded-2xl bg-white dark:bg-dark-1 p-4 shadow-xl border border-color-2"
+      :class="{ 'bottom-20!': isMobile }"
+      class="fixed bottom-4 left-1/2 z-belowNav w-[calc(100%-1.5rem)] max-w-md -translate-x-1/2 rounded-2xl bg-white dark:bg-dark-1 p-4 shadow-xl border border-color-2"
     >
       <div class="flex items-start gap-3">
         <div

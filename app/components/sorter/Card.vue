@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { DeferImage } from '#components'
 import { imgCDN } from '~/app.config'
-import crstlnzImg, { toCrstlnzImageOutput } from '~/providers/crstlnz-img'
+import { toCrstlnzImageOutput } from '~/providers/crstlnz-img'
 import { useSettings } from '~/store/settings'
 
 const props = defineProps<{
@@ -12,10 +12,11 @@ const props = defineProps<{
 }>()
 defineEmits(['click'])
 const SHIMMER_DURATION_MS = 2700
-const isHovering = ref(false)
-const isFinishingShimmer = ref(false)
-const shimmerStartedAt = ref<number | null>(null)
-let stopShimmerTimeout: ReturnType<typeof setTimeout> | null = null
+const MIN_SHIMMER_DELAY_MS = 500
+const MAX_SHIMMER_DELAY_MS = 9000
+const shimmerActive = ref(false)
+let shimmerStartTimeout: ReturnType<typeof setTimeout> | null = null
+let shimmerStopTimeout: ReturnType<typeof setTimeout> | null = null
 
 const isFlipped = computed(() => {
   return !props.member
@@ -51,43 +52,52 @@ const hasRareShimmer = computed(() => {
   return !!props.rank && props.rank <= 3
 })
 
-const shimmerActive = computed(() => {
-  return hasRareShimmer.value && (isHovering.value || isFinishingShimmer.value)
-})
+function getRandomShimmerDelay() {
+  return Math.floor(Math.random() * (MAX_SHIMMER_DELAY_MS - MIN_SHIMMER_DELAY_MS + 1)) + MIN_SHIMMER_DELAY_MS
+}
 
-function clearStopShimmerTimeout() {
-  if (stopShimmerTimeout) {
-    clearTimeout(stopShimmerTimeout)
-    stopShimmerTimeout = null
+function clearShimmerTimers() {
+  if (shimmerStartTimeout) {
+    clearTimeout(shimmerStartTimeout)
+    shimmerStartTimeout = null
   }
+
+  if (shimmerStopTimeout) {
+    clearTimeout(shimmerStopTimeout)
+    shimmerStopTimeout = null
+  }
+
+  shimmerActive.value = false
 }
 
-function onCardMouseEnter() {
+function scheduleNextShimmer() {
   if (!hasRareShimmer.value) return
-  isHovering.value = true
-  isFinishingShimmer.value = false
-  clearStopShimmerTimeout()
-  if (!shimmerStartedAt.value) shimmerStartedAt.value = Date.now()
+
+  shimmerStartTimeout = setTimeout(() => {
+    shimmerActive.value = true
+    shimmerStopTimeout = setTimeout(() => {
+      shimmerActive.value = false
+      scheduleNextShimmer()
+    }, SHIMMER_DURATION_MS)
+  }, getRandomShimmerDelay())
 }
 
-function onCardMouseLeave() {
-  if (!hasRareShimmer.value) return
-  isHovering.value = false
-  isFinishingShimmer.value = true
-  const startedAt = shimmerStartedAt.value ?? Date.now()
-  const elapsed = Date.now() - startedAt
-  const remaining = SHIMMER_DURATION_MS - (elapsed % SHIMMER_DURATION_MS)
-  clearStopShimmerTimeout()
-  stopShimmerTimeout = setTimeout(() => {
-    if (!isHovering.value) {
-      isFinishingShimmer.value = false
-      shimmerStartedAt.value = null
-    }
-  }, remaining)
+function startRandomShimmer() {
+  clearShimmerTimers()
+  scheduleNextShimmer()
 }
+
+watch(hasRareShimmer, (hasRare) => {
+  if (hasRare) {
+    startRandomShimmer()
+    return
+  }
+
+  clearShimmerTimers()
+}, { immediate: true })
 
 onBeforeUnmount(() => {
-  clearStopShimmerTimeout()
+  clearShimmerTimers()
 })
 
 function convertToTransformUrl(img: string) {
@@ -108,8 +118,6 @@ function convertToTransformUrl(img: string) {
       flipped: isFlipped || flip,
     }"
     :disabled="isFlipped"
-    @mouseenter="onCardMouseEnter"
-    @mouseleave="onCardMouseLeave"
     @click="$emit('click')"
   >
     <div class="card-inner bg-container relative gap-1 rounded-2xl px-2 pt-2 shadow-2xs md:w-60 md:gap-2 md:px-3 md:pt-3 pb-0.5 md:pb-1" :class="cardTone">
@@ -118,7 +126,7 @@ function convertToTransformUrl(img: string) {
           v-if="rank && rank <= 3"
           class="rare-shimmer pointer-events-none absolute inset-1 z-20 rounded-xl"
           :class="[
-            { 'rare-shimmer-active': shimmerActive },
+            { 'rare-shimmer-active': shimmerActive && hasRareShimmer },
             {
               'rare-shimmer-gold': rank === 1,
               'rare-shimmer-silver': rank === 2,
@@ -158,8 +166,8 @@ function convertToTransformUrl(img: string) {
             </div>
           </div>
           <div class="flex w-full flex-wrap justify-end gap-2 md:pb-1 pt-1.5">
-            <div class="rounded-full text-[10px] font-bold md:text-xs" :class="[{ 'opacity-0': !member.is_graduate }, !member.is_graduate ? 'text-red-500' : 'text-green-500']">
-              {{ !member.is_graduate ? $t('sorter.graduate') : $t('sorter.active') }}
+            <div class="rounded-full text-[10px] font-bold md:text-xs" :class="[{ 'opacity-0': !member.is_graduate }, member.is_graduate ? 'text-red-500' : 'text-green-500']">
+              {{ member.is_graduate ? $t('sorter.graduate') : $t('sorter.active') }}
             </div>
           </div>
         </div>
@@ -175,50 +183,3 @@ function convertToTransformUrl(img: string) {
     </div>
   </Component>
 </template>
-
-<style scoped>
-.rare-shimmer {
-  overflow: hidden;
-}
-
-.rare-shimmer::before {
-  content: '';
-  position: absolute;
-  top: -35%;
-  left: -45%;
-  width: 55%;
-  height: 170%;
-  transform: rotate(18deg);
-  opacity: 0;
-}
-
-.rare-shimmer-active::before {
-  animation: rare-sweep 2.7s ease-in-out infinite;
-}
-
-.rare-shimmer-gold::before {
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
-}
-
-.rare-shimmer-silver::before {
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-}
-
-.rare-shimmer-bronze::before {
-  background: linear-gradient(90deg, transparent, rgba(255, 244, 230, 0.42), transparent);
-}
-
-@keyframes rare-sweep {
-  0% {
-    transform: translateX(0) rotate(18deg);
-    opacity: 0;
-  }
-  25% {
-    opacity: 0.55;
-  }
-  100% {
-    transform: translateX(260%) rotate(18deg);
-    opacity: 0;
-  }
-}
-</style>

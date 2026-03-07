@@ -5,6 +5,7 @@ export const useSettings = defineStore('settings', () => {
   // const { status } = useAuth()
   const version = ref('')
   const apiKey = ref('')
+  const keys = ref<string[]>([])
 
   function setVersion(ver: string) {
     version.value = ver
@@ -12,6 +13,26 @@ export const useSettings = defineStore('settings', () => {
 
   function setApiKey(key: string) {
     apiKey.value = key
+  }
+
+  function getApiKey() {
+
+  }
+
+  function splitString(str: string, parts: number = 3): string[] {
+    const len = str.length
+    const size = Math.ceil(len / parts)
+
+    const result: string[] = []
+    for (let i = 0; i < parts; i++) {
+      result.push(str.slice(i * size, (i + 1) * size))
+    }
+
+    return result
+  }
+
+  function setRawApiKey(key: string) {
+    keys.value = splitString(btoa(key), 4)
   }
 
   const status = ref(null)
@@ -76,7 +97,7 @@ export const useSettings = defineStore('settings', () => {
   watch(() => route.fullPath, (p) => {
     path.value = p
   })
-  return { setApiKey, apiKey, domain, version, setVersion, setDomain, currentURL, getWebTitle, group, csrfToken, firstDate, session: skipHydrate(session) }
+  return { setApiKey, apiKey, setRawApiKey, getApiKey, rawApiKeys: keys, domain, version, setVersion, setDomain, currentURL, getWebTitle, group, csrfToken, firstDate, session: skipHydrate(session) }
 })
 
 if (import.meta.hot) {

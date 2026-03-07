@@ -1,9 +1,12 @@
 import { useOnLives } from '~/store/onLives'
+import { useSettings } from '~/store/settings'
 import { createGtagEvent } from '~/utils/gtag'
 
 export default defineNuxtPlugin(() => {
   const route = useRoute()
   const { checkAuth, authenticated } = useAuth()
+  const { setApiKey, rawApiKeys } = useSettings()
+  setApiKey(atob(rawApiKeys.join('')))
   watch(() => route.fullPath, (path) => {
     createGtagEvent('path_view', {
       path,

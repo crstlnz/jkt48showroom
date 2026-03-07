@@ -93,7 +93,7 @@ watch(res, (val) => {
 const SortList = useAppConfig().sortList
 function getTitle(query: any) {
   const sort = SortList.find(i => (query?.sort ?? 'date') === i.id) ?? SortList[0]
-  return ((query?.order ?? 0) < 0 ? sort.title.asc : sort.title.desc) ?? ''
+  return ((query?.order ?? 0) < 0 ? sort?.title.asc : sort?.title.desc) ?? ''
 }
 
 title.value = getTitle(query.value)
