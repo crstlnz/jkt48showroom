@@ -204,13 +204,13 @@ watch(selectedIndex, async () => {
             </Transition>
             <div class="pointer-events-none absolute inset-0 bg-black/8" />
           </div>
-          <div class="rounded-3xl border border-color-2 bg-container-2 p-2 md:p-3">
+          <div class="rounded-3xl border border-color-2 bg-container-2 p-2 md:p-3 overflow-hidden">
             <Transition
               mode="out-in"
-              enter-active-class="transition-all duration-260 ease-out"
-              enter-from-class="opacity-0 translate-y-1"
-              leave-active-class="transition-all duration-180 ease-in"
-              leave-to-class="opacity-0 -translate-y-1"
+              enter-active-class="transition-all duration-400 ease-out"
+              enter-from-class="opacity-0 scale-[1.01]"
+              leave-active-class="transition-all duration-300 ease-in"
+              leave-to-class="opacity-0 scale-[0.99]"
             >
               <div :key="selectedMember?.slug || selectedIndex" class="flex items-center gap-2">
                 <Image

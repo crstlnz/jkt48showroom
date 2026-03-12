@@ -17,7 +17,7 @@ const sortedPaths = computed(() => {
     :class="{
       'hover:translate-y-[40%] translate-y-[80%] size-20': !isOpen,
       'translate-0 w-56 h-40': isOpen,
-    }" class="z-aboveNav transition-all duration-300 ease-linear -translate-x-1/2 bottom-0 left-1/2 flex fixed text-center justify-center align-middle items-center"
+    }" class="z-aboveNav transition-all duration-200 ease-linear -translate-x-1/2 bottom-0 left-1/2 flex fixed text-center justify-center align-middle items-center"
   >
     <OnClickOutside v-if="isOpen" class="hidden" :options="{ ignore: [re] }" @trigger="() => isOpen = false">
       <div />
@@ -27,11 +27,11 @@ const sortedPaths = computed(() => {
         :class="{
           'rounded-xl size-full -translate-y-5 ': isOpen,
           'rounded-4xl size-12': !isOpen,
-        }" class="absolute left-1/2 -translate-x-1/2 transition-all duration-300 ease-linear bg-dark-3 border border-white/5"
+        }" class="absolute left-1/2 -translate-x-1/2 transition-all duration-200 ease-linear bg-dark-3 border border-white/5"
       />
       <div
         :class="{
-          'opacity-100 duration-500': isOpen,
+          'opacity-100 duration-1000': isOpen,
           'opacity-0 duration-100': !isOpen,
         }" class="absolute left-1/2 w-56 h-40 flex flex-col items-center justify-center transition-all top-1/2 -translate-x-1/2 -translate-y-[calc(50%+15px)]"
       >
@@ -43,7 +43,7 @@ const sortedPaths = computed(() => {
             {{ adminCount }} admins
           </div>
         </div>
-        <div v-if="sortedPaths.length" class="w-[calc(100%-20px)] rounded-md p-2 mt-2 text-[10px] bg-dark-1 h-24 leading-tight overflow-auto space-y-0.5">
+        <div v-if="sortedPaths.length" :class="{ 'w-[calc(100%-20px)] ': isOpen }" class="rounded-md p-2 mt-2 text-[10px] bg-dark-1 h-24 leading-tight overflow-auto space-y-0.5">
           <div v-for="([path, count], idx) in sortedPaths" :key="`${path}-${idx}`" class="truncate flex items-center justify-between rounded-sm bg-black/20 px-1.5 py-0.5">
             <span class="truncate text-left text-white/85">{{ path || '/' }}</span>
             <span class="ml-1 text-cyan-300 font-semibold">{{ count }}</span>

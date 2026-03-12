@@ -57,7 +57,11 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
     '@nuxt/scripts',
     '@vite-pwa/nuxt',
+    '@nuxtjs/google-adsense',
   ],
+  googleAdsense: {
+    id: 'ca-pub-6695391056450535',
+  },
   icon: {
     mode: 'svg',
     serverBundle: 'remote',
