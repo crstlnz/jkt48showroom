@@ -198,22 +198,22 @@ watch(selectedIndex, async () => {
         </div>
         <div class="pr-1 md:h-full md:max-h-none relative">
           <BetterScrollbar container-class="overflow-x-auto md:absolute md:inset-0 md:overflow-y-auto">
-            <div class="w-max md:w-full flex gap-2 pb-1 pr-1 md:pr-0 md:flex-col md:gap-3 md:pb-3">
+            <div class="w-max md:w-full flex gap-2 pb-1 pr-1 md:pr-0 md:flex-col md:gap-3">
               <button
                 v-for="[i, member] in videos.entries()"
                 :key="member.slug ?? i"
                 :ref="(el) => setMemberButtonRef(el as any, i)"
                 type="button"
-                class="group relative shrink-0 rounded-full ring-2 m-0.5 md:rounded-2xl bg-container text-left transition-all duration-300 hover:brightness-90 md:hover:brightness-110 md:w-auto md:bg-container-2 md:p-1.5 md:hover:shadow-[0_8px_20px_rgba(0,0,0,0.22)]"
+                class="group relative shrink-0 rounded-full ring-2  m-0.5 md:rounded-3xl bg-container text-left transition-all duration-300 hover:brightness-90 md:hover:brightness-110 md:w-auto md:bg-container-2 md:p-1.5"
                 :class="{
                   'ring-blue-500 bg-second-2/12 shadow-[0_0_0_1px_rgba(70,152,235,0.2)]': selectedIndex === i,
-                  'max-md:brightness-50': selectedIndex !== i,
+                  'max-md:brightness-50 ring-white/10': selectedIndex !== i,
                 }"
                 @click="handleSelectMember(i)"
               >
                 <span
-                  class="absolute max-md:invisible left-0 top-2 bottom-2 w-0.5 rounded-full transition-all duration-200 md:top-2.5 md:bottom-2.5"
-                  :class="selectedIndex === i ? 'bg-second-2 shadow-[0_0_10px_rgba(70,152,235,0.62)]' : 'bg-transparent'"
+                  class="absolute max-md:invisible left-0 w-[3px] rounded-r-full transition-all duration-200 inset-y-5"
+                  :class="selectedIndex === i ? 'bg-blue-500 shadow-[0_0_10px_rgba(70,152,235,0.62)]' : 'bg-transparent'"
                 />
                 <Image
                   sizes="120px"
