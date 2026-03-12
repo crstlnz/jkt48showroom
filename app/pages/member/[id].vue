@@ -106,7 +106,7 @@ useHead({
                 <Icon v-tooltip="$t('data_disclaimer')" name="heroicons:information-circle" class="absolute right-0 top-0.5 md:right-3 md:top-3 text-lg outline-hidden" />
                 <div class="flex items-center gap-1.5 md:gap-2 md:text-xl">
                   <Icon name="solar:folder-with-files-bold-duotone" class="text-blue-500" />
-                  <span>Total Gold</span>
+                  <span>Total Live</span>
                 </div>
                 <div class="max-md:bg-container-2 max-md:p-3 max-md:rounded-xl w-full md:space-y-1 text-sm">
                   <div class="flex justify-between">
