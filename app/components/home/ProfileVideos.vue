@@ -97,7 +97,7 @@ watch(selectedIndex, async () => {
 </script>
 
 <template>
-  <HomeContainer class="mx-3 mt-3 md:mx-4" title="Gen 14 Profile" no-padding>
+  <HomeContainer class="mx-3 mt-3 md:mx-4 !rounded-3xl" title="Gen 14 Profile" no-padding>
     <template #icon>
       <span class="inline-flex size-8 items-center justify-center rounded-xl bg-blue-500/15 text-blue-500">
         <Icon name="material-symbols:person-rounded" class="size-4.5" />
@@ -115,7 +115,7 @@ watch(selectedIndex, async () => {
     <div class="px-3 pb-3 md:px-4 md:pb-4">
       <div
         v-if="error"
-        class="flex w-full flex-col items-center justify-center gap-2 pb-2 pt-4 text-xs md:gap-3 md:text-sm xl:gap-5"
+        class="flex w-full flex-col items-center justify-center gap-2 pb-2 pt-4 text-xs md:gap-3 md:text-sm"
       >
         <Image class="aspect-square w-72 max-w-[70%]" :src="`${$imgCDN}/assets/svg/web/error.svg`" sizes="320px" fit="fill" />
         {{ $t("data.failed") }}
@@ -126,9 +126,9 @@ watch(selectedIndex, async () => {
       >
         <PulseLiveCard />
       </div>
-      <div v-else-if="videos.length" class="w-full grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_92px] gap-3 pt-2 xl:items-stretch">
-        <div class="space-y-2 xl:min-h-0">
-          <div class="relative aspect-video w-full overflow-hidden rounded-xl border border-color-2 bg-black shadow-[0_14px_36px_rgba(0,0,0,0.28)]">
+      <div v-else-if="videos.length" class="w-full grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_92px] gap-2.5 pt-2 md:gap-3 md:items-stretch">
+        <div class="space-y-2 md:min-h-0">
+          <div class="relative aspect-video w-full overflow-hidden rounded-3xl border border-color-2 bg-black md:shadow-[0_14px_36px_rgba(0,0,0,0.28)]">
             <Transition
               mode="out-in"
               enter-active-class="transition-all duration-300 ease-out"
@@ -147,7 +147,7 @@ watch(selectedIndex, async () => {
             </Transition>
             <div class="pointer-events-none absolute inset-0 bg-black/8" />
           </div>
-          <div class="rounded-xl border border-color-2 bg-container-2 p-2.5 md:p-3">
+          <div class="rounded-3xl border border-color-2 bg-container-2 p-2 md:p-3">
             <Transition
               mode="out-in"
               enter-active-class="transition-all duration-260 ease-out"
@@ -155,7 +155,7 @@ watch(selectedIndex, async () => {
               leave-active-class="transition-all duration-180 ease-in"
               leave-to-class="opacity-0 -translate-y-1"
             >
-              <div :key="selectedMember?.slug || selectedIndex" class="flex items-center gap-2.5">
+              <div :key="selectedMember?.slug || selectedIndex" class="flex items-center gap-2">
                 <Image
                   sizes="72px"
                   :placeholder="[45, 10, 55, 70]"
@@ -166,17 +166,17 @@ watch(selectedIndex, async () => {
                   fit="fill"
                   format="webp"
                   :alt="selectedMember?.name ?? 'Selected member'"
-                  class="object-cover rounded-full size-12 md:size-13 ring-2 ring-blue-500/60 shrink-0"
+                  class="object-cover rounded-full size-11 md:size-13 ring-2 ring-blue-500/60 shrink-0"
                   :src="selectedMember?.img"
                 />
                 <div class="min-w-0 flex-1">
-                  <p class="text-[10px] uppercase tracking-[0.14em] opacity-55">
+                  <p class="hidden md:block text-[10px] uppercase tracking-[0.14em] opacity-55">
                     Generasi 14
                   </p>
-                  <p class="truncate text-sm md:text-base font-semibold">
+                  <p class="truncate text-xs md:text-base font-semibold">
                     {{ selectedMember?.name || '-' }}
                   </p>
-                  <div class="mt-1 flex flex-wrap gap-1.5 text-[11px] md:text-xs">
+                  <div class="mt-1 flex flex-wrap gap-1 text-[10px] md:text-xs">
                     <span class="inline-flex items-center rounded-md border border-color-2 bg-container px-2 py-0.5 opacity-80">
                       {{ selectedMember?.nickname || '-' }}
                     </span>
@@ -188,7 +188,7 @@ watch(selectedIndex, async () => {
                 <NuxtLink
                   v-if="selectedMember?.slug"
                   :to="`/member/${selectedMember.slug}`"
-                  class="inline-flex shrink-0 items-center rounded-md border border-color-2 bg-container px-2 py-1 text-[11px] md:text-xs opacity-85 transition hover:opacity-100"
+                  class="inline-flex shrink-0 items-center rounded-md border border-color-2 bg-container px-2 py-1 text-[9px] md:text-xs opacity-85 transition hover:opacity-100"
                 >
                   Profile
                 </NuxtLink>
@@ -196,22 +196,23 @@ watch(selectedIndex, async () => {
             </Transition>
           </div>
         </div>
-        <div class="max-h-75 pr-1 xl:h-full xl:max-h-none relative">
-          <BetterScrollbar container-class="absolute inset-0">
-            <div class="flex flex-col gap-3">
+        <div class="pr-1 md:h-full md:max-h-none relative">
+          <BetterScrollbar container-class="overflow-x-auto md:absolute md:inset-0 md:overflow-y-auto">
+            <div class="w-max md:w-full flex gap-2 pb-1 pr-1 md:pr-0 md:flex-col md:gap-3 md:pb-3">
               <button
                 v-for="[i, member] in videos.entries()"
                 :key="member.slug ?? i"
                 :ref="(el) => setMemberButtonRef(el as any, i)"
                 type="button"
-                class="group relative overflow-hidden rounded-lg border border-color-2 bg-container-2 p-1.5 text-left transition-all duration-300 hover:brightness-110 hover:shadow-[0_8px_20px_rgba(0,0,0,0.22)]"
+                class="group relative shrink-0 rounded-full ring-2 m-0.5 md:rounded-2xl bg-container text-left transition-all duration-300 hover:brightness-90 md:hover:brightness-110 md:w-auto md:bg-container-2 md:p-1.5 md:hover:shadow-[0_8px_20px_rgba(0,0,0,0.22)]"
                 :class="{
-                  'border-second-2/55 bg-second-2/12 shadow-[0_0_0_1px_rgba(70,152,235,0.2)]': selectedIndex === i,
+                  'ring-blue-500 bg-second-2/12 shadow-[0_0_0_1px_rgba(70,152,235,0.2)]': selectedIndex === i,
+                  'max-md:brightness-50': selectedIndex !== i,
                 }"
                 @click="handleSelectMember(i)"
               >
                 <span
-                  class="absolute left-0 top-2.5 bottom-2.5 w-0.5 rounded-full transition-all duration-200"
+                  class="absolute max-md:invisible left-0 top-2 bottom-2 w-0.5 rounded-full transition-all duration-200 md:top-2.5 md:bottom-2.5"
                   :class="selectedIndex === i ? 'bg-second-2 shadow-[0_0_10px_rgba(70,152,235,0.62)]' : 'bg-transparent'"
                 />
                 <Image
@@ -224,11 +225,11 @@ watch(selectedIndex, async () => {
                   fit="fill"
                   format="webp"
                   :alt="member.name"
-                  class="mx-auto size-16 rounded-full object-cover ring-2 ring-transparent transition-all duration-300"
+                  class="mx-auto size-12 md:size-16 rounded-full object-cover ring-2 ring-transparent transition-all duration-300"
                   :class="{ 'ring-second-2/70': selectedIndex === i }"
                   :src="member.img"
                 />
-                <p class="mt-1 truncate text-center text-[10px] opacity-75 transition-opacity duration-300 group-hover:opacity-100">
+                <p class="mt-1 hidden md:block truncate text-center text-[10px] opacity-75 transition-opacity duration-300 group-hover:opacity-100">
                   {{ member.nickname || member.name }}
                 </p>
               </button>
@@ -241,7 +242,7 @@ watch(selectedIndex, async () => {
         class="relative grid-live-now gap-4 pt-4"
       >
         <div class="aspect-20/28 md:aspect-20/26 opacity-0" />
-        <div class="absolute top-[calc(50%+8px)] left-1/2 -translate-x-1/2 -translate-y-1/2 flex h-[245.5px] flex-col items-center justify-center gap-2 text-center text-xs max-sm:aspect-square sm:h-[230.88px] md:h-62.5 md:gap-3 md:text-sm lg:h-[270.55px] xl:h-[349.2px] 2xl:h-79.5">
+        <div class="absolute top-[calc(50%+8px)] left-1/2 -translate-x-1/2 -translate-y-1/2 flex h-[245.5px] flex-col items-center justify-center gap-2 text-center text-xs max-sm:aspect-square sm:h-[230.88px] md:h-62.5 md:gap-3 md:text-sm lg:h-[270.55px] 2xl:h-79.5">
           <Image class="mx-auto w-64 lg:w-72 max-w-[70%] md:max-w-[80%] aspect-5/4 object-contain" alt="No member profile videos" :src="`${$imgCDN}/assets/svg/web/no_data.svg`" sizes="320px" fit="fill" />
           <span class="mt-4 md:mt-5">{{ $t("data.nodata") }}</span>
         </div>
