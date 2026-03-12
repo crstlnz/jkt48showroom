@@ -24,18 +24,19 @@ withDefaults(defineProps<{
 }
 
 .better-scrollbar::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
 }
 
 .better-scrollbar::-webkit-scrollbar-track {
   background: transparent;
+  margin: 3px;
 }
 
 .better-scrollbar::-webkit-scrollbar-thumb {
   background: rgb(120 120 128 / 0.45);
   border-radius: 999px;
-  border: 2px solid transparent;
+  border: 3px solid transparent;
   background-clip: padding-box;
   opacity: 0;
   transition:

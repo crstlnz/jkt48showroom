@@ -155,11 +155,6 @@ async function destroyPlayer() {
 watch(resolvedVideoId, () => {
   detachPlayerStateListener()
   playerApiPromise = null
-  void getPlayer()
-})
-
-onMounted(() => {
-  void getPlayer()
 })
 
 onScopeDispose(() => {

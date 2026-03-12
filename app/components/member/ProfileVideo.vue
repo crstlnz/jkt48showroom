@@ -2,6 +2,11 @@
 const props = defineProps<{
   url: string
 }>()
+
+const ytEmbedUrl = computed(() => {
+  const id = getVideoId(props.url)
+  return `https://www.youtube.com/embed/${id}`
+})
 </script>
 
 <template>
@@ -11,7 +16,7 @@ const props = defineProps<{
       <span class="flex-1">Profile Video</span>
     </div>
     <div class="aspect-video mt-2 rounded-xl overflow-hidden">
-      <VideoLiteYoutubeEmbed :url="props.url" title="Profile video" />
+      <iframe class="size-full" :src="ytEmbedUrl" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen />
     </div>
   </div>
 </template>

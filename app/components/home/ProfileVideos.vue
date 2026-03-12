@@ -23,6 +23,7 @@ const { d } = useI18n()
 const videoPlayer = ref<{ play?: () => Promise<void>, pause?: () => Promise<void> } | null>(null)
 const currentPlayerState = ref<number | null>(null)
 const memberButtonRefs = ref<HTMLElement[]>([])
+const shouldAutoPlayAfterSwitch = ref(false)
 const selectedBirthdate = computed(() => {
   const birthdate = selectedMember.value?.birthdate
   if (!birthdate) return null
@@ -46,6 +47,7 @@ async function handleSelectMember(index: number) {
     }
     return
   }
+  shouldAutoPlayAfterSwitch.value = true
   selectVideoByIndex(index)
 }
 
@@ -56,7 +58,22 @@ function handlePlayerStateChange(state: number) {
 function playNextVideo() {
   const length = videos.value.length
   if (!length) return
+  shouldAutoPlayAfterSwitch.value = true
   selectedIndex.value = (selectedIndex.value + 1) % length
+}
+
+async function tryPlayCurrentVideo(retry = 0) {
+  const maxRetry = 6
+  if (videoPlayer.value?.play) {
+    await videoPlayer.value.play()
+    return
+  }
+  if (retry >= maxRetry) {
+    shouldAutoPlayAfterSwitch.value = false
+    return
+  }
+  await new Promise(resolve => setTimeout(resolve, 120))
+  await tryPlayCurrentVideo(retry + 1)
 }
 
 function setMemberButtonRef(el: Element | null, index: number) {
@@ -90,6 +107,13 @@ watch(selectedVideo, () => {
   currentPlayerState.value = null
 })
 
+watch(selectedVideo, async () => {
+  if (!shouldAutoPlayAfterSwitch.value) return
+  await nextTick()
+  await tryPlayCurrentVideo()
+  shouldAutoPlayAfterSwitch.value = false
+})
+
 watch(selectedIndex, async () => {
   await nextTick()
   scrollToSelectedMember(true)
@@ -97,7 +121,7 @@ watch(selectedIndex, async () => {
 </script>
 
 <template>
-  <HomeContainer class="mx-3 mt-3 md:mx-4 !rounded-3xl" title="Gen 14 Profile" no-padding>
+  <HomeContainer class="mx-3 mt-3 md:mx-4" title="Gen 14 Profile" no-padding>
     <template #icon>
       <span class="inline-flex size-8 items-center justify-center rounded-xl bg-blue-500/15 text-blue-500">
         <Icon name="material-symbols:person-rounded" class="size-4.5" />
@@ -122,9 +146,41 @@ watch(selectedIndex, async () => {
       </div>
       <div
         v-else-if="pending"
-        class="grid-live-now gap-4 pt-4"
+        class="w-full grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_92px] gap-2.5 pt-2 md:gap-3 md:items-stretch"
       >
-        <PulseLiveCard />
+        <div class="space-y-2 md:min-h-0">
+          <div class="relative aspect-video w-full overflow-hidden rounded-3xl border border-color-2 bg-container-2">
+            <div class="pulse-color size-full animate-pulse" />
+          </div>
+          <div class="rounded-3xl border border-color-2 bg-container-2 p-2 md:p-3">
+            <div class="flex items-center gap-2">
+              <div class="pulse-color size-11 md:size-13 shrink-0 rounded-full animate-pulse" />
+              <div class="min-w-0 flex-1 space-y-1.5">
+                <div class="pulse-color h-3 w-20 hidden md:block animate-pulse rounded" />
+                <div class="pulse-color h-4 w-36 md:w-44 animate-pulse rounded" />
+                <div class="flex gap-1">
+                  <div class="pulse-color h-5 w-16 md:w-18 animate-pulse rounded-md" />
+                  <div class="pulse-color h-5 w-20 md:w-24 animate-pulse rounded-md" />
+                </div>
+              </div>
+              <div class="pulse-color h-6 w-14 md:h-7 md:w-16 shrink-0 animate-pulse rounded-md" />
+            </div>
+          </div>
+        </div>
+        <div class="pr-1 md:h-full md:max-h-none relative">
+          <div class="overflow-hidden md:absolute md:inset-0">
+            <div class="w-full flex flex-wrap gap-2 pb-1 md:flex-col md:gap-3">
+              <div
+                v-for="i in 8"
+                :key="`profile-video-skeleton-${i}`"
+                class="shrink-0 rounded-full md:rounded-3xl bg-container p-1.5 md:bg-container-2 md:p-1.5"
+              >
+                <div class="pulse-color mx-auto size-12 md:size-16 rounded-full animate-pulse" />
+                <div class="pulse-color mt-1 hidden h-2.5 w-14 md:block animate-pulse rounded mx-auto" />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div v-else-if="videos.length" class="w-full grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_92px] gap-2.5 pt-2 md:gap-3 md:items-stretch">
         <div class="space-y-2 md:min-h-0">
@@ -141,6 +197,7 @@ watch(selectedIndex, async () => {
                 :key="selectedVideo"
                 :url="selectedVideo"
                 class="size-full"
+                params="modestbranding=1&enablejsapi=1&autoplay=0"
                 @ended="playNextVideo"
                 @state-change="handlePlayerStateChange"
               />
@@ -212,7 +269,7 @@ watch(selectedIndex, async () => {
                 @click="handleSelectMember(i)"
               >
                 <span
-                  class="absolute max-md:invisible left-0 w-[3px] rounded-r-full transition-all duration-200 inset-y-5"
+                  class="absolute max-md:invisible left-0 w-0.75 rounded-r-full transition-all duration-200 inset-y-5"
                   :class="selectedIndex === i ? 'bg-blue-500 shadow-[0_0_10px_rgba(70,152,235,0.62)]' : 'bg-transparent'"
                 />
                 <Image
