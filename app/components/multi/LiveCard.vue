@@ -16,7 +16,7 @@ defineEmits<{ (e: 'liveClick', video: Omit<Multi.Video, 'order'>): void }>()
       </NuxtLink>
       <div class="flex items-stretch self-stretch">
         <div class="flex-1 w-0 truncate">
-          {{ live.name }} {{ live.stream_url }}
+          {{ live.name }}
         </div>
       </div>
     </div>

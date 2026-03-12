@@ -105,7 +105,7 @@ function getLiveUrl(member: ExtINowLive) {
               <Icon name="mdi:twitter" class="text-lg md:text-xl" />
               <span>Share</span>
             </NuxtLink>
-            <AdminEditMemberButton :room-id="roomId" class="h-7 md:h-9" />
+            <AdminEditMemberButton :room-id="roomId" :slug="member.url" class="h-7 md:h-9" />
           </div>
         </div>
         <div class="flex min-w-0 self-start flex-1 items-start justify-end flex-col mb-0.5">

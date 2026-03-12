@@ -204,7 +204,7 @@ sorter:
   generating: Generating...
   progress: Progress
   tie: Tie!
-  filters: Filters
+  filters: Sorting Criteria
   start: Start
   vs: VS
   active: Active

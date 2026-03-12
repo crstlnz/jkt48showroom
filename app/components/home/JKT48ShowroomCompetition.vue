@@ -1,39 +1,5 @@
 <script lang="ts" setup>
-interface CompetitionRoom {
-  room_id: number
-  image: string
-  image_square: string
-  image_alt: string
-  name: string
-  nickname: string
-  slug?: string
-}
-
-interface CompetitionRanking {
-  rank: number
-  point: number
-  room: CompetitionRoom
-}
-
-interface Event {
-  event_name: string
-  event_type: string
-  show_ranking: number
-  started_at: number
-  ended_at: number
-  image: string
-  event_url: string
-}
-
-interface ShowroomCompetitionAPI {
-  event: Event
-  date: string
-  rankings: CompetitionRanking[]
-}
-
-const { data, pending, error } = useCachedFetch<ShowroomCompetitionAPI>('/api/showroom_competition', {
-  expireIn: 1000 * 60 * 10,
-})
+const { data, pending, error } = useShowroomCompetitionDetail<ShowroomCompetitionAPI>()
 const { locale } = useI18n()
 
 const sortedRanking = computed(() => {
@@ -76,6 +42,10 @@ function formatPoint(point: number): string {
 function getMemberUrl(room: CompetitionRoom): string | null {
   if (!room.slug) return null
   return `/member/${room.slug}`
+}
+
+function getMemberDisplayName(room: CompetitionRoom): string {
+  return room.nickname || room.name
 }
 </script>
 
@@ -137,7 +107,7 @@ function getMemberUrl(room: CompetitionRoom): string | null {
             >
               <Image
                 :src="entry.item.room.image_alt || entry.item.room.image_square"
-                :alt="entry.item.room.nickname"
+                :alt="getMemberDisplayName(entry.item.room)"
                 loading="lazy"
                 fit="cover"
                 :modifiers="{
@@ -155,7 +125,7 @@ function getMemberUrl(room: CompetitionRoom): string | null {
             >
               <Image
                 :src="entry.item.room.image_alt || entry.item.room.image_square"
-                :alt="entry.item.room.nickname"
+                :alt="getMemberDisplayName(entry.item.room)"
                 loading="lazy"
                 fit="cover"
                 :modifiers="{
@@ -173,10 +143,10 @@ function getMemberUrl(room: CompetitionRoom): string | null {
                 :to="getMemberUrl(entry.item.room) || ''"
                 class="truncate text-sm font-semibold"
               >
-                {{ entry.item.room.nickname }}
+                {{ getMemberDisplayName(entry.item.room) }}
               </NuxtLink>
               <div v-else class="truncate text-sm font-semibold">
-                {{ entry.item.room.nickname }}
+                {{ getMemberDisplayName(entry.item.room) }}
               </div>
               <div class="truncate text-xs opacity-60">
                 {{ $t('competition.rank_label', { rank: entry.item.rank }) }}

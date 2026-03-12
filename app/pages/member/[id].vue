@@ -183,7 +183,7 @@ useHead({
                   </a>
                 </div>
               </div>
-              <div v-if="birth || member.bloodType || member.height" class="flex xl:flex-col flex-wrap bg-container rounded-xl p-1 min-w-[300px]">
+              <div v-if="birth || member.bloodType || member.height" class="flex xl:flex-col flex-wrap bg-container rounded-xl p-1 min-w-75">
                 <div v-if="birth" class="flex flex-col gap-1 px-4 py-3 md:gap-2 max-xl:flex-[40%]">
                   <div class="flex items-center gap-1.5 text-xs md:text-sm">
                     <Icon name="twemoji:birthday-cake" />

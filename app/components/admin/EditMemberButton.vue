@@ -3,6 +3,7 @@ import { useNotifications } from '~/store/notifications'
 
 const props = defineProps<{
   roomId?: number
+  slug?: string
 }>()
 
 const { user } = useAuth()
@@ -20,6 +21,7 @@ async function getData() {
     const res = await $apiFetch<Admin.ApiMemberEditData>('/api/admin/member/data', {
       query: {
         room_id: props.roomId,
+        slug: props.slug,
       },
     })
     editMember.value = res.member

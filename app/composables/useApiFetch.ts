@@ -7,9 +7,8 @@ type UseApiFetchOptions<T> = NonNullable<Parameters<typeof useFetch<T>>[1]> & {
 }
 
 export function useApiFetch<T>(url: Parameters<typeof useFetch<T>>[0], options: UseApiFetchOptions<T> = {}) {
-  const { apiKey } = useSettings()
+  const { getApiKey } = useSettings()
   const { useApiKey = false, ...fetchOptions } = options
-
   const config = useRuntimeConfig()
   if (!config.public.api) throw new Error('Api url not defined!')
   const { getHeaders, setCookie } = syncServerCookies()
@@ -40,7 +39,8 @@ export function useApiFetch<T>(url: Parameters<typeof useFetch<T>>[0], options: 
         const serverHeaders = new Headers(getHeaders())
         serverHeaders.forEach((value, key) => headers.set(key, value))
       }
-      if (useApiKey && apiKey) {
+      if (useApiKey) {
+        const apiKey = getApiKey()
         headers.set('x-api-key', apiKey)
       }
       ctx.options.headers = headers

@@ -109,7 +109,7 @@ function generateForm(): Admin.Form[] {
       },
       options: (props.jkt48members ?? []).map((i) => {
         return {
-          title: i.name,
+          title: `${i.name}`,
           value: i.id,
         }
       }),

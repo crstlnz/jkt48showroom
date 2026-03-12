@@ -1,79 +1,4 @@
 <script lang="ts" setup>
-interface CompetitionRoom {
-  room_id: number
-  image: string
-  image_square: string
-  image_alt: string
-  name: string
-  nickname: string
-  slug?: string
-}
-
-interface CompetitionRanking {
-  rank: number
-  point: number
-  gap_above: number | null
-  gap_below: number | null
-  trend?: {
-    rank_diff: number | null
-    point_diff: number | null
-  }
-  room: CompetitionRoom
-  live: {
-    live_count: number
-    active_days: number
-    total_gift: number
-    total_comments: number
-    total_duration: number
-    avg_duration: number
-    avg_gift_per_live: number
-    avg_comments_per_live: number
-    avg_viewer_peak: number
-    max_viewer_peak: number
-    total_viewer_peak: number
-    point_per_live: number
-    point_per_hour: number
-    first_live_at: string | Date | null
-    last_live_at: string | Date | null
-  }
-}
-
-interface Event {
-  event_name: string
-  event_type: string
-  show_ranking: number
-  started_at: number
-  ended_at: number
-  image: string
-  event_url: string
-}
-
-interface ShowroomCompetitionAPI {
-  event: Event
-  summary?: {
-    ranked_members: number
-    active_members: number
-    total_points: number
-    total_lives: number
-    total_gift: number
-    total_comments: number
-    total_duration: number
-    total_active_days: number
-    total_viewer_peak: number
-    max_viewer_peak: number
-    avg_points_per_live: number
-    avg_gift_per_live: number
-    avg_comments_per_live: number
-    avg_duration_per_live: number
-    avg_peak_viewers: number
-    total_live_hours: number
-    active_ratio: number
-    last_updated: string
-  }
-  date: string
-  rankings: CompetitionRanking[]
-}
-
 const { data, pending, error } = useShowroomCompetitionDetail<ShowroomCompetitionAPI>()
 
 const sortedRanking = computed(() => {
@@ -82,6 +7,10 @@ const sortedRanking = computed(() => {
 })
 
 const topThreeRanking = computed(() => sortedRanking.value.slice(0, 3))
+
+const route = useRoute()
+
+const isDetailPage = computed(() => route.path.startsWith('/jkt48showroom_competition'))
 </script>
 
 <template>
@@ -93,14 +22,15 @@ const topThreeRanking = computed(() => sortedRanking.value.slice(0, 3))
         </span>
         <div class="min-w-0">
           <h2 class="truncate text-base font-bold md:text-lg">
-            {{ $t('competition.title_full') }}
+            {{ isDetailPage ? 'Top 3' : $t('competition.title_full') }}
           </h2>
-          <p class="text-[11px] opacity-60 md:text-xs">
+          <p v-if="!isDetailPage" class="text-[11px] opacity-60 md:text-xs">
             Top 3
           </p>
         </div>
       </div>
       <NuxtLink
+        v-if="!isDetailPage"
         to="/jkt48showroom_competition"
         class="rounded-lg border border-color-2 px-2.5 py-1 text-xs font-semibold opacity-80 transition hover:opacity-100"
       >

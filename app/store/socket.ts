@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import { decode, encode } from 'cbor-x'
 import { cachedFetch } from '../utils/cachedFetch'
 import { useNotifications } from './notifications'
 import { useSettings } from './settings'
@@ -12,6 +13,7 @@ export const useSocket = defineStore('socket', () => {
   const livesBus = useEventBus<ExtINowLive[]>('lives')
   const settings = useSettings()
   const userCount = ref(0)
+  const paths = ref<Record<string, number>>({})
   const adminCount = ref(0)
 
   let socket: WebSocket | null = null
@@ -24,7 +26,7 @@ export const useSocket = defineStore('socket', () => {
   const TIMEOUT_LIMIT = 60000 // 60s tanpa pesan → reconnect
 
   useIntervalFn(() => {
-    socket?.send('PING')
+    sendSocket('PING')
   }, 20000)
 
   function manualClose() {
@@ -48,6 +50,11 @@ export const useSocket = defineStore('socket', () => {
       }, 10000) // cek tiap 10 detik
     }
   }
+
+  function sendSocket(msg: string) {
+    socket?.send(encode(msg))
+  }
+
   function init() {
     try {
       const protocol = location.protocol === 'https:' ? 'wss' : 'ws'
@@ -57,30 +64,34 @@ export const useSocket = defineStore('socket', () => {
         manualClose()
       }
       socket = new WebSocket(`${wsUrl}?token=${settings.apiKey}`)
-
+      socket.binaryType = 'arraybuffer'
       socket.onopen = () => {
         console.log('✅ WebSocket connected')
         reconnectAttempts = 0
-        socket!.send(`listen ${settings.group}`)
+        sendSocket(`listen ${settings.group}`)
+        // socket!.send(`listen ${settings.group}`)
         if (user.value?.is_admin) {
           registerAdmin()
         }
         refreshTimeout()
       }
 
-      socket.onmessage = (event) => {
+      socket.onmessage = async (event) => {
         refreshTimeout()
         try {
-          if (event.data.startsWith('ok-listen')) {
+          const rawMsg = decode(new Uint8Array(event.data))
+          if (rawMsg.startsWith('ok-listen')) {
             pending.value = false
+            requestPageView(useRoute().path)
             return
           }
-          const msg = JSON.parse(event.data)
+          const msg = JSON.parse(rawMsg)
           if (msg.type === 'jkt48' || msg.type === 'hinatazaka46') {
             livesBus.emit(msg.data ?? [] as ExtINowLive[])
           }
           else if (msg.type === 'admin') {
             if (msg.data.type === 'user-count') {
+              paths.value = msg.data.data.paths
               userCount.value = msg.data.data.user_count ?? 0
               adminCount.value = msg.data.data.admin_count ?? 0
             }
@@ -129,12 +140,17 @@ export const useSocket = defineStore('socket', () => {
     }, delay)
   }
 
+  function requestPageView(path: string) {
+    sendSocket(`view ${path}`)
+  }
+
   async function registerAdmin() {
     try {
       const res = await cachedFetch.fetch('admin-token', async () => {
         return await $apiFetch('/api/admin/get_token')
       }, 60 * 1000 * 2 - 1)
-      socket?.send(`admin ${res}`)
+      sendSocket(`admin ${res}`)
+      // socket?.send(`admin ${res}`)
     }
     catch (e) {
       console.error(e)
@@ -150,10 +166,12 @@ export const useSocket = defineStore('socket', () => {
 
   return {
     init,
+    requestPageView,
     pending,
     error,
     userCount,
     adminCount,
+    paths,
     reconnectNow,
     onLives: livesBus.on,
   }

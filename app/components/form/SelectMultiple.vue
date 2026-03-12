@@ -10,6 +10,7 @@ import {
 import { useFocus } from '@vueuse/core'
 
 import Fuse from 'fuse.js'
+import { useNotifications } from '~/store/notifications'
 
 const props = withDefaults(defineProps<{
   formId: string
@@ -37,6 +38,10 @@ function add(data: string) {
   return emit('update:modelValue', [...props.modelValue, data])
 }
 
+function addAll(data: string[]) {
+  return emit('update:modelValue', [...props.modelValue, ...data])
+}
+
 function remove(data: string) {
   return emit('update:modelValue', props.modelValue.filter(i => i !== data))
 }
@@ -46,24 +51,80 @@ const selectedId = ref()
 const options = {
   includeScore: true,
   threshold: 0.25,
-  keys: ['value', 'title', 'alt'],
+  keys: [
+    {
+      name: 'value',
+      weight: 1,
+    },
+    {
+      name: 'title',
+      weight: 1,
+    },
+    {
+      name: 'alt',
+      weight: 2,
+    },
+  ],
 }
 
 const listData = computed(() => {
   return props.data.filter(i => !props.modelValue.includes(i.value))
 })
 
+const fuse = computed(() => {
+  return new Fuse(listData.value, options)
+})
+
 const filteredData = computed(() => {
-  const fuse = new Fuse(listData.value, options)
-  return fuse.search(query.value).map(i => i.item)
+  return fuse.value.search(query.value).map(i => i.item)
 },
 )
+const { addNotif } = useNotifications()
 
-watch(selectedId, (id) => {
-  add(id)
+function handlePaste(value: string) {
+  query.value = value
+  const members = value.split(',')
+  const res = []
+  if (members.length > 0) {
+    for (const member of members) {
+      const data = fuse.value.search(member)[0]
+      if (data) {
+        res.push(data.item.value)
+      }
+      else {
+        addNotif({
+          message: `Failed to add ${member}`,
+          type: 'danger',
+        })
+      }
+    }
+  }
+  addAll(res)
+  nextTick(() => {
+    clearInput()
+  })
+}
+
+function clearInput() {
   query.value = ''
   const inputEl = input.value?.$el
   if (inputEl) inputEl.value = ''
+}
+
+function handleChange(event: Event) {
+  const value = (event.target as HTMLInputElement).value
+  query.value = value
+}
+
+function onPaste(event: ClipboardEvent) {
+  return // belum work
+  const value = event.clipboardData?.getData('text') ?? ''
+  handlePaste(value)
+}
+
+watch(selectedId, (id) => {
+  add(id)
+  clearInput()
 })
 </script>
 
@@ -72,7 +133,7 @@ watch(selectedId, (id) => {
     <label v-if="label" class="pl-2.5" :for="formId">{{ label }}</label>
     <div class="flex flex-wrap gap-3 bg-transparent!" :class="inputClass">
       <div
-        v-for="i in selectedData" :key="i?.value" type="button" class="group py-1.5 px-2.5 bg-container-2 rounded-md relative min-w-[115px]"
+        v-for="i in selectedData" :key="i?.value" type="button" class="group py-1.5 px-2.5 bg-container-2 rounded-md relative min-w-28.75"
       >
         <div class="absolute right-1 -translate-y-1/2 translate-x-1/2 top-1 group-hover:opacity-100 opacity-0 transition-opacity flex justify-center items-center text-sm gap-2">
           <button
@@ -89,7 +150,7 @@ watch(selectedId, (id) => {
         </div>
       </div>
       <Combobox v-model="selectedId">
-        <div class="relative flex-1 w-0 min-w-[160px] md:min-w-[200px]">
+        <div class="relative flex-1 w-0 min-w-40 md:min-w-50">
           <div
             class="relative w-full cursor-default overflow-hidden rounded-md text-left sm:text-sm"
           >
@@ -97,9 +158,10 @@ watch(selectedId, (id) => {
               ref="input"
               :class="inputClass"
               :placeholder="selectedData?.length ? 'Search lagi' : 'Search'"
-              class="w-full border-none py-1.5 pl-3 pr-10 text-sm leading-5 focus:ring-0 outline-hidden min-w-[350px]"
+              class="w-full border-none py-1.5 pl-3 pr-10 text-sm leading-5 focus:ring-0 outline-hidden min-w-87.5"
               :display-value="() => ''"
-              @change="query = $event.target.value"
+              @change="handleChange"
+              @paste="onPaste"
             />
             <ComboboxButton
               class="absolute inset-y-0 right-0 flex items-center pr-2"

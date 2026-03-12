@@ -5,16 +5,22 @@ import { createGtagEvent } from '~/utils/gtag'
 export default defineNuxtPlugin(() => {
   const route = useRoute()
   const { checkAuth, authenticated } = useAuth()
-  const { setApiKey, rawApiKeys } = useSettings()
-  setApiKey(atob(rawApiKeys.join('')))
-  watch(() => route.fullPath, (path) => {
+  const { setApiKey, getApiKey } = useSettings()
+  setApiKey(getApiKey())
+
+  const onLives = useOnLives()
+
+  function pathView(path: string) {
+    onLives.requestPageView(route.path)
     createGtagEvent('path_view', {
       path,
       authenticated: authenticated.value,
     })
-  })
+  }
 
-  const onLives = useOnLives()
+  pathView(route.path)
+
+  watch(() => route.fullPath, pathView)
 
   const isOnline = useOnline()
   watch(isOnline, (online) => {

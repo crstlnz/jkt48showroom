@@ -38,6 +38,7 @@ export const useOnLives = defineStore('onLives', () => {
   return {
     data: lives,
     hasLives,
+    requestPageView: socket.requestPageView,
     liveCount,
     pending,
     error,

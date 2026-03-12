@@ -1,7 +1,7 @@
 {
   "name": "jkt48showroom",
   "type": "module",
-  "version": "0.23.1",
+  "version": "0.23.3",
   "engines": {
     "node": "20.x.x"
   },
@@ -16,7 +16,7 @@
     "lint:fix": "eslint . --fix",
     "docker:build": "docker build -t crstlnz/jkt48showroom:latest .",
     "docker:push": "docker push crstlnz/jkt48showroom:latest",
-    "docker" : "bun docker:build && bun docker:push"
+    "docker": "bun docker:build && bun docker:push"
   },
   "dependencies": {
     "@headlessui/tailwindcss": "^0.2.2",
@@ -26,6 +26,7 @@
     "@use-gesture/vanilla": "^10.3.1",
     "@vite-pwa/nuxt": "^1.1.1",
     "blaze-slider": "^1.9.3",
+    "cbor-x": "^1.6.0",
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.5",
     "estree-walker": "^3.0.3",

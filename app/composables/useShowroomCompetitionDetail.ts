@@ -3,7 +3,7 @@ export function useShowroomCompetitionDetail<T>() {
   return useApiFetch<T>('/api/showroom_competition_detail', {
     key: 'competition-detail-v1',
     useApiKey: true,
-    server: false,
+    server: true,
     dedupe: 'defer',
   })
 }
