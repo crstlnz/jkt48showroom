@@ -28,8 +28,14 @@ withDefaults(defineProps<{
           {{ title }}
         </h3>
       </div>
+      <div
+        v-if="$slots.right"
+        class="text-xs lg:text-sm"
+      >
+        <slot name="right" />
+      </div>
       <NuxtLink
-        v-if="more && !moreExtLink"
+        v-else-if="more && !moreExtLink"
         class="text-xs hover:text-second-2 lg:text-sm"
         :to="more"
         :class="moreClass"

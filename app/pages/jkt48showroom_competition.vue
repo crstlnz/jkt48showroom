@@ -449,25 +449,7 @@ function closeTopFansDialog() {
             </div>
           </div>
         </div>
-        <div class="grid grid-cols-2 xl:grid-cols-3 gap-2 md:gap-3">
-          <div
-            v-for="card in summaryCards"
-            :key="card.key"
-            class="bg-container rounded-xl border border-black/10 p-3 dark:border-white/10 md:p-4"
-          >
-            <div class="flex items-start justify-between gap-2">
-              <p class="text-[11px] opacity-70 md:text-xs">
-                {{ card.label }}
-              </p>
-              <span class="inline-flex size-7 items-center justify-center rounded-lg border border-black/10 dark:border-white/10">
-                <Icon :name="card.icon" class="text-sm opacity-80" />
-              </span>
-            </div>
-            <div class="mt-1.5 text-base leading-tight font-semibold md:text-lg">
-              {{ card.value }}
-            </div>
-          </div>
-        </div>
+        <SummaryCards :cards="summaryCards" grid-class="grid-cols-2 xl:grid-cols-3" />
         <HomeJKT48ShowroomCompetitionCard />
         <SRCompetitionRankingList
           :rankings="sortedRankings"

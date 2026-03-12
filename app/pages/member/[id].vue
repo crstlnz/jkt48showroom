@@ -13,7 +13,8 @@ const isShowroomExists = computed(() => {
   return data?.value?.showroom_exists ?? false
 })
 
-const { t, locale } = useI18n()
+const { t, locale, n } = useI18n()
+const dayjs = useDayjs()
 
 async function follow() {
   try {
@@ -44,6 +45,64 @@ async function follow() {
 
 const member = computed(() => {
   return data.value
+})
+
+const memberStatCards = computed(() => {
+  const stats = data.value?.stats
+  if (!stats) return []
+
+  const totalShowroom = (stats.total_live?.showroom || 0) + (stats.missing?.showroom || 0)
+  const totalIdn = (stats.total_live?.idn || 0) + (stats.missing?.idn || 0)
+  const mostGiftLink = stats.most_gift?.id ? `/recent/${stats.most_gift.id}` : undefined
+  const longestLiveLink = stats.longest_live?.id ? `/recent/${stats.longest_live.id}` : undefined
+  const lastLiveLink = stats.last_live?.id ? `/recent/${stats.last_live.id}` : undefined
+  const lastLiveEnd = stats.last_live?.date?.end
+  const lastLiveValue = !lastLiveEnd
+    ? t('data.nodata')
+    : dayjs(lastLiveEnd).diff(dayjs(), 'week') > 1
+      ? dayjs(lastLiveEnd).locale(locale.value).format('DD MMM YYYY')
+      : dayjs(lastLiveEnd).locale(locale.value).fromNow()
+
+  return [
+    {
+      key: 'total_live',
+      label: 'Total Live',
+      icon: 'solar:folder-with-files-bold-duotone',
+      iconClass: 'text-blue-500',
+      tooltip: t('data_disclaimer'),
+      rows: [
+        { label: 'Showroom', value: totalShowroom || t('data.nodata') },
+        { label: 'IDN Live', value: totalIdn || t('data.nodata') },
+      ],
+    },
+    {
+      key: 'most_gift',
+      label: t('mostgifts'),
+      icon: 'solar:gift-bold-duotone',
+      iconClass: 'text-yellow-500',
+      value: stats.most_gift?.gift ? n(stats.most_gift.gift, 'currency', 'id') : t('data.nodata'),
+      headerTo: mostGiftLink,
+      valueTo: mostGiftLink,
+    },
+    {
+      key: 'longest_live',
+      label: t('longestlive'),
+      icon: 'material-symbols:clock-loader-60',
+      iconClass: 'text-green-500',
+      value: stats.longest_live?.duration ? formatDuration(stats.longest_live.duration, { second: false }) : t('data.nodata'),
+      headerTo: longestLiveLink,
+      valueTo: longestLiveLink,
+    },
+    {
+      key: 'last_live',
+      label: t('last_live'),
+      icon: 'material-symbols:videocam-rounded',
+      iconClass: 'text-red-500',
+      value: lastLiveValue,
+      headerTo: lastLiveLink,
+      valueTo: lastLiveLink,
+    },
+  ]
 })
 
 const birth = computed(() => {
@@ -101,55 +160,8 @@ useHead({
             <MemberProfileBanner :sousenkyo="data?.sousenkyo" :member="member" :room-id="member.showroom_id" />
             <MemberShowroomInfo v-if="isShowroomExists" :room-id="member.showroom_id" @data="(data) => isFollow = data.is_follow" />
             <MemberProfileVideo v-if="data?.profile_video" :url="data.profile_video" />
-            <div v-if="data?.stats" class="max-md:p-3 max-md:bg-container max-md:rounded-xl mx-3 md:mx-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4">
-              <div class="md:bg-container md:rounded-xl md:p-4 flex flex-col md:items-center gap-1.5 md:gap-2 relative">
-                <Icon v-tooltip="$t('data_disclaimer')" name="heroicons:information-circle" class="absolute right-0 top-0.5 md:right-3 md:top-3 text-lg outline-hidden" />
-                <div class="flex items-center gap-1.5 md:gap-2 md:text-xl">
-                  <Icon name="solar:folder-with-files-bold-duotone" class="text-blue-500" />
-                  <span>Total Live</span>
-                </div>
-                <div class="max-md:bg-container-2 max-md:p-3 max-md:rounded-xl w-full md:space-y-1 text-sm">
-                  <div class="flex justify-between">
-                    <span>Showroom</span>
-                    <span>{{ ((data?.stats?.total_live?.showroom || 0) + (data?.stats?.missing?.showroom || 0)) || $t('data.nodata') }}</span>
-                  </div>
-                  <div class="flex justify-between">
-                    <span>IDN Live</span>
-                    <span>{{ ((data?.stats?.total_live?.idn || 0) + (data?.stats?.missing?.idn || 0)) || $t('data.nodata') }}</span>
-                  </div>
-                </div>
-              </div>
-              <div class="md:bg-container md:rounded-xl md:p-4 flex md:flex-col max-md:justify-between gap-1.5 md:gap-3 items-center">
-                <NuxtLink :to="`/recent/${data?.stats?.most_gift?.id}`" class="flex items-center gap-1.5 md:gap-2 md:text-xl">
-                  <Icon name="solar:gift-bold-duotone" class="text-yellow-500" />
-                  <span>{{ $t('mostgifts') }}</span>
-                </NuxtLink>
-                <NuxtLink :to="`/recent/${data?.stats?.most_gift?.id}`" class="space-y-2 text-sm md:text-base md:flex-1 md:flex md:items-center md:justify-center">
-                  {{ data?.stats?.most_gift?.gift ? $n(data?.stats?.most_gift?.gift ?? 0, 'currency', 'id') : $t('data.nodata') }}
-                </NuxtLink>
-              </div>
-              <div class="md:bg-container md:rounded-xl md:p-4 flex md:flex-col max-md:justify-between gap-1.5 md:gap-3 items-center">
-                <NuxtLink :to="`/recent/${data?.stats?.longest_live?.id}`" class="flex items-center gap-1.5 md:gap-2 md:text-xl">
-                  <Icon name="material-symbols:clock-loader-60" class="text-green-500" />
-                  <span>{{ $t('longestlive') }}</span>
-                </NuxtLink>
-                <NuxtLink :to="`/recent/${data?.stats?.longest_live?.id}`" class="space-y-2 text-sm md:text-base md:flex-1 md:flex md:items-center md:justify-center">
-                  {{ data?.stats?.longest_live?.duration ? formatDuration(data?.stats?.longest_live?.duration ?? 0, { second: false }) : $t('data.nodata') }}
-                </NuxtLink>
-              </div>
-              <div class="md:bg-container md:rounded-xl md:p-4 flex md:flex-col max-md:justify-between gap-1.5 md:gap-3 items-center">
-                <NuxtLink :to="`/recent/${data?.stats?.longest_live?.id}`" class="flex items-center gap-1.5 md:gap-2 md:text-xl">
-                  <Icon name="material-symbols:videocam-rounded" class="text-red-500" />
-                  <span>{{ $t('last_live') }}</span>
-                </NuxtLink>
-                <NuxtLink :to="`/recent/${data?.stats?.last_live?.id}`" class="space-y-2 text-sm md:text-base md:flex-1 md:flex md:items-center md:justify-center">
-                  {{
-                    data?.stats?.last_live?.date?.end
-                      ? $dayjs(data?.stats?.last_live?.date?.end ?? '').diff($dayjs(), 'week') > 1 ? $d(new Date(data?.stats?.last_live?.date?.end ?? ''), 'short') : $dayjs(data?.stats?.last_live?.date?.end ?? '').locale(locale).fromNow()
-                      : $t('data.nodata')
-                  }}
-                </NuxtLink>
-              </div>
+            <div v-if="memberStatCards.length" class="max-md:p-3 max-md:bg-container max-md:rounded-xl mx-3 md:mx-4">
+              <SummaryCards :cards="memberStatCards" grid-class="grid-cols-1 md:grid-cols-2 xl:grid-cols-4" />
             </div>
             <div v-if="member.jikosokai" class="bg-container mx-3 flex flex-col gap-2 rounded-xl p-4 md:mx-4">
               <div class="flex items-center gap-2 text-lg xl:text-xl font-semibold">

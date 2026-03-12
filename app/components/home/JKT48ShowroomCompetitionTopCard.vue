@@ -135,55 +135,52 @@ const open = ref(false)
 </script>
 
 <template>
-  <div
-    class="relative rounded-xl  border-2 bg-linear-to-b p-2.5 md:p-3 overflow-hidden group"
-    :class="getCardClass(entry.rank)"
+  <HomeTopCardContainer
+    :card-class="getCardClass(entry.rank)"
+    :background-image="entry.room.image_alt || entry.room.image_square"
+    :background-alt="entry.room.nickname"
+    :image-class="{
+      'h-full w-full scale-115 object-cover saturate-120 transition-all duration-500': true,
+      'opacity-15 blur-[2px]': !open,
+      'opacity-40 blur-[5px]': open,
+    }"
+    :image-modifiers="{
+      aspectRatio: 3 / 2,
+      gravity: 'faceCenter',
+    }"
+    image-sizes="640"
+    image-format="webp"
+    overlay-class="bg-linear-to-b from-black/0 via-black/18 to-black/45 dark:via-black/20 dark:to-black/55"
   >
-    <div class="pointer-events-none absolute inset-0 z-0 rounded-xl overflow-hidden">
-      <Image
-        :src="entry.room.image_alt || entry.room.image_square"
-        :alt="entry.room.nickname"
-        loading="lazy"
-        fit="cover"
-        class="h-full w-full scale-115 object-cover saturate-120 transition-all duration-500"
+    <template #before-content>
+      <div
+        class="pointer-events-none absolute -right-8 -top-8 z-1 size-24 rounded-full blur-xl md:size-28"
         :class="{
-          'opacity-15 blur-[2px]': !open,
-          'opacity-40 blur-[5px]': open,
+          'bg-amber-400/22': entry.rank === 1,
+          'bg-slate-300/22': entry.rank === 2,
+          'bg-orange-400/22': entry.rank === 3,
         }"
-        :modifiers="{
-          aspectRatio: 3 / 2,
-          gravity: 'faceCenter',
-        }"
-        sizes="640"
-        format="webp"
       />
-      <div class="absolute inset-0 bg-linear-to-b from-black/0 via-black/18 to-black/45 dark:via-black/20 dark:to-black/55" />
-    </div>
-    <div
-      class="pointer-events-none absolute -right-8 -top-8 z-1 size-24 rounded-full blur-xl md:size-28"
-      :class="{
-        'bg-amber-400/22': entry.rank === 1,
-        'bg-slate-300/22': entry.rank === 2,
-        'bg-orange-400/22': entry.rank === 3,
-      }"
-    />
-    <div
-      class="pointer-events-none absolute -left-8 bottom-3 z-1 size-20 rounded-full blur-xl md:hidden"
-      :class="{
-        'bg-amber-300/18': entry.rank === 1,
-        'bg-slate-200/18': entry.rank === 2,
-        'bg-orange-300/18': entry.rank === 3,
-      }"
-    />
-    <button
-      type="button"
-      class="absolute right-2 top-2 z-40 inline-flex size-5 items-center justify-center rounded-full border border-black/25 text-slate-700 shadow-[0_2px_8px_rgba(0,0,0,0.18)] backdrop-blur-[2px] transition-colors duration-200 hover:ring-1 hover:ring-black/15 dark:border-white/25 bg-dark-2/60 dark:text-slate-100 hover:bg-dark-2/75 hover:text-white dark:hover:ring-white/15 md:size-5.5"
-      aria-label="More options"
-      @click="open = !open"
-    >
-      <Icon v-if="!open" name="solar:menu-dots-bold" class="size-3.25 md:size-3.5" />
-      <Icon v-else name="material-symbols:close-rounded" class="size-3.25 md:size-3.5" />
-    </button>
+      <div
+        class="pointer-events-none absolute -left-8 bottom-3 z-1 size-20 rounded-full blur-xl md:hidden"
+        :class="{
+          'bg-amber-300/18': entry.rank === 1,
+          'bg-slate-200/18': entry.rank === 2,
+          'bg-orange-300/18': entry.rank === 3,
+        }"
+      />
+    </template>
+    <template #more>
+      <button
+        type="button"
+        class="inline-flex size-5 items-center justify-center rounded-full border border-black/25 text-slate-700 shadow-[0_2px_8px_rgba(0,0,0,0.18)] backdrop-blur-[2px] transition-colors duration-200 hover:ring-1 hover:ring-black/15 dark:border-white/25 bg-dark-2/60 dark:text-slate-100 hover:bg-dark-2/75 hover:text-white dark:hover:ring-white/15 md:size-5.5"
+        aria-label="More options"
+        @click="open = !open"
+      >
+        <Icon v-if="!open" name="solar:menu-dots-bold" class="size-3.25 md:size-3.5" />
+        <Icon v-else name="material-symbols:close-rounded" class="size-3.25 md:size-3.5" />
+      </button>
+    </template>
     <div
       class="absolute inset-0 z-30 transition-all duration-500 bg-black/20 backdrop-blur-xs" :class="{
         'opacity-100 scale-100 pointer-events-auto': open,
@@ -318,5 +315,5 @@ const open = ref(false)
         {{ formatPoint(entry.point) }}
       </p>
     </div>
-  </div>
+  </HomeTopCardContainer>
 </template>

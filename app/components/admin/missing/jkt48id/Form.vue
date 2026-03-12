@@ -48,7 +48,7 @@ async function submit() {
   pending.value = false
 }
 const { escape } = useMagicKeys()
-watch(escape, (v) => {
+watch(escape as any, (v) => {
   if (v) emit('dismiss')
 })
 </script>
