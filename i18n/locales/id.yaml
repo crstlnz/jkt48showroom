@@ -20,7 +20,7 @@ fansranking: Ranking fans
 topfans: Fans teratas
 fans_point_info:
   title: Fans Teratas
-  formula: Poin ranking berdasarkan akumulasi dari podium rank + total komentar + total poin gift.
+  formula: Poin ranking berdasarkan akumulasi dari durasi rank podium + total komentar + total poin gift.
 nextlive: Jadwal live
 showonshowroom: Lihat di Showroom
 openshowroom: Buka Showroom
