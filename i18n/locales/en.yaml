@@ -18,6 +18,9 @@ mostviewer: Most viewer
 more: More
 fansranking: Fans ranking
 topfans: Top fans
+fans_point_info:
+  title: Fan score calculation
+  formula: Ranking points are the accumulation of podium rank + total comments + total gift points.
 nextlive: Next live
 showonshowroom: Show on Showroom
 openshowroom: Open Showroom

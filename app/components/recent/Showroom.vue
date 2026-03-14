@@ -94,7 +94,7 @@ const calculatedGift = computed<RecentUserGifts[]>(() => {
         <div class="font-bold text-lg xl:text-xl mb-1">
           Detail
         </div>
-        <table class="table-auto [&_td]:py-1 xl:[&_td]:py-1.5 text-sm xl:text-base [&_td:first-child]:min-w-[150px] xl:[&_td:first-child]:min-w-[200px] [&_td:first-child]:opacity-80 font-semibold dark:[&_td:first-child]:opacity-60">
+        <table class="table-auto [&_td]:py-1 xl:[&_td]:py-1.5 text-sm xl:text-base [&_td:first-child]:min-w-37.5 xl:[&_td:first-child]:min-w-50 [&_td:first-child]:opacity-80 font-semibold dark:[&_td:first-child]:opacity-60">
           <tbody>
             <tr>
               <td>

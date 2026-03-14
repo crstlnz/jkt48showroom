@@ -27,7 +27,7 @@
 
 .dark .v-popper__inner {
   border: 2px solid rgba(255, 255, 255, 0.05) !important;
-  background-color: #1e2124 !important;
+  background-color: #25282b !important;
 }
 
 .v-popper__arrow-container {
@@ -35,5 +35,5 @@
 }
 
 .dark .v-popper__arrow-inner {
-  border-top-color: #1e2124 !important;
+  border-top-color: #25282b !important;
 }

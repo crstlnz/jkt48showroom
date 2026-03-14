@@ -17,8 +17,24 @@ const { userClick } = useSelectedUser()
 <template>
   <div class="bg-container space-y-2.5 p-3 shadow-2xs md:space-y-3.5 md:p-4">
     <div class="flex items-center justify-between">
-      <h2 class="font-bold text-lg xl:text-xl">
+      <h2 class="font-bold text-lg xl:text-xl flex items-center gap-2">
         {{ $t("topfans") }}
+        <VTooltip>
+          <Icon
+            name="heroicons:information-circle"
+            class="text-lg opacity-80 outline-hidden shrink-0"
+          />
+          <template #popper>
+            <div class="p-2 w-lg">
+              <div class="font-bold text-sm md:text-base">
+                {{ $t("fans_point_info.title") }}
+              </div>
+              <div class="font-light text-xs md:text-base opacity-75">
+                {{ $t("fans_point_info.formula") }}
+              </div>
+            </div>
+          </template>
+        </VTooltip>
       </h2>
       <button v-if="(data.length > 4)" class="hover:text-second-2" href="#" type="button" @click="openRankFans">
         {{ $t("more") }}
@@ -30,7 +46,7 @@ const { userClick } = useSelectedUser()
           <span class="w-5 sm:w-6">{{ i + 1 }}</span>
           <div
             :title="fans.name"
-            class="user-btn inline-block w-14 shrink-0 lg:w-[60px]"
+            class="user-btn inline-block w-14 shrink-0 lg:w-15"
             type="button"
           >
             <img

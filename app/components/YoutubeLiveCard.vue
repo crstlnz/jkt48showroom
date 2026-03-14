@@ -8,20 +8,12 @@ defineEmits(['refreshliveinfo'])
 const openMenu = ref(false)
 const container = ref(null)
 const listener = ref<(() => void)>()
-// const date = ref(props.live.started_at)
-// const dateString = $formatSR(date)
-// const dateString = computed(() => dayjs(date.value).format('h:mm A'))
-
 const hover = ref(null)
 const isPreview = ref(false)
 const isHovered = useElementHover(hover)
 const isSupported = ref(false)
 const playing = ref(false)
 const preview = ref<typeof PreviewVideo>()
-// const streamingURL = computed(() => {
-//   return (props.live.streaming_url_list[0])?.url ?? ''
-// })
-
 useScriptTag(useAppConfig().hlsUrl, () => {
   isSupported.value = Hls.isSupported()
 }, {
@@ -52,7 +44,6 @@ const { start: startBuffer, stop: stopBuffer } = useTimeoutFn(() => {
 function openPreview() {
   preview.value?.play()
   isPreview.value = true
-  // playing.value = true
 }
 
 function closePreview() {
