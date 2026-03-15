@@ -1,3 +1,4 @@
+import { useSettings } from './settings'
 import { useSocket } from './socket'
 
 export const useOnLives = defineStore('onLives', () => {
@@ -5,9 +6,10 @@ export const useOnLives = defineStore('onLives', () => {
   const socket = useSocket()
   const { onLives, init } = socket
   const { error, pending } = storeToRefs(socket)
+  const { group } = useSettings()
 
   onLives((data) => {
-    lives.value = data.filter(i => i.group == null || i.group !== 'jkt48')
+    lives.value = data.filter(i => i.group == null || i.group === group)
   })
 
   const hasLives = computed(() => {
