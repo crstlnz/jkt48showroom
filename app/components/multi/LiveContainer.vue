@@ -23,6 +23,7 @@ const data = computed(() => {
 })
 
 const mockupVideos = [
+  { src: 'https://placeholdervideo.dev/720x1280', title: 'Potrait Video' },
   { src: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', title: 'Big Buck Bunny' },
   { src: 'https://cdn.jwplayer.com/manifests/pZxWPRg4.m3u8', title: 'FDR CDN 1080p' },
   { src: 'https://test-streams.mux.dev/x36xhzz/url_6/193039199_mp4_h264_aac_hq_7.m3u8', title: 'Big Buck Bunny 480p' },
@@ -30,6 +31,9 @@ const mockupVideos = [
   { src: 'https://test-streams.mux.dev/dai-discontinuity-deltatre/manifest.m3u8', title: 'Ad insertion in event stream' },
   { src: 'https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s-fmp4/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8', title: 'HLS by Bitmovin' },
   { src: 'https://mtoczko.github.io/hls-test-streams/test-group/playlist.m3u8', title: '1080p' },
+  { src: 'https://mtoczko.github.io/hls-test-streams/test-group/playlist.m3u8', title: '1080p1' },
+  { src: 'https://mtoczko.github.io/hls-test-streams/test-group/playlist.m3u8', title: '1080p2' },
+  { src: 'https://mtoczko.github.io/hls-test-streams/test-group/playlist.m3u8', title: '1080p3' },
 ]
 
 const lives = computed<Omit<Multi.Video, 'order'>[]>(() => {

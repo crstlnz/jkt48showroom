@@ -30,52 +30,40 @@ const { width } = useWindowSize()
 const { isSmall } = useResponsive()
 const minWidth = computed(() => {
   if (!isSmall.value) {
-    return 190
+    return 260
   }
-  return 160
+  return 130
 })
 
 const maxCount = computed(() => {
-  return Math.floor(width.value / minWidth.value)
+  return Math.max(1, Math.floor(width.value / minWidth.value))
 })
 
 const rowCount = useLocalStorage('multiRowCount', 4, { deep: true })
 
+function clampRowCount(row: number, max = maxCount.value) {
+  return Math.min(Math.max(1, row), max)
+}
+
+const rowCountModel = computed({
+  get: () => rowCount.value,
+  set: (val: unknown) => {
+    const row = Number(val)
+    if (!Number.isFinite(row)) return
+    rowCount.value = clampRowCount(Math.trunc(row))
+  },
+})
+
 onMounted(() => {
-  if (rowCount.value > maxCount.value) {
-    rowCount.value = maxCount.value
-  }
+  rowCount.value = clampRowCount(rowCount.value)
 })
 
 watch(maxCount, (c) => {
-  if (rowCount.value > c) {
-    rowCount.value = c
-  }
+  rowCount.value = clampRowCount(rowCount.value, c)
 })
 
-function rowCountChange(event: Event) {
-  const inputEl = event.target as HTMLInputElement
-  if (inputEl) {
-    let row = Number(inputEl.value.slice(-1))
-    if (row > maxCount.value) {
-      row = maxCount.value
-    }
-    else if (row < 1) {
-      row = 1
-    }
-    rowCount.value = row
-    inputEl.value = String(row)
-  }
-}
-
 function changeRow(row: number) {
-  if (row > maxCount.value) {
-    row = maxCount.value
-  }
-  else if (row < 1) {
-    row = 1
-  }
-  rowCount.value = row
+  rowCount.value = clampRowCount(row)
 }
 
 const { group } = useSettings()
@@ -250,12 +238,12 @@ function openMediaControl() {
             </div>
             <div class="flex gap-2 bg-white dark:bg-white/5 px-3 py-2 rounded-md items-center overflow-hidden text-sm md:text-base">
               <div>Row</div>
-              <input :value="rowCount" type="number" class="inputRow rounded-md text-center min-w-5 bg-transparent outline-hidden [&::-webkit-outer-spin-button]:appearance-none" max="8" min="1" placeholder="Row Count" @input="rowCountChange">
+              <input v-model.number="rowCountModel" type="number" step="1" class="inputRow rounded-md text-center min-w-5 bg-transparent outline-hidden [&::-webkit-outer-spin-button]:appearance-none" :max="maxCount" min="1" placeholder="Row Count" @blur="rowCount = clampRowCount(rowCount)">
               <div class="flex flex-col -my-2 -mr-3">
-                <button v-ripple type="button" class="h-5 w-5 md:w-6 md:h-6 flex border-l border-b border-color-1" @click="changeRow(rowCount + 1)">
+                <button v-ripple type="button" class="h-5 w-5 md:w-6 md:h-6 flex border-l border-b border-color-1 disabled:opacity-50" :disabled="rowCount >= maxCount" @click="changeRow(rowCount + 1)">
                   <Icon name="material-symbols:arrow-drop-up-rounded" class="w-full h-full" />
                 </button>
-                <button v-ripple type="button" class="h-5 w-5 md:w-6 md:h-6 flex border-l border-color-1" @click="changeRow(rowCount - 1)">
+                <button v-ripple type="button" class="h-5 w-5 md:w-6 md:h-6 flex border-l border-color-1 disabled:opacity-50" :disabled="rowCount <= 1" @click="changeRow(rowCount - 1)">
                   <Icon name="material-symbols:arrow-drop-down-rounded" class="w-full h-full" />
                 </button>
               </div>
@@ -272,7 +260,7 @@ function openMediaControl() {
               v-for="[idx, video] in videos.entries()"
               :ref="(ref) => applyVideoRefs(ref, video)"
               :key="video.id"
-              :style="{ flex: `0 0 ${100 / ((rowCount || 4) - (video.space - 1))}%` }"
+              :style="{ flex: `0 1 ${100 / ((rowCount || 4) - (video.space - 1))}%`, width: 0 }"
               :class="{ 'transition-all duration-300': videos.length === 1 }"
               :index="idx"
               :data-space="video.space"

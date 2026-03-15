@@ -83,6 +83,8 @@ function setVolume(v: any, forced = false) {
 const showControl = ref(false)
 const isFocusControl = ref(false)
 const isHoverControl = ref(false)
+const videoWidth = ref(0)
+const videoHeight = ref(0)
 
 const { start: autoRemoveHover, stop: stopAutoRemoveHover } = useTimeoutFn(
   () => {
@@ -185,6 +187,17 @@ function createHLS(_url: string) {
       },
     })
 
+    const syncVideoMetrics = () => {
+      requestAnimationFrame(() => {
+        if (!video.value) return
+        if (video.value.videoWidth && video.value.videoHeight) {
+          videoWidth.value = video.value.videoWidth
+          videoHeight.value = video.value.videoHeight
+        }
+        calculateVideoSize()
+      })
+    }
+
     hls.value.on(Hls.Events.ERROR, (event: any, data: any) => {
       if (
         (data.response.code === 0 || data.response.code === 403)
@@ -238,15 +251,25 @@ function createHLS(_url: string) {
     hls.value.on(Hls.Events.FRAG_BUFFERED, () => {
       stopAutoReload()
       isLoading.value = false
+      syncVideoMetrics()
     })
 
     hls.value.on(Hls.Events.MANIFEST_LOADING, () => {
       isLoading.value = true
     })
 
+    hls.value.on(Hls.Events.MANIFEST_PARSED, () => {
+      syncVideoMetrics()
+    })
+
     hls.value.on(Hls.Events.LEVEL_LOADED, () => {
       stopAutoReload()
       isLoading.value = false
+      syncVideoMetrics()
+    })
+
+    hls.value.on(Hls.Events.LEVEL_SWITCHED, () => {
+      syncVideoMetrics()
     })
 
     hls.value.attachMedia(video.value)
@@ -359,8 +382,12 @@ useEventListener(videoControl, 'focusout', () => {
 })
 const { isSupported, orientation, lockOrientation, unlockOrientation }
   = useScreenOrientation()
-const videoWidth = ref(0)
-const videoHeight = ref(0)
+
+const rotation = ref(0)
+const isMiring = computed(() => {
+  return (rotation.value / 90) % 2 !== 0
+})
+
 const isLandscape = computed(() => {
   return videoHeight.value <= videoWidth.value
 })
@@ -609,8 +636,8 @@ function syncLive() {
   }
 }
 
-const rotation = ref(0)
-const enableRotate = useLocalStorage<boolean>('rotate_feature_v1', () => false)
+// const enableRotate = useLocalStorage<boolean>('rotate_feature_v1', () => false)
+const enableRotate = ref(true)
 
 watch(enableRotate, (v) => {
   if (!v) {
@@ -624,27 +651,21 @@ function rotate() {
   rotation.value += 90
 }
 
-const originalSize = ref<{ width: number, height: number } | null>(null)
-const isMiring = computed(() => {
-  return (rotation.value / 90) % 2 !== 0
-})
-
 function calculateVideoSize() {
-  if (!originalSize.value) {
-    const rect = video.value?.getBoundingClientRect()
-    originalSize.value = {
-      width: rect?.width || 0,
-      height: rect?.height || 0,
-    }
-  }
   const deg = rotation.value
   if (!video.value || !videoPlayer.value) return
   video.value.style.removeProperty('scale')
+  const baseEl = video.value.parentElement as HTMLElement | null
+  const rect = (baseEl ?? videoPlayer.value).getBoundingClientRect()
+  const baseSize = {
+    width: rect.width || 0,
+    height: rect.height || 0,
+  }
+  if (!baseSize.width || !baseSize.height) return
   if ((deg / 90) % 2 !== 0) {
-    if (!originalSize.value) return
-    const potrait = originalSize.value.height / originalSize.value.width
-    const landscape = originalSize.value.width / originalSize.value.height
-    // const isPortrait = originalSize.value.height > originalSize.value.width
+    const potrait = baseSize.height / baseSize.width
+    const landscape = baseSize.width / baseSize.height
+    // const isPortrait = baseSize.height > baseSize.width
     let aspectRatio: number
     if (props.rotateFill === 'width') {
       aspectRatio = landscape
@@ -667,8 +688,7 @@ function calculateVideoSize() {
 }
 
 watch(rotation, () => {
-  const isMiring = (rotation.value / 90) % 2 !== 0
-  const isLs = isLandscape.value ? !isMiring : isMiring
+  const isLs = isLandscape.value ? !isMiring.value : isMiring.value
   emit('isLandscape', isLs)
   requestAnimationFrame(() => calculateVideoSize())
 })
@@ -676,11 +696,20 @@ watch(rotation, () => {
 useEventListener(video, 'loadedmetadata', function () {
   videoWidth.value = (this as any).videoWidth
   videoHeight.value = (this as any).videoHeight
+  requestAnimationFrame(() => calculateVideoSize())
 })
 
 useEventListener(video, 'loadeddata', function () {
   videoWidth.value = (this as any).videoWidth
   videoHeight.value = (this as any).videoHeight
+  requestAnimationFrame(() => calculateVideoSize())
+})
+
+useEventListener(video, 'resize', () => {
+  if (!video.value) return
+  videoWidth.value = video.value.videoWidth
+  videoHeight.value = video.value.videoHeight
+  requestAnimationFrame(() => calculateVideoSize())
 })
 
 useEventListener(video, 'play', () => {
@@ -735,6 +764,9 @@ const pipEnabled = ref(false)
 
 onMounted(() => {
   useEventListener(window, 'resize', () => {
+    requestAnimationFrame(() => calculateVideoSize())
+  })
+  useResizeObserver(videoPlayer, () => {
     requestAnimationFrame(() => calculateVideoSize())
   })
 
@@ -803,9 +835,8 @@ defineExpose({
 
 <template>
   <div
-    ref="videoPlayer" class="overflow-hidden relative group flex items-center transform-all duration-300" :style="{
+    ref="videoPlayer" class="overflow-hidden relative group flex items-center transform-all duration-300 size-full" :style="{
       aspectRatio: enableRotate && rotateFill === 'width' ? aspectRatio : undefined,
-
     }" :class="{
       'w-full h-full': !enableRotate && rotateFill !== 'width',
       'cursor-none!': !showControl && isPlaying,
@@ -820,9 +851,8 @@ defineExpose({
         'aspect-video': isLandscape && enableRotate,
         'aspsect-[9/12]': !isLandscape && enableRotate,
         'w-full':
-          (videoFill === 'width' && !isFullscreen && enableRotate)
-          || isFullscreen,
-        'h-full': videoFill === 'height' && !isFullscreen && enableRotate,
+          (videoFill === 'width' && !isFullscreen && enableRotate) || (isFullscreen && (isLandscape || isMiring)),
+        'h-full': videoFill === 'height' && !isFullscreen && enableRotate || (isFullscreen && (!isLandscape || isMiring)),
       // 'w-full': isFullscreen && enableRotate && isFullscreenLandscape && !isLandscape,
       // 'w-full': isFullscreen && enableRotate && isFullscreenLandscape,
       }" @click="videoClick"
@@ -878,7 +908,7 @@ defineExpose({
           <div class="group flex items-center justify-center">
             <div class="relative flex h-full w-full duration-200 group-hover/volume:w-20">
               <div
-                :class="{ 'h-[3px]': compact, 'h-1': !compact }"
+                :class="{ 'h-0.75': compact, 'h-1': !compact }"
                 class="absolute bottom-0 z-0 w-full overflow-hidden bg-neutral-700/75"
               >
                 <div class="h-full bg-red-600" :style="{ width: `${videoProgess}%` }" />
@@ -889,7 +919,7 @@ defineExpose({
                   'h-3 w-3': !compact,
                   'h-2 w-2': compact,
                 }"
-                class="absolute bottom-[2px] -translate-x-1/2 translate-y-1/2 rounded-full bg-red-600 transition-opacity duration-300 group-hover:opacity-100"
+                class="absolute bottom-0.5 -translate-x-1/2 translate-y-1/2 rounded-full bg-red-600 transition-opacity duration-300 group-hover:opacity-100"
                 :style="{ left: `${videoProgess}%` }"
               />
               <input
@@ -927,17 +957,17 @@ defineExpose({
               / {{ $dayjs.duration(duration, 'second').format('mm:ss') }}
             </div>
             <button class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1" aria-label="Reload" type="button" @click="reload">
-              <Icon name="ic:round-refresh" class="h-full w-full p-[1px]" />
+              <Icon name="ic:round-refresh" class="h-full w-full p-px" />
             </button>
             <button
               v-if="enableRotate" class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1" aria-label="Reload" type="button"
               @click="rotate"
             >
-              <Icon name="ic:outline-rotate-right" class="h-full w-full p-[1px]" />
+              <Icon name="ic:outline-rotate-right" class="h-full w-full p-px" />
             </button>
             <Popover v-if="!compact">
               <PopoverButton aria-label="Setting" class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1">
-                <Icon name="ic:baseline-settings" class="h-full w-full p-[2px] duration-300" />
+                <Icon name="ic:baseline-settings" class="h-full w-full p-0.5 duration-300" />
               </PopoverButton>
               <Transition
                 enter-active-class="transition duration-200 ease-out"
@@ -952,7 +982,7 @@ defineExpose({
                     <div class="border-b border-white/20 px-3 py-1.5 md:px-4 md:py-2.5">
                       {{ $t('quality') }}
                     </div>
-                    <div class="flex w-[220px] flex-col py-1 text-base md:w-[250px]">
+                    <div class="flex w-55 flex-col py-1 text-base md:w-62.5">
                       <PopoverButton
                         v-for="source in sources" :key="source.id"
                         class="flex items-center truncate text-left text-sm hover:bg-black/50"

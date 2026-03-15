@@ -16,7 +16,7 @@ function openModal() {
   isOpen.value = true
 }
 
-const rotateFeature = useLocalStorage('rotate_feature_v1', () => false)
+// const rotateFeature = useLocalStorage('rotate_feature_v1', () => false)
 const autoRemove = useLocalStorage('auto_remove_player', () => true)
 const centerVideos = useLocalStorage('center_videos', () => false)
 const showVideoControl = useLocalStorage('show_video_control', () => true)
@@ -69,10 +69,10 @@ const showVideoControl = useLocalStorage('show_video_control', () => true)
                 >
                   {{ $t('settings_global') }}
                 </DialogTitle>
-                <button type="button" class="flex items-center gap-2.5 text-xs text-left md:text-sm opacity-80 font-light mt-3" @click="rotateFeature = !rotateFeature">
+                <!-- <button type="button" class="flex items-center gap-2.5 text-xs text-left md:text-sm opacity-80 font-light mt-3" @click="rotateFeature = !rotateFeature">
                   <input v-model="rotateFeature" type="checkbox" class="cursor-pointer">
                   <div>{{ $t("enable_rotate") }}</div>
-                </button>
+                </button> -->
                 <button type="button" class="flex items-center gap-2.5 text-xs text-left md:text-sm opacity-80 font-light mt-3" @click="centerVideos = !centerVideos">
                   <input v-model="centerVideos" type="checkbox" class="cursor-pointer">
                   <div>{{ $t("multi.center") }}</div>

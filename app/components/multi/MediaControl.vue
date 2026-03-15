@@ -72,7 +72,7 @@ function syncLive() {
   }
 }
 
-const rotateFeature = useLocalStorage('rotate_feature_v1', () => false)
+// const rotateFeature = useLocalStorage('rotate_feature_v1', () => false)
 const autoRemove = useLocalStorage('auto_remove_player', () => true)
 const centerVideos = useLocalStorage('center_videos', () => false)
 const showVideoControl = useLocalStorage('show_video_control', () => true)
@@ -142,7 +142,7 @@ onMounted(() => {
             leave-to="opacity-0 scale-75"
           >
             <DialogPanel
-              class="w-full max-w-lg transform overflow-hidden rounded-2xl bg-container p-6 text-left align-middle shadow-xl transition-all max-h-[90vh] flex flex-col"
+              class="w-full max-w-lg transform overflow-hidden rounded-2xl bg-container p-6 text-left align-middle shadow-xl transition-all max-h-[95vh] md:max-h-[85vh] flex flex-col"
             >
               <DialogTitle
                 as="h3"
@@ -154,7 +154,7 @@ onMounted(() => {
                 <div v-if="!videoPlayers.length" class="text-base text-gray-400">
                   {{ $t('no_video_player') }}
                 </div>
-                <div v-else class="flex flex-col flex-1">
+                <div v-else class="flex flex-col flex-1 overflow-hidden">
                   <div class="flex-col max-md:items-stretch md:flex-row border-b-2 border-color-2 py-2 md:px-4 md:py-2.5 flex items-center md:gap-4 justify-between">
                     <div class="flex items-center max-md:justify-around">
                       <button v-ripple type="button" class="flex w-8 h-8 md:w-9 md:h-9 hover:bg-hover-2 rounded-full p-1" @click="playAll">
@@ -167,26 +167,26 @@ onMounted(() => {
                         <Icon name="ic:round-fast-forward" class="h-full w-full" />
                       </button>
                       <button v-ripple type="button" class="flex w-8 h-8 md:w-9 md:h-9 hover:bg-hover-2 rounded-full p-1" @click="reloadAll">
-                        <Icon name="ic:round-refresh" class="h-full w-full p-[1px]" />
+                        <Icon name="ic:round-refresh" class="h-full w-full p-px" />
                       </button>
                       <button v-ripple type="button" class="flex w-8 h-8 md:w-9 md:h-9 hover:bg-hover-2 rounded-full p-1" @click="unmuteAll">
-                        <Icon name="ic:round-volume-up" class="h-full w-full p-[1px]" />
+                        <Icon name="ic:round-volume-up" class="h-full w-full p-px" />
                       </button>
                       <button v-ripple type="button" class="flex w-8 h-8 md:w-9 md:h-9 hover:bg-hover-2 rounded-full p-1" @click="muteAll">
-                        <Icon name="ic:round-volume-off" class="h-full w-full p-[1px]" />
+                        <Icon name="ic:round-volume-off" class="h-full w-full p-px" />
                       </button>
                     </div>
-                    <Slider ref="slider" v-model="allVolume" :hide-slider-value="useAllVolume" class="w-full md:w-[200px]" :min="0" :max="1" :step="0.01" />
+                    <Slider ref="slider" v-model="allVolume" :hide-slider-value="useAllVolume" class="w-full md:w-50" :min="0" :max="1" :step="0.01" />
                   </div>
-                  <div class="overflow-y-auto items-stretch flex-1">
+                  <div class="overflow-y-auto h-0 items-stretch flex-1">
                     <MultiVideoMediaControl v-for="[idx, player] in videoPlayers.entries()" :key="idx" :player="player" class="border-b-2 border-color-2 py-2 md:px-4 md:py-2.5" />
                   </div>
                 </div>
               </div>
-              <button type="button" class="flex items-center gap-2.5 text-xs text-left md:text-sm opacity-80 font-light mt-3" @click="rotateFeature = !rotateFeature">
+              <!-- <button type="button" class="flex items-center gap-2.5 text-xs text-left md:text-sm opacity-80 font-light mt-3" @click="rotateFeature = !rotateFeature">
                 <input v-model="rotateFeature" type="checkbox" class="cursor-pointer">
                 <div>{{ $t("enable_rotate") }}</div>
-              </button>
+              </button> -->
               <button type="button" class="flex items-center gap-2.5 text-xs text-left md:text-sm opacity-80 font-light mt-3" @click="centerVideos = !centerVideos">
                 <input v-model="centerVideos" type="checkbox" class="cursor-pointer">
                 <div>{{ $t("multi.center") }}</div>

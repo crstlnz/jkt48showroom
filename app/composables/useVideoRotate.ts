@@ -1,7 +1,8 @@
-import { get, useLocalStorage } from '@vueuse/core'
+import { get } from '@vueuse/core'
 
 export default function (videoDimens: MaybeRef<{ width: number, height: number }>, containerDimens?: MaybeRef<{ width: number, height: number }>) {
-  const enableRotate = useLocalStorage<boolean>('rotate_feature_v1', () => false)
+  const enableRotate = ref(true)
+  // const enableRotate = useLocalStorage<boolean>('rotate_feature_v1', () => false)
   const rotation = ref(0)
   const videoScale = ref(1)
 
