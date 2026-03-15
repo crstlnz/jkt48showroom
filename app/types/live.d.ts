@@ -27,11 +27,13 @@ interface INowLive {
   chat_room_id?: string
   streaming_url_list: StreamingURL[]
   is_premium?: boolean
+  group?: string
   type: 'idn' | 'showroom'
 }
 
 interface YoutubeLive extends JKT48V.LiveResults {
   type: 'youtube'
+  group?: string
 }
 
 type ExtINowLive = INowLive | YoutubeLive

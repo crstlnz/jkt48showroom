@@ -7,7 +7,7 @@ export const useOnLives = defineStore('onLives', () => {
   const { error, pending } = storeToRefs(socket)
 
   onLives((data) => {
-    lives.value = data
+    lives.value = data.filter(i => i.group == null || i.group !== 'jkt48')
   })
 
   const hasLives = computed(() => {
