@@ -127,32 +127,13 @@ function deleteVideo(video: Multi.Video, reason?: string) {
 const onLives = useOnLives()
 const { data: raw } = storeToRefs(onLives)
 const data = computed(() => {
-  return raw.value?.filter(i => i.type !== 'youtube')
+  return raw.value
 })
 const { t } = useI18n()
 
-// const livesIds = computed(() => {
-//   return [...(data.value?.map(i => String(i.room_id)) || []), ...(idnData.value?.map(i => String(i.user?.id)) || [])]
-// })
-
-// watch(livesIds, (ids) => {
-//   if (autoRemove.value) {
-//     for (const v of videoPlayers.value.values()) {
-//       if (!ids.includes(v.id)) {
-//         v.remove()
-//         addNotif({
-//           type: 'info',
-//           title: t('notif.live.ended'),
-//           message: `${v.data.name} Room`,
-//         })
-//       }
-//     }
-//   }
-// })
-
 function checkLive(video: Multi.Video) {
   if (video.is_mockup) return true
-  const live = (data.value ?? []).find(i => video.id === `${i.type}-${i.room_id}`)
+  const live = (data.value ?? []).find((i: any) => video.id === `${i.type}-${i.room_id}`)
   if (!live) {
     if (autoRemove.value) add(video) /// delete
     addNotif({
@@ -165,7 +146,7 @@ function checkLive(video: Multi.Video) {
     const oldVideo = videosMap.value.get(video.id)
     if (oldVideo) {
       videosMap.value.set(oldVideo.id, {
-        ...(live.type === 'showroom' ? convertShowroom(live) : convertIDNLive(live)),
+        ...(live.type === 'showroom' ? convertShowroom(live) : (live.type === 'idn' ? convertIDNLive(live) : convertYoutube(live as YoutubeLive))),
         order: oldVideo.order,
       })
     }
@@ -258,10 +239,17 @@ function openMediaControl() {
           <TransitionGroup v-if="videos.length" name="multivideo" tag="div" class="flex flex-wrap" :class="{ 'justify-center': centerVideos }" @before-leave="onBeforeLeave">
             <MultiVideo
               v-for="[idx, video] in videos.entries()"
+              :id="video.id"
               :ref="(ref) => applyVideoRefs(ref, video)"
               :key="video.id"
-              :style="{ flex: `0 1 ${100 / ((rowCount || 4) - (video.space - 1))}%`, width: 0 }"
-              :class="{ 'transition-all duration-300': videos.length === 1 }"
+              :style="{
+                flexGrow: 0,
+                flexShrink: 1,
+                flexBasis: `${100 / ((rowCount || 4) - (video.space - 1))}%`,
+                width: 0,
+                transition: 'flex-basis 300ms ease, opacity 300ms ease, transform 300ms ease',
+              }"
+              class="will-change-auto"
               :index="idx"
               :data-space="video.space"
               :data-size="(rowCount || 4) - (video.space - 1)"

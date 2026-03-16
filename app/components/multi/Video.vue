@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { WatchVideo } from '#components'
+import { DragGesture } from '@use-gesture/vanilla'
 import { useNotifications } from '~/store/notifications'
 
 const props = defineProps<{
@@ -86,7 +87,7 @@ function rotate() {
   }
 }
 // const enableRotate = useLocalStorage<boolean>('rotate_feature_v1', () => false)
-const enableRotate = ref(true)
+const enableRotate = ref(!isYouTubeUrl(props.video.stream_url))
 const useSpace = ref(1)
 
 function expandSpace() {
@@ -97,11 +98,27 @@ function reduceSpace() {
   emit('spaceChange', props.video.space - 1)
 }
 const rowCount = useLocalStorage('multiRowCount', 4, { deep: true })
+
+// DRAG GESTURE
+const container = ref<HTMLDivElement | null>(null)
+const gesture = ref()
+const x = ref(0)
+const y = ref(0)
+onMounted(() => {
+  if (!container.value) return
+  gesture.value = new DragGesture(container.value, ({ offset: [ox, oy] }) => {
+    x.value = ox
+    y.value = oy
+  })
+})
+
+onUnmounted(() => gesture.value?.destroy())
+
 defineExpose({ refresh, video: videoElement, data: props.video, remove, id: props.video.id, useSpace })
 </script>
 
 <template>
-  <div class="flex items-center flex-col">
+  <div ref="container" class="flex items-center flex-col touch-none">
     <div class="overflow-hidden flex-1 h-0 bg-black/50 self-stretch flex items-center">
       <div class="size-full relative">
         <div class="absolute left-1 top-0.5 md:left-2 md:top-2 z-10">
@@ -111,7 +128,8 @@ defineExpose({ refresh, video: videoElement, data: props.video, remove, id: prop
         </div>
         <WatchVideo
           ref="videoElement"
-          :key="`video-${video.id}`"
+          :key="video.id"
+          :title="video.name"
           :poster="video.poster"
           :sources="sourceURLs"
           class="flex-1 w-full object-fill"
@@ -125,8 +143,8 @@ defineExpose({ refresh, video: videoElement, data: props.video, remove, id: prop
         />
       </div>
     </div>
-    <div v-if="showVideoControl" class="relative p-1 md:px-2 md:pb-2 xl:pb-2 xl:px-2 gap-1 md:gap-2 xl:gap-3 w-full bg-white t border border-black/10 drop-shadow-xs dark:border-white/10 dark:bg-black/20">
-      <div class="absolute inset-0 top-1/2 -translate-y-1/2 flex justify-between p-1 md:p-2 xl:p-3 pointer-events-none">
+    <div v-if="showVideoControl" class="relative p-1 md:p-2 xl:p-2 gap-1 md:gap-2 xl:gap-3 w-full bg-white t border border-black/10 drop-shadow-xs dark:border-white/10 dark:bg-black/20">
+      <div class="absolute inset-0 flex justify-between p-1 md:p-2 xl:p-3 pointer-events-none items-center">
         <button :disabled="index === 0" type="button" class="pointer-events-auto bg-black/10 dark:bg-white/5 h-6 w-6 md:w-7 md:h-7 rounded-full disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center" @click="$emit('movePrevious')">
           <Icon name="material-symbols:arrow-left" size="1.5rem" />
         </button>
@@ -135,11 +153,6 @@ defineExpose({ refresh, video: videoElement, data: props.video, remove, id: prop
         </button>
       </div>
       <div class="flex gap-0.5 w-full flex-col items-center lg:px-10">
-        <div :title="video.name" class="self-stretch lg:flex-1 max-lg:mx-8 flex items-center">
-          <div class="flex-1 w-0 truncate text-sm text-center leading-6 md:leading-7">
-            {{ video.name }}
-          </div>
-        </div>
         <div class="flex gap-0.5 sm:gap-1">
           <button v-if="enableRotate" type="button" class="bg-blue-500 text-white size-5 sm:size-6 md:size-7 flex justify-center items-center rounded-md text-sm" @click="rotate">
             <Icon name="ic:outline-sync" class="w-full h-full p-1" />

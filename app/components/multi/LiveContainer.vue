@@ -19,7 +19,7 @@ function select(video: Omit<Multi.Video, 'order'>) {
 const onLives = useOnLives()
 const { data: raw, pending } = storeToRefs(onLives)
 const data = computed(() => {
-  return raw.value?.filter(i => i.type !== 'youtube')
+  return raw.value
 })
 
 const mockupVideos = [
@@ -34,6 +34,7 @@ const mockupVideos = [
   { src: 'https://mtoczko.github.io/hls-test-streams/test-group/playlist.m3u8', title: '1080p1' },
   { src: 'https://mtoczko.github.io/hls-test-streams/test-group/playlist.m3u8', title: '1080p2' },
   { src: 'https://mtoczko.github.io/hls-test-streams/test-group/playlist.m3u8', title: '1080p3' },
+  { src: 'https://www.youtube.com/watch?v=KvhGeQFkxaU', title: 'AKB' },
 ]
 
 const lives = computed<Omit<Multi.Video, 'order'>[]>(() => {
@@ -42,8 +43,11 @@ const lives = computed<Omit<Multi.Video, 'order'>[]>(() => {
     if (live.type === 'showroom') {
       result.push(convertShowroom(live))
     }
-    else {
+    else if (live.type === 'idn') {
       result.push(convertIDNLive(live))
+    }
+    else {
+      result.push(convertYoutube(live as YoutubeLive))
     }
   }
 
@@ -69,10 +73,6 @@ const lives = computed<Omit<Multi.Video, 'order'>[]>(() => {
 
   return result
 })
-
-function forceRefresh() {
-  // onLives.refresh()
-}
 </script>
 
 <template>
@@ -85,7 +85,7 @@ function forceRefresh() {
       leave-from-class="translate-y-0 translate-x-x opacity-100"
       leave-to-class="translate-y-2 translate-x-1 opacity-0"
     >
-      <PopoverPanel class="absolute -bottom-3 flex flex-col -right-3 z-0 rounded-[28px] overflow-hidden bg-white border border-color-1 drop-shadow-lg dark:bg-dark-1 w-[450px] md:min-w-[450px] max-w-[calc(100vw-8px)] min-h-[60dvh] max-h-[85dvh]">
+      <PopoverPanel class="absolute -bottom-3 flex flex-col -right-3 z-0 rounded-[28px] overflow-hidden bg-white border border-color-1 drop-shadow-lg dark:bg-dark-1 w-112.5 md:min-w-112.5 max-w-[calc(100vw-8px)] min-h-[60dvh] max-h-[85dvh]">
         <div class="flex justify-between px-6 py-6 text-lg 2xl:text-xl font-bold">
           <div>
             Daftar Live

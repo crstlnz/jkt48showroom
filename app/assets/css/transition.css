@@ -12,10 +12,12 @@
 .sheet-leave-active {
   transition: 0.4s ease;
 }
+
 .sheet-enter-active .background,
 .sheet-leave-active .background {
   transition: 0.4s ease;
 }
+
 .sheet-enter-active .sheet-content,
 .sheet-leave-active .sheet-content {
   transition: 0.4s ease;
@@ -25,6 +27,7 @@
 .sheet-leave-to .background {
   opacity: 0;
 }
+
 .sheet-enter-from .sheet-content,
 .sheet-leave-to .sheet-content {
   transform: translateY(100%) !important;
@@ -104,16 +107,19 @@
 }
 
 @media not all and (min-width: 640px) {
+
   .notif-enter-active,
   .notif-leave-active {
     transition: all 0.5s ease;
   }
+
   .notif-enter-from,
   .notif-leave-to {
     opacity: 0;
     transform: translateY(100%);
   }
 }
+
 .list-move,
 .list-enter-active,
 .list-leave-active {
@@ -149,11 +155,13 @@
     opacity: 0;
     transform: translateX(100%);
   }
+
   .list-leave-to {
     opacity: 0;
     transform: translateX(100%);
   }
 }
+
 .page-enter-active,
 .page-leave-active {
   transition-property: opacity, filter;
@@ -186,22 +194,23 @@
   opacity: 0;
 }
 
-.multivideo-move,
-.multivideo-enter-active,
-.multivideo-leave-active {
+.multivideo-move {
   transition: all 0.3s ease-out;
+}
+
+.multivideo-enter-active {
+  transition: opacity 250ms ease, transform 250ms ease;
+}
+
+.multivideo-leave-active {
+  transition: opacity 200ms ease, transform 200ms ease, flex-basis 300ms ease !important;
+  position: fixed;
 }
 
 .multivideo-enter-from,
 .multivideo-leave-to {
   opacity: 0;
   transform: scale(0.8);
-}
-
-/* ensure leaving items are taken out of layout flow so that moving
-   animations can be calculated correctly. */
-.multivideo-leave-active {
-  position: fixed;
 }
 
 .screenshot-slide,
@@ -226,6 +235,7 @@
 .imageviewer-leave-active {
   transition: 0.4s ease;
 }
+
 .imageviewer-enter-active .imageElement,
 .imageviewer-leave-active .imageElement {
   transition: 0.4s ease;
@@ -236,6 +246,7 @@
 .imageviewer-leave-to {
   opacity: 0 !important;
 }
+
 .imageviewer-enter-from .imageElement,
 .imageviewer-leave-to .imageElement {
   transform: scale(0.5) !important;

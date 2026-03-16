@@ -10,7 +10,7 @@ declare namespace Multi {
     original_url: string
     icon: string
     space: number
-    type: 'idn' | 'showroom'
+    type: 'idn' | 'showroom' | 'youtube'
     is_mockup: boolean
   }
 }

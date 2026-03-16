@@ -8,7 +8,7 @@ export function convertIDNLive(room: INowLive): Omit<Multi.Video, 'order'> {
     landscape: false,
     original_url: idnLiveUrl(room.url_key ?? '0', room.slug ?? '0'),
     icon: idnLiveIcon,
-    stream_url: room.streaming_url_list?.[0]?.url,
+    stream_url: room.streaming_url_list?.[0]?.url ?? '',
     space: 1,
     is_mockup: false,
     type: 'idn',
@@ -26,6 +26,22 @@ export function convertShowroom(room: INowLive): Omit<Multi.Video, 'order'> {
     stream_url: room.streaming_url_list?.sort((a, b) => b.quality - a.quality)?.[0]?.url ?? room.streaming_url_list?.[0]?.url ?? '',
     original_url: liveURL(room.url_key ?? '0'),
     icon: showroomIcon,
+    space: 1,
+    is_mockup: false,
+    type: 'showroom',
+  }
+}
+
+export function convertYoutube(room: YoutubeLive): Omit<Multi.Video, 'order'> {
+  return {
+    id: `yt-${room.channelId}`,
+    name: room.channelTitle,
+    image: room.thumbnails.default.url ?? '',
+    poster: room.thumbnails.default.url ?? '',
+    landscape: true,
+    stream_url: room.url,
+    original_url: room.url,
+    icon: '',
     space: 1,
     is_mockup: false,
     type: 'showroom',
