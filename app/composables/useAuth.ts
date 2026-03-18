@@ -1,4 +1,5 @@
 import type { FetchError } from 'ofetch'
+import { useSettings } from '~/store/settings'
 
 export function useAuth() {
   const nuxtApp = tryUseNuxtApp()
@@ -14,6 +15,10 @@ export function useAuth() {
       pending: false,
       error: null,
     }
+  }
+  else {
+    const { applyAccessToken } = useSettings()
+    applyAccessToken(getAccessToken() ?? null)
   }
 
   const status = computed<StatusLogin>(() => {
@@ -57,8 +62,15 @@ export function useAuth() {
         data.value = payload.data.auth.user
       }
       else {
+        const authData: Record<string, string> = {}
+        const refreshToken = getRefreshToken()
+        if (refreshToken) {
+          authData['X-Refresh-Token'] = refreshToken
+        }
         data.value = await $apiFetch<ShowroomLogin.User>('/api/user', {
-          credentials: 'include',
+          headers: {
+            ...authData,
+          },
         })
       }
     }
@@ -86,11 +98,12 @@ export function useAuth() {
   async function signIn(body: URLSearchParams) {
     if (import.meta.server) throw new Error('No ssr login!')
     try {
-      await $apiFetch('/api/auth/login', {
+      const token = await $apiFetch<{ access_token: string, refresh_token: string }>('/api/auth/login', {
         body,
         method: 'POST',
         credentials: 'include',
       })
+      setAccessToken(token.access_token)
     }
     catch (e) {
       console.error(e)

@@ -1,5 +1,6 @@
 import { defu } from 'defu'
 import { useSettings } from '~/store/settings'
+import setRefreshToken from '~/utils/refreshToken'
 import syncServerCookies from './syncServerCookies'
 
 type UseApiFetchOptions<T> = NonNullable<Parameters<typeof useFetch<T>>[1]> & {
@@ -9,6 +10,8 @@ type UseApiFetchOptions<T> = NonNullable<Parameters<typeof useFetch<T>>[1]> & {
 export function useApiFetch<T>(url: Parameters<typeof useFetch<T>>[0], options: UseApiFetchOptions<T> = {}) {
   const { getApiKey } = useSettings()
   const { useApiKey = false, ...fetchOptions } = options
+  const { accessToken } = useSettings()
+
   const config = useRuntimeConfig()
   if (!config.public.api) throw new Error('Api url not defined!')
   const { getHeaders, setCookie } = syncServerCookies()
@@ -21,6 +24,14 @@ export function useApiFetch<T>(url: Parameters<typeof useFetch<T>>[0], options: 
     lazy: true,
     credentials: 'include',
     onResponse(ctx) {
+      const refreshToken = ctx.response.headers.get('X-Refresh-Token')
+      const token = ctx.response.headers.get('X-Access-Token')
+      if (refreshToken) {
+        setRefreshToken(refreshToken)
+      }
+      if (token) {
+        setAccessToken(token)
+      }
       if (typeof onResponse === 'function') onResponse(ctx)
       if (import.meta.server) {
         setCookie(ctx.response.headers)
@@ -48,5 +59,13 @@ export function useApiFetch<T>(url: Parameters<typeof useFetch<T>>[0], options: 
   }
   // for nice deep defaults, please use unjs/defu
   const params = defu(fetchOptions, defaults)
+
+  if (accessToken) {
+    params.headers = {
+      ...params.headers,
+      Authorization: `Bearer ${accessToken}`,
+    }
+  }
+
   return useFetch(url, params)
 }

@@ -10,9 +10,14 @@ export const useSettings = defineStore('settings', () => {
   const version = ref('')
   const apiKey = ref('')
   const splitCount = ref(MIN_SPLIT_PARTS)
+  const accessToken = ref<string | null>(null)
   const rK2 = ref<string[]>([])
   const seed = ref<number | null>(null)
   const rK3 = ref<string[]>([])
+
+  function applyAccessToken(token: string | null) {
+    accessToken.value = token
+  }
 
   function setVersion(ver: string) {
     version.value = ver
@@ -180,7 +185,7 @@ export const useSettings = defineStore('settings', () => {
   watch(() => route.fullPath, (p) => {
     path.value = p
   })
-  return { setApiKey, apiKey, setRawApiKey, getApiKey, seed, splitCount, rK1, rK2, rK3, domain, version, setVersion, setDomain, currentURL, getWebTitle, group, csrfToken, firstDate, session: skipHydrate(session) }
+  return { setApiKey, accessToken, applyAccessToken, apiKey, setRawApiKey, getApiKey, seed, splitCount, rK1, rK2, rK3, domain, version, setVersion, setDomain, currentURL, getWebTitle, group, csrfToken, firstDate, session: skipHydrate(session) }
 })
 
 if (import.meta.hot) {

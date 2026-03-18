@@ -413,9 +413,12 @@ function openMediaControl() {
             </div>
           </TransitionGroup>
         </div>
+        <div v-else class="flex flex-1 justify-center items-center text-2xl font-semibold text-center px-3">
+          {{ $t("selectvideofirst") }}
+        </div>
         <Teleport v-if="ghost.active && ghostVideo" to="body">
           <div
-            class="pointer-events-none fixed z-[9999] rounded-lg overflow-hidden shadow-2xl ring-1 ring-black/20 bg-black/70 backdrop-blur-sm select-none"
+            class="pointer-events-none fixed z-9999 rounded-lg overflow-hidden shadow-2xl ring-1 ring-black/20 bg-black/70 backdrop-blur-sm select-none"
             :style="{
               left: `${ghost.x}px`,
               top: `${ghost.y}px`,
@@ -428,7 +431,7 @@ function openMediaControl() {
             <div class="absolute inset-0 opacity-80">
               <img :src="ghostVideo.poster" alt="" class="w-full h-full object-cover">
             </div>
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-transparent" />
+            <div class="absolute inset-0 bg-linear-to-t from-black/80 via-black/15 to-transparent" />
             <div class="absolute inset-x-0 bottom-0 p-2 text-white">
               <div class="text-xs font-bold line-clamp-2">
                 {{ ghostVideo.name }}
@@ -436,9 +439,6 @@ function openMediaControl() {
             </div>
           </div>
         </Teleport>
-        <div v-else class="flex flex-1 justify-center items-center text-2xl font-semibold text-center px-3">
-          {{ $t("selectvideofirst") }}
-        </div>
 
         <footer class="text-center pt-10 py-10 flex flex-col gap-3 items-center">
           <div class="opacity-50 text-sm">

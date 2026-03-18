@@ -1,14 +1,17 @@
 import type { FetchOptions } from 'ofetch'
 import { ofetch } from 'ofetch'
 import syncServerCookies from '~/composables/syncServerCookies'
+import { useSettings } from '~/store/settings'
+import setRefreshToken from './refreshToken'
 // import { useSettings } from '~/store/settings'
 
 const fetcher = ofetch.create({
-  credentials: 'include',
+  // credentials: 'include',
 })
 
 export async function $apiFetch<T>(request: RequestInfo, options?: FetchOptions<'json', any> & { includeApiKey?: boolean } | undefined): Promise<T> {
   const nuxtApp = tryUseNuxtApp()
+  const { accessToken } = useSettings()
   const fetch = async () => {
     const config = useRuntimeConfig()
     const opts: FetchOptions<'json'> = {
@@ -17,6 +20,13 @@ export async function $apiFetch<T>(request: RequestInfo, options?: FetchOptions<
     }
 
     const { getHeaders, setCookie } = syncServerCookies()
+
+    if (accessToken) {
+      opts.headers = {
+        ...opts.headers,
+        Authorization: `Bearer ${accessToken}`,
+      }
+    }
 
     const onResponse = options?.onResponse
     const onRequest = options?.onRequest
@@ -50,6 +60,15 @@ export async function $apiFetch<T>(request: RequestInfo, options?: FetchOptions<
         }
       },
     })
+
+    const refreshToken = res.headers.get('X-Refresh-Token')
+    const token = res.headers.get('X-Access-Token')
+    if (refreshToken) {
+      setRefreshToken(refreshToken)
+    }
+    if (token) {
+      setAccessToken(token)
+    }
     return res._data as T
   }
 
