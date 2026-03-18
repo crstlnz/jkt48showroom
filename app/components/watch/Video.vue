@@ -979,6 +979,9 @@ defineExpose({
     <!-- ── HLS video ───────────────────────────────────────── -->
     <template v-else>
       <div
+        :style="{
+          aspectRatio: videoWidth / videoHeight,
+        }"
         :class="{
           'w-full h-full': !enableRotate,
           'absolute top-1/2 -translate-y-1/2 z-0': enableRotate && !isFullscreen,
