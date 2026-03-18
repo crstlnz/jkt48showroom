@@ -984,8 +984,6 @@ defineExpose({
           'w-full h-full': !enableRotate,
           'absolute top-1/2 -translate-y-1/2 z-0': enableRotate && !isFullscreen,
           'absolute top-1/2 -translate-y-1/2 z-0 -translate-x-1/2 left-1/2': enableRotate && isFullscreen,
-          'aspect-video': isLandscape && enableRotate,
-          'aspsect-[9/12]': !isLandscape && enableRotate,
           'w-full': (videoFill === 'width' && !isFullscreen && enableRotate) || (isFullscreen && (isLandscape || isMiring)),
           'h-full': (videoFill === 'height' && !isFullscreen && enableRotate) || (isFullscreen && (!isLandscape || isMiring)),
         }"

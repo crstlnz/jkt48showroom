@@ -3,6 +3,7 @@ import { MultiMediaControl, MultiVideo } from '#components'
 import { useNotifications } from '~/store/notifications'
 import { useOnLives } from '~/store/onLives'
 import { useSettings } from '~/store/settings'
+import { isYouTubeUrl } from '~/utils/youtube'
 
 definePageMeta({
   layout: 'empty',
@@ -12,6 +13,19 @@ const videosMap = useSessionStorage<Map<string, Multi.Video>>('videoMultiSelecte
 
 const videos = computed(() => {
   return [...videosMap.value.values()].sort((a, b) => a.order - b.order)
+})
+
+// Stable render order (Map insertion order). Visual order is controlled via CSS `order`.
+const videosRaw = computed(() => {
+  return [...videosMap.value.values()]
+})
+
+const sortedIndexById = computed(() => {
+  const m = new Map<string, number>()
+  for (const [i, v] of videos.value.entries()) {
+    m.set(v.id, i)
+  }
+  return m
 })
 
 function add(video: Multi.Video) {
@@ -68,24 +82,147 @@ function changeRow(row: number) {
 
 const { group } = useSettings()
 
-function movePrevious(i: number) {
+interface DragPayload {
+  id: string
+  x: number
+  y: number
+}
+const draggingId = ref<string | null>(null)
+const lastSwapAt = ref(0)
+const lastSwapTargetId = ref<string | null>(null)
+const tileEls = shallowRef<Map<string, HTMLElement>>(new Map())
+
+const ghost = reactive({
+  active: false,
+  id: '' as string,
+  x: 0,
+  y: 0,
+  width: 0,
+  height: 0,
+  offsetX: 0,
+  offsetY: 0,
+})
+
+const ghostVideo = computed(() => {
+  if (!ghost.active) return null
+  return videosMap.value.get(ghost.id) ?? null
+})
+
+function renumberOrders(vids: Multi.Video[]) {
+  for (const [idx, v] of vids.entries()) v.order = idx + 1
+}
+
+function reorderBySortedIndex(from: number, to: number) {
+  if (from === to) return
   const vids = [...videos.value]
-  const pick = vids[i]
-  vids.splice(i, 1)
-  vids.splice(i - 1, 0, pick!)
-  for (const [idx, v] of vids.entries()) {
-    v.order = idx + 1
-  }
+  const pick = vids[from]
+  if (!pick) return
+  vids.splice(from, 1)
+  vids.splice(to, 0, pick)
+  renumberOrders(vids)
+}
+
+function movePrevious(i: number) {
+  if (i <= 0) return
+  reorderBySortedIndex(i, i - 1)
 }
 
 function moveNext(i: number) {
-  const vids = [...videos.value]
-  const pick = vids[i]
-  vids.splice(i, 1)
-  vids.splice(i + 1, 0, pick!)
-  for (const [idx, v] of vids.entries()) {
-    v.order = idx + 1
+  if (i >= videos.value.length - 1) return
+  reorderBySortedIndex(i, i + 1)
+}
+
+function findTargetIdAtPoint(x: number, y: number, excludeId: string) {
+  if (import.meta.server) return null
+  for (const [id, el] of tileEls.value.entries()) {
+    if (!id || id === excludeId) continue
+    const rect = el.getBoundingClientRect()
+    if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+      return id
+    }
   }
+  return null
+}
+
+function shouldSwapIntoTarget(p: DragPayload, draggedRect: DOMRect, targetRect: DOMRect) {
+  // Swap only after the pointer enters a stable portion of the target tile.
+  // This avoids jitter at boundaries while keeping swaps responsive.
+  const swapFrac = 0.35
+  const draggedCenter = { x: draggedRect.left + draggedRect.width / 2, y: draggedRect.top + draggedRect.height / 2 }
+  const targetCenter = { x: targetRect.left + targetRect.width / 2, y: targetRect.top + targetRect.height / 2 }
+  const dx = targetCenter.x - draggedCenter.x
+  const dy = targetCenter.y - draggedCenter.y
+
+  if (Math.abs(dx) >= Math.abs(dy)) {
+    if (dx >= 0) return p.x >= (targetRect.left + targetRect.width * swapFrac)
+    return p.x <= (targetRect.right - targetRect.width * swapFrac)
+  }
+  else {
+    if (dy >= 0) return p.y >= (targetRect.top + targetRect.height * swapFrac)
+    return p.y <= (targetRect.bottom - targetRect.height * swapFrac)
+  }
+}
+
+function onDragStart(p: DragPayload) {
+  draggingId.value = p.id
+  lastSwapAt.value = 0
+  lastSwapTargetId.value = null
+  if (!import.meta.server) {
+    const map = new Map<string, HTMLElement>()
+    for (const el of document.querySelectorAll<HTMLElement>('[data-video-id]')) {
+      const id = el.dataset.videoId
+      if (id) map.set(id, el)
+    }
+    tileEls.value = map
+  }
+  ghost.active = true
+  ghost.id = p.id
+  const el = tileEls.value.get(p.id)
+  const rect = el?.getBoundingClientRect()
+  ghost.width = rect?.width ?? ghost.width
+  ghost.height = rect?.height ?? ghost.height
+  ghost.offsetX = rect ? (p.x - rect.left) : 0
+  ghost.offsetY = rect ? (p.y - rect.top) : 0
+  ghost.x = p.x - ghost.offsetX
+  ghost.y = p.y - ghost.offsetY
+}
+
+function onDragMove(p: DragPayload) {
+  if (!draggingId.value) return
+  if (ghost.active && ghost.id === p.id) {
+    ghost.x = p.x - ghost.offsetX
+    ghost.y = p.y - ghost.offsetY
+  }
+
+  const targetId = findTargetIdAtPoint(p.x, p.y, draggingId.value)
+  if (!targetId) return
+
+  // Reorder while dragging, but throttle to keep it stable.
+  const now = typeof performance !== 'undefined' ? performance.now() : Date.now()
+  if (now - lastSwapAt.value < 80) return
+  if (lastSwapTargetId.value === targetId) return
+
+  const from = videos.value.findIndex(v => v.id === draggingId.value)
+  const to = videos.value.findIndex(v => v.id === targetId)
+  if (from < 0 || to < 0 || from === to) return
+
+  // Hysteresis: avoid swapping at the tile edge (prevents jitter).
+  const draggedEl = tileEls.value.get(draggingId.value)
+  const targetEl = tileEls.value.get(targetId)
+  const draggedRect = draggedEl?.getBoundingClientRect()
+  const targetRect = targetEl?.getBoundingClientRect()
+  if (draggedRect && targetRect) {
+    if (!shouldSwapIntoTarget(p, draggedRect, targetRect)) return
+  }
+  lastSwapAt.value = now
+  lastSwapTargetId.value = targetId
+  reorderBySortedIndex(from, to)
+}
+
+function onDragEnd() {
+  draggingId.value = null
+  lastSwapTargetId.value = null
+  ghost.active = false
 }
 
 function onBeforeLeave(el: Element) {
@@ -235,14 +372,15 @@ function openMediaControl() {
           <MultiLiveContainer :selected="videosMap" class="pointer-events-auto" @select="add" />
         </div>
 
-        <div v-if="videos.length" class="flex-1">
-          <TransitionGroup v-if="videos.length" name="multivideo" tag="div" class="flex flex-wrap" :class="{ 'justify-center': centerVideos }" @before-leave="onBeforeLeave">
-            <MultiVideo
-              v-for="[idx, video] in videos.entries()"
-              :id="video.id"
-              :ref="(ref) => applyVideoRefs(ref, video)"
+        <div v-if="videosRaw.length" class="flex-1">
+          <TransitionGroup v-if="videosRaw.length" :css="!ghost.active" name="multivideo" tag="div" class="flex flex-wrap" :class="{ 'justify-center': centerVideos }" @before-leave="onBeforeLeave">
+            <div
+              v-for="video in videosRaw"
               :key="video.id"
+              :data-video-id="video.id"
+              :data-is-youtube="isYouTubeUrl(video.stream_url)"
               :style="{
+                order: video.order,
                 flexGrow: 0,
                 flexShrink: 1,
                 flexBasis: `${100 / ((rowCount || 4) - (video.space - 1))}%`,
@@ -250,22 +388,54 @@ function openMediaControl() {
                 transition: 'flex-basis 300ms ease, opacity 300ms ease, transform 300ms ease',
               }"
               class="will-change-auto"
-              :index="idx"
-              :data-space="video.space"
-              :data-size="(rowCount || 4) - (video.space - 1)"
-              :videos-length="videos.length"
-              :video="video"
-              :show-video-control="showVideoControl"
-              @space-change="(space) => {
-                video.space = Math.max(1, Math.min(space, rowCount))
-              }"
-              @delete="(reason) => deleteVideo(video, reason)"
-              @source-not-found="() => checkLive(video)"
-              @move-next="() => moveNext(idx)"
-              @move-previous="() => movePrevious(idx)"
-            />
+            >
+              <MultiVideo
+                :id="video.id"
+                :ref="(ref) => applyVideoRefs(ref, video)"
+                :index="sortedIndexById.get(video.id) ?? 0"
+                :data-space="video.space"
+                :data-size="(rowCount || 4) - (video.space - 1)"
+                :videos-length="videosRaw.length"
+                :video="video"
+                :show-video-control="showVideoControl"
+                class="w-full h-full"
+                @space-change="(space) => {
+                  video.space = Math.max(1, Math.min(space, rowCount))
+                }"
+                @delete="(reason) => deleteVideo(video, reason)"
+                @source-not-found="() => checkLive(video)"
+                @move-next="() => moveNext(sortedIndexById.get(video.id) ?? 0)"
+                @move-previous="() => movePrevious(sortedIndexById.get(video.id) ?? 0)"
+                @drag-start="onDragStart"
+                @drag-move="onDragMove"
+                @drag-end="onDragEnd"
+              />
+            </div>
           </TransitionGroup>
         </div>
+        <Teleport v-if="ghost.active && ghostVideo" to="body">
+          <div
+            class="pointer-events-none fixed z-[9999] rounded-lg overflow-hidden shadow-2xl ring-1 ring-black/20 bg-black/70 backdrop-blur-sm select-none"
+            :style="{
+              left: `${ghost.x}px`,
+              top: `${ghost.y}px`,
+              width: ghost.width ? `${ghost.width}px` : undefined,
+              height: ghost.height ? `${ghost.height}px` : undefined,
+              transform: 'scale(0.96)',
+              transformOrigin: 'top left',
+            }"
+          >
+            <div class="absolute inset-0 opacity-80">
+              <img :src="ghostVideo.poster" alt="" class="w-full h-full object-cover">
+            </div>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-transparent" />
+            <div class="absolute inset-x-0 bottom-0 p-2 text-white">
+              <div class="text-xs font-bold line-clamp-2">
+                {{ ghostVideo.name }}
+              </div>
+            </div>
+          </div>
+        </Teleport>
         <div v-else class="flex flex-1 justify-center items-center text-2xl font-semibold text-center px-3">
           {{ $t("selectvideofirst") }}
         </div>

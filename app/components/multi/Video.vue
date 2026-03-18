@@ -3,6 +3,12 @@ import { WatchVideo } from '#components'
 import { DragGesture } from '@use-gesture/vanilla'
 import { useNotifications } from '~/store/notifications'
 
+interface DragPayload {
+  id: string
+  x: number
+  y: number
+}
+
 const props = defineProps<{
   video: Multi.Video
   index: number
@@ -10,7 +16,16 @@ const props = defineProps<{
   showVideoControl: boolean
 }>()
 
-const emit = defineEmits<{ (e: 'spaceChange', space: number): void, (e: 'moveNext'): void, (e: 'movePrevious'): void, (e: 'delete', reason?: string): void, (e: 'sourceNotFound'): void }>()
+const emit = defineEmits<{
+  (e: 'spaceChange', space: number): void
+  (e: 'moveNext'): void
+  (e: 'movePrevious'): void
+  (e: 'delete', reason?: string): void
+  (e: 'sourceNotFound'): void
+  (e: 'dragStart', payload: DragPayload): void
+  (e: 'dragMove', payload: DragPayload): void
+  (e: 'dragEnd', payload: DragPayload): void
+}>()
 const autoRemove = useLocalStorage('auto_remove_player', () => true)
 const videoElement = ref<InstanceType<typeof WatchVideo>>()
 
@@ -101,15 +116,45 @@ const rowCount = useLocalStorage('multiRowCount', 4, { deep: true })
 
 // DRAG GESTURE
 const container = ref<HTMLDivElement | null>(null)
+const dragHandle = ref<HTMLElement | null>(null)
 const gesture = ref()
-const x = ref(0)
-const y = ref(0)
+const isDragging = ref(false)
+
+// Keep the pointer captured to avoid losing drag when the DOM/layout updates during reorder.
+useEventListener(dragHandle, 'pointerdown', (e: PointerEvent) => {
+  try {
+    ;(e.currentTarget as HTMLElement | null)?.setPointerCapture?.(e.pointerId)
+  }
+  catch {}
+})
+
 onMounted(() => {
-  if (!container.value) return
-  gesture.value = new DragGesture(container.value, ({ offset: [ox, oy] }) => {
-    x.value = ox
-    y.value = oy
-  })
+  const el = dragHandle.value ?? container.value
+  if (!el) return
+  gesture.value = new DragGesture(
+    el,
+    ({ first, last, active, xy, event }) => {
+      const e = event as any
+      const x = e?.clientX ?? xy[0]
+      const y = e?.clientY ?? xy[1]
+      const payload: DragPayload = {
+        id: props.video.id,
+        x,
+        y,
+      }
+
+      if (first) {
+        isDragging.value = true
+        emit('dragStart', payload)
+      }
+      if (active) emit('dragMove', payload)
+      if (last) {
+        isDragging.value = false
+        emit('dragEnd', payload)
+      }
+    },
+    { filterTaps: true, threshold: 6 },
+  )
 })
 
 onUnmounted(() => gesture.value?.destroy())
@@ -118,13 +163,26 @@ defineExpose({ refresh, video: videoElement, data: props.video, remove, id: prop
 </script>
 
 <template>
-  <div ref="container" class="flex items-center flex-col touch-none">
+  <div
+    ref="container"
+    class="flex items-center flex-col touch-none"
+    :data-dragging="isDragging ? 'true' : 'false'"
+  >
     <div class="overflow-hidden flex-1 h-0 bg-black/50 self-stretch flex items-center">
       <div class="size-full relative">
+        <!-- <button
+          ref="dragHandle"
+          type="button"
+          aria-label="Drag to reorder"
+          title="Drag to reorder"
+          class="absolute right-1 top-1 md:right-2 md:top-2 z-20 pointer-events-auto bg-black/40 hover:bg-black/55 text-white/90 rounded-md cursor-grab active:cursor-grabbing touch-none select-none"
+        >
+          <Icon name="material-symbols:drag-handle" class="w-6 h-6 p-0.5 md:w-7 md:h-7 md:p-1" />
+        </button> -->
         <div class="absolute left-1 top-0.5 md:left-2 md:top-2 z-10">
-          <NuxtLink v-if="video.type === 'idn'" :to="video.original_url" :external="true" target="_blank" class="inline-block">
+          <!-- <NuxtLink v-if="video.type === 'idn'" :to="video.original_url" :external="true" target="_blank" class="inline-block">
             <Image :src="video.icon" size="64px" class="h-3 md:h-5 object-contain max-w-22.5" />
-          </NuxtLink>
+          </NuxtLink> -->
         </div>
         <WatchVideo
           ref="videoElement"
