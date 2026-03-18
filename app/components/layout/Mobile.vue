@@ -25,7 +25,7 @@ const menus = computed(() => {
 })
 
 const hiddenMenus = computed(() => {
-  return props.menus.filter(i =>
+  return [...props.menus, ...props.userMenus].filter(i =>
     !i.mobile && (!i.login || authenticated.value) && (!i.admin || user.value?.is_admin) && (!i.group || i.group === settings.group || i.group === 'all'))
 })
 
