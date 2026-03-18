@@ -245,12 +245,6 @@ onBeforeUnmount(() => {
             </NuxtLink>
           </div>
           <div class="flex flex-col gap-2 pt-5">
-            <NuxtLink v-ripple to="/history" class="flex gap-3 rounded-full p-3 text-left">
-              <Icon name="ic:round-history" class="h-5 w-5" />
-              <span class="text-lg font-semibold leading-5">
-                History
-              </span>
-            </NuxtLink>
             <NuxtLink v-ripple :to="authenticated ? '/logout' : '/login'" class="flex gap-3 rounded-full p-3 text-left">
               <Icon name="ic:baseline-logout" class="h-5 w-5" />
               <span class="text-lg font-semibold leading-5">

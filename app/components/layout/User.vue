@@ -46,9 +46,11 @@ function toggleUsername(e: Event) {
         <template #tooltip>
           <div class="relative min-w-62.5 py-3">
             <div class="flex flex-col text-sm *:p-3">
-              <NuxtLink v-for="menu in userMenus" :key="menu.locale_id" :to="menu.url" class="inline-block text-left hover:bg-white/5">
-                {{ $t(menu.locale_id) }}
-              </NuxtLink>
+              <template v-for="menu in userMenus" :key="menu.locale_id">
+                <NuxtLink v-if="!menu.admin || user?.is_admin" :to="menu.url" class="inline-block text-left hover:bg-white/5">
+                  {{ $t(menu.locale_id) }}
+                </NuxtLink>
+              </template>
               <NuxtLink to="/logout" class="inline-block text-left hover:bg-white/5">
                 Logout {{ user?.name }}
               </NuxtLink>
