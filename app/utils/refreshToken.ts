@@ -1,7 +1,7 @@
 import { useSettings } from '~/store/settings'
 
-const refreshTokenKey = 'refresh_token'
-const accessTokenKey = 'access_token'
+const refreshTokenKey = '_x'
+const accessTokenKey = '_xr'
 export default function setRefreshToken(token: string) {
   if (import.meta.client) {
     localStorage.setItem(refreshTokenKey, token)
