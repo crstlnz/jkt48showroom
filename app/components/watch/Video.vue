@@ -959,10 +959,9 @@ defineExpose({
 <template>
   <div
     ref="videoPlayer"
-    class="overflow-hidden relative group flex items-center transform-all duration-300 size-full"
+    class="overflow-hidden relative group flex items-center transform-all duration-300 size-full!"
     :style="{ aspectRatio: enableRotate && rotateFill === 'width' ? aspectRatio : (isYouTube ? aspectRatio : undefined) }"
     :class="{
-      'w-full h-full': !enableRotate && rotateFill !== 'width',
       'cursor-none!': !showControl && isPlaying,
     }"
   >
