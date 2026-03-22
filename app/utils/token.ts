@@ -71,3 +71,11 @@ export function applyHeaderToken(headers: Headers) {
   setAccessToken(headers.get('X-Access-Token'))
   setShowroomToken(headers.get('X-SR-Token'))
 }
+
+export function clearToken() {
+  if (import.meta.client) {
+    localStorage.removeItem(showroomTokenKey)
+    localStorage.removeItem(refreshTokenKey)
+    localStorage.removeItem(accessTokenKey)
+  }
+}

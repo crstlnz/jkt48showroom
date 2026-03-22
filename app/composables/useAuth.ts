@@ -68,6 +68,7 @@ export function useAuth() {
     catch (e: unknown) {
       if ((e as FetchError).statusCode === 401) {
         data.value = null
+        clearToken()
       }
       else {
         error.value = e as Error
