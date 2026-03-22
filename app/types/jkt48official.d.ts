@@ -1,6 +1,7 @@
 declare namespace JKT48 {
   interface Member {
     id: string
+    old_id?: string[]
     name: string
     url?: string
   }

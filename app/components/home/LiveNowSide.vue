@@ -28,7 +28,7 @@ const { data, pending, hasLives } = storeToRefs(onLives)
       v-else
       class="aspect-10/9"
     >
-      <div class="pt-2 text-center">
+      <div class="pt-2 text-center flex flex-col pb-8">
         <Image class="mx-auto aspect-square w-72 max-w-[65%] object-contain" alt="No member onlive" :src="`${$imgCDN}/assets/svg/web/space_copy.svg`" sizes="320px" fit="fill" />
         <span>{{ $t("nolive") }}</span>
       </div>

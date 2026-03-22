@@ -40,7 +40,7 @@ const maxDots = computed(() => {
       <div v-else-if="data" class="flex flex-col gap-3.5">
         <div v-for="theater in data.theater" :key="theater.id" class="bg-container mx-3 flex gap-3 rounded-xl p-3 md:mx-4 md:p-4">
           <Image
-            class="aspect-[4/5.5] w-32 rounded-md bg-black/10 object-cover"
+            class="aspect-4/5.5 w-32 rounded-md bg-black/10 object-cover"
             :src="theater.poster ?? $errorPicture"
             alt="Label"
             loading="lazy"

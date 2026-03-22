@@ -327,7 +327,7 @@ ticket:
   online: Tiket Online
   offline: Tiket Offline
 at: di
-member_count: "Tidak ada member | {count} Members"
+member_count: "Tidak ada member | 1 Member | {count} Member"
 upcoming: Akan datang
 ongoing: Sedang berlangsung
 ended: Telah selesai
