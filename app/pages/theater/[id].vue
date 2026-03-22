@@ -82,6 +82,7 @@ useHead({
                   {{ theater.title }}
                 </h3>
                 <Image
+                  v-if="theater.team"
                   class="self-center rounded-md" :src="`${$imgCDN}/assets/jkt48${theater.team.img}`"
                   alt="Team Label" loading="lazy" fit="fill" width="56px" format="webp"
                 />
