@@ -1,6 +1,6 @@
 import { defu } from 'defu'
 import { useSettings } from '~/store/settings'
-import setRefreshToken from '~/utils/refreshToken'
+import setRefreshToken from '~/utils/token'
 import syncServerCookies from './syncServerCookies'
 
 type UseApiFetchOptions<T> = NonNullable<Parameters<typeof useFetch<T>>[1]> & {
@@ -24,14 +24,7 @@ export function useApiFetch<T>(url: Parameters<typeof useFetch<T>>[0], options: 
     lazy: true,
     credentials: 'include',
     onResponse(ctx) {
-      const refreshToken = ctx.response.headers.get('X-Refresh-Token')
-      const token = ctx.response.headers.get('X-Access-Token')
-      if (refreshToken) {
-        setRefreshToken(refreshToken)
-      }
-      if (token) {
-        setAccessToken(token)
-      }
+      applyHeaderToken(ctx.response.headers)
       if (typeof onResponse === 'function') onResponse(ctx)
       if (import.meta.server) {
         setCookie(ctx.response.headers)
@@ -60,11 +53,10 @@ export function useApiFetch<T>(url: Parameters<typeof useFetch<T>>[0], options: 
   // for nice deep defaults, please use unjs/defu
   const params = defu(fetchOptions, defaults)
 
-  if (accessToken) {
-    params.headers = {
-      ...params.headers,
-      Authorization: `Bearer ${accessToken}`,
-    }
+  console.log('Headers', getHeadersToken())
+  params.headers = {
+    ...params.headers,
+    ...getHeadersToken(),
   }
 
   return useFetch(url, params)

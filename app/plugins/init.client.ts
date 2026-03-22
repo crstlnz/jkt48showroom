@@ -41,4 +41,6 @@ export default defineNuxtPlugin(() => {
   checkAuth().finally(() => {
     onLives.init()
   })
+
+  $apiFetch('/api/showroom_session')
 })

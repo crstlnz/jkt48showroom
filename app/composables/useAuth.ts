@@ -62,16 +62,7 @@ export function useAuth() {
         data.value = payload.data.auth.user
       }
       else {
-        const authData: Record<string, string> = {}
-        const refreshToken = getRefreshToken()
-        if (refreshToken) {
-          authData['X-Refresh-Token'] = refreshToken
-        }
-        data.value = await $apiFetch<ShowroomLogin.User>('/api/user', {
-          headers: {
-            ...authData,
-          },
-        })
+        data.value = await $apiFetch<ShowroomLogin.User>('/api/user')
       }
     }
     catch (e: unknown) {
