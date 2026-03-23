@@ -21,6 +21,7 @@ function generateForm(): Admin.Form[] {
       title: 'Theater Id',
       id: 'id',
       data: theater.value.id,
+      disabled: true,
       check: (data: any): boolean => {
         return theater.value.id === data
       },
@@ -37,6 +38,7 @@ function generateForm(): Admin.Form[] {
     {
       title: 'Url',
       id: 'url',
+      disabled: true,
       data: theater.value.url,
       check: (data: any): boolean => {
         return theater.value.url === data
@@ -160,11 +162,11 @@ async function apply() {
     <div class="text-xl font-semibold mb-3">
       Edit {{ theater.title }} {{ $dayjs(theater.date).format("DD MMMM YYYY - HH:mm") }}
     </div>
-    <div v-for="form in formTheater" :key="form.id" class="flex gap-3">
-      <div class="w-[65px] shrink-0 truncate pt-1.5 md:w-[90px] lg:w-[120px] text-sm md:text-base" :class="{ 'leading-[45px]!': isMultiple(form.component) }">
+    <div v-for="form in formTheater" :key="form.id" class="flex gap-3" :class="{ 'opacity-70': form.disabled }">
+      <div class="w-16.25 shrink-0 truncate pt-1.5 md:w-22.5 lg:w-30 text-sm md:text-base" :class="{ 'leading-11.25!': isMultiple(form.component), 'text-content-soft cursor-not-allowed': form.disabled }">
         {{ form.title }}
       </div>
-      <Component :is="getForm(form.component ?? 'text')" v-model="form.data" :keys="(form as any).keys" :data="(form as Admin.FormMultipleSelect)?.options || []" form-id="start" :placeholder="(form as Admin.FormText)?.placeholder ?? form.title" input-class="bg-container-2 flex-1 text-sm md:text-base" class="w-0 flex-1" />
+      <Component :is="getForm(form.component ?? 'text')" v-model="form.data" :disabled="form.disabled" :keys="(form as any).keys" :data="(form as Admin.FormMultipleSelect)?.options || []" form-id="start" :placeholder="(form as Admin.FormText)?.placeholder ?? form.title" input-class="bg-container-2 flex-1 text-sm md:text-base disabled:cursor-not-allowed disabled:opacity-60 disabled:brightness-90" class="w-0 flex-1" />
     </div>
 
     <div class="mt-1 flex justify-end gap-3">

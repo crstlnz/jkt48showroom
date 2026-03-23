@@ -6,12 +6,14 @@ const props = withDefaults(defineProps<{
   formId: string
   label?: string
   modelValue?: any[]
+  disabled?: boolean
   inputClass?: string
   keys: string[]
   titleKey?: string
   data: { title: string, value: string }[]
 }>(), {
   inputClass: '',
+  disabled: false,
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -39,10 +41,12 @@ onMounted(() => {
 // }
 
 function remove(i: number) {
+  if (props.disabled) return
   return emit('update:modelValue', props.modelValue?.filter((idx, _d) => i !== idx))
 }
 
 function previous(index: number) {
+  if (props.disabled) return
   if (!props.modelValue) return
   const data = [...props.modelValue]
   const pick = data[index]
@@ -52,6 +56,7 @@ function previous(index: number) {
 }
 
 function next(index: number) {
+  if (props.disabled) return
   if (!props.modelValue) return
   const data = [...props.modelValue]
   const pick = data[index]
@@ -63,6 +68,7 @@ const formOpen = ref(new Set())
 const formAdd = ref(false)
 
 function formChange(i: number, data: any) {
+  if (props.disabled) return
   if (!props.modelValue) return
   formOpen.value.clear()
   const d = [...props.modelValue]
@@ -71,11 +77,17 @@ function formChange(i: number, data: any) {
 }
 
 function add(data: any) {
+  if (props.disabled) return
   // if (!props.modelValue) return
   formAdd.value = false
   const d = [...(props.modelValue ?? [])]
   d.push(data)
   emit('update:modelValue', d)
+}
+
+function openForm(index: number) {
+  if (props.disabled) return
+  formOpen.value.add(index)
 }
 </script>
 
@@ -92,7 +104,8 @@ function add(data: any) {
         <div class="absolute right-1 -translate-y-1/2 translate-x-1/2 top-1 group-hover:opacity-100 opacity-0 transition-opacity flex justify-center items-center text-sm gap-2">
           <button
             type="button"
-            class="w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center" @click="() => {
+            :disabled="disabled"
+            class="w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed" @click="() => {
               remove(i)
             }"
           >
@@ -100,20 +113,24 @@ function add(data: any) {
           </button>
         </div>
         <div class="flex gap-3 text-center">
-          <button v-if="(modelValue?.length ?? 0) > 1" type="button" class="disabled:opacity-40 disabled:cursor-not-allowed" :disabled="idx === 0" @click="() => previous(idx)">
+          <button v-if="(modelValue?.length ?? 0) > 1" type="button" class="disabled:opacity-40 disabled:cursor-not-allowed" :disabled="disabled || idx === 0" @click="() => previous(idx)">
             {{ '<' }}
           </button>
-          <div class="flex-1" @click="() => formOpen.add(idx)">
+          <div
+            class="flex-1"
+            :class="{ 'cursor-not-allowed opacity-60': disabled }"
+            @click="openForm(idx)"
+          >
             {{ i[titleKey ?? keys[0]] }}
           </div>
-          <button v-if="(modelValue?.length ?? 0) > 1" type="button" class="disabled:opacity-40 disabled:cursor-not-allowed" :disabled="idx === (modelValue?.length ?? 0) - 1" @click="() => next(idx)">
+          <button v-if="(modelValue?.length ?? 0) > 1" type="button" class="disabled:opacity-40 disabled:cursor-not-allowed" :disabled="disabled || idx === (modelValue?.length ?? 0) - 1" @click="() => next(idx)">
             {{ '>' }}
           </button>
         </div>
       </div>
       <div class="relative">
         <FormObject v-if="formAdd" v-on-click-outside="() => formAdd = false" :keys="keys" :data="{}" class="absolute right-1/2 translate-x-1/2 bottom-0 z-10" @change="(data) => add(data)" />
-        <button type="button" class="bg-blue-500 rounded-md flex items-center px-4 md:px-5 py-1 md:py-1.5" @click="formAdd = true">
+        <button type="button" :disabled="disabled" class="bg-blue-500 rounded-md flex items-center px-4 md:px-5 py-1 md:py-1.5 disabled:cursor-not-allowed disabled:opacity-50" @click="formAdd = true">
           Add
         </button>
       </div>

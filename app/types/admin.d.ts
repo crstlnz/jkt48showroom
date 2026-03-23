@@ -2,6 +2,7 @@ declare namespace Admin {
   interface FormBasic {
     title: string
     id: string
+    disabled?: boolean
     component?: string
   }
 

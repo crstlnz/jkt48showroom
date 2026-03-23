@@ -175,7 +175,7 @@ useHead({
                     }}</span>
                   </div>
                   <NuxtLink
-                    :to="`https://jkt48.com/theater/schedule/id/${theater.id}?lang=id`" external target="_blank"
+                    :to="theater.url" external target="_blank"
                     class="p-3 aspect-[12/2.2] md:aspect-12/3 flex justify-center gap-2 text-white bg-blue-500 rounded-xl items-center text-lg lg:text-xl xl:text-2xl"
                   >
                     <Icon

@@ -2,9 +2,12 @@
 import VueDatePicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 
-const { modelValue } = defineProps<{
+const props = withDefaults(defineProps<{
   modelValue: Date | string | number
-}>()
+  disabled?: boolean
+}>(), {
+  disabled: false,
+})
 
 const emit = defineEmits(['update:modelValue'])
 const colorMode = useColorMode()
@@ -12,7 +15,7 @@ const { locale } = useI18n()
 const isDark = computed(() => colorMode.value === 'dark')
 const { isMobile } = useDevice()
 
-const date = ref(modelValue ? new Date(modelValue) : undefined)
+const date = ref(props.modelValue ? new Date(props.modelValue) : undefined)
 watch(date, (d) => {
   emit('update:modelValue', d
     ? d.toISOString()
@@ -39,7 +42,8 @@ useEventListener(win, 'scroll', () => {
     v-model="date"
     :locale="locale"
     :dark="isDark"
-    class="fixed"
+    :disabled="props.disabled"
+    class="fixed disabled:cursor-not-allowed disabled:opacity-60"
     prevent-min-max-navigation
     :teleport-center="isMobile"
     :placeholder="$t('selectdate')"

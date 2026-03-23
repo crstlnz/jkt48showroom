@@ -16,12 +16,14 @@ const props = withDefaults(defineProps<{
   formId: string
   label?: string
   modelValue: any[]
+  disabled?: boolean
   inputClass?: string
   autoFocus?: boolean
   data: { title: string, value: string }[]
 }>(), {
   inputClass: '',
   autoFocus: false,
+  disabled: false,
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -35,14 +37,17 @@ const selectedData = computed(() => {
 })
 
 function add(data: string) {
+  if (props.disabled) return
   return emit('update:modelValue', [...props.modelValue, data])
 }
 
 function addAll(data: string[]) {
+  if (props.disabled) return
   return emit('update:modelValue', [...props.modelValue, ...data])
 }
 
 function remove(data: string) {
+  if (props.disabled) return
   return emit('update:modelValue', props.modelValue.filter(i => i !== data))
 }
 
@@ -123,6 +128,7 @@ function onPaste(event: ClipboardEvent) {
 }
 
 watch(selectedId, (id) => {
+  if (props.disabled) return
   add(id)
   clearInput()
 })
@@ -138,7 +144,8 @@ watch(selectedId, (id) => {
         <div class="absolute right-1 -translate-y-1/2 translate-x-1/2 top-1 group-hover:opacity-100 opacity-0 transition-opacity flex justify-center items-center text-sm gap-2">
           <button
             type="button"
-            class="w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center" @click="() => {
+            :disabled="disabled"
+            class="w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed" @click="() => {
               remove(i?.value || '')
             }"
           >
@@ -149,7 +156,7 @@ watch(selectedId, (id) => {
           {{ i?.title }}
         </div>
       </div>
-      <Combobox v-model="selectedId">
+      <Combobox v-model="selectedId" :disabled="disabled">
         <div class="relative flex-1 w-0 min-w-40 md:min-w-50">
           <div
             class="relative w-full cursor-default overflow-hidden rounded-md text-left sm:text-sm"
@@ -157,6 +164,7 @@ watch(selectedId, (id) => {
             <ComboboxInput
               ref="input"
               :class="inputClass"
+              :disabled="disabled"
               :placeholder="selectedData?.length ? 'Search lagi' : 'Search'"
               class="w-full border-none py-1.5 pl-3 pr-10 text-sm leading-5 focus:ring-0 outline-hidden min-w-87.5"
               :display-value="() => ''"

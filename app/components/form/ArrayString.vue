@@ -5,12 +5,14 @@ const props = withDefaults(defineProps<{
   formId: string
   label?: string
   modelValue: string[]
+  disabled?: boolean
   inputClass?: string
   autoFocus?: boolean
   data: { title: string, value: string }[]
 }>(), {
   inputClass: '',
   autoFocus: false,
+  disabled: false,
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -18,6 +20,7 @@ const input = ref<HTMLInputElement>()
 useFocus(input, { initialValue: props.autoFocus })
 
 function add() {
+  if (props.disabled) return
   if (!input.value) return
   if (props.modelValue?.includes(input.value.value)) return
   emit('update:modelValue', [...props.modelValue, input.value.value || ''])
@@ -25,10 +28,12 @@ function add() {
 }
 
 function remove(data: string) {
+  if (props.disabled) return
   return emit('update:modelValue', props.modelValue.filter(i => i !== data))
 }
 
 function previous(index: number) {
+  if (props.disabled) return
   const data = [...props.modelValue]
   const pick = data[index]
   data.splice(index, 1)
@@ -37,6 +42,7 @@ function previous(index: number) {
 }
 
 function next(index: number) {
+  if (props.disabled) return
   const data = [...props.modelValue]
   const pick = data[index]
   data.splice(index, 1)
@@ -55,7 +61,8 @@ function next(index: number) {
         <div class="absolute right-1 -translate-y-1/2 translate-x-1/2 top-1 group-hover:opacity-100 opacity-0 transition-opacity flex justify-center items-center text-sm gap-2">
           <button
             type="button"
-            class="w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center" @click="() => {
+            :disabled="disabled"
+            class="w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed" @click="() => {
               remove(i)
             }"
           >
@@ -63,20 +70,20 @@ function next(index: number) {
           </button>
         </div>
         <div class="flex gap-3 text-center">
-          <button v-if="modelValue.length > 1" type="button" class="disabled:opacity-40 disabled:cursor-not-allowed" :disabled="idx === 0" @click="() => previous(idx)">
+          <button v-if="modelValue.length > 1" type="button" class="disabled:opacity-40 disabled:cursor-not-allowed" :disabled="disabled || idx === 0" @click="() => previous(idx)">
             {{ '<' }}
           </button>
           <div class="flex-1">
             {{ i }}
           </div>
-          <button v-if="modelValue.length > 1" type="button" class="disabled:opacity-40 disabled:cursor-not-allowed" :disabled="idx === modelValue.length - 1" @click="() => next(idx)">
+          <button v-if="modelValue.length > 1" type="button" class="disabled:opacity-40 disabled:cursor-not-allowed" :disabled="disabled || idx === modelValue.length - 1" @click="() => next(idx)">
             {{ '>' }}
           </button>
         </div>
       </div>
       <div class="bg-container-2 rounded-md flex items-center gap-2.5 pr-2">
-        <input ref="input" type="text" :placeholder="modelValue?.length ? 'Tambah' : 'Input'" class="truncate text-sm w-[150px] bg-transparent px-2.5 py-1.5 outline-hidden" @keyup.enter="add">
-        <button type="button" class="bg-blue-500 px-2 py-0.5 rounded-md text-sm" @click="add">
+        <input ref="input" :disabled="disabled" type="text" :placeholder="modelValue?.length ? 'Tambah' : 'Input'" class="truncate text-sm w-[150px] bg-transparent px-2.5 py-1.5 outline-hidden disabled:cursor-not-allowed disabled:opacity-50" @keyup.enter="add">
+        <button type="button" :disabled="disabled" class="bg-blue-500 px-2 py-0.5 rounded-md text-sm disabled:cursor-not-allowed disabled:opacity-50" @click="add">
           Add
         </button>
       </div>

@@ -17,7 +17,7 @@ onClickOutside(editDialog, () => {
 
 <template>
   <div class="fixed inset-0 bg-black/50 z-aboveNav">
-    <div ref="editDialog" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-container rounded-xl p-5 w-[650px] max-w-[95%]">
+    <div ref="editDialog" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-container rounded-xl p-5 w-162.5 max-w-[95%]">
       <div v-if="pending">
         <Spinner />
       </div>

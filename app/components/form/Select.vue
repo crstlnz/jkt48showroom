@@ -3,10 +3,12 @@ withDefaults(defineProps<{
   formId: string
   label?: string
   modelValue: any
+  disabled?: boolean
   inputClass?: string
   data: { title: string, value: string }[]
 }>(), {
   inputClass: '',
+  disabled: false,
 })
 
 defineEmits(['update:modelValue'])
@@ -18,7 +20,8 @@ defineEmits(['update:modelValue'])
     <select
       id="member_data"
       :class="inputClass"
-      :value="modelValue" class="rounded-md p-1.5 "
+      :disabled="disabled"
+      :value="modelValue" class="rounded-md p-1.5 disabled:cursor-not-allowed disabled:opacity-60 disabled:brightness-90"
       @input="$emit('update:modelValue', ($event.target as HTMLInputElement)?.value)"
     >
       <option :value="undefined">

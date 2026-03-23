@@ -3,6 +3,7 @@ withDefaults(defineProps<{
   formId: string
   label?: string
   placeholder?: string
+  disabled?: boolean
   modelValue: any
   inputClass?: string
 }>(), {
@@ -17,10 +18,11 @@ defineEmits(['update:modelValue'])
     <label v-if="label" class="pl-2.5" :for="formId">{{ label }}</label>
     <textarea
       :value="modelValue"
+      :disabled="disabled"
       :placeholder="placeholder"
       :name="formId"
       type="text"
-      class="bg-container max-w-full rounded-md px-2.5 py-1.5 outline-2 outline-black/10"
+      class="bg-container max-w-full rounded-md px-2.5 py-1.5 outline-2 outline-black/10 disabled:cursor-not-allowed disabled:opacity-60 disabled:brightness-90"
       :class="inputClass"
       @input="$emit('update:modelValue', ($event.target as HTMLInputElement)?.value)"
     />
