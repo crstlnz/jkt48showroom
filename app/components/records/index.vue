@@ -6,11 +6,7 @@ const { data, pending, error } = await useCachedFetch<ShowroomRecord[]>('/api/re
 </script>
 
 <template>
-  <div class="bg-container space-y-2 rounded-xl p-3 md:p-4">
-    <div class="flex items-center gap-2 font-bold text-lg xl:text-xl">
-      <Icon name="ph:medal-duotone" size="1.25rem" class="text-yellow-500" />
-      <span>{{ $t('mostrecords') }}</span>
-    </div>
+  <HomeContainer :title="$t('mostrecords')" icon="ph:medal-duotone" icon-color="text-yellow-500 bg-yellow-500/15">
     <div v-if="error" class="flex aspect-6/5 flex-col items-center justify-center gap-5">
       <Image class="mx-auto w-72 max-w-[65%]" :src="`${$imgCDN}/assets/svg/web/error.svg`" sizes="320px" fit="fill" />
       <span class="mt-5">{{ $t("data.failed") }}</span>
@@ -34,5 +30,5 @@ const { data, pending, error } = await useCachedFetch<ShowroomRecord[]>('/api/re
     <div v-else class="mr-2 flex flex-col gap-10 px-1 py-3 sm:p-3">
       <RecordsItem v-for="rekor in data" :key="rekor.key" :rekor="rekor" />
     </div>
-  </div>
+  </HomeContainer>
 </template>

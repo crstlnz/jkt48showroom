@@ -50,10 +50,7 @@ function getMemberDisplayName(room: CompetitionRoom): string {
 </script>
 
 <template>
-  <HomeContainer :title="$t('competition.title')" title-class="text-base!" class="relative" :more-text="$t('more')" more="/jkt48showroom_competition">
-    <template #icon>
-      <Icon name="hugeicons:ranking" class="text-yellow-500 size-5 mb-1.5" />
-    </template>
+  <HomeContainer :title="$t('competition.title')" :compact="true" icon="hugeicons:ranking" icon-color="bg-yellow-500/15 text-yellow-500" title-class="text-base!" class="relative" :more-text="$t('more')" more="/jkt48showroom_competition">
     <div class="overflow-visible rounded-xl">
       <div v-if="pending && !data" class="space-y-2">
         <div

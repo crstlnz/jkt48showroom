@@ -14,16 +14,19 @@ const mockloading = ref(false)
 </script>
 
 <template>
-  <div class="space-y-3 sm:px-3 md:px-4 pb-5 max-sm:pb-8 max-sm:border-b border-color-1">
-    <div class="flex gap-1.5 items-center max-sm:px-3" @click="() => mockloading = !mockloading">
-      <Icon name="logos:youtube-icon" class="self-center text-lg sm:text-xl" />
-      <h2 class="flex-1 text-xl font-bold leading-10 sm:text-2xl">
-        {{ $t("page.title.jkt48youtube") }}
-      </h2>
-      <NuxtLink to="https://www.youtube.com/@JKT48TV/videos" external target="_blank">
-        {{ $t("more") }}
-      </NuxtLink>
-    </div>
+  <HomeSectionContainer
+    :title="$t('page.title.jkt48youtube')"
+    icon="logos:youtube-icon"
+    @header-click="() => mockloading = !mockloading"
+  >
+    <template #icon>
+      <Icon name="logos:youtube-icon" class="self-center size-8 text-lg sm:text-xl" />
+    </template>
+
+    <template #right>
+      <MoreButton to="https://www.youtube.com/@JKT48TV/videos" external target="_blank" />
+    </template>
+
     <div
       v-if="(pending && !data) || mockloading" key="loading"
       class="grid grid-rows-1 gap-x-4 gap-y-5 sm:gap-y-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 animate-pulse"
@@ -102,5 +105,5 @@ const mockloading = ref(false)
         </div>
       </div>
     </div>
-  </div>
+  </HomeSectionContainer>
 </template>

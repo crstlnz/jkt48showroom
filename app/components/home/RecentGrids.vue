@@ -22,16 +22,15 @@ const { locale } = useI18n()
 </script>
 
 <template>
-  <div class="space-y-3 px-3 md:px-4">
-    <div class="flex gap-1 items-center">
-      <Icon name="ic:round-history" class="self-center text-xl sm:text-2xl" />
-      <h2 class="flex-1 text-xl font-bold leading-10 sm:text-2xl">
-        {{ $t("page.title.recent") }}
-      </h2>
-      <NuxtLink to="/recent">
-        {{ $t("more") }}
-      </NuxtLink>
-    </div>
+  <HomeSectionContainer
+    :title="$t('page.title.recent')"
+    icon="ic:round-history"
+    icon-color="bg-gray-500/15 text-gray-500"
+  >
+    <template #right>
+      <MoreButton to="/recent" />
+    </template>
+
     <div v-if="(pending && !data)" key="loading" class="grid grid-cols-1 grid-rows-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 animate-pulse">
       <div v-for="key in 6" :key="key" class="bg-container flex gap-3 rounded-xl p-3 md:p-4 max-sm:nth-[n+4]:hidden max-xl:nth-[n+5]:hidden">
         <div class="aspect-96/135 w-24 2xl:w-28" />
@@ -44,7 +43,7 @@ const { locale } = useI18n()
     >
       <div v-for="recent in data.recents.slice(0, 6)" :key="recent.data_id" class="bg-container flex gap-3 rounded-xl p-3 md:p-4 max-sm:nth-[n+4]:hidden max-xl:nth-[n+5]:hidden">
         <NuxtLink :to="`/member/${recent.member.url}`" class="aspect-96/135 relative group overflow-hidden rounded-xl w-24 2xl:w-28">
-          <Image v-if="recent.type === 'idn'" alt="IDN Logo" :src="$idnLiveIcon" size="64px" class="absolute z-10 left-2 top-2 mt-1 h-4 md:h-4 w-[51px] object-contain" />
+          <Image v-if="recent.type === 'idn'" alt="IDN Logo" :src="$idnLiveIcon" size="64px" class="absolute z-10 left-2 top-2 mt-1 h-4 md:h-4 w-12.75 object-contain" />
           <Image
             provider="cloudinary"
             :src="recent.member.img_alt ?? recent.member.img ?? $errorPicture"
@@ -97,5 +96,5 @@ const { locale } = useI18n()
         </div>
       </div>
     </div>
-  </div>
+  </HomeSectionContainer>
 </template>

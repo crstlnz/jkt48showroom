@@ -15,7 +15,7 @@ const { locale } = useI18n()
         </span>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 animate-pulse">
-        <div v-for="num in Array(4)" :key="num" class="bg-container w-full aspect-[5/2.5] rounded-xl" />
+        <div v-for="num in Array(4)" :key="num" class="bg-container w-full aspect-5/2.5 rounded-xl" />
       </div>
       <div class="flex items-center justify-between mt-5 mb-2">
         <div class="text-xl sm:text-2xl font-bold flex gap-2 items-center">
@@ -38,9 +38,9 @@ const { locale } = useI18n()
         </span>
       </div>
       <div class="space-y-3 md:space-y-4">
-        <div v-for="num in Array(4)" :key="num" class="bg-container w-full h-[80px] rounded-xl" />
+        <div v-for="num in Array(4)" :key="num" class="bg-container w-full h-20 rounded-xl" />
       </div>
-      <div class="mt-10 mb-7 h-[1px] bg-black/10 dark:bg-white/10 w-full" />
+      <div class="mt-10 mb-7 h-px bg-black/10 dark:bg-white/10 w-full" />
     </div>
     <!-- end of pending section -->
     <div v-else-if="error" class="flex justify-center items-center pb-4 aspect-video">
@@ -59,7 +59,7 @@ const { locale } = useI18n()
       <div v-if="data?.theater?.upcoming?.length" class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
         <TheaterUpcomingCard v-for="theater in data?.theater?.upcoming" :key="theater.id" :theater="theater" />
       </div>
-      <div v-else class="aspect-12/5 sm:aspect-12/4 md:aspect-12/3 xl:aspect-[12/2.5] flex items-center justify-center bg-container rounded-xl">
+      <div v-else class="aspect-12/5 sm:aspect-12/4 md:aspect-12/3 xl:aspect-12/2.5 flex items-center justify-center bg-container rounded-xl">
         {{ $t('no_upcoming_theater') }}
       </div>
       <div class="flex items-center justify-between mt-5 mb-2">

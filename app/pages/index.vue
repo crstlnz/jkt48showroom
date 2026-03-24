@@ -59,16 +59,18 @@ const searchInput = ref()
       <HomeBanner />
       <div class="flex flex-col gap-3 md:gap-4">
         <HomeLiveNow />
-        <HomeJKT48ShowroomCompetitionCard v-if="group === 'jkt48'" class="mx-3 md:mx-4" />
-        <HomeProfileVideos v-if="group === 'jkt48'" />
         <HomeRecentGrids v-if="group === 'jkt48'" />
         <HomeYoutubeVideo v-if="group === 'jkt48'" />
+        <HomeJKT48ShowroomCompetitionCard v-if="group === 'jkt48'" class="mx-3 md:mx-4" />
+        <HomeProfileVideos v-if="group === 'jkt48'" />
         <!-- <HomeStats /> -->
-        <div class="mx-3 flex items-center justify-between md:mx-4 xl:mt-2">
-          <div class="flex gap-1">
-            <Icon name="ph:info-bold" class="self-center text-xl sm:text-2xl" />
+        <div class="mx-3 flex items-center justify-between md:mx-4">
+          <div class="flex gap-2 items-center">
+            <span class="inline-flex size-8 items-center justify-center rounded-xl bg-gray-500/15 text-gray-500">
+              <Icon name="ph:info-bold" class="size-4.5" />
+            </span>
             <h2 class="text-xl font-bold leading-10 sm:text-2xl">
-              {{ $t("moreinfo") }} <span class="sr-only">Recent Data</span>
+              {{ $t("moreinfo") }}
             </h2>
           </div>
           <div class="text-xs opacity-60 md:text-sm" />

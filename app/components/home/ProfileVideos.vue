@@ -121,12 +121,7 @@ watch(selectedIndex, async () => {
 </script>
 
 <template>
-  <HomeContainer class="mx-3 mt-3 md:mx-4" title="Gen 14 Profile" no-padding>
-    <template #icon>
-      <span class="inline-flex size-8 items-center justify-center rounded-xl bg-blue-500/15 text-blue-500">
-        <Icon name="material-symbols:person-rounded" class="size-4.5" />
-      </span>
-    </template>
+  <HomeContainer class="mx-3 mt-3 md:mx-4" title="Gen 14 Profile" no-padding icon="material-symbols:person-rounded" icon-color="bg-blue-500/15 text-blue-500">
     <template #right>
       <div
         v-if="pending && !data"

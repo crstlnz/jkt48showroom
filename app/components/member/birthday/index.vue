@@ -6,16 +6,16 @@ const { data, pending, error } = await useCachedFetch<IMemberBirthDay[]>('/api/n
 </script>
 
 <template>
-  <div class="bg-container rounded-xl p-3 md:p-4">
-    <div class="flex items-center gap-2 font-bold text-lg xl:text-xl">
+  <HomeContainer :title="$t('birthday.next')" icon="twemoji:birthday-cake" icon-color="bg-red-500/15 text-red-500">
+    <!-- <div class="flex items-center gap-2 font-bold text-lg xl:text-xl">
       <Icon name="twemoji:birthday-cake" size="1.25rem" />
       <span>{{ $t('birthday.next') }}</span>
-    </div>
+    </div> -->
     <div v-if="error" class="flex flex-col items-center justify-center gap-5 py-8">
       <Image class="mx-auto w-72 max-w-[65%]" :src="`${$imgCDN}/assets/svg/web/error.svg`" sizes="320px" fit="fill" />
       <span>{{ $t("data.failed") }}</span>
     </div>
-    <div v-else-if="pending" class="flex h-[196px] items-center justify-center md:h-[212px] lg:h-[232px]">
+    <div v-else-if="pending" class="flex h-49 items-center justify-center md:h-53 lg:h-58">
       <Icon name="svg-spinners:ring-resize" size="2.5rem" />
     </div>
     <div v-else-if="!data" class="flex flex-col items-center justify-center gap-2 py-8">
@@ -25,5 +25,5 @@ const { data, pending, error } = await useCachedFetch<IMemberBirthDay[]>('/api/n
     <div v-else class="grid grid-cols-2 lg:grid-cols-3 md:py-4 gap-5 md:gap-6 max-sm:mt-2 max-sm:px-1.5">
       <MemberBirthdayCard v-for="member in data" :key="member.room_id || member.name" :member="member" class="mt-2" />
     </div>
-  </div>
+  </HomeContainer>
 </template>

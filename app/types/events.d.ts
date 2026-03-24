@@ -6,7 +6,11 @@ interface IApiTheaterInfo {
   poster?: string
   banner?: string
   member_count: number
+  start_date?: Date
+  end_date?: Date
+  members?: JKT48MemberExtend[]
   seitansai?: JKT48MemberExtend[]
+  graduation?: JKT48MemberExtend[]
   url: string
   date: Date
 }

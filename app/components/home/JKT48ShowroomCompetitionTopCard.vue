@@ -5,9 +5,9 @@ interface CompetitionRoom {
   room_id: number
   image: string
   image_square: string
-  image_alt: string
+  image_alt?: string
   name: string
-  nickname: string
+  nickname?: string
   slug?: string
 }
 

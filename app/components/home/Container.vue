@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 withDefaults(defineProps<{
   title?: string
-  iconClass?: string
   more?: string
+  compact?: boolean
   noPadding?: boolean
   moreScreenReaderOnly?: string
   moreText?: string
@@ -10,6 +10,8 @@ withDefaults(defineProps<{
   moreExtLink?: boolean
   moreClass?: string
   titleClass?: string
+  icon?: string
+  iconColor?: string
 }>(), {
   title: 'Title',
   iconClass: '',
@@ -20,32 +22,45 @@ withDefaults(defineProps<{
 
 <template>
   <div class="bg-container space-y-2 rounded-2xl shadow-2xs">
-    <div class="flex items-center gap-2 px-3 pt-3 md:px-4 md:pt-4">
+    <div class="flex items-center gap-2 px-3 pt-3 md:px-4 md:pt-4" :class="{ 'pb-1': $slots.subtitle }">
       <!-- <div class="inline-block h-5 w-1 rounded-l-sm" :class="iconClass" /> -->
-      <div class="flex-1 flex items-center gap-2">
-        <slot name="icon" />
-        <h3 class="font-bold text-lg xl:text-xl" :class="titleClass">
-          {{ title }}
-        </h3>
+      <div class="flex flex-1 items-center gap-2">
+        <slot name="icon">
+          <span v-if="icon" class="inline-flex size-8 items-center justify-center rounded-xl" :class="iconColor ?? `bg-gray-500/15 text-gray-500`">
+            <Icon :name="icon" class="size-4.5" />
+          </span>
+        </slot>
+        <div class="min-w-0">
+          <h2
+            class="truncate text-base font-bold " :class="{
+              'md:text-base': compact,
+              'md:text-lg': !compact,
+            }"
+          >
+            {{ title }}
+          </h2>
+          <p v-if="$slots.subtitle" class="text-[11px] opacity-60 md:text-xs">
+            <slot name="subtitle" />
+          </p>
+        </div>
       </div>
+
       <div
         v-if="$slots.right"
         class="text-xs lg:text-sm"
       >
         <slot name="right" />
       </div>
-      <NuxtLink
+      <MoreButton
         v-else-if="more && !moreExtLink"
-        class="text-xs hover:text-second-2 lg:text-sm"
         :to="more"
         :class="moreClass"
         :aria-label="moreLabel"
       >
         {{ moreText ? moreText : "More" }} <span v-if="moreScreenReaderOnly" class="sr-only">{{ moreScreenReaderOnly }} </span>
-      </NuxtLink>
+      </MoreButton>
       <a
         v-else-if="more"
-        class="text-xs hover:text-second-2 lg:text-sm"
         :href="more"
         target="_blank"
         :class="moreClass"

@@ -30,7 +30,7 @@ const { data, pending, liveCount, error } = storeToRefs(onLives)
           </div>
         </ClientOnly>
       </div>
-      <h2 class="relative text-xl font-bold leading-10 sm:text-2xl">
+      <h2 class="relative text-lg font-bold leading-10 sm:text-xl">
         Live
       </h2>
     </div>

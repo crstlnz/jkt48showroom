@@ -13,9 +13,11 @@ const { locale } = useI18n()
     </div>
     <div class="flex-1">
       <Image
-        sizes="200px sm:250px md:300px lg:247.5px"
-        :placeholder="[45, 10, 55, 70]"
-        fit="fill"
+        :modifiers="{
+          aspectRatio: '0.727',
+          gravity: 'center',
+        }"
+        sizes="260px"
         format="webp"
         :alt="theater.name"
         class="w-full h-full flex-1 object-cover"

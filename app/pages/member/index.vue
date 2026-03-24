@@ -193,7 +193,7 @@ useHead({
             <Icon name="mi:filter" />
           </template>
           <template #panel>
-            <div class="bg-container flex min-w-[280px] flex-col items-stretch py-3 text-lg max-sm:mx-2 max-sm:mt-2 max-sm:py-5">
+            <div class="bg-container flex min-w-70 flex-col items-stretch py-3 text-lg max-sm:mx-2 max-sm:mt-2 max-sm:py-5">
               <h3 class="px-4 text-xl font-bold max-sm:text-2xl sm:pt-2">
                 Filter
               </h3>
