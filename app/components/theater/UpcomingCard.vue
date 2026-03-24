@@ -12,27 +12,29 @@ const { locale } = useI18n()
 </script>
 
 <template>
-  <NuxtLink :to="`/theater/${theater.url}`" class="group block overflow-hidden rounded-xl border border-black/10 bg-container p-3 transition-all  dark:border-white/10 md:p-4">
+  <div class="group block overflow-hidden rounded-xl border border-black/10 bg-container p-3 transition-all  dark:border-white/10 md:p-4">
     <div class="flex gap-3 md:gap-4">
-      <Image
-        class="aspect-4/5.5 w-25 shrink-0 rounded-lg bg-black/10 object-cover md:w-29"
-        :src="theater.poster ?? theater.banner ?? $errorPicture"
-        alt="Theater Poster"
-        loading="lazy"
-        fit="fill"
-        :modifiers="{
-          aspectRatio: '0.727',
-          gravity: 'center',
-        }"
-        sizes="260px"
-        format="webp"
-      />
+      <NuxtLink :to="`/theater/${theater.url}`">
+        <Image
+          class="aspect-4/5.5 w-25 shrink-0 rounded-lg bg-black/10 object-cover md:w-29"
+          :src="theater.poster ?? theater.banner ?? $errorPicture"
+          alt="Theater Poster"
+          loading="lazy"
+          fit="fill"
+          :modifiers="{
+            aspectRatio: '0.727',
+            gravity: 'center',
+          }"
+          sizes="260px"
+          format="webp"
+        />
+      </NuxtLink>
 
       <div class="min-w-0 flex-1">
         <div class="flex items-start justify-between gap-2">
-          <div class="line-clamp-2 font-semibold leading-5 md:text-[1.03rem]">
+          <NuxtLink :to="`/theater/${theater.url}`" class="line-clamp-2 font-semibold leading-5 md:text-[1.03rem]">
             {{ theater.title }}
-          </div>
+          </NuxtLink>
           <div class="shrink-0 rounded-md bg-blue-500/35 text-blue-500 dark:bg-blue-500/15 dark:text-blue-200 px-2 py-0.75 text-[11px] font-medium">
             {{ $t('member_count', { count: theater.member_count }) }}
           </div>
@@ -113,5 +115,5 @@ const { locale } = useI18n()
         </div>
       </div>
     </div>
-  </NuxtLink>
+  </div>
 </template>
