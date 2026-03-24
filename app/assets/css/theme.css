@@ -23,6 +23,11 @@
 .v-popper__inner {
   border: 1px solid rgba(0, 0, 0, 0.05) !important;
   background-color: white !important;
+  color: rgb(63, 63, 63) !important;
+}
+
+.dark .v-popper__inner {
+  color: rgb(230, 230, 230) !important
 }
 
 .dark .v-popper__inner {
@@ -30,8 +35,16 @@
   background-color: #25282b !important;
 }
 
+.dark .v-popper__arrow-container {
+  color: #25282b !important;
+}
+
 .v-popper__arrow-container {
   color: white !important;
+}
+
+.v-popper__arrow-inner {
+  border-top-color: white !important;
 }
 
 .dark .v-popper__arrow-inner {

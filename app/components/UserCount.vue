@@ -15,14 +15,14 @@ const sortedPaths = computed(() => {
   <div
     ref="re"
     :class="{
-      'hover:translate-y-[40%] translate-y-[80%] size-20': !isOpen,
+      'hover:translate-y-[40%] translate-y-[80%] w-12 h-20': !isOpen,
       'translate-0 w-56 h-40': isOpen,
     }" class="z-aboveNav transition-all duration-200 ease-linear -translate-x-1/2 bottom-0 left-1/2 flex fixed text-center justify-center align-middle items-center"
   >
     <OnClickOutside v-if="isOpen" class="hidden" :options="{ ignore: [re] }" @trigger="() => isOpen = false">
       <div />
     </OnClickOutside>
-    <div class="relative size-full group">
+    <div class="relative size-full group pointer-events-none">
       <div
         :class="{
           'rounded-xl size-full -translate-y-5 ': isOpen,
@@ -43,7 +43,7 @@ const sortedPaths = computed(() => {
             {{ adminCount }} admins
           </div>
         </div>
-        <div v-if="sortedPaths.length" :class="{ 'w-[calc(100%-20px)] ': isOpen }" class="rounded-md p-2 mt-2 text-[10px] bg-dark-1 h-24 leading-tight overflow-auto space-y-0.5">
+        <div v-if="sortedPaths.length" class="w-[calc(100%-20px)] rounded-md p-2 mt-2 text-[10px] bg-dark-1 h-24 leading-tight overflow-auto space-y-0.5">
           <div v-for="([path, count], idx) in sortedPaths" :key="`${path}-${idx}`" class="truncate flex items-center justify-between rounded-sm bg-black/20 px-1.5 py-0.5">
             <span class="truncate text-left text-white/85">{{ path || '/' }}</span>
             <span class="ml-1 text-cyan-300 font-semibold">{{ count }}</span>
@@ -58,7 +58,7 @@ const sortedPaths = computed(() => {
         aria-label="open" :class="{
           'rotate-180 -translate-y-[calc(50%+21px)] scale-[75%] bg-dark-1 border-color-1 rounded-full ease-out': isOpen,
           'rotate-0 border-transparent ease-in': !isOpen,
-        }" class="absolute transition-all border duration-300 rounded-full left-1/2 -translate-x-1/2 text-xl size-12 flex items-center top-0 justify-center" @click="() => isOpen = !isOpen"
+        }" class="absolute pointer-events-auto transition-all border duration-300 rounded-full left-1/2 -translate-x-1/2 text-xl size-12 flex items-center top-0 justify-center" @click="() => isOpen = !isOpen"
       >
         <Icon name="material-symbols:keyboard-double-arrow-up-rounded" class="" />
       </button>

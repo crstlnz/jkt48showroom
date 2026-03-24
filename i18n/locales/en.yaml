@@ -82,6 +82,7 @@ srview:
     showscreenshot: Show screenshot
     animation: Animation
 search: Search
+time: Time
 date:
   to: to
   start: Date Start
@@ -262,6 +263,8 @@ noresult: No query result for
 total_member: Participating members
 recent_theater: Recent Theater
 upcoming_theater: Upcoming Theater
+theater_show_number: "Show {number}"
+theater_member_list: Member List
 recent_detail_description: Explore the gift recap and fan rankings from {name} live Showroom on {date}
 member_profile_description: Profile lengkap {name} {group} dan semua rekap live showroom
 reorder:
@@ -294,8 +297,12 @@ multi:
   center: Align video to center
   hidevideocontrol: Hide video control
   showvideocontrol: Show video control
-seitansai_text: This show is seitansai for
-graduation_text: This show is a graduation show for
+seitansai_text: "This show is a {term} for "
+seitansai_term: seitansai
+seitansai_tooltip: A special theater show held to celebrate a JKT48 member's birthday.
+graduation_text: "This show is a {term} for "
+graduation_show_term: graduation show
+graduation_show_tooltip: The member's final performance.
 menu:
   home: Home
   multi_viewer: Multi Viewer

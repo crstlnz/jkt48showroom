@@ -30,6 +30,7 @@ function generateForm(): Admin.Form[] {
       title: 'Setlist Id',
       id: 'setlistId',
       placeholder: 'Setlist Id',
+      disabled: true,
       data: theater.value.setlistId,
       check: (data: any): boolean => {
         return theater.value.setlistId === data

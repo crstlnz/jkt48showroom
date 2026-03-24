@@ -32,10 +32,10 @@ const { locale } = useI18n()
 
       <div class="min-w-0 flex-1">
         <div class="flex items-start justify-between gap-2">
-          <NuxtLink :to="`/theater/${theater.url}`" class="line-clamp-2 font-semibold leading-5 md:text-[1.03rem]">
+          <NuxtLink :to="`/theater/${theater.url}`" class="line-clamp-2 font-semibold leading-5 text-sm md:text-base">
             {{ theater.title }}
           </NuxtLink>
-          <div class="shrink-0 rounded-md bg-blue-500/35 text-blue-500 dark:bg-blue-500/15 dark:text-blue-200 px-2 py-0.75 text-[11px] font-medium">
+          <div class="shrink-0 rounded-md bg-blue-500/35 text-blue-500 dark:bg-blue-500/15 dark:text-blue-200 px-2 py-0.75 text-[10px] md:text-[11px] font-medium">
             {{ $t('member_count', { count: theater.member_count }) }}
           </div>
         </div>
@@ -73,8 +73,8 @@ const { locale } = useI18n()
         <div class="mt-2 space-y-1 border-t border-black/5 pt-2 dark:border-white/5" />
         <div class="space-y-1">
           <div v-if="seitansai.length || graduation.length">
-            <div v-if="seitansai.length" class="flex items-start gap-1.5 text-xs">
-              <Icon name="ri:cake-2-fill" class="mt-px shrink-0 text-pink-400" />
+            <div v-if="seitansai.length" class="flex items-center gap-1.5 text-[10px] md:text-xs">
+              <Icon name="ri:cake-2-fill" class="mt-px shrink-0 text-pink-400 mb-0.5" />
               <div class="min-w-0 flex gap-1 items-center">
                 <span class="mr-1 font-semibold text-pink-400">Birthday:</span>
                 <span class="line-clamp-1 opacity-80">
@@ -88,8 +88,8 @@ const { locale } = useI18n()
               </div>
             </div>
 
-            <div v-if="graduation.length" class="flex items-start gap-1.5 text-xs">
-              <Icon name="ph:graduation-cap-fill" class="mt-px shrink-0 text-amber-500" />
+            <div v-if="graduation.length" class="flex items-center gap-1.5 text-[10px] md:text-xs">
+              <Icon name="ph:graduation-cap-fill" class="mt-px shrink-0 text-amber-500 mb-0.5" />
               <div class="min-w-0 flex gap-1 items-center">
                 <span class="mr-1 font-semibold text-amber-500">Graduation:</span>
                 <span class="line-clamp-1 opacity-80">
@@ -103,14 +103,14 @@ const { locale } = useI18n()
               </div>
             </div>
           </div>
-          <div class="flex gap-x-1 flex-wrap text-xs opacity-80">
-            <template v-for="(member, idx) in members" :key="`graduation-name-${member.id}`">
+          <div class="flex gap-x-1 flex-wrap text-[10px] md:text-xs opacity-80">
+            <span v-for="(member, idx) in members" :key="`graduation-name-${member.id}`">
               <NuxtLink v-if="member.url_key" :to="`/member/${member.url_key}`">
                 {{ member.name }}
               </NuxtLink>
               <span v-else>{{ member.name }}</span>
               <span v-if="idx < members.length - 1">, </span>
-            </template>
+            </span>
           </div>
         </div>
       </div>

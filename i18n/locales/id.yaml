@@ -82,6 +82,7 @@ srview:
     showscreenshot: Tampilkan screenshot
     animation: Animasi
 search: Cari
+time: Jam
 date:
   to: sampai
   start: Mulai
@@ -262,6 +263,8 @@ noresult: Tidak ada hasil dengan pencarian
 total_member: Jumlah member
 recent_theater: Theater sebelumnya
 upcoming_theater: Theater selanjutnya
+theater_show_number: "Show {number}"
+theater_member_list: Daftar Member
 recent_detail_description: Lihat rekap gift dan fans ranking live Showroom {name} pada tanggal {date}
 member_profile_description: Berikut profile lengkap dari {name} {group}
 reorder:
@@ -294,8 +297,12 @@ multi:
   center: Sejajarkan video ke tengah
   hidevideocontrol: Sembunyikan kontrol video
   showvideocontrol: Tampilkan kontrol video
-seitansai_text: Show ini merupakan seitansai
-graduation_text: Show ini merupakan graduation show untuk
+seitansai_text: "Pertunjukan ini merupakan {term} untuk "
+seitansai_term: seitansai
+seitansai_tooltip: Pertunjukan spesial untuk merayakan ulang tahun member JKT48.
+graduation_text: "Pertunjukan ini merupakan {term} untuk "
+graduation_show_term: pertunjukan kelulusan
+graduation_show_tooltip: Pertunjukan terakhir dari member tersebut.
 menu:
   home: Home
   multi_viewer: Multi Viewer

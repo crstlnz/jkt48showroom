@@ -132,6 +132,11 @@ const activePwaPrompt = computed<'update' | 'install' | null>(() => {
   if (pwaCanInstall.value) return 'install'
   return null
 })
+const PWA_INSTALL_DISMISS_DURATION_MS = 30 * 24 * 60 * 60 * 1000
+const pwaInstallDismissedUntil = useLocalStorage<number>('pwa_install_dismissed_until', 0)
+const isPwaInstallDismissed = computed(() =>
+  Date.now() < (pwaInstallDismissedUntil.value || 0),
+)
 
 const isPwaPromptExcludedPage = computed(() => {
   const currentPath = route.path
@@ -146,6 +151,7 @@ const isPwaPromptExcludedPage = computed(() => {
 const showPwaPrompt = computed(() =>
   !showWebviewBlock.value
   && activePwaPrompt.value !== null
+  && (activePwaPrompt.value !== 'install' || !isPwaInstallDismissed.value)
   && !isPwaPromptExcludedPage.value,
 )
 const pwaPromptPrefix = computed(() =>
@@ -163,10 +169,12 @@ const pwaPromptIconClass = computed(() =>
 )
 
 async function installPwa() {
+  pwaInstallDismissedUntil.value = 0
   await $pwa?.install()
 }
 
 function dismissPwaInstall() {
+  pwaInstallDismissedUntil.value = Date.now() + PWA_INSTALL_DISMISS_DURATION_MS
   $pwa?.cancelInstall()
 }
 

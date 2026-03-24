@@ -26,9 +26,7 @@ withDefaults(defineProps<{
       <!-- <div class="inline-block h-5 w-1 rounded-l-sm" :class="iconClass" /> -->
       <div class="flex flex-1 items-center gap-2">
         <slot name="icon">
-          <span v-if="icon" class="inline-flex size-8 items-center justify-center rounded-xl" :class="iconColor ?? `bg-gray-500/15 text-gray-500`">
-            <Icon :name="icon" class="size-4.5" />
-          </span>
+          <HeaderIcon :icon="icon" :color-class="iconColor ?? ''" />
         </slot>
         <div class="min-w-0">
           <h2
