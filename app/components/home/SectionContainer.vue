@@ -6,6 +6,7 @@ withDefaults(defineProps<{
   headerClass?: string
   titleClass?: string
   iconColor?: string
+  withoutPadding?: boolean
 }>(), {
   title: 'Title',
   icon: '',
@@ -34,6 +35,8 @@ defineEmits<{
       </div>
       <slot name="right" />
     </div>
-    <slot />
+    <div :class="{ 'px-3 md:px-4': !withoutPadding }">
+      <slot />
+    </div>
   </div>
 </template>

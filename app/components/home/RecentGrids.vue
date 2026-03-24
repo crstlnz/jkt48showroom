@@ -89,7 +89,7 @@ const { locale } = useI18n()
         <Image
           :src="`${$imgCDN}/assets/svg/web/no_data.svg`"
           alt="Empty"
-          class="mx-auto aspect-square w-[200px] max-w-[80%] dark:brightness-110"
+          class="mx-auto aspect-square w-50 max-w-[80%] dark:brightness-110"
         />
         <div class="text-base">
           Sorry, but there is no recents right now :(

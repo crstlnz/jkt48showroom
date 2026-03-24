@@ -17,6 +17,7 @@ const mockloading = ref(false)
   <HomeSectionContainer
     :title="$t('page.title.jkt48youtube')"
     icon="logos:youtube-icon"
+    :without-padding="(data?.length ?? 0) > 0"
     @header-click="() => mockloading = !mockloading"
   >
     <template #icon>
@@ -98,7 +99,7 @@ const mockloading = ref(false)
       <div class="space-y-4 overflow-hidden py-4 text-center dark:bg-dark-1">
         <Image
           :src="`${$imgCDN}/assets/svg/web/no_data.svg`" alt="Empty"
-          class="mx-auto aspect-square w-[200px] max-w-[80%] dark:brightness-110"
+          class="mx-auto aspect-square w-50 max-w-[80%] dark:brightness-110"
         />
         <div class="text-base">
           Sorry, but there is no recents right now :(
