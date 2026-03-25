@@ -40,14 +40,14 @@ useHead({
     <LayoutRow v-else title="News" :mobile-side="false">
       <template #default>
         <div class="px-3 md:px-4">
-          <div class="flex gap-3 items-start">
+          <div class="flex lg:gap-3 items-start max-lg:flex-col">
             <h3 class="text-2xl font-bold flex-1">
               {{ data?.title }}
             </h3>
             <NuxtLink
               :to="data.url ?? `https://jkt48.com/news/detail/id/${data.id}`"
               :external="true"
-              class="group inline-flex mt-1 items-center gap-1.5 rounded-lg border border-black/10 dark:border-white/10 bg-container px-3 py-1.5 text-sm font-semibold transition-all hover:border-black/20 hover:bg-hover dark:hover:border-white/20"
+              class="max-lg:hidden group inline-flex mt-1 items-center gap-1.5 rounded-lg border border-black/10 dark:border-white/10 bg-container px-3 py-1.5 text-sm font-semibold transition-all hover:border-black/20 hover:bg-hover dark:hover:border-white/20"
             >
               <Icon name="lucide:external-link" class="text-sm opacity-75 transition-opacity group-hover:opacity-100" />
               <span class="leading-none">{{ $t('open_original') }}</span>
@@ -66,7 +66,15 @@ useHead({
             />
             <NewsCategoryBadge v-else-if="data.category" :category="data.category" variant="soft" />
             <span class="size-1 bg-black/15 dark:bg-white/10 rounded-full" />
-            <span class="text-sm opacity-80"> {{ $dayjs(data?.date).locale(locale).format("DD MMMM YYYY") }}</span>
+            <span class="text-sm opacity-80 flex-1"> {{ $dayjs(data?.date).locale(locale).format("DD MMMM YYYY") }}</span>
+            <NuxtLink
+              :to="data.url ?? `https://jkt48.com/news/detail/id/${data.id}`"
+              :external="true"
+              class="group lg:hidden inline-flex items-center gap-1.5 rounded-lg border border-black/10 dark:border-white/10 bg-container px-3 py-1.5 text-sm font-semibold transition-all hover:border-black/20 hover:bg-hover dark:hover:border-white/20"
+            >
+              <Icon name="lucide:external-link" class="text-xs md:text-sm opacity-75 transition-opacity group-hover:opacity-100" />
+              <span class="leading-none">{{ $t('open_original') }}</span>
+            </NuxtLink>
           </div>
           <div class="w-full border-b border-dashed border-color-1 my-3" />
           <div class="relative pb-10 px-5 bg-gray-400/10 dark:bg-gray-500/10 rounded-xl pt-5">
