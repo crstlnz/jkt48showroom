@@ -77,7 +77,7 @@ useHead({
             </NuxtLink>
           </div>
           <div class="w-full border-b border-dashed border-color-1 my-3" />
-          <div class="relative pb-10 px-5 bg-gray-400/10 dark:bg-gray-500/10 rounded-xl pt-5">
+          <div class="relative pb-10 px-4 pt-4 md:px-5 bg-gray-400/10 dark:bg-gray-500/10 rounded-xl md:pt-5">
             <div id="content" class="overflow-x-auto font-serif!" v-html="content" />
           </div>
         </div>
