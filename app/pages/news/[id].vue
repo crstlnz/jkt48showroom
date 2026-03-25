@@ -12,9 +12,13 @@ const description = computed(() => {
   return str
 })
 
+const colorMode = useColorMode()
+const isDark = computed(() => colorMode.value === 'dark')
+
 const title = computed(() => data.value?.title || 'News')
 const content = computed(() => {
-  return data.value?.content?.replaceAll('https://jkt48.com/upload/news', `https://jkt48.com/api/v1/storages/media/news/migrated`)?.replaceAll('https://jkt48.com/api/v1/storages/media', `${useRuntimeConfig().public.showroomApi ?? ''}https://jkt48.com/api/v1/storages/media`)?.replaceAll('color: #333333', '')?.replaceAll('color: #1f1f1f;', '')?.replaceAll('color: blue', '')?.replaceAll('color: #000000', '')
+  const html = data.value?.content?.replaceAll('https://jkt48.com/upload/news', `https://jkt48.com/api/v1/storages/media/news/migrated`)?.replaceAll('https://jkt48.com/api/v1/storages/media', `${useRuntimeConfig().public.showroomApi ?? ''}https://jkt48.com/api/v1/storages/media`)
+  return isDark.value ? convertToDark(html ?? '').html : html
 })
 
 useSeoMeta({
