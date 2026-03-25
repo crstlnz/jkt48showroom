@@ -74,7 +74,7 @@ const { locale } = useI18n()
           </td>
         </tr>
       </table>
-      <button v-if="date && !pending" type="button" class="flex gap-1 items-center text-xs font-light float-right px-3 pt-1.5 pb-3 truncate" @click="refresh">
+      <button v-if="date && !pending" type="button" class="flex gap-1 items-center text-xs font-light float-right px-3 pt-2.5 pb-3 truncate opacity-75" @click="refresh">
         {{ $dayjs(date).locale(locale).fromNow() }}
         <Icon name="ic:outline-refresh" />
       </button>
