@@ -368,7 +368,7 @@ export function convertToDark(html: string, options: ConvertOptions = {}): Conve
   let lightenedChanges = 0
 
   processed = processed.replace(
-    /style\s*=\s*(["'])([^"']*)\1/gi,
+    /style\s*=\s*(["'])([\s\S]*?)\1/gi,
     (match: string, quote: string, styleValue: string) => {
       const newStyle = styleValue.replace(
         /([\w-]+)\s*:\s*([^;]+)/g,
