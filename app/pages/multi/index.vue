@@ -244,7 +244,7 @@ function refreshAll() {
 const { addNotif } = useNotifications()
 
 const autoRemove = useLocalStorage('auto_remove_player', () => true)
-const centerVideos = useLocalStorage('center_videos', () => false)
+const centerVideos = useLocalStorage('center_videos', () => true)
 const showVideoControl = useLocalStorage('show_video_control', () => true)
 
 function deleteVideo(video: Multi.Video, reason?: string) {

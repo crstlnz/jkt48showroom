@@ -23,7 +23,6 @@ withDefaults(defineProps<{
 <template>
   <div class="bg-container space-y-2 rounded-2xl shadow-2xs">
     <div class="flex items-center gap-2 px-3 pt-3 md:px-4 md:pt-4" :class="{ 'pb-1': $slots.subtitle }">
-      <!-- <div class="inline-block h-5 w-1 rounded-l-sm" :class="iconClass" /> -->
       <div class="flex flex-1 items-center gap-2">
         <slot name="icon">
           <HeaderIcon :icon="icon" :color-class="iconColor ?? ''" />

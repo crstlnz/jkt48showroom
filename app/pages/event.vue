@@ -3,6 +3,7 @@ import { NuxtLink } from '#components'
 
 const { data, pending, error } = await useApiFetch<IApiEvent>('/api/event', { server: true })
 const { locale } = useI18n()
+const forceLoading = ref(false)
 </script>
 
 <template>
@@ -16,8 +17,8 @@ const { locale } = useI18n()
           </div>
         </div>
         <template v-else>
-          <div v-if="pending" class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 animate-pulse">
-            <div v-for="num in 4" :key="`upcoming-theater-skeleton-${num}`" class="bg-container w-full aspect-5/2.5 rounded-xl" />
+          <div v-if="pending || forceLoading" class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 animate-pulse">
+            <div v-for="num in 4" :key="`upcoming-theater-skeleton-${num}`" class="bg-container w-full aspect-[5/1.65] sm:aspect-[5/2.2] lg:aspect-5/2 rounded-xl" />
           </div>
           <div v-else-if="data?.theater?.upcoming?.length" key="upcoming" class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
             <TheaterUpcomingCard v-for="theater in data?.theater?.upcoming" :key="theater.id" :theater="theater" />
@@ -33,12 +34,24 @@ const { locale } = useI18n()
           <template #right>
             <MoreButton to="/theater" />
           </template>
-          <div v-if="pending" class="md:pt-1 grid grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4 animate-pulse">
-            <div v-for="num in 4" :key="`recent-theater-skeleton-${num}`" class="bg-container w-full aspect-3/4 rounded-xl" />
+          <div v-if="pending" class="pt-1.5 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4 animate-pulse">
+            <div
+              v-for="(num, index) in 5"
+              :key="`recent-theater-skeleton-${num}`"
+              class="bg-container w-full aspect-3/4 rounded-xl"
+              :class="{
+                'md:hidden lg:block': index === 3,
+                'hidden xl:block': index === 4,
+              }"
+            />
           </div>
-          <div v-else class="pt-1.5 grid grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4">
+          <div v-else class="pt-1.5 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
             <TheaterCard
-              v-for="theater in data.theater.recent" :key="theater.url" :theater=" theater"
+              v-for="(theater, index) in data.theater.recent.slice(0, 5)" :key="theater.url" :theater=" theater" :class="{
+                'md:hidden lg:block': index === 3,
+                'hidden xl:block': index === 4,
+                'hidden': index >= 5,
+              }"
             />
           </div>
         </HomeSectionContainer>

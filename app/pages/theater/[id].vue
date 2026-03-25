@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
+
 const route = useRoute()
 const { data, status, error } = await useApiFetch<IApiTheaterDetailList>(`/api/theater/${route.params.id}`)
 
@@ -56,6 +58,9 @@ function getTheaterTimeRange(date: string | Date) {
   return `${start.locale(locale.value).format('HH:mm')} - ${end.locale(locale.value).format('HH:mm')}`
 }
 
+const breakpoints = useBreakpoints(breakpointsTailwind)
+const lg = breakpoints.greater('lg')
+
 useHead({
   title,
 })
@@ -77,15 +82,16 @@ useHead({
           v-for="[idx, theater] in data.shows.entries()" :key="theater.id"
           class="space-y-4 md:space-y-5"
         >
-          <div class="flex flex-col gap-4 md:flex-row md:gap-2.5">
+          <div class="flex flex-col gap-4 lg:flex-row md:gap-2.5">
             <Image
-              class="border border-black/10 dark:border-white/10  aspect-9/12 w-full shrink-0 overflow-hidden rounded-xl object-cover md:w-48 xl:w-80 sm self-start"
-              :src="theater.setlist?.poster ?? config.errorPicture" alt="Theater Poster" :modifiers="{
-                aspectRatio: '9/12',
-              }" :placeholder="[10, 14, 75, 50]" loading="lazy" fit="fill"
+              :key="lg ? (theater.setlist?.poster ?? theater.setlist?.banner) : (theater.setlist?.banner ?? theater.setlist?.poster) ?? config.errorPicture"
+              class="border border-black/10 dark:border-white/10 aspect-15/9 md:aspect-9/12 w-full shrink-0 overflow-hidden rounded-xl object-cover lg:w-72 xl:w-80  self-start"
+              :src="lg ? (theater.setlist?.poster ?? theater.setlist?.banner) : (theater.setlist?.banner ?? theater.setlist?.poster) ?? config.errorPicture" alt="Theater Poster" :modifiers="{
+                aspectRatio: lg ? '15/9' : '9/12',
+              }" loading="lazy" fit="fill"
               sizes="150px xs:170px sm:500px md:192px xl:320px" format="webp"
             />
-            <div class="md:px-3 md:pt-1 flex-1 flex flex-col gap-2">
+            <div class="lg:px-3 md:pt-1 flex-1 flex flex-col gap-2">
               <span v-if="data.shows.length > 1" class="bg-red-500 py-0.5 px-1.5 rounded-md">
                 {{ $t('theater_show_number', { number: idx + 1 }) }}
               </span>
@@ -100,7 +106,7 @@ useHead({
                 />
                 <AdminEditTheaterButton :theater-data="theater" />
               </div>
-              <div class="font-light opacity-80">
+              <div class="font-light opacity-80 text-sm md:text-base">
                 {{ theater.setlist?.description && theater.setlist?.description !== '' ? theater.setlist.description : "Tidak ada deskripsi." }}
               </div>
 
@@ -140,16 +146,16 @@ useHead({
                     <div
                       class="grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(130px,1fr))] md:flex flex-wrap gap-4 md:gap-5"
                     >
-                      <NuxtLink v-for="member in theater.seitansai" :key="member.id" :to="member.url_key ? `/member/${member.url_key}` : undefined">
-                        <Image
-
-                          class="bg-container block aspect-8/10 w-25 md:w-30 overflow-hidden rounded-xl object-cover"
-                          :src="member.img || pic" alt="Default member picture" fit="fill" :modifiers="{
-                            aspectRatio: '8/10',
-                            gravity: 'faceCenter',
-                          }" sizes="100px md:180px" :placeholder="[8, 10, 75, 5]" format="webp"
-                        />
-                      </NuxtLink>
+                      <TheaterMemberCard
+                        v-for="member in theater.seitansai"
+                        :key="member.id"
+                        :member="member"
+                        :fallback-img="pic"
+                        :show-name="false"
+                        root-class="group"
+                        image-wrapper-class="overflow-hidden rounded-xl bg-container"
+                        image-class="w-25 md:w-30"
+                      />
                     </div>
                     <p class="text-sm md:text-base leading-relaxed text-black/75 dark:text-white/75 flex gap-1.5 flex-wrap">
                       <i18n-t keypath="seitansai_text" tag="span">
@@ -173,13 +179,15 @@ useHead({
                     <div
                       class="grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(130px,1fr))] md:flex flex-wrap gap-4 md:gap-5"
                     >
-                      <Image
-                        v-for="member in theater.graduation" :key="member.id"
-                        class="bg-container block aspect-8/10 w-25 md:w-30 overflow-hidden rounded-xl object-cover"
-                        :src="member.img || pic" alt="Default member picture" fit="fill" :modifiers="{
-                          aspectRatio: '8/10',
-                          gravity: 'faceCenter',
-                        }" sizes="100px md:180px" :placeholder="[8, 10, 75, 5]" format="webp"
+                      <TheaterMemberCard
+                        v-for="member in theater.graduation"
+                        :key="member.id"
+                        :member="member"
+                        :fallback-img="pic"
+                        :show-name="false"
+                        root-class="group"
+                        image-wrapper-class="overflow-hidden rounded-xl bg-container"
+                        image-class="w-25 md:w-30"
                       />
                     </div>
                     <p class="text-sm md:text-base leading-relaxed text-black/75 dark:text-white/75">
@@ -198,14 +206,9 @@ useHead({
                     </p>
                   </div>
                 </div>
-                <div id="ticketBox" class="flex flex-col gap-2 w-full md:w-50 lg:w-62.5 xl:w-70">
+                <div id="ticketBox" class="flex flex-col gap-2 w-full md:w-60 lg:w-62.5 xl:w-70 max-md:border-t max-md:border-dashed max-md:border-color-1 max-md:pt-1">
                   <div class="font-semibold mt-2 flex items-center gap-2">
-                    <div class="bg-yellow-500/15 size-6 flex items-center justify-center rounded-md">
-                      <Icon
-                        :name="getTheaterState(theater.date) === 'ended' ? 'pepicons-pop:internet' : 'ep:ticket'"
-                        class="text-yellow-500"
-                      />
-                    </div>
+                    <HeaderIcon :icon="getTheaterState(theater.date) === 'ended' ? 'pepicons-pop:internet' : 'ep:ticket'" color-class="text-yellow-500 bg-yellow-500/15" />
                     <span>{{ $t(getTheaterState(theater.date) === 'ended' ? 'official_link' : 'theater_ticket')
                     }}</span>
                   </div>
@@ -247,23 +250,12 @@ useHead({
               v-if="theater.members?.length"
               class="grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] gap-2 md:grid-cols-[repeat(auto-fill,minmax(130px,1fr))] md:gap-3.5"
             >
-              <NuxtLink
-                v-for="member in theater.members" :key="member.id"
-                :to="member.url_key ? `/member/${member.url_key}` : undefined" class="flex flex-col space-y-2 group"
-              >
-                <div class="overflow-hidden rounded-xl bg-container">
-                  <Image
-                    class="block aspect-8/10 size-full object-cover group-hover:scale-110 transition-transform duration-300"
-                    :src="member.img ?? pic" alt="Member picture" fit="fill" :modifiers="{
-                      aspectRatio: '8/10',
-                      gravity: 'faceCenter',
-                    }" sizes="100px md:180px" :placeholder="[8, 10, 75, 5]" format="webp"
-                  />
-                </div>
-                <div class="truncate text-sm md:text-base text-center">
-                  {{ member.name }}
-                </div>
-              </NuxtLink>
+              <TheaterMemberCard
+                v-for="member in theater.members"
+                :key="member.id"
+                :member="member"
+                :fallback-img="pic"
+              />
             </div>
             <div
               v-else

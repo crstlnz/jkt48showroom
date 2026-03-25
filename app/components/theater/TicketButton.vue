@@ -21,7 +21,7 @@ withDefaults(defineProps<{
     :to="to"
     :external="external"
     :target="target"
-    class="group relative isolate flex aspect-[12/2.2] md:aspect-12/3 overflow-hidden rounded-xl  text-white transition-all duration-200"
+    class="group relative isolate flex aspect-[12/2.2] md:aspect-12/3 overflow-hidden rounded-xl text-white transition-all duration-200"
   >
     <div
       class="absolute inset-0"

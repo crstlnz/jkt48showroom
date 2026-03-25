@@ -12,7 +12,7 @@ const { locale } = useI18n()
         {{ $t("error.unknown") }}
       </div>
       <div v-else-if="pending" class="flex flex-col gap-3.5">
-        <div v-for="num in 5" :key="num" class="flex animate-pulse flex-col pb-3" :class="{ 'border-b border-dashed border-black/20 dark:border-white/20': num !== 5 }">
+        <div v-for="num in 5" :key="num" class="flex animate-pulse flex-col pb-3" :class="{ 'border-b border-dashed border-color-2': num !== 5 }">
           <div class="mb-1 flex items-center gap-2 text-sm font-light">
             <div class="pulse-color h-4.5 w-14.5 rounded-[3px]" />
             <div class="pulse-color h-4 w-24 rounded-[3px] text-sm" />
@@ -23,9 +23,10 @@ const { locale } = useI18n()
         </div>
       </div>
       <div v-else-if="data" class="flex flex-col gap-3.5">
-        <div v-for="[index, news] in newsFilter.entries()" :key="news.id" class="pb-3" :class="{ 'border-b-2 border-dashed border-black/20 dark:border-white/20': index !== newsFilter.length - 1 }">
+        <div v-for="[index, news] in newsFilter.entries()" :key="news.id" class="pb-3" :class="{ 'border-b border-dashed border-color-2': index !== newsFilter.length - 1 }">
           <div class="mb-1 flex items-center gap-2 text-sm font-light">
             <Image
+              v-if="news.label"
               class="h-4.75 w-14 rounded-[3px]"
               :src="`${$imgCDN}/assets/jkt48${news.label}`"
               alt="Label"
@@ -34,7 +35,8 @@ const { locale } = useI18n()
               width="56px"
               format="webp"
             />
-            <span>{{ $dayjs(news.date).locale(locale).format("DD MMMM YYYY") }}</span>
+            <NewsCategoryBadge v-else-if="news.category" :category="news.category" variant="soft" />
+            <span class="text-sm font-thin opacity-85">{{ $dayjs(news.date).locale(locale).format("DD MMMM YYYY") }}</span>
           </div>
           <NuxtLink :to="`/news/${news.id}`" class="inline-block leading-5">
             {{ news.title }}

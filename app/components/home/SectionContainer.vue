@@ -21,7 +21,7 @@ defineEmits<{
 </script>
 
 <template>
-  <div class="space-y-3 pb-5 max-sm:pb-8 max-sm:border-b border-color-1" :class="rootClass">
+  <div class="space-y-3 pb-2 max-sm:pb-3 max-sm:border-b border-color-1" :class="rootClass">
     <div class="flex gap-1.5 items-center px-3 md:px-4" :class="headerClass" @click="$emit('headerClick')">
       <div class="flex flex-1 items-center gap-2">
         <slot name="icon">
