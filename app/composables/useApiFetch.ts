@@ -53,7 +53,6 @@ export function useApiFetch<T>(url: Parameters<typeof useFetch<T>>[0], options: 
   // for nice deep defaults, please use unjs/defu
   const params = defu(fetchOptions, defaults)
 
-  console.log('Headers', getHeadersToken())
   params.headers = {
     ...params.headers,
     ...getHeadersToken(),

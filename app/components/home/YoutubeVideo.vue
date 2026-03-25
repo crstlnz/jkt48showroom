@@ -17,7 +17,7 @@ const mockloading = ref(false)
   <HomeSectionContainer
     :title="$t('page.title.jkt48youtube')"
     icon="logos:youtube-icon"
-    :without-padding="(data?.length ?? 0) > 0"
+    without-padding
     @header-click="() => mockloading = !mockloading"
   >
     <template #icon>
@@ -29,80 +29,85 @@ const mockloading = ref(false)
     </template>
 
     <div
-      v-if="(pending && !data) || mockloading" key="loading"
-      class="grid grid-rows-1 gap-x-4 gap-y-5 sm:gap-y-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 animate-pulse"
+      :class="{
+        'sm:px-3 md:px-4': data,
+      }"
     >
-      <div v-for="key in 6" :key="key" class="flex flex-col gap-3 rounded-xl">
-        <div class="bg-container sm:rounded-xl aspect-video w-full" />
-        <div class="flex gap-3 max-sm:px-3">
-          <div
-            class="bg-container aspect-square relative group overflow-hidden rounded-full w-9 shrink-0 self-start"
-          />
-          <div class="flex flex-1 flex-col">
-            <div class="flex flex-1 gap-y-1 flex-wrap text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-              <div class="w-full bg-container rounded-md h-5" />
-              <div class="max-sm:hidden w-full bg-container rounded-md h-5" />
-            </div>
-            <div class="flex flex-1 flex-col gap-1 mt-2 sm:mt-1">
-              <div class="max-sm:hidden sm:w-1/4 bg-container rounded-md h-3 sm:h-4" />
-              <div class="w-2/4 bg-container rounded-md h-3 sm:h-4" />
+      <div
+        v-if="(pending && !data) || mockloading" key="loading"
+        class="grid grid-rows-1 gap-x-4 gap-y-5 sm:gap-y-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 animate-pulse"
+      >
+        <div v-for="key in 6" :key="key" class="flex flex-col gap-3 rounded-xl">
+          <div class="bg-container sm:rounded-xl aspect-video w-full" />
+          <div class="flex gap-3 max-sm:px-3">
+            <div
+              class="bg-container aspect-square relative group overflow-hidden rounded-full w-9 shrink-0 self-start"
+            />
+            <div class="flex flex-1 flex-col">
+              <div class="flex flex-1 gap-y-1 flex-wrap text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+                <div class="w-full bg-container rounded-md h-5" />
+                <div class="max-sm:hidden w-full bg-container rounded-md h-5" />
+              </div>
+              <div class="flex flex-1 flex-col gap-1 mt-2 sm:mt-1">
+                <div class="max-sm:hidden sm:w-1/4 bg-container rounded-md h-3 sm:h-4" />
+                <div class="w-2/4 bg-container rounded-md h-3 sm:h-4" />
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div
-      v-else-if="data?.length" key="hasdata"
-      class="grid grid-rows-1 gap-x-4 gap-y-5 sm:gap-y-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-    >
-      <div v-for="video in data.slice(0, 6)" :key="video.etag" class="flex flex-col gap-3 rounded-xl">
-        <NuxtLink
-          :to="video.url" target="_blank" external
-          class="aspect-video w-full relative group overflow-hidden sm:rounded-xl"
-        >
-          <img
-            :src="video.thumbnails?.medium?.url ?? $errorPicture" :alt="`${video.channelTitle} profile picture`"
-            class="size-full -z-10 object-cover transition-transform duration-500"
-          >
-        </NuxtLink>
-        <div class="flex gap-3 max-sm:px-3">
+      <div
+        v-else-if="data?.length" key="hasdata"
+        class="grid grid-rows-1 gap-x-4 gap-y-5 sm:gap-y-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+      >
+        <div v-for="video in data.slice(0, 6)" :key="video.etag" class="flex flex-col gap-3 rounded-xl">
           <NuxtLink
-            :to="`https://www.youtube.com/${video.channelUrl}`" target="_blank" external
-            class="aspect-square relative group overflow-hidden rounded-full w-9 shrink-0 self-start"
+            :to="video.url" target="_blank" external
+            class="aspect-video w-full relative group overflow-hidden sm:rounded-xl"
           >
             <img
-              src="https://res.cloudinary.com/haymzm4wp/image/upload/s--GIdv3Qf1--/t_media_lib_thumb/uploads/mbcry7wbt4pwk1ejf2rs" :alt="`${video.channelTitle} profile picture`"
+              :src="video.thumbnails?.medium?.url ?? $errorPicture" :alt="`${video.channelTitle} profile picture`"
               class="size-full -z-10 object-cover transition-transform duration-500"
             >
           </NuxtLink>
-          <div class="flex flex-col gap-1">
-            <a :href="video.url" target="_blank" class="line-clamp-2 text-base md:text-lg font-bold leading-5">
-              {{ decodeHtml(video.title) }}
-            </a>
-            <div class="flex gap-x-1 flex-wrap text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-              <a :href="`https://youtube.com/${video.channelUrl}`" target="_blank" class="sm:w-full">{{ video.channelTitle }}</a>
-              <div class="sm:hidden">
-                •
+          <div class="flex gap-3 max-sm:px-3">
+            <NuxtLink
+              :to="`https://www.youtube.com/${video.channelUrl}`" target="_blank" external
+              class="aspect-square relative group overflow-hidden rounded-full w-9 shrink-0 self-start"
+            >
+              <img
+                src="https://res.cloudinary.com/haymzm4wp/image/upload/s--GIdv3Qf1--/t_media_lib_thumb/uploads/mbcry7wbt4pwk1ejf2rs" :alt="`${video.channelTitle} profile picture`"
+                class="size-full -z-10 object-cover transition-transform duration-500"
+              >
+            </NuxtLink>
+            <div class="flex flex-col gap-1">
+              <a :href="video.url" target="_blank" class="line-clamp-2 text-base md:text-lg font-bold leading-5">
+                {{ decodeHtml(video.title) }}
+              </a>
+              <div class="flex gap-x-1 flex-wrap text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+                <a :href="`https://youtube.com/${video.channelUrl}`" target="_blank" class="sm:w-full">{{ video.channelTitle }}</a>
+                <div class="sm:hidden">
+                  •
+                </div>
+                <div class="">
+                  {{ youtubeViewsFormat(video.statistics?.viewCount, locale) }}
+                </div>
+                <div>•</div>
+                <div>{{ useDayjs()(video.date).locale(locale).fromNow() }}</div>
               </div>
-              <div class="">
-                {{ youtubeViewsFormat(video.statistics?.viewCount,
-                                      locale) }}
-              </div>
-              <div>•</div>
-              <div>{{ useDayjs()(video.date).locale(locale).fromNow() }}</div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div v-else key="nodata" class="w-full">
-      <div class="bg-container rounded-xl space-y-4 overflow-hidden py-4 text-center dark:bg-dark-1">
-        <Image
-          :src="`${$imgCDN}/assets/svg/web/no_data.svg`" alt="Empty"
-          class="mx-auto aspect-square w-50 max-w-[80%] dark:brightness-110"
-        />
-        <div class="text-base">
-          Sorry, but there is no recents right now :(
+      <div v-else key="nodata" class="w-full">
+        <div class="bg-container rounded-xl space-y-4 overflow-hidden py-10 text-center dark:bg-dark-1">
+          <Image
+            :src="`${$imgCDN}/assets/svg/web/no_data.svg`" alt="Empty"
+            class="mx-auto aspect-square w-50 max-w-[80%] dark:brightness-110"
+          />
+          <div class="text-base">
+            Sorry, but there is no recents right now :(
+          </div>
         </div>
       </div>
     </div>
