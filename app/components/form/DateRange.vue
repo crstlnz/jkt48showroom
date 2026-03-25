@@ -21,8 +21,8 @@ const { firstDate } = useSettings()
 watch(date, (d) => {
   emit('update:modelValue', d
     ? {
-        start: d[0].getTime(),
-        end: d[1].getTime(),
+        start: d[0]?.getTime(),
+        end: d[1]?.getTime(),
       }
     : undefined)
 })
@@ -76,10 +76,10 @@ useEventListener(win, 'scroll', () => {
   --dp-button-icon-height: 22px;
   --dp-menu-min-width: 350px;
 
-  @media screen and (max-width: 400px) {
-    --dp-menu-min-width: 95%;
-    --dp-input-padding: 10px 30px 10px 12px;
-  }
+  // @media screen and (max-width: 400px) {
+  //   --dp-menu-min-width: 95%;
+  //   --dp-input-padding: 10px 30px 10px 12px;
+  // }
 }
 
 .dp__theme_dark {
@@ -123,5 +123,13 @@ useEventListener(win, 'scroll', () => {
    --dp-icon-color: #959595;
    --dp-danger-color: #ff6f60;
    --dp-highlight-color: rgba(25, 118, 210, 0.1);
+}
+
+@media screen and (max-width: 640px) {
+  .dp--menu-wrapper {
+    width: 95vw !important;
+    top: 50% !important;
+    translate: 0 -50%;
+  }
 }
 </style>

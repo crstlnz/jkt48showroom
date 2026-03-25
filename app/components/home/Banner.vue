@@ -122,10 +122,10 @@ watch(isHovered, (v) => {
 </script>
 
 <template>
-  <div ref="container" class="relative aspect-3/1 overflow-hidden shadow-2xs lg:aspect-[4.5/1] bg-container border-none!">
+  <div ref="container" class="relative aspect-3/1 overflow-hidden shadow-2xs lg:aspect-4.5/1 bg-container border-none!">
     <div class="m-2 absolute max-md:left-1/2 max-md:-translate-x-1/2 md:right-0 bottom-0 z-10 flex">
       <button
-        v-for="[i, b] in banner?.entries()" :key="b.url + i" v-element-hover="[(s) => { if (s) { index = i; console.log('hovered', index) } }, { delayEnter: 500 }]" :index="i"
+        v-for="[i, b] in banner?.entries()" :key="b.url + i" :index="i"
         type="button" aria-label="Banner button" class="p-0.5"
         @click="() => index = i"
       >
@@ -141,12 +141,12 @@ watch(isHovered, (v) => {
       leave-from-class="opacity-100"
       leave-to-class="opacity-0"
     >
-      <div v-if="banner![index]" :key="index" :title="banner![index]?.title" class="aspect-3/1 lg:aspect-[4.5/1] overflow-hidden shadow-2xs bg-container border-none!">
+      <div v-if="banner![index]" :key="index" :title="banner![index]?.title" class="aspect-3/1 lg:aspect-4.5/1 overflow-hidden shadow-2xs bg-container border-none!">
         <a
           :aria-label="banner![index]?.title"
           :href="banner![index]?.url"
           target="_blank"
-          class="aspect-3/1 lg:aspect-[4.5/1] block transition-all duration-300 focus-visible:brightness-75"
+          class="aspect-3/1 lg:aspect-4.5/1 block transition-all duration-300 focus-visible:brightness-75"
         >
           <Image
             sizes="600px sm:750px md:900px lg:1000px"
@@ -154,12 +154,12 @@ watch(isHovered, (v) => {
               aspectRatio: 4.5 / 1,
             }"
             :placeholder="[45, 10, 75, 50]"
-            fetchpriority="high"
+            :preload="{ fetchPriority: 'high' }"
+            loading="eager"
             densities="x1"
             width="450"
             height="100"
             fit="fill"
-            preload
             format="webp"
             :alt="banner![index]?.title"
             class="w-full h-full object-cover"

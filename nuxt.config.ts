@@ -113,6 +113,13 @@ export default defineNuxtConfig({
     componentIslands: true,
     asyncContext: true,
     watcher: 'parcel',
+    defaults: {
+      nuxtLink: {
+        prefetchOn: {
+          interaction: true,
+        },
+      },
+    },
   },
   pwa: {
     registerType: 'autoUpdate',
@@ -200,7 +207,9 @@ export default defineNuxtConfig({
       navigateFallbackDenylist: [/^\/api\//],
       runtimeCaching: [
         {
-          urlPattern: ({ request }) => request.mode === 'navigate',
+          // Avoid function matcher: Workbox generateSW in this setup fails to serialize it.
+          // Match same-origin HTML-like routes (no file extension), excluding API and Nuxt assets.
+          urlPattern: /^https?:\/\/[^/]+\/(?!api\/)(?!_nuxt\/)(?!.*\.[a-z0-9]{2,8}(?:$|\?)).*/i,
           handler: 'NetworkFirst',
           options: {
             cacheName: 'html-pages-cache',
@@ -329,7 +338,7 @@ export default defineNuxtConfig({
     },
   },
   devtools: {
-    enabled: true,
+    enabled: isDev,
     timeline: {
       enabled: true,
     },
@@ -388,6 +397,19 @@ export default defineNuxtConfig({
     build: {
       commonjsOptions: {
         transformMixedEsModules: true,
+      },
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (
+              id.includes('DateRange.vue')
+              || id.includes('vue-datepicker')
+              || id.includes('flatpickr')
+            ) {
+              return 'chunk-datepicker'
+            }
+          },
+        },
       },
     },
   },

@@ -8,7 +8,11 @@ export default defineNuxtPlugin(() => {
   FloatingVue.options.themes.tooltip.triggers = ['hover', 'focus', 'touch', 'click']
   FloatingVue.options.themes.tooltip.hideTriggers = (events: any) => [...events, 'scroll', 'click']
   const { y } = useScroll(document)
-  watch(y, () => {
-    hideAllPoppers()
-  })
+  const hideOnScroll = useThrottleFn(() => {
+    requestAnimationFrame(() => {
+      hideAllPoppers()
+    })
+  }, 200)
+
+  watch(y, hideOnScroll)
 })

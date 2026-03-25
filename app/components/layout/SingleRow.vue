@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { useNavScroll } from '~/composables/useNavScroll'
+
 withDefaults(defineProps<{
   title: string
   subTitle?: string
@@ -35,30 +37,8 @@ function back() {
 const navBar = ref<HTMLElement>()
 
 const { isMobile } = useResponsive()
-const lastScroll = ref(0)
-const navShow = ref(true)
-const doc = ref()
-const lastDirectionScroll = ref(0)
-useEventListener(doc, 'scroll', () => {
-  const navHeight = navBar.value?.clientHeight ?? 0
-  if (isMobile) {
-    if (window.scrollY < navHeight) return navShow.value = true
-    const val = window.scrollY - lastScroll.value
-    lastScroll.value = window.scrollY
-    if ((val > 0) !== (lastDirectionScroll.value > 0)) {
-      lastDirectionScroll.value = val
-    }
-    else {
-      lastDirectionScroll.value += val
-    }
-    if (val === 0) return
-    if (Math.abs(lastDirectionScroll.value) > 30) navShow.value = lastDirectionScroll.value < 0
-  }
-})
 
-onMounted(() => {
-  doc.value = document
-})
+const { navShow } = useNavScroll(navBar)
 
 const id = computed(() => {
   if (route.path.startsWith('/theater/')) {

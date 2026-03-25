@@ -155,6 +155,10 @@ onMounted(() => {
   originalHeight.value = element.value?.clientHeight ?? 0
   if (props.mustCalculateHeight && !isMobile) calculateHeight(height.value)
 })
+
+const DateRangeX = defineAsyncComponent(() =>
+  import('@/components/form/DateRange.vue'),
+)
 </script>
 
 <template>
@@ -188,7 +192,7 @@ onMounted(() => {
     </div>
 
     <ul
-      class="max-h-[250px] overflow-y-auto rounded-xl bg-slate-200/70 dark:bg-dark-2"
+      class="max-h-62.5 overflow-y-auto rounded-xl bg-slate-200/70 dark:bg-dark-2"
     >
       <li v-for="item in SortList" :key="item.id">
         <button
@@ -209,9 +213,11 @@ onMounted(() => {
     </div>
 
     <Suspense>
-      <LazyFormDateRange v-model="date" />
       <template #fallback>
         <div class="bg-slate-200/70 dark:bg-dark-2 rounded-xl h-[42.19px] w-full animate-pulse" />
+      </template>
+      <template #default>
+        <DateRangeX v-model="date" />
       </template>
     </Suspense>
     <div
