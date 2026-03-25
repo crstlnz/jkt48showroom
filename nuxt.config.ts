@@ -21,13 +21,13 @@ export default defineNuxtConfig({
           `,
         },
       ],
-      link: [
-        {
-          rel: 'preconnect',
-          href: 'https://api.crstlnz.my.id',
-          crossorigin: 'anonymous',
-        },
-      ],
+      // link: [
+      //   {
+      //     rel: 'preconnect',
+      //     href: 'https://api.crstlnz.my.id',
+      //     crossorigin: 'anonymous',
+      //   },
+      // ],
     },
     rootId: 'app',
     layoutTransition: { name: 'layout', mode: 'out-in' },
