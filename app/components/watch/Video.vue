@@ -10,6 +10,7 @@ const props = withDefaults(
     useShortcut?: boolean
     useDefaultControl?: boolean
     hideControl?: boolean
+    hideCursorWhenPlaying?: boolean
     maxBufferSize?: number
     maxMaxBufferLength?: number
     saveState?: boolean
@@ -22,6 +23,7 @@ const props = withDefaults(
     useShortcut: true,
     useDefaultControl: false,
     hideControl: false,
+    hideCursorWhenPlaying: true,
     saveState: true,
     rotateFill: 'width',
     compact: false,
@@ -962,7 +964,7 @@ defineExpose({
     class="overflow-hidden relative group flex items-center transform-all duration-300 size-full!"
     :style="{ aspectRatio: enableRotate && rotateFill === 'width' ? aspectRatio : (isYouTube ? aspectRatio : undefined) }"
     :class="{
-      'cursor-none!': !showControl && isPlaying,
+      'cursor-none!': hideCursorWhenPlaying && !showControl && isPlaying,
     }"
   >
     <!-- ── YouTube iframe ─────────────────────────────────────────── -->

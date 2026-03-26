@@ -120,13 +120,12 @@ const dragHandle = ref<HTMLElement | null>(null)
 const gesture = ref()
 const isDragging = ref(false)
 
-// Keep the pointer captured to avoid losing drag when the DOM/layout updates during reorder.
-useEventListener(dragHandle, 'pointerdown', (e: PointerEvent) => {
+function capturePointer(e: PointerEvent) {
   try {
     ;(e.currentTarget as HTMLElement | null)?.setPointerCapture?.(e.pointerId)
   }
   catch {}
-})
+}
 
 onMounted(() => {
   const el = dragHandle.value ?? container.value
@@ -167,6 +166,7 @@ defineExpose({ refresh, video: videoElement, data: props.video, remove, id: prop
     ref="container"
     class="flex items-center flex-col touch-none"
     :data-dragging="isDragging ? 'true' : 'false'"
+    @pointerdown="capturePointer"
   >
     <div class="overflow-hidden flex-1 h-0 bg-black/50 self-stretch flex items-center">
       <div class="size-full relative">
@@ -196,6 +196,7 @@ defineExpose({ refresh, video: videoElement, data: props.video, remove, id: prop
           :max-max-buffer-length="300"
           :save-state="false"
           :compact="true"
+          :hide-cursor-when-playing="false"
           :use-default-control="true"
           @source-error="onSourceNotFound"
         />
