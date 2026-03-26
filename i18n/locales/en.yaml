@@ -201,6 +201,7 @@ month: Month | Months
 year: Year | Years
 sorter:
   title: Rank result
+  title_with_name: Rank result {name}
   reset: Reset
   restart: Restart
   undo: Undo
@@ -219,6 +220,15 @@ sorter:
   all_generation: All Generation
   profile_picture: "{name} Profile Picture"
   share_result_title: Oshi Sorter Result
+  share_name_title: Name for sharing
+  share_name_edit_title: Change share name
+  share_name_placeholder: Your name
+  share_name_preview: Share title will be
+  share_name_required: Name cannot be empty
+  share_copy_failed: Failed to copy link
+  share_save: Save
+  share_save_and_share: Save & Share
+  share_cancel: Cancel
   share_download_success: Result image downloaded
   share_download_failed: Failed to generate share image
   unknown_member: Not found!

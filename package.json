@@ -1,7 +1,7 @@
 {
   "name": "jkt48showroom",
   "type": "module",
-  "version": "0.25.5",
+  "version": "0.25.6",
   "engines": {
     "node": "20.x.x"
   },
@@ -19,6 +19,7 @@
     "docker": "bun docker:build && bun docker:push"
   },
   "dependencies": {
+    "@fingerprintjs/fingerprintjs": "^5.1.0",
     "@headlessui/tailwindcss": "^0.2.2",
     "@headlessui/vue": "^1.7.23",
     "@nuxt/image": "2.0.0",

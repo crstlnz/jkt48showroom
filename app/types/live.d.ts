@@ -53,6 +53,7 @@ interface INextLive {
 interface IMember {
   name: string
   nicknames: string[]
+  jkt48_id?: string | number
   img: string
   img_alt?: string
   url: string

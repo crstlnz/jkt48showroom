@@ -201,6 +201,7 @@ month: Bulan
 year: Tahun
 sorter:
   title: Hasil ranking
+  title_with_name: Hasil ranking {name}
   reset: Reset
   restart: Ulangi
   undo: Undo
@@ -219,6 +220,15 @@ sorter:
   all_generation: Semua Generasi
   profile_picture: Foto Profil {name}
   share_result_title: Hasil Oshi Sorter
+  share_name_title: Nama untuk share
+  share_name_edit_title: Ganti nama share
+  share_name_placeholder: Nama kamu
+  share_name_preview: Judul share akan menjadi
+  share_name_required: Nama tidak boleh kosong
+  share_copy_failed: Gagal menyalin link
+  share_save: Simpan
+  share_save_and_share: Simpan & Bagikan
+  share_cancel: Batal
   share_download_success: Gambar hasil berhasil diunduh
   share_download_failed: Gagal membuat gambar hasil
   unknown_member: Tidak ditemukan!

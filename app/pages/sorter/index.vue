@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { useMembers } from '~/store/members'
+import { toSortMember } from '~/utils/sorterResult'
 
 definePageMeta({
   layout: 'sorter',
@@ -13,15 +14,7 @@ onMounted(() => {
 })
 
 const data = computed<ISortMember[]>(() => {
-  return members.value?.map<ISortMember>((i) => {
-    return {
-      id: (i as IMember & { _id: string })._id,
-      img: i.img_alt || i.img,
-      name: i.nicknames?.[0] || i.name,
-      generation: i.generation,
-      is_graduate: i.is_graduate,
-    }
-  }) ?? []
+  return members.value?.map(i => toSortMember(i as IMember & { _id: string, jkt48_id?: string | number })) ?? []
 })
 </script>
 

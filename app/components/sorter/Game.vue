@@ -1,13 +1,28 @@
 <script lang="ts" setup>
+import { encodeSorterResult, getSorterOwnerToken, sanitizeSorterShareName } from '~/utils/sorterResult'
+
 defineProps<{
   members: ISortMember[]
 }>()
 
 const filterList = useSessionStorage<string[]>('sorter-filterlist', [], { deep: true, listenToStorageChanges: true })
+const storedShareName = useLocalStorage('sorter-share-name', '')
 const { t } = useI18n()
-const { start, state, stop, GameState, setSelectedMember, cardOne, cardTwo, pick, undo, progress } = useMemberSorter()
-watch(state, (val) => {
-  if (val === GameState.FINISHED) navigateTo('/sorter/result')
+const { start, state, stop, GameState, setSelectedMember, cardOne, cardTwo, pick, undo, progress, result } = useMemberSorter()
+watch(state, async (val) => {
+  if (val === GameState.FINISHED) {
+    const owner = await getSorterOwnerToken()
+    const encoded = encodeSorterResult(result.value, {
+      ownerToken: owner,
+      shareName: sanitizeSorterShareName(storedShareName.value),
+    })
+    navigateTo({
+      path: '/sorter/result',
+      query: {
+        r: encoded,
+      },
+    })
+  }
 })
 
 function localizeFilter(filter: string) {
@@ -48,18 +63,18 @@ function localizeFilter(filter: string) {
         <div
           v-else
           key="game"
-          class="mt-8 flex w-full flex-col gap-3 md:gap-4"
+          class="mt-8 flex w-full flex-col gap-3"
         >
-          <div class="relative overflow-hidden rounded-xl bg-blue-500/50 text-white/90">
-            <div class="z-10 px-3 py-0.5 text-center text-sm">
+          <div class="relative overflow-hidden rounded-xl bg-blue-500/50 text-white/90 h-7">
+            <div class="absolute left-1/2 top-1/2 -translate-1/2 z-20 px-3 py-0.5 text-center text-sm">
               {{ $t('sorter.progress') }} {{ decimalFormat(progress * 100) }}%
             </div>
-            <div class="absolute inset-y-0 -z-10  bg-blue-500" :style="{ width: `${progress * 100}%` }" />
+            <div class="absolute inset-y-0 z-10  bg-blue-500" :style="{ width: `${progress * 100}%` }" />
           </div>
-          <Button class="rounded-full bg-green-500 p-2.5 text-lg font-bold text-white/90" @click="() => pick('tie')">
+          <Button class="rounded-xl bg-green-500 p-3.5 text-lg font-bold text-white/90" @click="() => pick('tie')">
             {{ $t('sorter.tie') }}
           </Button>
-          <Button class="rounded-full bg-red-500 p-2.5 text-lg font-bold text-white/90" @click="undo">
+          <Button class="rounded-xl bg-red-500 p-3.5 text-lg font-bold text-white/90" @click="undo">
             {{ $t('sorter.undo') }}
           </Button>
           <div class="mt-5">
