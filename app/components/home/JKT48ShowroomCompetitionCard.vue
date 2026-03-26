@@ -14,7 +14,7 @@ const isDetailPage = computed(() => route.path.startsWith('/jkt48showroom_compet
 </script>
 
 <template>
-  <HomeContainer :title="isDetailPage ? 'Top 3' : $t('competition.title_full')" icon="hugeicons:ranking" icon-color="bg-yellow-500/15 text-yellow-500" title-class="text-base!" no-padding>
+  <HomeContainer :title="isDetailPage ? 'Top 3' : $t('competition.title_full')" icon="hugeicons:ranking" icon-color="bg-yellow-500/15 text-yellow-500" title-class="text-base!">
     <template #right>
       <MoreButton v-if="!isDetailPage" to="/jkt48showroom_competition" :text="$t('more')" />
     </template>
@@ -23,7 +23,7 @@ const isDetailPage = computed(() => route.path.startsWith('/jkt48showroom_compet
       Top 3
     </template>
 
-    <div class="px-3 pb-3 md:px-4 md:pb-4">
+    <div class="pb-1.5">
       <!-- <p v-if="!isDetailPage" class="mb-2 text-[11px] opacity-60 md:text-xs">
         Top 3
       </p> -->

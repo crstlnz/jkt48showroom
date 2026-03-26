@@ -22,7 +22,7 @@ const sortedPaths = computed(() => {
     <OnClickOutside v-if="isOpen" class="hidden" :options="{ ignore: [re] }" @trigger="() => isOpen = false">
       <div />
     </OnClickOutside>
-    <div class="relative size-full group pointer-events-none">
+    <div class="relative size-full group" :class="{ 'pointer-events-none': !isOpen }">
       <div
         :class="{
           'rounded-xl size-full -translate-y-5 ': isOpen,

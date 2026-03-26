@@ -84,9 +84,9 @@ const birthdayBadge = computed(() => {
   <component
     :is="profileLink ? NuxtLink : 'div'"
     :to="profileLink"
-    class="group block h-full rounded-xl border border-black/8 bg-container p-3 transition-colors duration-200 hover:bg-hover/70 dark:border-white/8 dark:hover:bg-white/3"
+    class="group flex w-full h-full rounded-xl border border-black/8 bg-container p-3 transition-colors duration-200 max-sm:bg-hover/70 dark:max-sm:bg-white/3 sm:hover:bg-hover/70 dark:border-white/8 dark:hover:bg-white/3"
   >
-    <div class="flex items-center gap-2.5 md:gap-3">
+    <div class="flex-1 flex items-center gap-2.5 md:gap-3">
       <div class="relative shrink-0">
         <div class="overflow-hidden rounded-xl ring-1 ring-black/5 dark:ring-white/8">
           <Image
@@ -108,7 +108,6 @@ const birthdayBadge = computed(() => {
           <Icon name="twemoji:birthday-cake" size="0.75rem" />
         </div>
       </div>
-
       <div class="min-w-0 flex-1 space-y-1">
         <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
           <div class="min-w-0 flex-1">
@@ -118,7 +117,7 @@ const birthdayBadge = computed(() => {
           </div>
 
           <div
-            class="max-w-full shrink-0 rounded-full border px-2 py-0.75 text-[10px] leading-none font-semibold whitespace-nowrap"
+            class="max-w-full shrink-0 rounded-full border px-2 py-0.75 text-xs sm:text-[10px] leading-none font-semibold whitespace-nowrap"
             :class="birthdayBadge.pillClass"
           >
             {{ birthdayBadge.label }}
@@ -130,7 +129,7 @@ const birthdayBadge = computed(() => {
           <span class="truncate">{{ $dayjs(member.birthdate).locale(locale).format("DD MMMM YYYY") }}</span>
         </div>
 
-        <div v-if="nextAgeLabel" class="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs text-black/58 dark:text-white/58">
+        <div v-if="nextAgeLabel" class="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-sm text-black/58 dark:text-white/58">
           <Icon name="lucide:gift" class="shrink-0 text-[0.85rem]" />
           <span class="truncate">{{ nextAgeLabel }}</span>
         </div>

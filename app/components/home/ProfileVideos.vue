@@ -121,7 +121,7 @@ watch(selectedIndex, async () => {
 </script>
 
 <template>
-  <HomeContainer class="mx-3 mt-3 md:mx-4" title="Gen 14 Profile" no-padding icon="material-symbols:person-rounded" icon-color="bg-blue-500/15 text-blue-500">
+  <HomeContainer class="mx-3 mt-3 md:mx-4" title="Gen 14 Profile" icon="material-symbols:person-rounded" icon-color="bg-blue-500/15 text-blue-500">
     <template #right>
       <div
         v-if="pending && !data"
@@ -131,7 +131,7 @@ watch(selectedIndex, async () => {
         {{ videos.length }} {{ $t("member", videos.length) }}
       </span>
     </template>
-    <div class="px-3 pb-3 md:px-4 md:pb-4">
+    <div class="pb-1">
       <div
         v-if="error"
         class="flex w-full flex-col items-center justify-center gap-2 pb-2 pt-4 text-xs md:gap-3 md:text-sm"

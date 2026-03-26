@@ -22,7 +22,7 @@ withDefaults(defineProps<{
 
 <template>
   <div class="bg-container space-y-2 rounded-2xl shadow-2xs">
-    <div class="flex items-center gap-2 px-3 pt-3 md:px-4 md:pt-4" :class="{ 'pb-1': $slots.subtitle }">
+    <div class="flex items-center gap-2 px-4 pt-4" :class="{ 'pb-1': $slots.subtitle }">
       <div class="flex flex-1 items-center gap-2">
         <slot name="icon">
           <HeaderIcon :icon="icon" :color-class="iconColor ?? ''" />
@@ -64,7 +64,7 @@ withDefaults(defineProps<{
       >{{ moreText ? moreText : "More" }}</a>
     </div>
 
-    <div :class="{ 'px-3 md:px-4 pb-3 md:pb-4': !noPadding }">
+    <div :class="{ 'px-4 pb-4': !noPadding }">
       <slot />
     </div>
   </div>

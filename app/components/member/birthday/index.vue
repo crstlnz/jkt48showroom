@@ -18,7 +18,7 @@ const { data, pending, error } = useCachedFetch<IMemberBirthDay[]>('/api/next_bi
       <Image class="mx-auto w-72 max-w-[80%]" :src="`${$imgCDN}/assets/svg/web/empty-box.svg`" />
       <span>{{ $t("birthday.empty") }}</span>
     </div>
-    <div v-else class="grid grid-cols-2 lg:grid-cols-3 pb-3 gap-2 md:gap-3 max-sm:px-1.5">
+    <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 pb-3 gap-2 md:gap-3">
       <MemberBirthdayCard v-for="member in data" :key="member.room_id || member.name" :member="member" class="mt-2" />
     </div>
   </HomeContainer>
