@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+import { useMembers } from '~/store/members'
+import { useSettings } from '~/store/settings'
+
 const props = defineProps({
   showSearch: {
     type: Boolean,
@@ -28,6 +31,9 @@ const props = defineProps({
 const emit = defineEmits<{ (e: 'apply', filter: any): void, (e: 'title', title: string): void, (e: 'showDuration', show: boolean): void }>()
 const config = useAppConfig()
 const SortList: SortData[] = config.sortList
+const membersStore = useMembers()
+const { members: storeMembers } = storeToRefs(membersStore)
+const { group } = useSettings()
 
 const search = useState('filter-search', () => props.query.search)
 const date = useState<QueryDateRange>('filter-date', () => props.query.date)
@@ -103,6 +109,111 @@ function setSort(key: string) {
   temp.value.sort = key
 }
 
+const fallbackGeneration = computed(() => {
+  return generateGen()[group as 'jkt48' | 'hinatazaka46'] ?? []
+})
+
+const sourceMembers = computed(() => {
+  if (Array.isArray(props.members) && props.members.length) {
+    return props.members as Array<{ generation?: string }>
+  }
+  return (storeMembers.value ?? []) as Array<{ generation?: string }>
+})
+
+const dynamicGeneration = computed(() => {
+  const generationKeys = Array.from(
+    new Set(
+      sourceMembers.value
+        .map(member => member.generation)
+        .filter((generation): generation is string => Boolean(generation)),
+    ),
+  ).sort((a, b) => {
+    const numA = Number.parseInt(a.match(/gen(\d+)/i)?.[1] || '0', 10)
+    const numB = Number.parseInt(b.match(/gen(\d+)/i)?.[1] || '0', 10)
+    if (numA !== numB) return numA - numB
+    return a.localeCompare(b)
+  })
+
+  return generationKeys.map((key) => {
+    const generationNumber = Number.parseInt(key.match(/gen(\d+)/i)?.[1] || '0', 10)
+    return {
+      key,
+      num: generationNumber,
+      short_title: parseGeneration(key, true) || key,
+      title: parseGeneration(key) || key,
+    }
+  })
+})
+
+const generation = computed(() => {
+  return dynamicGeneration.value.length ? dynamicGeneration.value : fallbackGeneration.value
+})
+const generationKeys = computed(() => generation.value.map(item => item.key))
+
+function normalizeGenerationToken(value: string) {
+  const normalized = value.trim().toLowerCase()
+  if (!normalized) return ''
+  if (/^gen\d{1,2}-[a-z0-9]+$/i.test(normalized)) return normalized
+  if (/^gen\d{1,2}$/i.test(normalized)) return `${normalized}-${group}`
+  if (/^\d{1,2}$/.test(normalized)) return `gen${normalized}-${group}`
+  return ''
+}
+
+function parseGenerationQuery(value: unknown) {
+  const raw = Array.isArray(value) ? value.join(',') : String(value ?? '')
+  return raw
+    .split(',')
+    .map(normalizeGenerationToken)
+    .filter(Boolean)
+}
+
+const selectedGenerationKeys = computed(() => {
+  if (!generationKeys.value.length) return []
+  const validGeneration = new Set(generationKeys.value)
+  const selected = parseGenerationQuery(temp.value.gen ?? props.query.gen)
+    .filter(key => validGeneration.has(key))
+
+  if (!selected.length) return [...generationKeys.value]
+  return generationKeys.value.filter(key => selected.includes(key))
+})
+
+const allGenerationSelected = computed(() => {
+  return generationKeys.value.length > 0 && selectedGenerationKeys.value.length === generationKeys.value.length
+})
+
+function setGenerationSelection(keys: string[]) {
+  const selected = generationKeys.value.filter(key => keys.includes(key))
+
+  if (selected.length === generationKeys.value.length) {
+    if (props.query.gen == null || props.query.gen === '') {
+      delete temp.value.gen
+    }
+    else {
+      temp.value.gen = ''
+    }
+    return
+  }
+
+  temp.value.gen = selected
+    .map(key => key.split('-')[0] || '')
+    .filter(Boolean)
+    .join(',')
+}
+
+function toggleGeneration(key: string) {
+  const selected = selectedGenerationKeys.value
+  if (selected.includes(key)) {
+    const next = selected.filter(item => item !== key)
+    if (!next.length) {
+      setGenerationSelection([...generationKeys.value])
+      return
+    }
+    setGenerationSelection(next)
+    return
+  }
+  setGenerationSelection([...selected, key])
+}
+
 function apply() {
   const q = { ...temp.value, search: search.value, date: date.value }
   for (const key of Object.keys(props.query)) {
@@ -151,6 +262,7 @@ useEventListener(el, 'resize', () => {
 })
 
 onMounted(() => {
+  membersStore.tryRefresh()
   el.value = window
   originalHeight.value = element.value?.clientHeight ?? 0
   if (props.mustCalculateHeight && !isMobile) calculateHeight(height.value)
@@ -263,6 +375,28 @@ const DateRangeX = defineAsyncComponent(() =>
       >
         Graduated
       </button>
+    </div>
+    <div v-if="generation.length" class="space-y-2">
+      <div class="flex flex-wrap gap-2">
+        <button
+          type="button"
+          class="rounded-full px-3 py-1 text-sm font-semibold transition-colors"
+          :class="allGenerationSelected ? 'bg-second-2/90 text-white' : 'bg-slate-200/70 dark:bg-dark-2'"
+          @click="setGenerationSelection([...generationKeys])"
+        >
+          {{ $t('sorter.all_generation') }}
+        </button>
+        <button
+          v-for="gen in generation"
+          :key="gen.key"
+          type="button"
+          class="rounded-full px-3 py-1 text-sm font-semibold transition-colors"
+          :class="selectedGenerationKeys.includes(gen.key) ? 'bg-second-2/90 text-white' : 'bg-slate-200/70 dark:bg-dark-2'"
+          @click="toggleGeneration(gen.key)"
+        >
+          {{ parseGeneration(gen.key, true) || gen.short_title || gen.key }}wew
+        </button>
+      </div>
     </div>
     <button
       type="button"

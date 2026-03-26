@@ -9,7 +9,7 @@ import {
 import { useMembers } from '~/store/members'
 import { useNotifications } from '~/store/notifications'
 import { useSettings } from '~/store/settings'
-import { decodeSorterResult, encodeSorterResult, getSorterMemberId, getSorterOwnerToken, hydrateSorterResult, sanitizeSorterOwnerToken, sanitizeSorterShareName, toSortMember } from '~/utils/sorterResult'
+import { decodeSorterResult, encodeSorterResult, getSorterMemberId, getSorterOwnerToken, hydrateSorterResult, localizeSorterFilter, sanitizeSorterOwnerToken, sanitizeSorterShareName, toSortMember } from '~/utils/sorterResult'
 
 definePageMeta({
   layout: 'sorter',
@@ -48,10 +48,11 @@ const legacyRouteOwnerToken = computed(() => {
   return sanitizeSorterOwnerToken(typeof value === 'string' ? value : '')
 })
 const shareUrl = computed(() => {
-  if (!import.meta.client) return settings.currentURL.value
+  if (!import.meta.client) return settings.currentURL
 
   const url = new URL(window.location.href)
   const encoded = encodeSorterResult(result.value, {
+    filterList: filterList.value,
     ownerToken: currentOwnerToken.value || decodedOwnerToken.value,
     shareName: savedShareName.value || decodedShareName.value,
   })
@@ -111,6 +112,7 @@ watch(routeResultToken, async (token) => {
       query: {
         ...route.query,
         r: encodeSorterResult(result.value, {
+          filterList: filterList.value,
           ownerToken: owner,
           shareName: savedShareName.value,
         }),
@@ -134,6 +136,7 @@ watch(routeResultToken, async (token) => {
 
   decodedShareName.value = decoded.shareName || legacyRouteShareName.value
   decodedOwnerToken.value = decoded.ownerToken || legacyRouteOwnerToken.value
+  filterList.value = decoded.filterList
 
   const hydrated = hydrateSorterResult(decoded.ranks, memberMap.value)
   if (!hydrated.length) {
@@ -158,6 +161,26 @@ function restart() {
   stop()
   filterList.value = []
   navigateTo('/sorter')
+}
+
+const restartButtonLabel = computed(() => {
+  return isOwner.value ? t('sorter.restart') : t('sorter.make_yours')
+})
+
+const restartButtonIcon = computed(() => {
+  return isOwner.value ? 'ph:arrow-clockwise-bold' : 'ph:sparkle-fill'
+})
+
+function restartOrPlay() {
+  if (isOwner.value) {
+    restart()
+    return
+  }
+  navigateTo('/sorter')
+}
+
+function localizeFilter(filter: string) {
+  return localizeSorterFilter(filter, t)
 }
 
 function onShareNameInput(event: Event) {
@@ -241,6 +264,7 @@ async function saveShareName() {
       query: {
         ...route.query,
         r: encodeSorterResult(result.value, {
+          filterList: filterList.value,
           ownerToken: currentOwnerToken.value || decodedOwnerToken.value || legacyRouteOwnerToken.value,
           shareName: sanitized,
         }),
@@ -303,6 +327,7 @@ onBeforeUnmount(() => {
           </span>
         </Button>
         <Button
+          v-if="isOwner"
           class="rounded-xl flex items-center bg-blue-500 px-2 h-7 text-white/90 text-sm md:px-3"
           :aria-label="$t('sorter.undo')"
           @click="undo"
@@ -314,21 +339,21 @@ onBeforeUnmount(() => {
         </Button>
         <Button
           class="rounded-xl flex items-center bg-red-500 px-2 h-7 text-white/90 text-sm md:px-3"
-          :aria-label="$t('sorter.restart')"
-          @click="restart"
+          :aria-label="restartButtonLabel"
+          @click="restartOrPlay"
         >
           <span class="flex h-5 items-center justify-center gap-1.5">
-            <Icon name="ph:arrow-clockwise-bold" class="h-4 w-4" />
-            <span class="hidden sm:inline">{{ $t('sorter.restart') }}</span>
+            <Icon :name="restartButtonIcon" class="h-4 w-4" />
+            <span class="hidden sm:inline">{{ restartButtonLabel }}</span>
           </span>
         </Button>
       </div>
     </div>
     <div class="mx-auto w-5xl max-w-full rounded-xl">
-      <div class="mx-auto max-w-3xl px-3 md:px-2">
+      <div v-if="filterList?.length > 0" class="mx-auto max-w-3xl px-3 md:px-2">
         <div class="flex flex-wrap gap-2 md:gap-3 pb-1.5">
           <div v-for="filter in filterList" :key="filter" class="rounded-xl bg-blue-400/25 px-2 py-1 text-xs dark:bg-blue-400/10 md:text-sm">
-            {{ filter }}
+            {{ localizeFilter(filter) }}
           </div>
         </div>
       </div>

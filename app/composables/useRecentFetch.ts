@@ -150,6 +150,15 @@ export default function (opts: RecentFetchOpts | null = null, q: RecentsQuery | 
     if (q.page < 1) q.page = 1
 
     if (q.filter !== 'graduated' && q.filter !== 'active') q.filter = 'all'
+    if (typeof q.gen === 'string') {
+      const generation = q.gen
+        .split(',')
+        .map(item => item.trim())
+        .filter(Boolean)
+        .join(',')
+      if (generation) q.gen = generation
+      else delete q.gen
+    }
     q.group = settings.group as Group
     return q
   }

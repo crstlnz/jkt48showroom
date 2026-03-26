@@ -46,7 +46,7 @@ function getFilterFromQuery() {
   const query = route.query
   const generation = !query.gen ? [] : String(query.gen || '')?.split(',').map(i => `${i}-${group}`)
   const graduate = !query.graduate ? defaultFilter.graduate : String(query.graduate) === 'true'
-  const active = !query.active ? defaultFilter.active : String(query.graduate) === 'true'
+  const active = !query.active ? defaultFilter.active : String(query.active) === 'true'
 
   return {
     generation: generation || [],
@@ -100,8 +100,45 @@ watch(search, () => {
 })
 
 const generations = computed(() => {
-  const gen = generateGen()
-  return gen[group]
+  const fallbackGeneration = generateGen()[group] ?? []
+  const dynamicGenerationKeys = Array.from(
+    new Set(
+      (raw.value ?? [])
+        .map(member => member.generation)
+        .filter((generation): generation is string => Boolean(generation)),
+    ),
+  ).sort((a, b) => {
+    const numA = Number.parseInt(a.match(/gen(\d+)/i)?.[1] || '0', 10)
+    const numB = Number.parseInt(b.match(/gen(\d+)/i)?.[1] || '0', 10)
+    if (numA !== numB) return numA - numB
+    return a.localeCompare(b)
+  })
+
+  const generationMap = new Map<string, { key: string, num: number, short_title: string, title: string }>()
+
+  for (const item of fallbackGeneration) {
+    generationMap.set(item.key, {
+      key: item.key,
+      num: item.num,
+      short_title: item.short_title || parseGeneration(item.key, true) || item.key,
+      title: item.title || parseGeneration(item.key) || item.key,
+    })
+  }
+
+  for (const key of dynamicGenerationKeys) {
+    const generationNumber = Number.parseInt(key.match(/gen(\d+)/i)?.[1] || '0', 10)
+    generationMap.set(key, {
+      key,
+      num: generationNumber,
+      short_title: parseGeneration(key, true) || key,
+      title: parseGeneration(key) || key,
+    })
+  }
+
+  return Array.from(generationMap.values()).sort((a, b) => {
+    if (a.num !== b.num) return a.num - b.num
+    return a.key.localeCompare(b.key)
+  })
 })
 
 const { isMobile } = useResponsive()

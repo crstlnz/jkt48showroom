@@ -67,6 +67,7 @@ interface IHistoryRecents {
 
 interface RecentsQuery {
   room_id?: number
+  gen?: string
   sort?: string
   order?: number
   search?: string

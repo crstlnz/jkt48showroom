@@ -1,6 +1,7 @@
+import { getGeneration } from './generation'
+
 type SorterResultRankIds = string | string[]
-type SorterResultPayloadV2 = [version: 2, ranks: SorterResultRankIds[], shareName?: string, ownerToken?: string]
-type SorterResultPayloadV3 = [version: 3, ranks: SorterResultRankIds[], shareName?: string, ownerToken?: string, filterList?: string[]]
+type SorterResultPayloadV3 = [version: 3, ranks: SorterResultRankIds[], shareName?: string, ownerToken?: string, filterList?: string]
 type SorterSourceMember = IMember & { _id: string, jkt48_id?: string | number }
 
 export const SORTER_RESULT_SCHEMA_VERSION = 3 as const
@@ -49,12 +50,64 @@ export function sanitizeSorterOwnerToken(value: unknown) {
 }
 
 export function sanitizeSorterFilterList(value: unknown) {
-  if (!Array.isArray(value)) return []
+  const values = typeof value === 'string'
+    ? value.split('.')
+    : Array.isArray(value)
+      ? value
+      : []
 
-  return value
-    .map(item => sanitizeSorterShareName(item))
+  const filters = values
+    .map(item => toSorterFilterCode(item))
     .filter(Boolean)
-    .slice(0, 20)
+
+  return Array.from(new Set(filters)).slice(0, 20)
+}
+
+const sorterFilterAliases: Record<string, 'm' | 'a' | 'g' | '*'> = {
+  'm': 'm',
+  'a': 'a',
+  'g': 'g',
+  '*': '*',
+  'all member': 'm',
+  'semua member': 'm',
+  'active member': 'a',
+  'member aktif': 'a',
+  'graduate member': 'g',
+  'member graduate': 'g',
+  'all generation': '*',
+  'semua generasi': '*',
+}
+
+function toGenerationFilterCode(normalized: string) {
+  const match = normalized.match(/^(\d{1,2})$/) || normalized.match(/^gen\s*(\d{1,2})$/)
+  if (!match) return ''
+
+  const generationNumber = Number.parseInt(match[1] || '', 10)
+  if (!Number.isInteger(generationNumber) || generationNumber < 1 || generationNumber > 99) return ''
+  return String(generationNumber)
+}
+
+function toSorterFilterCode(value: unknown) {
+  const normalized = sanitizeSorterShareName(value).toLowerCase()
+  if (!normalized) return ''
+  const aliasCode = sorterFilterAliases[normalized]
+  if (aliasCode) return aliasCode
+  return toGenerationFilterCode(normalized)
+}
+
+export function localizeSorterFilter(filter: string, t: (key: string) => string) {
+  const code = toSorterFilterCode(filter)
+  if (code === 'm') return t('sorter.all_member')
+  if (code === 'a') return t('sorter.active_member')
+  if (code === 'g') return t('sorter.graduate_member')
+  if (code === '*') return t('sorter.all_generation')
+
+  const generationNumber = Number.parseInt(code, 10)
+  if (Number.isInteger(generationNumber)) {
+    return getGeneration(generationNumber, true) || `Gen ${generationNumber}`
+  }
+
+  return sanitizeSorterShareName(filter)
 }
 
 export async function getSorterOwnerToken() {
@@ -113,7 +166,7 @@ export function encodeSorterResult(
   if (shareName || ownerToken || filterList.length) {
     payload.push(shareName)
     if (ownerToken || shareName) payload.push(ownerToken)
-    if (filterList.length || ownerToken || shareName) payload.push(filterList)
+    if (filterList.length || ownerToken || shareName) payload.push(filterList.join('.'))
   }
 
   return toBase64Url(JSON.stringify(payload))
@@ -152,7 +205,7 @@ export function decodeSorterResult(value: string) {
 
     const shareName = sanitizeSorterShareName(parsed[2])
     const ownerToken = sanitizeSorterOwnerToken(parsed[3])
-    const filterList = sanitizeSorterFilterList(parsed[4])
+    const filterList = sanitizeSorterFilterList(parsed[4] ?? parsed[3])
 
     return {
       ranks: ranks as SorterResultRankIds[],

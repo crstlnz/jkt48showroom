@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { encodeSorterResult, getSorterOwnerToken, sanitizeSorterShareName } from '~/utils/sorterResult'
+import { encodeSorterResult, getSorterOwnerToken, localizeSorterFilter, sanitizeSorterShareName } from '~/utils/sorterResult'
 
 defineProps<{
   members: ISortMember[]
@@ -13,6 +13,7 @@ watch(state, async (val) => {
   if (val === GameState.FINISHED) {
     const owner = await getSorterOwnerToken()
     const encoded = encodeSorterResult(result.value, {
+      filterList: filterList.value,
       ownerToken: owner,
       shareName: sanitizeSorterShareName(storedShareName.value),
     })
@@ -26,11 +27,7 @@ watch(state, async (val) => {
 })
 
 function localizeFilter(filter: string) {
-  if (['All Member', 'Semua Member'].includes(filter)) return t('sorter.all_member')
-  if (['Active Member', 'Member Aktif'].includes(filter)) return t('sorter.active_member')
-  if (['Graduate Member', 'Member Graduate'].includes(filter)) return t('sorter.graduate_member')
-  if (['All Generation', 'Semua Generasi'].includes(filter)) return t('sorter.all_generation')
-  return filter
+  return localizeSorterFilter(filter, t)
 }
 </script>
 

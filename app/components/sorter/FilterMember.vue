@@ -11,8 +11,36 @@ const filteredMembers = useSessionStorage<ISortMember[]>('sorter-members', [])
 const filterList = useSessionStorage<string[]>('sorter-filterlist', [], { deep: true, listenToStorageChanges: true })
 
 const { group } = useSettings()
-const generation = generateGen()[group as 'jkt48' | 'hinatazaka46']
-const filterGeneration = useLocalStorage<string[]>('filter-generation-sorter', generation.map((i: { key: any }) => i.key) ?? [])
+const fallbackGeneration = computed(() => generateGen()[group as 'jkt48' | 'hinatazaka46'] ?? [])
+const generation = computed(() => {
+  const generationKeys = Array.from(
+    new Set(
+      props.members
+        .map(member => member.generation)
+        .filter((generation): generation is string => Boolean(generation)),
+    ),
+  ).sort((a, b) => {
+    const numA = Number.parseInt(a.match(/gen(\d+)/i)?.[1] || '0', 10)
+    const numB = Number.parseInt(b.match(/gen(\d+)/i)?.[1] || '0', 10)
+    if (numA !== numB) return numA - numB
+    return a.localeCompare(b)
+  })
+
+  if (!generationKeys.length) return fallbackGeneration.value
+
+  return generationKeys.map((key) => {
+    const generationNumber = Number.parseInt(key.match(/gen(\d+)/i)?.[1] || '0', 10)
+    return {
+      key,
+      num: generationNumber,
+      short_title: parseGeneration(key, true) || key,
+      title: parseGeneration(key) || key,
+    }
+  })
+})
+const generationKeys = computed(() => generation.value.map(gen => gen.key))
+const filterGeneration = useLocalStorage<string[]>('filter-generation-sorter', [])
+const knownGenerationKeys = useLocalStorage<string[]>('filter-generation-sorter-known', [])
 const filterGraduate = useLocalStorage('filter-graduate-sorter', true)
 const filterActive = useLocalStorage('filter-active-sorter', true)
 const filterAllGeneration = ref(true)
@@ -25,10 +53,34 @@ watch(filterActive, (val) => {
   if (!val && !filterGraduate.value) filterGraduate.value = true
 })
 
+watch(generationKeys, (keys) => {
+  if (!keys.length) {
+    filterGeneration.value = []
+    knownGenerationKeys.value = []
+    return
+  }
+
+  const validKeys = new Set(keys)
+  const selected = keys.filter(key => filterGeneration.value.includes(key))
+  const oldAllSelected = knownGenerationKeys.value.length > 0 && knownGenerationKeys.value.every(key => selected.includes(key))
+  const shouldInitializeAll = knownGenerationKeys.value.length === 0 && selected.length === 0
+  const hasInvalidKnownKeys = knownGenerationKeys.value.some(key => !validKeys.has(key))
+  const nextSelected = oldAllSelected || shouldInitializeAll || (selected.length === 0 && hasInvalidKnownKeys)
+    ? [...keys]
+    : selected
+
+  filterGeneration.value = nextSelected
+  knownGenerationKeys.value = [...keys]
+}, { immediate: true })
+
+const selectedGenerationKeys = computed(() => {
+  return generationKeys.value.filter(key => filterGeneration.value.includes(key))
+})
+
 const allGeneration = computed(() => {
-  if (generation.length === filterGeneration.value.length) {
-    for (const gen of generation) {
-      if (!filterGeneration.value.includes(gen.key)) return false
+  if (generationKeys.value.length === selectedGenerationKeys.value.length) {
+    for (const gen of generation.value) {
+      if (!selectedGenerationKeys.value.includes(gen.key)) return false
     }
     return true
   }
@@ -46,37 +98,8 @@ const computedFilteredMember = computed(() => {
     result = filterActive.value ? result.filter(i => !i.is_graduate) : result.filter(i => i.is_graduate)
   }
 
-  result = result.filter(i => filterGeneration.value.includes(i.generation ?? ''))
+  result = result.filter(i => selectedGenerationKeys.value.includes(i.generation ?? ''))
   return result
-})
-
-const memberTypeFilteredMembers = computed(() => {
-  let result = props.members
-  if (!result) return []
-  if (!filterGraduate.value === filterActive.value) {
-    result = filterActive.value ? result.filter(i => !i.is_graduate) : result.filter(i => i.is_graduate)
-  }
-  return result
-})
-
-const availableGenerationKeys = computed(() => {
-  return Array.from(
-    new Set(
-      memberTypeFilteredMembers.value
-        .map(i => i.generation)
-        .filter((gen): gen is string => Boolean(gen)),
-    ),
-  )
-})
-
-const filteredGenerationKeys = computed(() => {
-  const generationSet = new Set(
-    computedFilteredMember.value
-      .map(i => i.generation)
-      .filter((gen): gen is string => Boolean(gen)),
-  )
-
-  return filterGeneration.value.filter(gen => generationSet.has(gen))
 })
 
 watch(computedFilteredMember, (val) => {
@@ -88,7 +111,7 @@ function toggleAllGeneration() {
     filterGeneration.value = []
   }
   else {
-    filterGeneration.value = generation.map((i: { key: any }) => i.key)
+    filterGeneration.value = [...generationKeys.value]
   }
 }
 
@@ -109,16 +132,15 @@ function getFilterList(): string[] {
   else {
     filterList.push(t('sorter.all_member'))
   }
-  const coversAllAvailableGeneration = availableGenerationKeys.value.length > 0
-    && availableGenerationKeys.value.every(gen => filterGeneration.value.includes(gen))
-
-  if (!coversAllAvailableGeneration) {
-    if (allGeneration.value) {
-      filterList.push(t('sorter.all_generation'))
-    }
-    else {
-      filterList.push(...filteredGenerationKeys.value.map(i => (parseGeneration(i, true)) || ''))
-    }
+  if (allGeneration.value) {
+    filterList.push(t('sorter.all_generation'))
+  }
+  else {
+    filterList.push(
+      ...selectedGenerationKeys.value
+        .map(i => parseGeneration(i, true))
+        .filter((label): label is string => Boolean(label)),
+    )
   }
   return filterList
 }
