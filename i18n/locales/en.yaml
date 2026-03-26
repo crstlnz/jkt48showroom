@@ -211,6 +211,7 @@ sorter:
   tie: Tie!
   filters: Sorting Criteria
   start: Start
+  make_yours: Make Your Own
   vs: VS
   active: Active
   graduate: Graduate
