@@ -113,15 +113,18 @@ function convertToTransformUrl(img: string) {
 <template>
   <Component
     :is="tag || 'button'"
-    class="card relative aspect-4/6 select-none rounded-2xl transition-all duration-200 hover:scale-95 active:scale-[99%] disabled:cursor-not-allowed"
+    class="card relative block w-full aspect-4/6 select-none rounded-2xl transition-all duration-200 hover:scale-95 active:scale-[99%] disabled:cursor-not-allowed"
     :class="{
       flipped: isFlipped || flip,
     }"
     :disabled="isFlipped"
     @click="$emit('click')"
   >
-    <div class="card-inner bg-container relative gap-1 rounded-2xl px-2 pt-2 shadow-2xs md:w-60 md:gap-2 md:px-3 md:pt-3 pb-0.5 md:pb-1" :class="cardTone">
-      <div data-section="card-front" class="h-full w-full">
+    <div
+      class="card-inner bg-container relative w-full gap-1 rounded-2xl px-2 pt-2 shadow-2xs md:w-60 md:gap-2 md:px-3 md:pt-3 pb-0.5 md:pb-1"
+      :class="cardTone"
+    >
+      <div data-section="card-front" class="card-front h-full w-full">
         <div
           v-if="rank && rank <= 3"
           class="rare-shimmer pointer-events-none absolute inset-1 z-20 rounded-xl"

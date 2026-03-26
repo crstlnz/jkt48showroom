@@ -35,8 +35,6 @@
     "events": "^3.3.0",
     "fuse.js": "^7.1.0",
     "horoscope": "^2.0.1",
-    "html2canvas": "^1.4.1",
-    "html2canvas-pro": "^2.0.2",
     "jsonwebtoken": "^9.0.2",
     "lite-youtube-embed": "^0.3.4",
     "nuxt": "4.3.1",

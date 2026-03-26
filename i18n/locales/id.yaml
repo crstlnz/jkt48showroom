@@ -230,8 +230,6 @@ sorter:
   share_save: Simpan
   share_save_and_share: Simpan & Bagikan
   share_cancel: Batal
-  share_download_success: Gambar hasil berhasil diunduh
-  share_download_failed: Gagal membuat gambar hasil
   unknown_member: Tidak ditemukan!
   layout_description: Urutkan member {group} favoritmu dan temukan pilihan teratasmu. Temukan oshi aslimu!
   viewresult: Lihat hasil

@@ -352,12 +352,12 @@ onBeforeUnmount(() => {
     <div class="mx-auto w-5xl max-w-full rounded-xl">
       <div v-if="filterList?.length > 0" class="mx-auto max-w-3xl px-3 md:px-2">
         <div class="flex flex-wrap gap-2 md:gap-3 pb-1.5">
-          <div v-for="filter in filterList" :key="filter" class="rounded-xl bg-blue-400/25 px-2 py-1 text-xs dark:bg-blue-400/10 md:text-sm">
+          <div v-for="filter in filterList" :key="filter" class="rounded-xl bg-blue-400/25 px-2 py-1 text-xs whitespace-nowrap dark:bg-blue-400/10 md:text-sm">
             {{ localizeFilter(filter) }}
           </div>
         </div>
       </div>
-      <SorterResult class="mx-auto mt-2 w-5xl max-w-full md:mt-5 px-3" :result="result" />
+      <SorterResult class="mx-auto mt-2 md:mt-5" :result="result" />
     </div>
     <TransitionRoot appear :show="showShareNameDialog" as="template">
       <Dialog as="div" class="relative z-notification" @close="showShareNameDialog = false">

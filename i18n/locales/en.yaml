@@ -230,8 +230,6 @@ sorter:
   share_save: Save
   share_save_and_share: Save & Share
   share_cancel: Cancel
-  share_download_success: Result image downloaded
-  share_download_failed: Failed to generate share image
   unknown_member: Not found!
   layout_description: Sort your favorite {group} members and discover your top picks. Find your real oshi!
   viewresult: View Result
