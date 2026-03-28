@@ -1,7 +1,7 @@
 /**
  * htmlDarkTheme.ts
  * Sanitize inline style HTML dan konversi warna light theme → dark theme
- * berdasarkan luminance calculation (WCAG formula), bukan hardcoded mapping.
+ * dengan algoritma flip lightness HSL (newL = 100 - l).
  *
  * Usage:
  *   import { convertToDark } from './htmlDarkTheme';
@@ -20,14 +20,10 @@ export interface ColorChange {
   original: string
   originalHex: string
   converted: string
-  luminance: number
-  wasLight: boolean
 }
 
 export interface ConvertStats {
   total: number
-  darkened: number
-  lightened: number
   sanitized: boolean
 }
 
@@ -111,6 +107,12 @@ const NAMED_COLORS = {
   transparent: null,
 } satisfies Record<string, RGB | null>
 
+type NamedColor = keyof typeof NAMED_COLORS
+
+function isNamedColor(value: string): value is NamedColor {
+  return Object.prototype.hasOwnProperty.call(NAMED_COLORS, value)
+}
+
 // ─── Color parsing ─────────────────────────────────────────────────────────────
 
 function hexToRgb(hex: string): RGB | null {
@@ -156,26 +158,20 @@ function hslToRgb(h: number, s: number, l: number): RGB {
 export function parseColor(str: string): RGB | null {
   str = str.trim().toLowerCase()
 
-  if (Object.prototype.hasOwnProperty.call(NAMED_COLORS, str)) {
-    return NAMED_COLORS[str as keyof typeof NAMED_COLORS]
-  }
+  if (isNamedColor(str)) return NAMED_COLORS[str]
 
   if (str.startsWith('#')) return hexToRgb(str)
 
   const rgbMatch = str.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/)
   if (rgbMatch) {
     const [, r, g, b] = rgbMatch
-    if (r && g && b) {
-      return [Number(r), Number(g), Number(b)]
-    }
+    if (r && g && b) return [Number(r), Number(g), Number(b)]
   }
 
   const hslMatch = str.match(/hsla?\(\s*([\d.]+)\s*,\s*([\d.]+)%?\s*,\s*([\d.]+)%?/)
   if (hslMatch) {
     const [, h, s, l] = hslMatch
-    if (h && s && l) {
-      return hslToRgb(Number(h), Number(s), Number(l))
-    }
+    if (h && s && l) return hslToRgb(Number(h), Number(s), Number(l))
   }
 
   return null
@@ -218,76 +214,19 @@ function rgbToHex(rgb: RGB): string {
   return `#${rgb.map(c => c.toString(16).padStart(2, '0')).join('')}`
 }
 
-/**
- * Hitung relative luminance (WCAG 2.1 formula). Return value: 0..1
- */
-export function getLuminance([r, g, b]: RGB): number {
-  const toLinear = (channel: number): number => {
-    const normalized = channel / 255
-    return normalized <= 0.03928
-      ? normalized / 12.92
-      : ((normalized + 0.055) / 1.055) ** 2.4
-  }
-
-  return (0.2126 * toLinear(r)) + (0.7152 * toLinear(g)) + (0.0722 * toLinear(b))
-}
-
-/** Apakah warna tergolong "terang" berdasarkan luminance threshold? */
-export function isLight(rgb: RGB): boolean {
-  return getLuminance(rgb) > 0.35
-}
-
-/** Apakah warna memiliki saturasi cukup untuk dianggap "aksen"? */
-export function isSaturated(rgb: RGB): boolean {
-  const [, s] = rgbToHsl(rgb)
-  return s > 18
-}
-
 // ─── Konversi warna ke dark mode ───────────────────────────────────────────────
 
 /**
- * Konversi satu warna untuk dark mode.
+ * Konversi satu warna untuk dark mode dengan flip lightness.
  *
- * Aturan:
- *  - Netral gelap (teks hitam/abu)     → terangkan ke ~#d0d0d0–#e8e8e8
- *  - Netral terang (bg putih/abu muda) → gelapkan ke dark surface ~#101010–#1e1e1e
- *  - Warna aksen (saturasi tinggi)     → pertahankan hue, flip lightness
+ * Algoritma: newL = 100 - l
+ *   #000000 → HSL(0°,   0%,   0%) → HSL(0°,   0%, 100%) → #ffffff
+ *   navy    → HSL(240°, 100%, 25%) → HSL(240°, 100%, 75%) → biru muda
+ *   #ffffff → HSL(0°,   0%, 100%) → HSL(0°,   0%,   0%) → #000000
  */
-export function convertColorForDark(rgb: RGB, prop: string): string {
-  const isBg = /background|bg/i.test(prop)
-  const light = isLight(rgb)
-  const saturated = isSaturated(rgb)
+export function convertColorForDark(rgb: RGB): string {
   const [h, s, l] = rgbToHsl(rgb)
-
-  if (saturated) {
-    if (isBg) {
-      return hslToHex(h, Math.min(s, 40), 18)
-    }
-    else {
-      const targetL = light ? Math.max(l, 68) : Math.min(l + 38, 82)
-      return hslToHex(h, Math.min(s + 8, 90), targetL)
-    }
-  }
-
-  // Warna netral
-  if (isBg) {
-    if (light) {
-      const newL = 8 + (1 - l / 100) * 12
-      return hslToHex(h, s * 0.3, Math.max(8, Math.min(newL, 22)))
-    }
-    else {
-      return hslToHex(h, s * 0.3, Math.min(l, 18))
-    }
-  }
-  else {
-    if (!light) {
-      const newL = 75 + (1 - l / 100) * 18
-      return hslToHex(h, s * 0.2, Math.min(newL, 92))
-    }
-    else {
-      return hslToHex(h, s * 0.2, Math.min(l, 90))
-    }
-  }
+  return hslToHex(h, s, 100 - l)
 }
 
 // ─── CSS properties yang mengandung warna ─────────────────────────────────────
@@ -345,7 +284,7 @@ export function sanitizeHtml(html: string): string {
 // ─── Main API ──────────────────────────────────────────────────────────────────
 
 /**
- * Konversi HTML dari light theme ke dark theme berdasarkan luminance (WCAG).
+ * Konversi HTML dari light theme ke dark theme dengan flip lightness.
  *
  * @param html     - HTML string input (inline style)
  * @param options  - Opsi konversi
@@ -353,8 +292,10 @@ export function sanitizeHtml(html: string): string {
  *
  * @example
  * const { html, changes, stats } = convertToDark(
- *   `<p style="color:#333;background:#fff">Hello</p>`
+ *   `<p style="color:#000000;background:#ffffff">Hello</p>`
  * );
+ * // color:      #000000 → #ffffff
+ * // background: #ffffff → #000000
  */
 export function convertToDark(html: string, options: ConvertOptions = {}): ConvertResult {
   if (typeof html !== 'string') throw new TypeError('Input harus string HTML.')
@@ -363,13 +304,11 @@ export function convertToDark(html: string, options: ConvertOptions = {}): Conve
 
   let processed = sanitize ? sanitizeHtml(html) : html
   const changes: ColorChange[] = []
-  let totalChanges = 0
-  let darkenedChanges = 0
-  let lightenedChanges = 0
+  let total = 0
 
   processed = processed.replace(
     /style\s*=\s*(["'])([\s\S]*?)\1/gi,
-    (match: string, quote: string, styleValue: string) => {
+    (_match: string, quote: string, styleValue: string) => {
       const newStyle = styleValue.replace(
         /([\w-]+)\s*:\s*([^;]+)/g,
         (decl: string, prop: string, val: string) => {
@@ -381,26 +320,15 @@ export function convertToDark(html: string, options: ConvertOptions = {}): Conve
             const rgb = parseColor(rawColor)
             if (!rgb) return rawColor
 
-            const newColor = convertColorForDark(rgb, propLow)
-            const originalHex = rgbToHex(rgb)
-            const wasLight = isLight(rgb)
-
-            totalChanges += 1
-            if (wasLight) {
-              darkenedChanges += 1
-            }
-            else {
-              lightenedChanges += 1
-            }
+            const newColor = convertColorForDark(rgb)
+            total += 1
 
             if (logChanges) {
               changes.push({
                 property: propLow,
                 original: rawColor,
-                originalHex,
+                originalHex: rgbToHex(rgb),
                 converted: newColor,
-                luminance: +getLuminance(rgb).toFixed(4),
-                wasLight,
               })
             }
 
@@ -415,12 +343,9 @@ export function convertToDark(html: string, options: ConvertOptions = {}): Conve
     },
   )
 
-  const stats: ConvertStats = {
-    total: totalChanges,
-    darkened: darkenedChanges,
-    lightened: lightenedChanges,
-    sanitized: sanitize,
+  return {
+    html: processed,
+    changes,
+    stats: { total, sanitized: sanitize },
   }
-
-  return { html: processed, changes, stats }
 }
