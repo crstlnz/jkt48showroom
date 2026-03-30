@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { NuxtLink } from '#components'
+import getScheduleUrl from '~/utils/schedule'
 
 const { data, pending, error } = await useApiFetch<IApiEvent>('/api/event', { server: true })
 const { locale } = useI18n()
@@ -60,10 +61,11 @@ const forceLoading = ref(false)
           <div v-if="pending" class="space-y-3 md:space-y-4">
             <div v-for="num in 4" :key="`other-schedule-skeleton-${num}`" class="bg-container w-full h-20 rounded-xl" />
           </div>
-          <div v-else class="flex flex-col gap-3 md:gap-4">
-            <component :is="!event.url.startsWith('/calendar') ? NuxtLink : 'div'" v-for="event in data.other_schedule" :key="event.id" :to="event.url.startsWith('/theater/schedule/id/') ? `/theater/${$getTheaterId(event.url)}` : `${$jkt48url}${event.url}`" class="bg-container rounded-xl p-3 md:p-4 space-y-1">
+          <div v-else-if="data.other_schedule.length" class="flex flex-col gap-3 md:gap-4">
+            <component :is="getScheduleUrl(event) != null ? NuxtLink : 'div'" v-for="event in data.other_schedule" :key="event.id" :to="getScheduleUrl(event)" class="bg-container rounded-xl p-3 md:p-4 space-y-1">
               <div class="flex items-center gap-2">
                 <Image
+                  v-if="event.label"
                   class="aspect-56/19 w-14 object-cover self-center"
                   :src="`${$imgCDN}/assets/jkt48${event.label}`"
                   alt="Label"
@@ -73,12 +75,26 @@ const forceLoading = ref(false)
                   width="56px"
                   format="webp"
                 />
+                <NewsCategoryBadge v-else-if="event.category" :category="event.category" variant="soft" />
                 <div class="text-sm">
                   {{ $dayjs(event.date).locale(locale).format("DD MMMM YYYY") }}
                 </div>
               </div>
               <div>{{ event.title }}</div>
             </component>
+          </div>
+          <div v-else class="bg-container rounded-xl p-6 md:p-10 2xl:p-12 flex flex-col items-center justify-center text-center border border-black/10 dark:border-white/10">
+            <Image
+              :src="`${$imgCDN}/assets/img/web/empty-box.png`"
+              alt=""
+              class="w-32 h-24 object-contain mb-2 opacity-85"
+            />
+            <div class="text-sm md:text-base font-medium">
+              {{ $t("data.nodata") }}
+            </div>
+            <div class="text-xs md:text-sm opacity-70 mt-1">
+              {{ $t("data.other_schedule_empty") }}
+            </div>
           </div>
         </HomeSectionContainer>
       </template>

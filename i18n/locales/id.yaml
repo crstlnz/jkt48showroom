@@ -60,6 +60,7 @@ data:
   notenough: Data yang tersedia tidak cukup 🥲
   nomore: Tidak ada data lagi :(
   nodata: Tidak ada data
+  other_schedule_empty: Belum ada jadwal lain saat ini
   notfound: Data tidak dapat ditemukan!
   failed: Gagal mengambil data!
   error: Terjadi kesalahan

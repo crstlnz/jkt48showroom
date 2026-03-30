@@ -60,6 +60,7 @@ data:
   notenough: Not enough data available 🥲
   nomore: No more data :(
   nodata: No data
+  other_schedule_empty: No other schedules available right now
   notfound: Sorry, but the requested data is not found!
   failed: Data fetching failed!
   error: An error occured

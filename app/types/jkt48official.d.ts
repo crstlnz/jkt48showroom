@@ -15,7 +15,9 @@ declare namespace JKT48 {
 
   interface Schedule {
     id: string
-    label: string
+    label?: string
+    category?: string
+    code?: string
     title: string
     url: string
     date: Date | string

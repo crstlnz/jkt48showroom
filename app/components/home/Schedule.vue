@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { NuxtLink } from '#components'
 import { imgCDN } from '~/app.config'
+import getScheduleUrl from '~/utils/schedule'
 
 const { data, pending, error, date, refresh } = useCachedFetch<JKT48.Schedule[]>('/api/next_schedule', { expireIn: 1800000 })
 const dayjs = useDayjs()
@@ -42,9 +43,9 @@ const { locale } = useI18n()
         <Image :src="`${$imgCDN}/assets/img/web/empty-box.png`" alt="" class="w-52 h-40 mb-2 object-contain" />
         {{ $t("data.nodata") }}
       </div>
-      <table v-else class="w-full border-t border-b border-color-1 **:border-black/10 dark:**:border-white/10">
+      <table v-else class="w-full border-t border-b border-color-1 **:border-black/5 dark:**:border-white/5">
         <tr v-for="(schedule, index) in groupedSchedule" :key="schedule.date" class="text-sm" :class="{ 'border-b': index !== groupedSchedule.length - 1 }">
-          <td class="border-r p-3 text-center align-top">
+          <td class="border-r py-2 px-2.5 text-center align-top text-xs">
             <div v-if="schedule.today" class="whitespace-nowrap leading-10">
               {{ $t("today") }}
             </div>
@@ -58,8 +59,9 @@ const { locale } = useI18n()
             </div>
           </td>
           <td class="w-full p-3">
-            <component :is="!event.url.startsWith('/calendar') ? NuxtLink : 'div'" v-for="event in schedule.events" :key="event.id" :to="event.url.startsWith('/theater/schedule/id/') ? `/theater/${$getTheaterId(event.url)}` : `${$jkt48url}${event.url}`" class="flex gap-2">
+            <component :is="getScheduleUrl(event) != null ? NuxtLink : 'div'" v-for="event in schedule.events" :key="event.id" :to="getScheduleUrl(event)" class="flex gap-2">
               <Image
+                v-if="event.label"
                 class="aspect-56/19 w-14 object-cover self-center shrink-0"
                 :src="`${imgCDN}/assets/jkt48${event.label}`"
                 alt="Label"
@@ -69,6 +71,7 @@ const { locale } = useI18n()
                 width="56px"
                 format="webp"
               />
+              <NewsCategoryBadge v-else-if="event.category" :category="event.category" variant="soft" />
               <span>{{ event.title }}</span>
             </component>
           </td>

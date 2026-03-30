@@ -28,7 +28,7 @@ const toneClass = computed(() => {
 
 <template>
   <span
-    class="rounded-md px-1.5 py-0.5 text-xs"
+    class="rounded-md px-1.5 py-0.5 text-xs capitalize"
     :class="toneClass"
   >
     {{ category }}
