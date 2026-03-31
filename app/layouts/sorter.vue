@@ -25,6 +25,10 @@ useHead({
 })
 
 useSeoMeta({
+  title: t('menu.oshi_sorter'),
+  ogTitle: t('menu.oshi_sorter'),
+  ogSiteName: t('menu.oshi_sorter'),
+  twitterTitle: t('menu.oshi_sorter'),
   ogImage: 'https://res.cloudinary.com/haymzm4wp/image/upload/v1695028178/assets/img/oshi_sorter_rfhpsz.png',
   twitterImage: 'https://res.cloudinary.com/haymzm4wp/image/upload/v1695028178/assets/img/oshi_sorter_rfhpsz.png',
   description,

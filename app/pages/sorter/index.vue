@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { useMembers } from '~/store/members'
-import { useSettings } from '~/store/settings'
 import { toSortMember } from '~/utils/sorterResult'
 
 definePageMeta({
@@ -16,24 +15,6 @@ onMounted(() => {
 
 const data = computed<ISortMember[]>(() => {
   return members.value?.map(i => toSortMember(i as IMember & { _id: string, jkt48_id?: string | number })) ?? []
-})
-
-const { group } = useSettings()
-const { getGroupTitle } = useAppConfig()
-
-const description = computed(() => {
-  return `Oshi Sorter adalah game yang memungkinkan kamu untuk mengurutkan dan menemukan member ${getGroupTitle(group)} favoritmu berdasarkan pilihanmu sendiri!`
-})
-
-useSeoMeta({
-  title: 'Oshi Sorter',
-  ogTitle: 'Oshi Sorter',
-  ogSiteName: 'Oshi Sorter',
-  twitterTitle: 'Oshi Sorter',
-  description,
-  ogDescription: () => description.value,
-  twitterDescription: () => description.value,
-  twitterCard: 'summary',
 })
 </script>
 
