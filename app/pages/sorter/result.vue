@@ -283,6 +283,23 @@ async function saveShareName() {
 onBeforeUnmount(() => {
   if (copiedTimer) clearTimeout(copiedTimer)
 })
+
+const { group } = useSettings()
+const { getGroupTitle } = useAppConfig()
+const description = computed(() => {
+  return `Oshi Sorter adalah game yang memungkinkan kamu untuk mengurutkan dan menemukan member ${getGroupTitle(group)} favoritmu berdasarkan pilihanmu sendiri!`
+})
+
+useSeoMeta({
+  title: 'Oshi Sorter',
+  ogTitle: 'Oshi Sorter',
+  ogSiteName: 'Oshi Sorter',
+  twitterTitle: 'Oshi Sorter',
+  description,
+  ogDescription: () => description.value,
+  twitterDescription: () => description.value,
+  twitterCard: 'summary',
+})
 </script>
 
 <template>

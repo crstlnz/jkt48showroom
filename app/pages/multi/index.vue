@@ -681,9 +681,6 @@ function applyVideoRefs(ref: any, video: Multi.Video) {
   }
 }
 const { getGroupTitle } = useAppConfig()
-useHeadSafe({
-  title: `${getGroupTitle(group)} Multi Viewer`,
-})
 
 const description = computed(() => {
   return `Multi viewer adalah aplikasi yang memungkinkan kamu untuk menonton member ${getGroupTitle(group)} favoritmu sercara bersamaan!`
@@ -699,7 +696,17 @@ watch(rowCount, () => {
   }
 })
 
+const title = computed(() => `${getGroupTitle(group)} Multi Viewer`)
+
+useHead({
+  title: title.value,
+})
+
 useSeoMeta({
+  title: title.value,
+  ogTitle: title.value,
+  twitterTitle: title.value,
+  ogSiteName: title.value,
   description,
   ogDescription: () => description.value,
   twitterDescription: () => description.value,
