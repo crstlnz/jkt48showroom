@@ -137,6 +137,7 @@ declare namespace JKT48 {
 
   interface Setlist {
     id: string
+    setlist_id?: string // id yang ada di web jkt48 yang baru
     title: string
     title_alt?: string
     description?: string

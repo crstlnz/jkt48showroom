@@ -2,7 +2,7 @@
 import { useNotifications } from '~/store/notifications'
 
 type JKT48SetlistWithId = JKT48.Setlist & { _id: string }
-const { data, error, pending, refresh } = await useApiFetch<JKT48SetlistWithId[]>('/api/admin/setlist')
+const { data, error, pending, refresh } = useApiFetch<JKT48SetlistWithId[]>('/api/admin/setlist', { server: false })
 const config = useAppConfig()
 const showForm = ref(false)
 

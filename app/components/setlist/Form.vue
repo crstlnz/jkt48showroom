@@ -17,6 +17,7 @@ onClickOutside(editDialog, () => {
 })
 
 const id = ref(props.setlist?.id ?? '')
+const official_id = ref(props.setlist?.setlist_id ?? '')
 const title = ref(props.setlist?.title ?? '')
 const title_alt = ref(props.setlist?.title_alt ?? '')
 const description = ref(props.setlist?.description ?? '')
@@ -43,6 +44,7 @@ async function save() {
     }
 
     formData.append('_id', props.setlist?._id ?? '')
+    formData.append('setlist_id', official_id.value)
     formData.append('id', id.value)
     formData.append('title', title.value)
     formData.append('title_alt', title_alt.value)
@@ -71,13 +73,13 @@ async function save() {
 <template>
   <div class="fixed inset-0 z-aboveNav bg-black/50 overscroll-contain">
     <div ref="editDialog" class=" bg-container absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xl px-2">
-      <div class="roundedscrollbar my-6 max-h-[90vh] w-[850px] max-w-[90vw] overflow-y-auto overscroll-none px-3 md:px-5 lg:px-8">
+      <div class="roundedscrollbar my-6 max-h-[90vh] w-212.5 max-w-[90vw] overflow-y-auto overscroll-none px-3 md:px-5 lg:px-8">
         <h3 class="text-2xl">
           Setlist Form
         </h3>
         <div class="flex gap-3 py-4">
           <FormImageDrop ref="posterImageDrop" :src="setlist?.poster" form-id="poster" title="Poster" class="bg-container-2 flex aspect-4/5 h-40 items-center justify-center overflow-hidden rounded-md" />
-          <FormImageDrop ref="bannerImageDrop" :src="setlist?.banner" form-id="poster" title="Banner" class="bg-container-2 flex aspect-16/9 h-40 items-center justify-center overflow-hidden rounded-md" />
+          <FormImageDrop ref="bannerImageDrop" :src="setlist?.banner" form-id="poster" title="Banner" class="bg-container-2 flex aspect-video h-40 items-center justify-center overflow-hidden rounded-md" />
           <!-- <button class="bg-container-2 flex aspect-4/5 h-40 items-center justify-center rounded-md">
             <div v-if="!poster">
               Poster
@@ -93,25 +95,31 @@ async function save() {
         </div>
         <div class="flex flex-col gap-4">
           <div class="item-start flex gap-4">
-            <div class="w-[120px] text-xl leading-9">
+            <div class="w-30 text-xl leading-9">
+              Official Id
+            </div>
+            <FormText v-model="official_id" form-id="id" placeholder="Title" class="flex-1" input-class="bg-container-2" />
+          </div>
+          <div class="item-start flex gap-4">
+            <div class="w-30 text-xl leading-9">
               Id
             </div>
             <FormText v-model="id" form-id="id" placeholder="Title" class="flex-1" input-class="bg-container-2" />
           </div>
           <div class="item-start flex gap-4">
-            <div class="w-[120px] text-xl leading-9">
+            <div class="w-30 text-xl leading-9">
               Title
             </div>
             <FormText v-model="title" form-id="title" placeholder="Title" class="flex-1" input-class="bg-container-2" />
           </div>
           <div class="item-start flex gap-4">
-            <div class="w-[120px] text-xl leading-9">
+            <div class="w-30 text-xl leading-9">
               Alt Title
             </div>
             <FormText v-model="title_alt" form-id="title_alt" placeholder="Alternative title" class="flex-1" input-class="bg-container-2" />
           </div>
           <div class="item-start flex gap-4">
-            <div class="w-[120px] text-xl leading-9">
+            <div class="w-30 text-xl leading-9">
               Description
             </div>
             <FormTextArea v-model="description" form-id="description" placeholder="Description" class="flex-1" input-class="bg-container-2 min-h-[120px]" />
