@@ -60,7 +60,11 @@ function getTheaterTimeRange(date: string | Date) {
 
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const lg = breakpoints.greater('lg')
+const userAgent = import.meta.client
+  ? navigator.userAgent
+  : useRequestHeaders(['user-agent'])['user-agent']
 
+const headless = userAgent?.toLowerCase()?.includes('headless')
 useHead({
   title,
 })
@@ -83,7 +87,7 @@ useHead({
           class="space-y-4 md:space-y-5"
         >
           <div class="flex flex-col gap-4 lg:flex-row md:gap-2.5">
-            <ClientOnly>
+            <ClientOnly v-if="!headless">
               <template #fallback>
                 <div class="border border-black/10 dark:border-white/10 aspect-15/9 lg:aspect-9/12 w-full shrink-0 overflow-hidden rounded-xl object-cover lg:w-72 xl:w-80  self-start bg-container animate-pulse" />
               </template>
@@ -98,6 +102,16 @@ useHead({
                 />
               </template>
             </ClientOnly>
+            <Image
+              v-else
+              id="headless"
+              :key="theater.setlist?.poster ?? theater.setlist?.banner"
+              class="border border-black/10 dark:border-white/10 aspect-15/9 lg:aspect-9/12 w-full shrink-0 overflow-hidden rounded-xl object-cover lg:w-72 xl:w-80  self-start"
+              :src="theater.setlist?.poster ?? theater.setlist?.banner" alt="Theater Poster" :modifiers="{
+                aspectRatio: lg ? '15/9' : '9/12',
+              }" loading="lazy" fit="fill"
+              sizes="150px xs:170px sm:500px md:192px xl:320px" format="webp"
+            />
             <div class="lg:px-3 md:pt-1 flex-1 flex flex-col gap-2">
               <span v-if="data.shows.length > 1" class="bg-red-500 py-0.5 px-1.5 rounded-md">
                 {{ $t('theater_show_number', { number: idx + 1 }) }}
