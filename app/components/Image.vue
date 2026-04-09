@@ -3,14 +3,23 @@ defineOptions({
   inheritAttrs: false,
 })
 
+const attrs = useAttrs()
+
 const userAgent = import.meta.client
   ? navigator.userAgent
   : useRequestHeaders(['user-agent'])['user-agent']
 
-const headless = userAgent?.toLocaleLowerCase()?.includes('headless')
+const headless = userAgent?.toLowerCase()?.includes('headless')
+
+const boundAttrs = computed(() => {
+  if (headless) {
+    const { placeholder, ...rest } = attrs
+    return rest
+  }
+  return attrs
+})
 </script>
 
 <template>
-  <NuxtImg v-if="!headless" v-bind="{ ...$attrs, provider: 'crstlnz' }" />
-  <img v-else v-bind="{ ...$attrs }">
+  <NuxtImg v-bind="{ ...boundAttrs, provider: 'crstlnz' }" />
 </template>
