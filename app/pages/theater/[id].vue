@@ -61,11 +61,6 @@ function getTheaterTimeRange(date: string | Date) {
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const lg = breakpoints.greater('lg')
 
-const userAgent = import.meta.client
-  ? navigator.userAgent
-  : useRequestHeaders(['user-agent'])['user-agent']
-const headless = userAgent?.toLowerCase()?.includes('headless')
-
 useHead({
   title,
 })
@@ -94,9 +89,9 @@ useHead({
               </template>
               <template #default>
                 <Image
-                  :key="lg || headless ? (theater.setlist?.poster ?? theater.setlist?.banner) : (theater.setlist?.banner ?? theater.setlist?.poster) ?? config.errorPicture"
+                  :key="lg ? (theater.setlist?.poster ?? theater.setlist?.banner) : (theater.setlist?.banner ?? theater.setlist?.poster) ?? config.errorPicture"
                   class="border border-black/10 dark:border-white/10 aspect-15/9 lg:aspect-9/12 w-full shrink-0 overflow-hidden rounded-xl object-cover lg:w-72 xl:w-80  self-start"
-                  :src="lg || headless ? (theater.setlist?.poster ?? theater.setlist?.banner) : (theater.setlist?.banner ?? theater.setlist?.poster) ?? config.errorPicture" alt="Theater Poster" :modifiers="{
+                  :src="lg ? (theater.setlist?.poster ?? theater.setlist?.banner) : (theater.setlist?.banner ?? theater.setlist?.poster) ?? config.errorPicture" alt="Theater Poster" :modifiers="{
                     aspectRatio: lg ? '15/9' : '9/12',
                   }" loading="lazy" fit="fill"
                   sizes="150px xs:170px sm:500px md:192px xl:320px" format="webp"
