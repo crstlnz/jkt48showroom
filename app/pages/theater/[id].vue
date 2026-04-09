@@ -88,14 +88,21 @@ useHead({
           class="space-y-4 md:space-y-5"
         >
           <div class="flex flex-col gap-4 lg:flex-row md:gap-2.5">
-            <Image
-              :key="lg || headless ? (theater.setlist?.poster ?? theater.setlist?.banner) : (theater.setlist?.banner ?? theater.setlist?.poster) ?? config.errorPicture"
-              class="border border-black/10 dark:border-white/10 aspect-15/9 lg:aspect-9/12 w-full shrink-0 overflow-hidden rounded-xl object-cover lg:w-72 xl:w-80  self-start"
-              :src="lg || headless ? (theater.setlist?.poster ?? theater.setlist?.banner) : (theater.setlist?.banner ?? theater.setlist?.poster) ?? config.errorPicture" alt="Theater Poster" :modifiers="{
-                aspectRatio: lg ? '15/9' : '9/12',
-              }" loading="lazy" fit="fill"
-              sizes="150px xs:170px sm:500px md:192px xl:320px" format="webp"
-            />
+            <ClientOnly>
+              <template #fallback>
+                <div class="border border-black/10 dark:border-white/10 aspect-15/9 lg:aspect-9/12 w-full shrink-0 overflow-hidden rounded-xl object-cover lg:w-72 xl:w-80  self-start bg-container animate-pulse" />
+              </template>
+              <template #default>
+                <Image
+                  :key="lg || headless ? (theater.setlist?.poster ?? theater.setlist?.banner) : (theater.setlist?.banner ?? theater.setlist?.poster) ?? config.errorPicture"
+                  class="border border-black/10 dark:border-white/10 aspect-15/9 lg:aspect-9/12 w-full shrink-0 overflow-hidden rounded-xl object-cover lg:w-72 xl:w-80  self-start"
+                  :src="lg || headless ? (theater.setlist?.poster ?? theater.setlist?.banner) : (theater.setlist?.banner ?? theater.setlist?.poster) ?? config.errorPicture" alt="Theater Poster" :modifiers="{
+                    aspectRatio: lg ? '15/9' : '9/12',
+                  }" loading="lazy" fit="fill"
+                  sizes="150px xs:170px sm:500px md:192px xl:320px" format="webp"
+                />
+              </template>
+            </ClientOnly>
             <div class="lg:px-3 md:pt-1 flex-1 flex flex-col gap-2">
               <span v-if="data.shows.length > 1" class="bg-red-500 py-0.5 px-1.5 rounded-md">
                 {{ $t('theater_show_number', { number: idx + 1 }) }}
