@@ -117,14 +117,12 @@ useHead({
                 {{ $t('theater_show_number', { number: idx + 1 }) }}
               </span>
               <div class="flex gap-3 items-center">
-                <h3 class="text-xl font-semibold">
-                  {{ theater.title }}
-                </h3>
-                <Image
-                  v-if="theater.team"
-                  class="self-center rounded-md" :src="`${$imgCDN}/assets/jkt48${theater.team.img}`"
-                  alt="Team Label" loading="lazy" fit="fill" width="56px" format="webp"
-                />
+                <div class="flex gap-2.5">
+                  <TeamBadge class="mt-0.5" :team="theater.team" />
+                  <h3 class="text-xl font-semibold">
+                    {{ theater.title }}
+                  </h3>
+                </div>
                 <AdminEditTheaterButton :theater-data="theater" />
               </div>
               <div class="font-light opacity-80 text-sm md:text-base">

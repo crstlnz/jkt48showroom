@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import jkt48TeamColor from '~/utils/teamColor'
+
 const props = defineProps<{
   theater: IApiTheaterInfo
 }>()
@@ -35,12 +37,19 @@ const { locale } = useI18n()
           <NuxtLink :to="`/theater/${theater.url}`" class="line-clamp-2 font-semibold leading-5 text-sm md:text-base">
             {{ theater.title }}
           </NuxtLink>
-          <div class="shrink-0 rounded-md bg-blue-500/35 text-blue-500 dark:bg-blue-500/15 dark:text-blue-200 px-2 py-0.75 text-[10px] md:text-[11px] font-medium">
+          <div class="shrink-0 rounded-md bg-blue-500/35 text-blue-500 dark:bg-blue-500/15 dark:text-blue-200 px-2 py-0.5 text-[10px] md:text-[10px] font-medium">
             {{ $t('member_count', { count: theater.member_count }) }}
           </div>
         </div>
 
-        <div class="flex flex-col mt-1">
+        <div class="flex flex-col">
+          <div v-if="['dream', 'love', 'passion'].includes(theater.team?.toLowerCase() ?? '')" class="flex items-center gap-1.5 text-xs text-content-soft md:text-sm">
+            <Image
+              :src="jkt48TeamColor(theater.team ?? '').icon"
+              sizes="14px"
+            />
+            <TeamBadge type="text" :team="theater.team" />
+          </div>
           <div class="flex items-center gap-1.5 text-xs text-content-soft md:text-sm">
             <Icon name="material-symbols:calendar-month-sharp" class="text-yellow-500" />
             {{ $dayjs(theater.date).locale(locale).format("DD MMMM YYYY") }}
@@ -70,7 +79,7 @@ const { locale } = useI18n()
             {{ $t('tomorrow') }}
           </div>
         </div> -->
-        <div class="mt-2 space-y-1 border-t border-black/5 pt-2 dark:border-white/5" />
+        <div class="mt-1 space-y-1 border-t border-black/5 pt-2 dark:border-white/5" />
         <div class="space-y-1">
           <div v-if="seitansai.length || graduation.length">
             <div v-if="seitansai.length" class="flex items-center gap-1.5 text-[10px] md:text-xs">
@@ -104,13 +113,18 @@ const { locale } = useI18n()
             </div>
           </div>
           <div class="flex gap-x-1 flex-wrap text-[10px] md:text-xs opacity-80">
-            <span v-for="(member, idx) in members" :key="`graduation-name-${member.id}`">
-              <NuxtLink v-if="member.url_key" :to="`/member/${member.url_key}`">
-                {{ member.name }}
-              </NuxtLink>
-              <span v-else>{{ member.name }}</span>
-              <span v-if="idx < members.length - 1">, </span>
-            </span>
+            <template v-if="members.length > 0">
+              <span v-for="(member, idx) in members" :key="`graduation-name-${member.id}`">
+                <NuxtLink v-if="member.url_key" :to="`/member/${member.url_key}`">
+                  {{ member.name }}
+                </NuxtLink>
+                <span v-else>{{ member.name }}</span>
+                <span v-if="idx < members.length - 1">, </span>
+              </span>
+            </template>
+            <div v-else>
+              {{ $t('no_member_data') }}
+            </div>
           </div>
         </div>
       </div>

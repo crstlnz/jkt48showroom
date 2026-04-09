@@ -11,6 +11,7 @@ interface IApiTheaterInfo {
   members?: JKT48MemberExtend[]
   seitansai?: JKT48MemberExtend[]
   graduation?: JKT48MemberExtend[]
+  team?: string
   url: string
   date: Date
 }
@@ -63,10 +64,7 @@ interface IApiTheaterDetail {
   showroomTheater?: ShowroomPremiumLive
   idnTheater?: JKT48.IDNPremiumLive
   date: Date
-  team: {
-    id: string
-    img: string
-  }
+  team?: string
 }
 
 interface IApiJKT48EventDetail {
@@ -78,10 +76,7 @@ interface IApiJKT48EventDetail {
   showroomTheater?: ShowroomPremiumLive
   idnTheater?: JKT48.IDNPremiumLive
   date: Date
-  team: {
-    id: string
-    img: string
-  }
+  team?: sting
 }
 
 interface IApiTheaterDetailList {
