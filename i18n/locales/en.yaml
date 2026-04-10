@@ -257,6 +257,7 @@ form:
 tooltip:
   activeuser: Total of active user that interact with live, like following, sending gift, or comment.
   usercomment: "{msg} users commented."
+  show_by_team: "This show will be performed by Team {team}"
 height: Height
 bloodtype: Blood type
 otherlive: Other live

@@ -79,7 +79,7 @@ const { locale } = useI18n()
             {{ $t('tomorrow') }}
           </div>
         </div> -->
-        <div class="mt-1 space-y-1 border-t border-black/5 pt-2 dark:border-white/5" />
+        <div class="mt-1 mb-1 space-y-1 border-t border-black/5 dark:border-white/5" />
         <div class="space-y-1">
           <div v-if="seitansai.length || graduation.length">
             <div v-if="seitansai.length" class="flex items-center gap-1.5 text-[10px] md:text-xs">
