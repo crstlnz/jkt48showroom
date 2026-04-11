@@ -1,7 +1,7 @@
 export interface TeamColor {
   bg: string
   text: string
-  icon: string
+  icon?: string
 }
 
 export default function jkt48TeamColor(_team: string): TeamColor {
@@ -21,9 +21,16 @@ export default function jkt48TeamColor(_team: string): TeamColor {
     }
   }
 
+  if (team === 'passion') {
+    return {
+      bg: '#f79220',
+      text: '#fdd69f',
+      icon: 'https://img.crstlnz.my.id/team_passion.png',
+    }
+  }
+
   return {
-    bg: '#f79220',
-    text: '#fdd69f',
-    icon: 'https://img.crstlnz.my.id/team_passion.png',
+    text: '#e8cfcf',
+    bg: 'rgb(196, 120, 120)',
   }
 }

@@ -104,6 +104,7 @@ interface IMemberProfileAPI extends Database.IMemberBasicData {
   img_alt: string
   banner: string
   group: string
+  team?: string
   url: string
   showroom_id: number
   showroom_exists: boolean
@@ -116,8 +117,8 @@ interface IMemberProfileAPI extends Database.IMemberBasicData {
   birthdate?: Date
   bloodType?: string
   height?: string
-  recentTheater?: ITheaterAPI[]
-  upcomingTheater?: ITheaterAPI[]
+  recentTheater?: IApiTheaterInfo[]
+  upcomingTheater?: IApiTheaterInfo[]
   sousenkyo?: SousenkyoMember
 }
 

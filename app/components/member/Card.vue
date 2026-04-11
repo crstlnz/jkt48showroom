@@ -46,6 +46,7 @@ const socials = computed(() => {
       <NuxtLink :to="`/member/${member.url}`" class="truncate text-xl font-bold">
         {{ member.nicknames[0] || member.name }}
       </NuxtLink>
+      <TeamBadge :team="member.team" />
       <div class="flex justify-center gap-2 items-center">
         <div class="text-base" :class="member.group === 'official' ? 'text-blue-500' : (member.is_graduate ? 'text-red-500' : 'text-green-500')">
           {{ member.group === 'official' ? "Official" : (member.is_graduate ? "Graduated" : "Active") }}
@@ -56,8 +57,8 @@ const socials = computed(() => {
         </div>
       </div>
     </div>
-    <div class="flex justify-center gap-x-3 gap-y-1 text-xl px-8 flex-wrap">
-      <SocialIcon v-for="[i, social] in socials.entries()" :key="i" :social="social" class="w-8 h-8 lg:h-10 lg:w-10 hover:bg-blue-400/30 transition-colors duration-300 rounded-md" />
+    <div class="flex justify-center gap-x-2 gap-y-1 text-xl px-8 flex-wrap">
+      <SocialIcon v-for="[i, social] in socials.entries()" :key="i" :social="social" class="w-7 h-7 lg:h-8 lg:w-8 hover:bg-blue-400/30 transition-colors duration-300 rounded-md" />
     </div>
     <div class="flex flex-1 items-end">
       <NuxtLink :to="`/member/${member.url.replace('/', '')}`" class="w-full rounded-full bg-blue-500 p-3 text-center text-white">

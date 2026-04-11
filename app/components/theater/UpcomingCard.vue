@@ -48,7 +48,7 @@ const { locale } = useI18n()
               :src="jkt48TeamColor(theater.team ?? '').icon"
               sizes="14px"
             />
-            <TeamBadge type="text" :team="theater.team" />
+            <TeamBadge v-tooltip="$t('tooltip.show_by_team', { team: theater.team })" type="text" :team="theater.team" />
           </div>
           <div class="flex items-center gap-1.5 text-xs text-content-soft md:text-sm">
             <Icon name="material-symbols:calendar-month-sharp" class="text-yellow-500" />

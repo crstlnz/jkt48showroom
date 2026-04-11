@@ -59,6 +59,7 @@ interface IMember {
   url: string
   description?: string
   group?: GroupType
+  team?: string
   room_id?: number
   socials?: SocialNetwork[]
   is_graduate: boolean

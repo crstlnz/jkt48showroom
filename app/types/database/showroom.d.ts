@@ -307,6 +307,7 @@ declare namespace Database {
     jikosokai: string
     generation?: string
     group: string
+    team?: string
   }
 
   interface IShowroomLogDetail {

@@ -118,7 +118,7 @@ useHead({
               </span>
               <div class="flex gap-3 items-center">
                 <div class="flex gap-2.5">
-                  <TeamBadge class="mt-0.5" :team="theater.team" />
+                  <TeamBadge v-if="['dream', 'love', 'passion'].includes(theater.team?.toLowerCase() ?? '')" v-tooltip="$t('tooltip.show_by_team', { team: theater.team })" class="mt-0.5" :team="theater.team" />
                   <h3 class="text-xl font-semibold">
                     {{ theater.title }}
                   </h3>

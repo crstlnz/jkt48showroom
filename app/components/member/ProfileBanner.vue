@@ -115,6 +115,7 @@ function getLiveUrl(member: ExtINowLive) {
             </div>
           </div>
           <div class="flex gap-2 text-xs md:text-sm">
+            <TeamBadge v-if="member.team" :team="member.team" />
             <div
               class="select-none font-bold"
             >
