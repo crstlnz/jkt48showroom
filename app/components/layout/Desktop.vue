@@ -43,8 +43,8 @@ const isXL = greaterOrEqual('2xl')
         />
       </div>
       <div class="flex justify-center gap-2 max-2xl:flex-col">
-        <LangSwitch class="2xl:bg-container max-2xl:hover:bg-hover flex 2xl:flex-1 items-center justify-center gap-2 rounded-full size-12" />
-        <button
+        <LangSwitch :full-title="true" class="2xl:bg-container max-2xl:hover:bg-hover flex 2xl:flex-1 items-center justify-center gap-2 rounded-full size-12" />
+        <!-- <button
           v-ripple
           type="button"
           aria-label="Settings menu"
@@ -53,7 +53,7 @@ const isXL = greaterOrEqual('2xl')
         >
           <Icon name="ph:moon-bold" class="hidden! h-5 w-5 dark:inline-block!" />
           <Icon name="ph:sun-bold" class="h-5 w-5 dark:hidden!" />
-        </button>
+        </button> -->
         <SettingsDialog />
       </div>
       <div class="border-t-2 border-color-1 dark:border-zinc-700 max-2xl:self-center">

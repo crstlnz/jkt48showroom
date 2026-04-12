@@ -6,6 +6,9 @@ const isDev = process.env.NODE_ENV === 'development'
 export default defineNuxtConfig({
   app: {
     head: {
+      htmlAttrs: {
+        class: 'dark',
+      },
       script: [
         {
           async: true,
@@ -50,7 +53,7 @@ export default defineNuxtConfig({
     '@nuxtjs/device',
     '@nuxt/icon',
     // '@nuxtjs/tailwindcss',
-    '@nuxtjs/color-mode',
+    // '@nuxtjs/color-mode',
     '@vueuse/nuxt',
     '@nuxtjs/i18n',
     '@pinia/nuxt',
@@ -302,11 +305,10 @@ export default defineNuxtConfig({
   fonts: {
     provider: 'google',
   },
-  colorMode: {
-    preference: 'dark',
-    fallback: 'light',
-    classSuffix: '',
-  },
+  // colorMode: {
+  //   preference: 'dark',
+  //   classSuffix: '',
+  // },
   i18n: {
     baseUrl: process.env.BASE_URL,
     strategy: 'no_prefix',

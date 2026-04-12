@@ -10,6 +10,7 @@ const props = defineProps<{
 const seitansai = computed(() => props.theater.seitansai ?? [])
 const graduation = computed(() => props.theater.graduation ?? [])
 const members = computed(() => props.theater.members ?? [])
+const theaterTeamColor = computed(() => jkt48TeamColor(props.theater.team ?? ''))
 const { locale } = useI18n()
 </script>
 
@@ -45,7 +46,8 @@ const { locale } = useI18n()
         <div class="flex flex-col">
           <div v-if="['dream', 'love', 'passion'].includes(theater.team?.toLowerCase() ?? '')" class="flex items-center gap-1.5 text-xs text-content-soft md:text-sm">
             <Image
-              :src="jkt48TeamColor(theater.team ?? '').icon"
+              v-if="theaterTeamColor?.icon"
+              :src="theaterTeamColor.icon"
               sizes="14px"
             />
             <TeamBadge v-tooltip="$t('tooltip.show_by_team', { team: theater.team })" type="text" :team="theater.team" />

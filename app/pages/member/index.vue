@@ -30,12 +30,14 @@ onMounted(() => {
 // })
 const defaultFilter = {
   generation: [],
+  team: [],
   graduate: false,
   active: true,
 }
 
 interface FilterOptions {
   generation: string[]
+  team: string[]
   graduate: boolean
   active: boolean
 }
@@ -45,11 +47,13 @@ const filterOptions = ref<FilterOptions>(getFilterFromQuery())
 function getFilterFromQuery() {
   const query = route.query
   const generation = !query.gen ? [] : String(query.gen || '')?.split(',').map(i => `${i}-${group}`)
+  const team = !query.team ? [] : String(query.team || '').split(',').map(i => i.trim()).filter(Boolean)
   const graduate = !query.graduate ? defaultFilter.graduate : String(query.graduate) === 'true'
   const active = !query.active ? defaultFilter.active : String(query.active) === 'true'
 
   return {
     generation: generation || [],
+    team: team || [],
     graduate,
     active,
   }
@@ -57,11 +61,13 @@ function getFilterFromQuery() {
 
 function generateRouteQuery(opts: FilterOptions) {
   const generation = opts.generation?.map(i => i.split('-')?.[0]?.trim())?.join(',') || ''
+  const team = opts.team?.join(',') || ''
   const graduate = opts.graduate
   const active = opts.active
 
   return {
     gen: generation,
+    team,
     graduate: String(graduate),
     active: String(active),
   }
@@ -141,12 +147,41 @@ const generations = computed(() => {
   })
 })
 
+const teams = computed(() => {
+  function getTeamSortRank(team: string) {
+    const normalized = team.trim().toLowerCase()
+    if (normalized.includes('traine')) {
+      return 2
+    }
+    return 0
+  }
+
+  return Array.from(
+    new Set(
+      (raw.value ?? [])
+        .map(member => member.team?.trim())
+        .filter((team): team is string => Boolean(team)),
+    ),
+  ).sort((a, b) => {
+    const rankA = getTeamSortRank(a)
+    const rankB = getTeamSortRank(b)
+    if (rankA !== rankB) {
+      return rankA - rankB
+    }
+    return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' })
+  })
+})
+
 const { isMobile } = useResponsive()
 const data = computed(() => {
   let members = raw.value
   if (!members) return []
   if (filterOptions.value.generation?.length) {
     members = members.filter(i => filterOptions.value.generation.includes(i.generation ?? ''))
+  }
+
+  if (filterOptions.value.team?.length) {
+    members = members.filter(i => filterOptions.value.team.includes(i.team ?? ''))
   }
 
   if (filterOptions.value.active === filterOptions.value.graduate) {
@@ -183,7 +218,7 @@ const { results } = useFuse(search, data, {
 })
 
 const members = computed(() => {
-  return search.value === '' ? data.value : results.value.map(i => i.item)
+  return (search.value === '' ? data.value : results.value.map(i => i.item)).filter(i => i.group !== 'official')
 })
 
 const id = ref(0)
@@ -200,6 +235,15 @@ function toggleGen(key: string) {
   }
   else {
     filterOptions.value.generation.push(key)
+  }
+}
+
+function toggleTeam(team: string) {
+  if (filterOptions.value.team.includes(team)) {
+    filterOptions.value.team = filterOptions.value.team.filter(i => i !== team)
+  }
+  else {
+    filterOptions.value.team.push(team)
   }
 }
 const title = computed(() => {
@@ -220,8 +264,7 @@ useHead({
     :title="title" :search="search" :enable-search="true" @search="(v) => search = v"
   >
     <template #default>
-      <MemberListView v-if="isMobile" :pending="pending" :error="error" :members="members" />
-      <MemberGridView v-else :key-id="id" :pending="pending" :error="error" :members="members" :perpage="perpage" />
+      <MemberGridView :key-id="id" :pending="pending" :error="error" :members="members" :perpage="perpage" />
     </template>
     <template #actionSection>
       <div class="flex items-center gap-3">
@@ -242,6 +285,19 @@ useHead({
                   @click="() => toggleGen(gen.key)"
                 >
                   {{ gen.short_title }}
+                </div>
+              </div>
+              <div class="px-4 pb-1 text-base font-semibold">
+                Team
+              </div>
+              <div class="flex flex-wrap gap-2 px-4 pb-4">
+                <div
+                  v-for="team in teams" :key="team"
+                  class="cursor-pointer rounded-full px-2 py-1 text-sm capitalize"
+                  :class="filterOptions.team.includes(team) ? 'bg-blue-500 text-white' : 'dark:bg-blue-400/5 bg-blue-400/10 hover:bg-blue-400/50 dark:hover:bg-blue-400/50'"
+                  @click="() => toggleTeam(team)"
+                >
+                  {{ team }}
                 </div>
               </div>
               <SwitchGroup>

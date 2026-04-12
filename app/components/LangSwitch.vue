@@ -30,7 +30,7 @@ const { isMobile } = useResponsive()
     @click.prevent.stop="setLocale(otherLocale.code)"
   >
     <Icon v-if="!compact" name="ph:translate-bold" class="h-5 w-5" />
-    <span class="text-lg font-semibold leading-5" :class="{ 'max-2xl:hidden': !isMobile, 'absolute left-1/2 top-1/2 -translate-1/2': compact }">
+    <span class="text leading-5" :class="{ 'max-2xl:hidden': !isMobile, 'absolute left-1/2 top-1/2 -translate-1/2': compact }">
       {{ fullTitle ? (currentLocale.name === "ID" ? 'Indonesia' : 'English') : currentLocale.name }}
     </span>
   </button>

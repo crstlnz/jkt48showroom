@@ -23,26 +23,29 @@ const socials = computed(() => {
 <template>
   <div
     ref="container"
-    class="bg-container flex flex-col items-stretch gap-3 overflow-hidden rounded-2xl p-5 lg:p-8"
+    class="bg-container flex flex-col items-stretch gap-1.5 overflow-hidden rounded-2xl px-2.5 pt-2.5 pb-2"
   >
-    <div class="h-24 w-24 self-center overflow-hidden rounded-full shrink-0">
-      <NuxtLink :to="`/member/${member.url}`">
+    <div class="w-full flex-1 self-center overflow-hidden rounded-2xl">
+      <NuxtLink class="size-full!" :to="`/member/${member.url}`">
         <Image
-          class="h-full w-full object-cover"
+          class="size-full object-cover"
           :src="member.img_alt ?? member.img ?? config.errorPicture"
           :alt="`${member.name} Profile Picture`"
           fit="fill"
           :modifiers="{
-            aspectRatio: 1,
+            aspectRatio: 0.9,
             gravity: 'faceCenter',
           }"
-          sizes="96px"
+          sizes="300px"
           :placeholder="[10, 10, 75, 5]"
           format="webp"
         />
       </NuxtLink>
     </div>
-    <div class="text-center">
+    <div class="font-bold text-base lg:text-lg text-center">
+      {{ member.nicknames[0] || member.name }}
+    </div>
+    <!-- <div class="text-center">
       <NuxtLink :to="`/member/${member.url}`" class="truncate text-xl font-bold">
         {{ member.nicknames[0] || member.name }}
       </NuxtLink>
@@ -64,6 +67,6 @@ const socials = computed(() => {
       <NuxtLink :to="`/member/${member.url.replace('/', '')}`" class="w-full rounded-full bg-blue-500 p-3 text-center text-white">
         {{ $t('viewprofile') }}
       </NuxtLink>
-    </div>
+    </div> -->
   </div>
 </template>

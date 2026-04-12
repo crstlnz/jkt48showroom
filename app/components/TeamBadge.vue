@@ -21,7 +21,7 @@ const teamColor = computed(() => jkt48TeamColor(props.team ?? ''))
 </script>
 
 <template>
-  <div v-if="!['jkt48'].includes(teamKey ?? '')" class="flex gap-1.5">
+  <div v-if="teamColor" class="flex gap-1.5">
     <div v-if="type !== 'text' && teamColor.icon" class="bg-white size-6 flex items-center justify-center rounded-md" :style="{ border: `2px solid ${teamColor.bg}` }">
       <Image :src="teamColor.icon" sizes="16px" />
     </div>

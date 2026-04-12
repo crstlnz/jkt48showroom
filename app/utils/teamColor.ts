@@ -4,7 +4,7 @@ export interface TeamColor {
   icon?: string
 }
 
-export default function jkt48TeamColor(_team: string): TeamColor {
+export default function jkt48TeamColor(_team: string): TeamColor | null {
   const team = _team.toLowerCase()
   if (team === 'dream') {
     return {
@@ -29,8 +29,12 @@ export default function jkt48TeamColor(_team: string): TeamColor {
     }
   }
 
-  return {
-    text: '#e8cfcf',
-    bg: 'rgb(196, 120, 120)',
+  if (team === 'trainee') {
+    return {
+      text: '#e8cfcf',
+      bg: 'rgb(196, 120, 120)',
+    }
   }
+
+  return null
 }
