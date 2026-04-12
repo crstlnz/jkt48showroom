@@ -327,7 +327,9 @@ onUnmounted(() => {
                   <Image :src="getHeaderTeamIcon(virtualRow.index) || ''" sizes="16px" class="size-full object-contain" />
                 </div>
                 <div class="text-xl whitespace-nowrap font-extrabold tracking-wide capitalize" :style="getHeaderTextStyle(virtualRow.index)">
-                  Team {{ getHeaderTeam(virtualRow.index) }}
+                  <teamplate v-if="getHeaderTeamColor(virtualRow.index)?.icon">
+                    Team
+                  </teamplate>{{ getHeaderTeam(virtualRow.index) }}
                 </div>
               </div>
               <div
