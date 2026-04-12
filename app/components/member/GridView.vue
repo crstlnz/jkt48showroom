@@ -33,7 +33,10 @@ const minCardWidth = computed(() => {
   if (windowWidth.value >= 768) {
     return 140
   }
-  return 120
+  if (windowWidth.value >= 480) {
+    return 120
+  }
+  return 100
 })
 
 const columns = computed(() => {
