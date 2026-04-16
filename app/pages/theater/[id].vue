@@ -65,6 +65,23 @@ const userAgent = import.meta.client
   : useRequestHeaders(['user-agent'])['user-agent']
 
 const headless = userAgent?.toLowerCase()?.includes('headless')
+
+const members = computed(() => {
+  const result: Record<string, JKT48MemberExtend[]> = {}
+  if (!data.value) return result
+  for (const show of data.value.shows) {
+    result[show.id] = [...show.members].sort((a, b) => {
+      if (a.team && b.team) {
+        const teamCompare = a.team.localeCompare(b.team)
+        if (teamCompare !== 0) return teamCompare
+        return a.name.localeCompare(b.name)
+      }
+      return a.name.localeCompare(b.name)
+    })
+  }
+  return result
+})
+
 useHead({
   title,
 })
@@ -270,7 +287,7 @@ useHead({
               class="grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] gap-2 md:grid-cols-[repeat(auto-fill,minmax(130px,1fr))] md:gap-3.5"
             >
               <TheaterMemberCard
-                v-for="member in theater.members"
+                v-for="member in members[theater.id]"
                 :key="member.id"
                 :member="member"
                 :fallback-img="pic"

@@ -3,6 +3,7 @@ declare namespace JKT48 {
     id: string
     old_id?: string[]
     name: string
+    team?: string
     url?: string
   }
 
