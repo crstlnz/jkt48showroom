@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { useSettings } from '~/store/settings'
 
-const colorMode = useColorMode()
-const themeColor = computed(() => {
-  return colorMode.preference === 'dark' ? '#1e2124' : '#f1f5f9'
-})
+// const colorMode = useColorMode()
+// const themeColor = computed(() => {
+//   return colorMode.preference === 'dark' ? '#1e2124' : '#f1f5f9'
+// })
 
 const i18nHead = useLocaleHead({
   dir: true,
@@ -40,7 +40,7 @@ useHead({
   ],
   meta: [
     ...(i18nHead.value.meta || []),
-    { content: () => themeColor.value, name: 'theme-color' },
+    { content: () => '#1e2124', name: 'theme-color' },
     { charset: 'utf-8' },
     { name: 'viewport', content: 'width=device-width, initial-scale=1' },
   ],
@@ -152,7 +152,7 @@ const showPwaPrompt = computed(() =>
   !showWebviewBlock.value
   && activePwaPrompt.value !== null
   && (activePwaPrompt.value !== 'install' || !isPwaInstallDismissed.value)
-  && !isPwaPromptExcludedPage.value,
+  && (activePwaPrompt.value === 'update' || !isPwaPromptExcludedPage.value),
 )
 const pwaPromptPrefix = computed(() =>
   activePwaPrompt.value === 'update' ? 'pwa.update' : 'pwa.install',
@@ -211,7 +211,7 @@ const { isMobile } = useDevice()
       v-if="isEmbed"
       class="fixed bottom-0 bg-red-500 w-full z-9999 px-3 py-1.5 text-center"
     >
-      Buka aplikasi asli di <a class="text-blue-200 font-bold" href="https://48live.my.id">https://48live.my.id</a>
+      Buka aplikasi asli langsung di browser : <a class="text-blue-200 font-bold" href="https://48live.my.id">https://48live.my.id</a>
     </div>
     <div
       v-if="showPwaPrompt"

@@ -125,7 +125,8 @@ export default defineNuxtConfig({
     },
   },
   pwa: {
-    registerType: 'autoUpdate',
+    // Don't force-reload active tabs on deploy. Apply update on user action / next reload.
+    registerType: 'prompt',
     client: {
       installPrompt: true,
     },
@@ -205,6 +206,8 @@ export default defineNuxtConfig({
       ],
     },
     workbox: {
+      skipWaiting: false,
+      clientsClaim: false,
       cleanupOutdatedCaches: true,
       navigateFallback: '/',
       navigateFallbackDenylist: [/^\/api\//],
