@@ -9,7 +9,7 @@ export const useMembers = defineStore('members', () => {
   const error = ref<Error | null>(null)
   const loading = ref(false)
   const settings = useSettings()
-  const v = 'v29'
+  const v = 'v30'
   const { data: cache, trySet, isValid } = useExpiredLocalStorage<MembersCache>(`members-${settings.group}`, 86400000)
   const isCacheValid = computed(() => isValid.value && cache.value?.version === v)
   const members = computed(() => cache.value?.version === v ? cache.value.members : null)
