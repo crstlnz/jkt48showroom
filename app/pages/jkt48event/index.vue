@@ -2,7 +2,7 @@
 const route = useRoute()
 const router = useRouter()
 const page = ref(Number(route.query.page) || 1)
-const { data, pending, error } = await useApiFetch<IApiJKT48Event>('/api/jkt48event', { params: { page } })
+const { data, pending, error } = await useApiFetch<IApiTheaterDetailList>('/api/theater', { params: { page, type: 'event' } })
 const { locale } = useI18n()
 
 watch(pending, (p) => {
@@ -38,7 +38,7 @@ const maxDots = computed(() => {
         <Error :message="$t('error.unknown')" :img-src="`${$imgCDN}/assets/svg/web/error.svg`" />
       </div>
       <div v-else-if="data" class="flex flex-col gap-3.5">
-        <div v-for="event in data.events" :key="event.id" class="bg-container mx-3 flex gap-3 rounded-xl p-3 md:mx-4 md:p-4">
+        <div v-for="event in data.theater" :key="event.id" class="bg-container mx-3 flex gap-3 rounded-xl p-3 md:mx-4 md:p-4">
           <Image
             class="aspect-4/5.5 w-32 rounded-md bg-black/10 object-cover"
             :src="event.poster ?? $errorPicture"
@@ -53,7 +53,7 @@ const maxDots = computed(() => {
             format="webp"
           />
           <div class="flex-1 flex flex-col">
-            <NuxtLink :to="`/jkt48event/${event.url}`" class="inline-block leading-5 text-lg">
+            <NuxtLink :to="`/theater/${event.url}`" class="inline-block leading-5 text-lg">
               {{ event.title }}
             </NuxtLink>
             <div class="flex-1 font-light py-2 gap-1 flex-col flex">
@@ -72,7 +72,7 @@ const maxDots = computed(() => {
 
               <!-- {{ $dayjs(news.date).locale(locale).format("DD MMMM YYYY") }} -->
             </div>
-            <NuxtLink :to="`/jkt48event/${event.url}`" class="self-end">
+            <NuxtLink :to="`/theater/${event.url}`" class="self-end">
               Detail
             </NuxtLink>
           </div>
