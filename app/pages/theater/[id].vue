@@ -117,7 +117,7 @@ useHead({
                   :modifiers="{
                     aspectRatio: !lg ? '15/9' : '9/12',
                   }" loading="lazy" fit="fill"
-                  sizes="150px xs:170px sm:500px md:192px xl:320px" format="webp"
+                  sizes="550px md:600px lg:650px xl:320px" format="webp"
                 />
               </template>
             </ClientOnly>
@@ -129,7 +129,7 @@ useHead({
               :src="theater.setlist?.poster ?? theater.setlist?.banner" alt="Theater Poster" :modifiers="{
                 aspectRatio: lg ? '15/9' : '9/12',
               }" loading="lazy" fit="fill"
-              sizes="150px xs:170px sm:500px md:192px xl:320px" format="webp"
+              sizes="800px" format="webp"
             />
             <div class="lg:px-3 md:pt-1 flex-1 flex flex-col gap-2">
               <span v-if="data.shows.length > 1" class="bg-red-500 py-0.5 px-1.5 rounded-md">
