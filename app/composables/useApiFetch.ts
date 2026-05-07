@@ -1,6 +1,5 @@
 import { defu } from 'defu'
 import { useSettings } from '~/store/settings'
-import setRefreshToken from '~/utils/token'
 import syncServerCookies from './syncServerCookies'
 
 type UseApiFetchOptions<T> = NonNullable<Parameters<typeof useFetch<T>>[1]> & {
@@ -10,7 +9,6 @@ type UseApiFetchOptions<T> = NonNullable<Parameters<typeof useFetch<T>>[1]> & {
 export function useApiFetch<T>(url: Parameters<typeof useFetch<T>>[0], options: UseApiFetchOptions<T> = {}) {
   const { getApiKey } = useSettings()
   const { useApiKey = false, ...fetchOptions } = options
-  const { accessToken } = useSettings()
 
   const config = useRuntimeConfig()
   if (!config.public.api) throw new Error('Api url not defined!')

@@ -8,12 +8,28 @@ const route = useRoute()
 const onLives = useOnLives()
 const { data: lives, pending: pendingSocket } = storeToRefs(onLives)
 const { members, tryRefresh: tryRefreshMember } = useMembers()
+const currentLive = computed(() => {
+  return lives.value?.find(i => i.type === 'idn' && i.url_key === route.params.id) as INowLive | undefined
+})
+const currentLiveKey = computed(() => {
+  const live = currentLive.value
+  if (!live) return 'offline'
+
+  return [
+    live.room_id,
+    live.chat_room_id,
+    live.url_key,
+    live.slug,
+    live.streaming_url_list?.[0]?.url,
+    live.started_at,
+  ].join('|')
+})
 const { data, pending, error, status, refresh } = useAsyncData<IDNLivesDetail>(
   `idn-${route.params.id}`,
   async () => {
     await until(pendingSocket).toMatch(v => v === false)
     await tryRefreshMember()
-    const live = lives.value?.find(i => i.type === 'idn' && i.url_key === route.params.id) as INowLive | undefined
+    const live = currentLive.value
     const member = members?.find(i => i.idn_username === route.params.id)
     const member_info = member
       ? {
@@ -45,8 +61,13 @@ const { data, pending, error, status, refresh } = useAsyncData<IDNLivesDetail>(
   { server: false, lazy: true },
 )
 
-watch(lives, () => {
+watch(currentLiveKey, () => {
+  if (status.value !== 'success' && !data.value) return
   refresh()
+})
+
+const isInitialLoading = computed(() => {
+  return status.value !== 'success' && (pending.value || !data.value)
 })
 
 const title = computed(() => {
@@ -84,20 +105,19 @@ const { isMobile } = useDevice()
 // function setVideoLandscape(val: boolean) {
 //   videoIsLandscape.value = val
 // }
-
 const enableComment = useLocalStorage('enable-idn-comment', true)
 </script>
 
 <template>
   <div class="h-full">
-    <div v-if="status !== 'success' || pending" class="flex justify-center items-center w-full aspect-4/5 sm:aspect-video">
+    <div v-if="isInitialLoading" class="flex justify-center items-center w-full aspect-4/5 sm:aspect-video">
       <div class="aspect-video w-20 max-w-[40%]">
         <Icon name="svg-spinners:ring-resize" class="w-full h-full" />
       </div>
     </div>
     <div v-else-if="error">
       <Error
-        :message="error.statusMessage || ''" :img-src="error.statusCode === 404
+        :message="error.statusText || ''" :img-src="error.status === 404
           ? `${$imgCDN}/assets/svg/web/404.svg`
           : `${$imgCDN}/assets/svg/web/error.svg`
         "
@@ -107,7 +127,7 @@ const enableComment = useLocalStorage('enable-idn-comment', true)
       <div class="flex flex-col gap-5 items-center flex-1 bg-container py-7 md:py-16 px-10">
         <Image
           :src="`${$imgCDN}/assets/svg/web/video_files.svg`"
-          class="mx-auto w-[450px] max-w-[70%] dark:brightness-90" alt=""
+          class="mx-auto w-112.5 max-w-[70%] dark:brightness-90" alt=""
         />
         <div>{{ $t('streamoffline') }}</div>
       </div>
@@ -159,7 +179,7 @@ const enableComment = useLocalStorage('enable-idn-comment', true)
             </NuxtLink>
           </div>
         </div>
-        <div v-if="isLandscape" class="max-md:absolute max-md:inset-x-0 md:bg-container rounded-r-md flex-1 flex flex-col min-h-[500px] h-[95vh]">
+        <div v-if="isLandscape" class="max-md:absolute max-md:inset-x-0 md:bg-container rounded-r-md flex-1 flex flex-col min-h-125 h-[95vh]">
           <div class="px-4 pt-4 pb-3 flex justify-between border-b dark:border-white/5">
             <div class="flex flex-col">
               <h1 class="text-xl leading-5">
