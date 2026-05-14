@@ -1,0 +1,89 @@
+name: 🤖 Deploy Environment variables
+
+on:
+  workflow_call:
+    secrets:
+      CI_PRIVATE_KEY:
+        required: true
+      CI_HOST:
+        required: true
+      CI_USER:
+        required: true
+  workflow_dispatch:
+
+env:
+  ENV_FILE: .env.jkt48showroom
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      SSH_PRIVATE_KEY: ${{ secrets.CI_PRIVATE_KEY }}
+    steps:
+      - name: Setup SSH Key
+        run: echo "$SSH_PRIVATE_KEY" > private_key && chmod 600 private_key
+
+      - name: Create Environment
+        uses: mkyai/env-builder@v1.1.1
+        with:
+          secrets: ${{ toJson(secrets) }}
+          variables: ${{ toJson(vars) }}
+
+      - name: Clean .env file (remove CI_* and github_* including multiline)
+        run: |
+          ENV_FILE=".env"
+          TEMP_FILE=$(mktemp)
+
+          is_forbidden() {
+            [[ "$1" =~ ^(CI_|github_|DEPLOY_) ]]
+          }
+
+          in_multiline=0
+          current_key=""
+
+          while IFS= read -r line || [[ -n "$line" ]]; do
+            # Skip comments
+            [[ "$line" =~ ^[[:space:]]*# ]] && continue
+            # Skip empty lines (only if not in multiline)
+            [[ -z "${line// }" ]] && (( ! in_multiline )) && echo "$line" >> "$TEMP_FILE" && continue
+
+            if (( in_multiline )); then
+              # Still inside a forbidden multiline block
+              if [[ "$line" == *"-----END "* ]] || [[ "$line" == *\"* ]] || [[ "$line" == *"'"* ]]; then
+                in_multiline=0
+              fi
+              continue
+            else
+              # Check if line starts with KEY=
+              if [[ "$line" =~ ^[[:space:]]*([A-Za-z0-9_]+)= ]]; then
+                current_key="${BASH_REMATCH[1]}"
+
+                if is_forbidden "$current_key"; then
+                  # Start skipping
+                  in_multiline=1
+                  # If not multiline (no quote or BEGIN), end immediately
+                  if [[ "$line" != *\"* && "$line" != *"'"* && "$line" != *"-----BEGIN "* ]]; then
+                    in_multiline=0
+                  fi
+                  continue
+                else
+                  echo "$line" >> "$TEMP_FILE"
+                  # Check if value starts with quote or BEGIN → multiline
+                  if [[ "$line" == *\"* || "$line" == *"'"* || "$line" == *"-----BEGIN "* ]]; then
+                    in_multiline=1
+                  fi
+                fi
+              else
+                # Continuation line or junk
+                if (( ! in_multiline )) && ! is_forbidden "$current_key"; then
+                  echo "$line" >> "$TEMP_FILE"
+                fi
+              fi
+            fi
+          done < "$ENV_FILE"
+
+          mv "$TEMP_FILE" "$ENV_FILE"
+          echo "File .env berhasil dibersihkan dari CI_* dan github_*"
+
+      - name: Copy .env file
+        run: scp -o StrictHostKeyChecking=no -i private_key .env ${{ secrets.CI_USER }}@${{ secrets.CI_HOST }}:${{ vars.DEPLOY_APP_DIR }}/${{ env.ENV_FILE }}

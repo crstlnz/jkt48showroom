@@ -1,7 +1,7 @@
 {
   "name": "jkt48showroom",
   "type": "module",
-  "version": "0.26.0",
+  "version": "0.26.1",
   "engines": {
     "node": "20.x.x"
   },
@@ -14,7 +14,7 @@
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "docker:build": "docker build -t crstlnz/jkt48showroom:latest .",
+    "docker:build": "docker build --build-arg NUXT_PUBLIC_API=$NUXT_PUBLIC_API -t crstlnz/jkt48showroom:latest .",
     "docker:push": "docker push crstlnz/jkt48showroom:latest",
     "docker": "bun docker:build && bun docker:push"
   },
