@@ -11,7 +11,7 @@ useHead({
   htmlAttrs: {
     class: () => menuOpen.value ? 'max-md:overflow-hidden' : '',
   },
-  titleTemplate: t => t ? `${t} | ${title.value}` : title.value,
+  titleTemplate: t => !t || t === title.value ? title.value : `${t} | ${title.value}`,
 })
 
 const { group } = useSettings()

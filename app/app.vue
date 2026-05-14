@@ -48,19 +48,21 @@ useHead({
 
 const { group } = useSettings()
 const { getGroupTitle, getMetaImage } = useAppConfig()
-const description = `A Fanmade Website for ${getGroupTitle(
+const description = computed(() => `A Fanmade Website for ${getGroupTitle(
   group,
 )} Showroom. Discover the latest ${getGroupTitle(
   group,
-)} member showroom live streams, member profile, and fans ranking!`
-
+)} member showroom live streams, member profile, and fans ranking!`,
+)
 useSeoMeta({
+  title: `${getGroupTitle(group)} Live Log`,
+  ogTitle: `${getGroupTitle(group)} Live Log`,
   description,
   ogSiteName: `${getGroupTitle(group)} Live Log`,
-  ogDescription: description,
+  ogDescription: description.value,
   ogImage: getMetaImage(group),
   twitterTitle: `${getGroupTitle(group)} Live Log`,
-  twitterDescription: description,
+  twitterDescription: description.value,
   twitterImage: getMetaImage(group),
   twitterCard: 'summary',
   twitterSite: '@crstlnz',
