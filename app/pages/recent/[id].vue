@@ -58,6 +58,8 @@ const description = computed(() => {
 })
 
 const titleSeo = computed(() => `${data.value?.type === 'showroom' ? 'Live Showroom' : 'Live IDN'} ${title.value} - ${dayjs(data.value?.live_info?.date?.start || data.value?.created_at).locale(locale.value).format('DD MMM YYYY')}`)
+const publishedTime = computed(() => dayjs(data.value?.live_info?.date?.start ?? data.value?.created_at).toISOString())
+const modifiedTime = computed(() => dayjs(data.value?.live_info?.date?.end ?? data.value?.created_at).toISOString())
 useSeoMeta({
   title: () => titleSeo.value,
   ogTitle: () => titleSeo.value,
@@ -65,9 +67,12 @@ useSeoMeta({
   description,
   ogDescription: description,
   twitterDescription: description,
+  articlePublishedTime: () => publishedTime.value,
+  articleModifiedTime: () => modifiedTime.value,
   ogImage: () => (data.value?.type === 'idn' ? data.value.idn.image : null) || data.value?.room_info?.img || '',
   twitterImage: (data.value?.type === 'idn' ? data.value.idn.image : null) || data.value?.room_info?.img || '',
   twitterCard: 'summary_large_image',
+  ogType: 'article',
   author: 'crstlnz',
 })
 useHead({
