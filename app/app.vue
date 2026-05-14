@@ -48,12 +48,17 @@ useHead({
 
 const { group } = useSettings()
 const { getGroupTitle, getMetaImage } = useAppConfig()
-const description = computed(() => `A Fanmade Website for ${getGroupTitle(
-  group,
-)} Showroom. Discover the latest ${getGroupTitle(
-  group,
-)} member showroom live streams, member profile, and fans ranking!`,
-)
+
+const description = computed(() => {
+  const title = getGroupTitle(group)
+
+  if (group === 'jkt48') {
+    return `Situs buatan penggemar untuk Showroom & IDN ${title}. Temukan siaran langsung terbaru dari member ${title} di Showroom dan IDN, profil member, serta peringkat penggemar!`
+  }
+
+  return `Situs buatan penggemar untuk Showroom ${title}. Temukan siaran langsung Showroom terbaru dari member ${title}, profil member, dan peringkat penggemar!`
+})
+
 useSeoMeta({
   title: `${getGroupTitle(group)} Live Log`,
   ogTitle: `${getGroupTitle(group)} Live Log`,
