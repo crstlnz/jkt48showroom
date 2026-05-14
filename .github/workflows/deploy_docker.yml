@@ -32,6 +32,7 @@ jobs:
           push: true
           build-args: |
             NUXT_PUBLIC_API=${{ vars.NUXT_PUBLIC_API }}
+            NUXT_SITE_NAME=${{ vars.NUXT_SITE_NAME }}
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
 
