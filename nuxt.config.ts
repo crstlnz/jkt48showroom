@@ -2,6 +2,22 @@ import tailwindcss from '@tailwindcss/vite'
 import { vite as vidstack } from 'vidstack/plugins'
 
 const isDev = process.env.NODE_ENV === 'development'
+const apiBase = process.env.NUXT_PUBLIC_API?.replace(/\/$/, '')
+
+const sitemapPrivateRoutes = [
+  '/admin',
+  '/admin/**',
+  '/user',
+  '/user/**',
+  '/stats',
+  '/offline',
+  '/history',
+  '/sorter/result',
+]
+
+const recentSitemapSources = apiBase
+  ? [`${apiBase}/api/sitemap/recent`]
+  : []
 
 export default defineNuxtConfig({
   app: {
@@ -52,6 +68,8 @@ export default defineNuxtConfig({
     'dayjs-nuxt',
     '@nuxtjs/device',
     '@nuxt/icon',
+    '@nuxtjs/sitemap',
+    '@nuxtjs/robots',
     // '@nuxtjs/tailwindcss',
     // '@nuxtjs/color-mode',
     '@vueuse/nuxt',
@@ -315,6 +333,7 @@ export default defineNuxtConfig({
   i18n: {
     baseUrl: process.env.BASE_URL,
     strategy: 'no_prefix',
+    defaultLocale: 'id',
     locales: [
       { code: 'id', language: 'id-ID', file: 'id.yaml', dir: 'ltr', name: 'ID' },
       { code: 'en', language: 'en-US', file: 'en.yaml', dir: 'ltr', name: 'EN' },
@@ -322,7 +341,6 @@ export default defineNuxtConfig({
     ],
     langDir: 'locales',
     lazy: true,
-    defaultLocale: 'id',
     vueI18n: '../i18n.config.ts',
     bundle: {
       optimizeTranslationDirective: false,
@@ -417,6 +435,25 @@ export default defineNuxtConfig({
         },
       },
     },
+  },
+  sitemap: {
+    cacheMaxAgeSeconds: 3600,
+    defaultSitemapsChunkSize: 5000,
+    sitemaps: {
+      pages: {
+        includeAppSources: true,
+        exclude: sitemapPrivateRoutes,
+      },
+      recent: {
+        sources: recentSitemapSources,
+        chunks: true,
+      },
+    },
+  },
+  robots: {
+    mergeWithRobotsTxtPath: false,
+    allow: ['/'],
+    disallow: sitemapPrivateRoutes.map(route => route.replace('/**', '/*')),
   },
   compatibilityDate: '2025-10-26',
 })

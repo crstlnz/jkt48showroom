@@ -1,30 +1,25 @@
 import type { FetchOptions } from 'ofetch'
 import { ofetch } from 'ofetch'
-import syncServerCookies from '~/composables/syncServerCookies'
-// import { useSettings } from '~/store/settings'
+import { useApiFetchShared } from '~/utils/apiFetchShared'
 
 const fetcher = ofetch.create({
   // credentials: 'include',
 })
 
-export async function $apiFetch<T>(request: RequestInfo, options?: FetchOptions<'json', any> & { includeApiKey?: boolean } | undefined): Promise<T> {
+export async function $apiFetch<T>(request: RequestInfo, options?: FetchOptions<'json', any> & { includeApiKey?: boolean, useSignature?: boolean } | undefined): Promise<T> {
   const nuxtApp = tryUseNuxtApp()
   const fetch = async () => {
-    const config = useRuntimeConfig()
+    const { includeApiKey = false, useSignature = false, ...fetchOptions } = options ?? {}
+    const { applyRequestHeaders, baseURL, getRequestHeaders, handleResponse } = useApiFetchShared({ includeApiKey, useSignature })
     const opts: FetchOptions<'json'> = {
-      baseURL: config.public.api,
-      ...options,
+      baseURL,
+      ...fetchOptions,
     }
 
-    const { getHeaders, setCookie } = syncServerCookies()
+    opts.headers = getRequestHeaders(opts.headers)
 
-    opts.headers = {
-      ...opts.headers,
-      ...getHeadersToken(),
-    }
-
-    const onResponse = options?.onResponse
-    const onRequest = options?.onRequest
+    const onResponse = fetchOptions.onResponse
+    const onRequest = fetchOptions.onRequest
     const res = await fetcher.raw<T>(request, {
       ...opts,
       onResponse(ctx) {
@@ -37,11 +32,9 @@ export async function $apiFetch<T>(request: RequestInfo, options?: FetchOptions<
           onResponse(ctx)
         }
 
-        if (import.meta.server) {
-          setCookie(ctx.response.headers)
-        }
+        handleResponse(ctx.response)
       },
-      onRequest(ctx) {
+      async onRequest(ctx) {
         if (Array.isArray(onRequest)) {
           for (const r of onRequest) {
             r(ctx)
@@ -50,13 +43,10 @@ export async function $apiFetch<T>(request: RequestInfo, options?: FetchOptions<
         else if (onRequest) {
           onRequest(ctx)
         }
-        if (import.meta.server) {
-          ctx.options.headers = new Headers(getHeaders())
-        }
+        await applyRequestHeaders(ctx.options)
       },
     })
 
-    applyHeaderToken(res.headers)
     return res._data as T
   }
 

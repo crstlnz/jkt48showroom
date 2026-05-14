@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import { decode, encode } from 'cbor-x'
+import { API_KEY_SECRET, getSecret } from '~/utils/secret'
 import { cachedFetch } from '../utils/cachedFetch'
 import { useNotifications } from './notifications'
 import { useSettings } from './settings'
@@ -63,7 +64,7 @@ export const useSocket = defineStore('socket', () => {
       if (socket) {
         manualClose()
       }
-      socket = new WebSocket(`${wsUrl}?token=${settings.apiKey}`)
+      socket = new WebSocket(`${wsUrl}?token=${getSecret(API_KEY_SECRET)}`)
       socket.binaryType = 'arraybuffer'
       socket.onopen = () => {
         console.log('✅ WebSocket connected')

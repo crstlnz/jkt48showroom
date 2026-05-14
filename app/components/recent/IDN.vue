@@ -77,11 +77,11 @@ const calculatedGift = computed<RecentUserGifts[]>(() => {
     <MemberProfileBanner :room-id="data.room_id" :member="data.room_info" />
     <div class="mx-3 md:mx-4">
       <div class="flex gap-3 md:gap-4 flex-col md:flex-row">
-        <div class="relative shrink-0 h-80 md:aspect-[5/6.5]">
+        <div class="relative shrink-0 h-80 md:aspect-5/6.5">
           <div class="absolute top-3 left-3 font-bold text-xl md:text-lg text-shadow text-white">
             {{ data.idn.title }}
           </div>
-          <Image :src="$idnLiveIcon" size="64px" class="absolute right-3 bottom-3 mt-[6px] h-6 md:h-5 object-contain max-w-[90px]" />
+          <Image :src="$idnLiveIcon" size="64px" class="absolute right-3 bottom-3 mt-1.5 h-6 md:h-5 object-contain max-w-22.5" />
           <Image
             sizes="200px sm:250px md:300px lg:247.5px"
             :placeholder="[45, 10, 10, 70]"
@@ -115,7 +115,7 @@ const calculatedGift = computed<RecentUserGifts[]>(() => {
         <div class="font-bold text-lg xl:text-xl mb-1">
           Detail
         </div>
-        <table class="table-auto [&_td]:py-1 xl:[&_td]:py-1.5 text-sm xl:text-base [&_td:first-child]:min-w-[150px] xl:[&_td:first-child]:min-w-[200px] [&_td:first-child]:opacity-80 font-semibold dark:[&_td:first-child]:opacity-60">
+        <table class="table-auto [&_td]:py-1 xl:[&_td]:py-1.5 text-sm xl:text-base [&_td:first-child]:min-w-37.5 xl:[&_td:first-child]:min-w-50 [&_td:first-child]:opacity-80 font-semibold dark:[&_td:first-child]:opacity-60">
           <tbody>
             <tr>
               <td>

@@ -5,7 +5,7 @@ import { useSettings } from '~/store/settings'
 const route = useRoute()
 const settings = useSettings()
 const { getTitle } = useAppConfig()
-const { data, error, pending } = await useApiFetch<LogDetail.Live>(`/api/recent/${route.params.id}`)
+const { data, error, pending } = await useApiFetch<LogDetail.Live>(`/api/recent/${route.params.id}`, { useSignature: true })
 const { status, user } = useAuth()
 const { data: likeData } = await useApiFetch<Database.IsLike>('/api/user/like', { query: { data_id: route.params.id }, immediate: status.value === 'authenticated', credentials: 'include' })
 const liked = ref(false)
@@ -43,10 +43,10 @@ function setLike() {
 }
 
 const dayjs = useDayjs()
-const { n } = useI18n()
+const { n, locale } = useI18n()
 
 const title = computed(() => {
-  const t = (!pending.value && (data.value || !error.value)) ? `${data.value?.room_info?.fullname ?? data.value?.room_info?.nickname ?? data.value?.room_info?.name}` : getTitle(settings.group)
+  const t = (!pending.value && (data.value || !error.value)) ? `${data.value?.room_info?.nickname ?? data.value?.room_info?.fullname ?? data.value?.room_info?.name}` : getTitle(settings.group)
   return t.split('-')[0]
 })
 
@@ -57,7 +57,7 @@ const description = computed(() => {
   return `${name.value} mendapatkan gift sebanyak ± ${n((data.value?.total_gifts || 0) * (data.value?.gift_rate || 0), 'currency', 'id')} pada live ini!`
 })
 
-const titleSeo = computed(() => `${data.value?.type === 'showroom' ? 'Live Showroom' : 'Live IDN'} ${title.value} - ${dayjs(data.value?.live_info?.date?.start || data.value?.created_at).format('DD MMM YYYY')}`)
+const titleSeo = computed(() => `${data.value?.type === 'showroom' ? 'Live Showroom' : 'Live IDN'} ${title.value} - ${dayjs(data.value?.live_info?.date?.start || data.value?.created_at).locale(locale.value).format('DD MMM YYYY')}`)
 useSeoMeta({
   title: () => titleSeo.value,
   ogTitle: () => titleSeo.value,
@@ -65,10 +65,10 @@ useSeoMeta({
   description,
   ogDescription: description,
   twitterDescription: description,
-  twitterSite: '@crstlnz',
-  ogImage: () => data.value?.room_info?.img || '',
-  twitterImage: () => data.value?.room_info?.img || '',
+  ogImage: () => (data.value?.type === 'idn' ? data.value.idn.image : null) || data.value?.room_info?.img || '',
+  twitterImage: (data.value?.type === 'idn' ? data.value.idn.image : null) || data.value?.room_info?.img || '',
   twitterCard: 'summary_large_image',
+  author: 'crstlnz',
 })
 useHead({
   title: () => titleSeo.value,
@@ -84,7 +84,7 @@ const isXL = greaterOrEqual('xl')
       <Spinner class="size-10 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
     </div>
     <Error v-else-if="error || !data" key="error" :message="error ? (error.statusCode === 404 ? $t('error.pagenotfound') : $t('error.unknown')) : $t('error.pagenotfound')" :img-src="!data || error?.statusCode === 404 ? `${$imgCDN}/assets/svg/web/404.svg` : `${$imgCDN}/assets/svg/web/error.svg`" />
-    <LayoutRow v-else key="data" :title="title!" :sub-title="`${data.type === 'idn' ? 'IDN' : 'Showroom'} Live - ${$dayjs(data.live_info?.date?.start).format('DD MMMM YYYY')}`">
+    <LayoutRow v-else key="data" :title="title!" :sub-title="`${data.type === 'idn' ? 'IDN' : 'Showroom'} Live - ${$dayjs(data.live_info?.date?.start).locale(locale).format('DD MMMM YYYY')}`">
       <template #default>
         <RecentShowroom v-if="data.type === 'showroom'" :data="data" />
         <RecentIDN v-else-if="data.type === 'idn'" :data="data" />

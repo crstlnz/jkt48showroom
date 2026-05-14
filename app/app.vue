@@ -55,16 +55,15 @@ const description = `A Fanmade Website for ${getGroupTitle(
 )} member showroom live streams, member profile, and fans ranking!`
 
 useSeoMeta({
-  title: `${getGroupTitle(group)} Showroom Log`,
-  ogTitle: () => `${getGroupTitle(group)} Showroom Log`,
   description,
-  ogSiteName: `${getGroupTitle(group)} Showroom Log`,
+  ogSiteName: `${getGroupTitle(group)} Live Log`,
   ogDescription: description,
   ogImage: getMetaImage(group),
-  twitterTitle: `${getGroupTitle(group)} Showroom Log`,
+  twitterTitle: `${getGroupTitle(group)} Live Log`,
   twitterDescription: description,
   twitterImage: getMetaImage(group),
   twitterCard: 'summary',
+  twitterSite: '@crstlnz',
   ogType: 'website',
 })
 

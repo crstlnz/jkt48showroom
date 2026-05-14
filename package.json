@@ -1,7 +1,7 @@
 {
   "name": "jkt48showroom",
   "type": "module",
-  "version": "0.25.10",
+  "version": "0.26.0",
   "engines": {
     "node": "20.x.x"
   },
@@ -24,6 +24,8 @@
     "@headlessui/vue": "^1.7.23",
     "@nuxt/image": "2.0.0",
     "@nuxtjs/google-adsense": "^3.0.3",
+    "@nuxtjs/robots": "^6.0.8",
+    "@nuxtjs/sitemap": "^8.0.15",
     "@tanstack/vue-virtual": "^3.13.12",
     "@use-gesture/vanilla": "^10.3.1",
     "@vite-pwa/nuxt": "^1.1.1",

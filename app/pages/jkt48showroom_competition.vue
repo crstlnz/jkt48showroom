@@ -7,10 +7,9 @@ import {
   TransitionRoot,
 } from '@headlessui/vue'
 import { useOnLives } from '~/store/onLives'
-import { useSettings } from '~/store/settings'
+import { API_KEY_SECRET, getSecret } from '~/utils/secret'
 
 const { data, pending, error, refresh } = await useShowroomCompetitionDetail<CompetitionDetailResponse>()
-const { apiKey } = storeToRefs(useSettings())
 const config = useRuntimeConfig()
 const { t, locale, n } = useI18n()
 const dayjs = useDayjs()
@@ -213,10 +212,11 @@ async function fetchTopFans(roomId: number) {
   topFansErrorByRoom.value = { ...topFansErrorByRoom.value, [roomId]: false }
 
   try {
+    const apiKey = getSecret(API_KEY_SECRET)
     const result = await $fetch<CompetitionTopFan[]>('/api/showroom_competition_top_fans', {
       baseURL: config.public.api as string,
       query: { room_id: roomId },
-      headers: apiKey.value ? { 'x-api-key': apiKey.value } : undefined,
+      headers: apiKey ? { 'x-api-key': apiKey } : undefined,
     })
 
     topFansByRoom.value = {

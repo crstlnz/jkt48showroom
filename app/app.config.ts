@@ -156,7 +156,7 @@ export default defineAppConfig({
         return 'Hinatazaka46 Showroom'
       }
       default : {
-        return 'JKT48 Showroom'
+        return 'JKT48 Live Log'
       }
     }
   },

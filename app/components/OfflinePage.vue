@@ -29,7 +29,7 @@ onUnmounted(() => {
     <div class="flex flex-col items-center gap-5 pb-10 px-5 opacity-80">
       <Footer />
       <div class="text-xs">
-        JKT48 Showroom Web
+        JKT48 Live Log
       </div>
     </div>
   </div>

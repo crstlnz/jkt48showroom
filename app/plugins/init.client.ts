@@ -5,9 +5,9 @@ import { createGtagEvent } from '~/utils/gtag'
 export default defineNuxtPlugin(() => {
   const route = useRoute()
   const { checkAuth, authenticated } = useAuth()
-  const { setApiKey, getApiKey } = useSettings()
-  setApiKey(getApiKey())
-
+  const { hydrateApiKey, hydrateSignatureSecret } = useSettings()
+  hydrateApiKey()
+  hydrateSignatureSecret()
   const onLives = useOnLives()
 
   function pathView(path: string) {

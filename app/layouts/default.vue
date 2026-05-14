@@ -141,14 +141,14 @@ const userMenus: MenuItem[] = [
     activeIcon: 'ph:bookmark-simple-fill',
   },
 ]
-const colorMode = useColorMode()
+// const colorMode = useColorMode()
 function toggleDark() {
-  if (colorMode.value === 'dark') {
-    colorMode.preference = 'light'
-  }
-  else {
-    colorMode.preference = 'dark'
-  }
+  // if (colorMode.value === 'dark') {
+  //   colorMode.preference = 'light'
+  // }
+  // else {
+  //   colorMode.preference = 'dark'
+  // }
 }
 
 const route = useRoute()
