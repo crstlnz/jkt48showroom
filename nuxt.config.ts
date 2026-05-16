@@ -25,6 +25,7 @@ function buildRecentYears(): Record<string, Partial<SitemapDefinition>> {
   for (let year = startYear; year <= currentYear; year++) {
     sitemaps[`recent-${year}`] = {
       sources: [`${apiEndpoint}?year=${year}`],
+      chunks: true,
     }
   }
   return sitemaps
