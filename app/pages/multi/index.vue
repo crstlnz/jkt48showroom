@@ -729,7 +729,9 @@ function openMediaControl() {
             <NuxtLink to="/" :class="$getGroup(group) === 'jkt48' ? 'text-red-500' : 'text-sky-400'" class="text-3xl lg:text-4xl max-sm:leading-8">
               {{ $getGroupTitle(group) }}
             </NuxtLink>
-            <span class="leading-6 text-sm lg:text-base">Multi Viewer</span>
+            <h1 class="leading-6 text-sm lg:text-base">
+              Multi Viewer
+            </h1>
           </div>
           <div class="flex gap-3 items-center">
             <div class="flex md:flex-row t border border-color-1 rounded-md overflow-hidden">

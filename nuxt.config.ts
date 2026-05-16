@@ -448,6 +448,7 @@ export default defineNuxtConfig({
     },
   },
   sitemap: {
+    xsl: false,
     cacheMaxAgeSeconds: 3600,
     defaultSitemapsChunkSize: 5000,
     sitemaps: {
