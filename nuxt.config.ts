@@ -1,3 +1,4 @@
+import type { MultiSitemapEntry, MultiSitemapsInput, SitemapDefinition, SitemapSourceInput } from '@nuxtjs/sitemap'
 import tailwindcss from '@tailwindcss/vite'
 import { vite as vidstack } from 'vidstack/plugins'
 
@@ -15,9 +16,19 @@ const sitemapPrivateRoutes = [
   '/sorter/result',
 ]
 
-const recentSitemapSources = apiBase
-  ? [`${apiBase}/api/sitemap/recent`]
-  : []
+const startYear = 2020
+const apiEndpoint = `${apiBase}/api/sitemap/recent`
+
+function buildRecentYears(): Record<string, Partial<SitemapDefinition>> {
+  const sitemaps: Record<string, Partial<SitemapDefinition>> = {}
+  const currentYear = new Date().getFullYear()
+  for (let year = startYear; year <= currentYear; year++) {
+    sitemaps[`recent-${year}`] = {
+      sources: [`${apiEndpoint}?year=${year}`],
+    }
+  }
+  return sitemaps
+}
 
 export default defineNuxtConfig({
   app: {
@@ -444,10 +455,7 @@ export default defineNuxtConfig({
         includeAppSources: true,
         exclude: sitemapPrivateRoutes,
       },
-      recent: {
-        sources: recentSitemapSources,
-        chunks: true,
-      },
+      ...buildRecentYears(),
     },
   },
   robots: {
