@@ -1,4 +1,4 @@
-import type { MultiSitemapEntry, MultiSitemapsInput, SitemapDefinition, SitemapSourceInput } from '@nuxtjs/sitemap'
+import type { SitemapDefinition } from '@nuxtjs/sitemap'
 import tailwindcss from '@tailwindcss/vite'
 import { vite as vidstack } from 'vidstack/plugins'
 
@@ -451,7 +451,7 @@ export default defineNuxtConfig({
   sitemap: {
     xsl: false,
     cacheMaxAgeSeconds: 3600,
-    defaultSitemapsChunkSize: 5000,
+    defaultSitemapsChunkSize: 1000,
     sitemaps: {
       pages: {
         includeAppSources: true,
