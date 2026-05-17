@@ -109,10 +109,10 @@ useHead({
                 <div key="fallback" class="border border-black/10 dark:border-white/10 aspect-15/9 lg:aspect-9/12 w-full shrink-0 overflow-hidden rounded-xl object-cover lg:w-72 xl:w-80  self-start bg-container animate-pulse" />
               </template>
               <template #default>
-                <Image
+                <DeferImage
                   :key="`${lg ? (theater.setlist?.poster ?? theater.setlist?.banner) : (theater.setlist?.banner ?? theater.setlist?.poster) ?? config.errorPicture}${lg ? 'lg' : 'sm'}`"
                   class="border border-black/10 dark:border-white/10 aspect-15/9 lg:aspect-9/12 w-full shrink-0 overflow-hidden rounded-xl object-cover lg:w-72 xl:w-80  self-start"
-                  :src="lg ? (theater.setlist?.poster ?? theater.setlist?.banner) : (theater.setlist?.banner ?? theater.setlist?.poster) ?? config.errorPicture"
+                  :src="(lg ? (theater.setlist?.poster ?? theater.setlist?.banner) : (theater.setlist?.banner ?? theater.setlist?.poster) ?? config.errorPicture) ?? ''"
                   alt="Theater Poster"
                   :modifiers="{
                     aspectRatio: !lg ? '15/9' : '9/12',

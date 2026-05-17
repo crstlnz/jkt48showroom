@@ -10,14 +10,18 @@ const props = withDefaults(defineProps<{
   compact: false,
 })
 
+const teamColor = computed(() => jkt48TeamColor(props.team ?? ''))
 const teamKey = computed(() => props.team?.toLowerCase())
 const _team = computed(() => {
+  const teamName = teamColor.value?.name
+  if (teamName) {
+    return teamName
+  }
   if (!teamKey.value) {
     return ''
   }
   return teamKey.value.charAt(0).toUpperCase() + teamKey.value.slice(1)
 })
-const teamColor = computed(() => jkt48TeamColor(props.team ?? ''))
 </script>
 
 <template>
@@ -35,7 +39,7 @@ const teamColor = computed(() => jkt48TeamColor(props.team ?? ''))
       }"
       class="self-start text-xs font-extrabold font-sans! flex items-center gap-1"
     >
-      <span v-if="!compact && teamKey !== 'trainee'" class="font-sans! pb-0.5">Team</span>
+      <span v-if="!compact && teamColor.is_team !== false" class="font-sans! pb-0.5">Team</span>
       <span class="capitalize font-sans! pb-0.5">{{ _team }}</span>
     </span>
   </div>

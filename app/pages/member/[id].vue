@@ -46,6 +46,34 @@ async function follow() {
 const member = computed(() => {
   return data.value
 })
+const memberSocials = computed(() => {
+  return getAllowedSocials(member.value?.socials ?? [])
+})
+
+function getSocialUsername(social: SocialNetwork) {
+  try {
+    const url = new URL(social.url)
+    if (url.hostname.includes('click.idn.media')) {
+      const idnUrl = url.searchParams.get('af_web_dp')
+      if (idnUrl) {
+        return getSocialUsername({ ...social, url: idnUrl })
+      }
+    }
+
+    const paths = url.pathname.split('/').filter(Boolean)
+    const username = url.hostname.includes('youtube.com') && ['channel', 'c', 'user'].includes(paths[0] ?? '')
+      ? paths[1]
+      : paths[0]
+    if (!username) return social.title
+
+    return ['tiktok.com', 'twitter.com', 'x.com'].some(host => url.hostname.includes(host)) && !username.startsWith('@')
+      ? `@${username}`
+      : username
+  }
+  catch {
+    return social.title
+  }
+}
 
 const memberStatCards = computed(() => {
   const stats = data.value?.stats
@@ -173,68 +201,92 @@ useHead({
               </div>
             </div>
             <div class="flex flex-col-reverse xl:flex-row gap-3 md:gap-4 mx-3 md:mx-4">
-              <div class="flex flex-col bg-container rounded-xl p-3 md:p-4 flex-1">
-                <div class="flex items-center gap-2 pb-3 text-lg font-semibold">
-                  <Icon name="solar:clipboard-list-bold-duotone" class="text-yellow-500" size="1.8rem" />
-                  <span>{{ $t("description") }} & {{ $t("socialmedia") }}</span>
-                </div>
-                <ClientOnly>
-                  <template #fallback>
-                    <div>
-                      <div v-for="num in 7" :key="num" class="flex-1 h-4 w-[30%] bg-container-2 mb-2.5 rounded-xl animate-pulse" />
+              <MemberProfileInfoCard class="flex-1" :title="`${$t('description')} Showroom`" icon="solar:clipboard-list-bold-duotone" icon-class="text-yellow-500">
+                <div class="rounded-lg bg-container-2/60 px-2 py-1.5">
+                  <ClientOnly>
+                    <template #fallback>
+                      <div>
+                        <div v-for="num in 7" :key="num" class="mb-2.5 h-4 w-[30%] flex-1 animate-pulse rounded-xl bg-container" />
+                      </div>
+                    </template>
+                    <div class="preformat text-sm md:text-base">
+                      {{ member.description || $t("nodescription") }}
                     </div>
-                  </template>
-                  <div class="flex-1 preformat text-sm md:text-base">
-                    {{ member.description || $t("nodescription") }}
-                  </div>
-                </ClientOnly>
-                <div v-if="member.socials?.length" class="mt-7 flex flex-wrap gap-4">
-                  <a v-for="social in member.socials" :key="social.url" class="flex items-center gap-1.5 text-blue-500 hover:text-blue-300" target="_blank" :href="social.url">
-                    <Icon v-if="$getSocialColorIcon(social.url)" :name="$getSocialColorIcon(social.url) || ''" />
-                    <span>{{ social.title }}</span>
-                  </a>
+                  </ClientOnly>
                 </div>
-              </div>
-              <div v-if="birth || member.bloodType || member.height" class="flex xl:flex-col flex-wrap bg-container rounded-xl p-1 min-w-75">
-                <div v-if="birth" class="flex flex-col gap-1 px-4 py-3 md:gap-2 max-xl:flex-[40%]">
-                  <div class="flex items-center gap-1.5 text-xs md:text-sm">
-                    <Icon name="twemoji:birthday-cake" />
-                    <span>{{ $t("birthdate") }}</span>
-                  </div>
-                  <div class="text-sm md:text-base font-semibold">
-                    {{ $d(birth.date, 'birthdate') }}
-                  </div>
-                </div>
-                <div v-if="birth && !member.is_group" class="flex flex-col gap-1 px-4 py-3 md:gap-2 max-xl:flex-[40%]">
-                  <div class="flex items-center gap-1.5 text-xs md:text-sm">
-                    <Icon :name="`emojione:${birth.horoscope.toLowerCase()}`" />
-                    <span>{{ $t("horoscope.title") }}</span>
-                  </div>
-                  <div class="text-sm md:text-base font-semibold">
-                    {{ $t(`horoscope.${birth.horoscope.toLowerCase()}`) }}
-                  </div>
-                </div>
-                <div v-if="member.bloodType" class="flex flex-col gap-1 px-4 py-3 md:gap-2 max-xl:flex-[40%]">
-                  <div class="flex items-center gap-1.5 text-xs md:text-sm ">
-                    <div class="relative">
-                      <Icon name="ic:sharp-bloodtype" class="text-red-500" />
-                      <div class="absolute left-1/2 top-1/2 -z-10 h-2 w-2 -translate-x-1/2 bg-white" />
+              </MemberProfileInfoCard>
+              <div v-if="birth || member.bloodType || member.height || memberSocials.length" class="flex flex-col gap-2 sm:grid sm:grid-cols-2 xl:flex xl:flex-row">
+                <MemberProfileInfoCard v-if="birth || member.bloodType || member.height" class="min-w-55" title="Info" icon="solar:user-id-bold-duotone" icon-class="text-blue-500">
+                  <div class="flex flex-col gap-3 pb-2">
+                    <div v-if="birth" class="flex items-center gap-2.5 rounded-lg bg-container-2/60 px-1.5">
+                      <div class="flex size-8 shrink-0 items-center justify-center rounded-md bg-pink-500/10">
+                        <Icon name="twemoji:birthday-cake" class="text-base" />
+                      </div>
+                      <div class="min-w-0">
+                        <div class="text-xs opacity-75">
+                          {{ $t("birthdate") }}
+                        </div>
+                        <div class="truncate text-sm font-semibold md:text-base">
+                          {{ $d(birth.date, 'birthdate') }}
+                        </div>
+                      </div>
                     </div>
-                    <span>{{ $t("bloodtype") }}</span>
+                    <div v-if="birth && !member.is_group" class="flex items-center gap-2.5 rounded-lg bg-container-2/60 px-1.5">
+                      <div class="flex size-8 shrink-0 items-center justify-center rounded-md bg-purple-500/10">
+                        <Icon :name="`emojione:${birth.horoscope.toLowerCase()}`" class="text-base" />
+                      </div>
+                      <div class="min-w-0">
+                        <div class="text-xs opacity-75">
+                          {{ $t("horoscope.title") }}
+                        </div>
+                        <div class="truncate text-sm font-semibold md:text-base">
+                          {{ $t(`horoscope.${birth.horoscope.toLowerCase()}`) }}
+                        </div>
+                      </div>
+                    </div>
+                    <div v-if="member.bloodType" class="flex items-center gap-2.5 rounded-lg bg-container-2/60 px-1.5">
+                      <div class="flex size-8 shrink-0 items-center justify-center rounded-md bg-red-500/10">
+                        <div class="relative">
+                          <Icon name="ic:sharp-bloodtype" class="text-lg text-red-500" />
+                          <div class="absolute left-1/2 top-1/2 -z-10 h-2 w-2 -translate-x-1/2 bg-white" />
+                        </div>
+                      </div>
+                      <div class="min-w-0">
+                        <div class="text-xs opacity-75">
+                          {{ $t("bloodtype") }}
+                        </div>
+                        <div class="truncate text-sm font-semibold md:text-base">
+                          {{ member.bloodType }}
+                        </div>
+                      </div>
+                    </div>
+                    <div v-if="member.height" class="flex items-center gap-2.5 rounded-lg bg-container-2/60 px-1.5 py-1">
+                      <div class="flex size-8 shrink-0 items-center justify-center rounded-md bg-yellow-500/10">
+                        <Icon name="solar:ruler-pen-bold" class="text-lg text-yellow-500" />
+                      </div>
+                      <div class="min-w-0">
+                        <div class="text-xs opacity-75">
+                          {{ $t("height") }}
+                        </div>
+                        <div class="truncate text-sm font-semibold md:text-base">
+                          {{ member.height }}
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div class="text-sm md:text-base font-semibold">
-                    {{ member.bloodType }}
+                </MemberProfileInfoCard>
+                <MemberProfileInfoCard v-if="memberSocials.length" class="min-w-48" :title="$t('socialmedia')" icon="solar:share-circle-bold-duotone" icon-class="text-blue-500">
+                  <div class="flex flex-col gap-1">
+                    <div v-for="social in memberSocials" :key="social.url" class="rounded-lg bg-container-2/60 px-1.5 py-0.5">
+                      <div class="group flex w-full min-w-0 items-center gap-2">
+                        <SocialIcon :social="social" class="size-7 shrink-0 rounded-md transition-colors group-hover:bg-hover" />
+                        <NuxtLink :to="social.url" target="_blank" external class="min-w-0 flex-1 truncate text-sm opacity-75 group-hover:opacity-100 transition-opacity font-semibold leading-7">
+                          {{ getSocialUsername(social) }}
+                        </NuxtLink>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <div v-if="member.height" class="flex flex-col gap-1 px-4 py-3 md:gap-2 max-xl:flex-[40%]">
-                  <div class="flex items-center gap-1.5 text-xs md:text-sm">
-                    <Icon name="solar:ruler-pen-bold" class="text-yellow-500" />
-                    <span>{{ $t("height") }}</span>
-                  </div>
-                  <div class="text-sm md:text-base font-semibold">
-                    {{ member.height }}
-                  </div>
-                </div>
+                </MemberProfileInfoCard>
               </div>
             </div>
 

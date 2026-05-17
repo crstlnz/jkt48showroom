@@ -65,6 +65,11 @@ const TEAM_FALLBACK = 'No Team'
 const HEADER_HEIGHT = 48
 
 function getTeamSortRank(team: string) {
+  const sort = jkt48TeamColor(team)?.sort
+  if (sort !== undefined) {
+    return sort
+  }
+
   const normalized = team.trim().toLowerCase()
   if (normalized.includes('traine')) {
     return 2
@@ -183,7 +188,7 @@ function getHeaderTeam(index: number) {
   if (row?.type !== 'header') {
     return ''
   }
-  return row.team
+  return jkt48TeamColor(row.team)?.name ?? row.team
 }
 
 function getHeaderTeamColor(index: number): ReturnType<typeof jkt48TeamColor> | null {
