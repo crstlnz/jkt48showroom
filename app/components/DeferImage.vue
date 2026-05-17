@@ -21,9 +21,15 @@ const retry = ref(0)
 const imageSrc = ref('')
 let loadId = 0
 let retryTimer: ReturnType<typeof setTimeout> | undefined
+const isVisible = ref(false)
 const targetIsVisible = useElementVisibility(container, { once: true })
+watch(targetIsVisible, (v) => {
+  if (v) {
+    isVisible.value = true
+  }
+})
 
-const showLoader = computed(() => !targetIsVisible.value || isLoading.value)
+const showLoader = computed(() => !isVisible.value || isLoading.value)
 
 function finish() {
   isLoading.value = false
@@ -92,6 +98,9 @@ onBeforeUnmount(resetLoad)
 
 <template>
   <div ref="container" class="relative">
+    <div class="bg-white text-black p-2 absolute z-9999">
+      {{ showLoader }} {{ targetIsVisible }}
+    </div>
     <Transition
       name="fade-abs"
       mode="in-out"

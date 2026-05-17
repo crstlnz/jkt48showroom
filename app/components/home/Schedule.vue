@@ -60,20 +60,25 @@ const { locale } = useI18n()
           </td>
           <td class="w-full px-1.5 py-2 space-y-1.5">
             <component :is="getScheduleUrl(event) != null ? NuxtLink : 'div'" v-for="event in schedule.events" :key="event.id" :to="getScheduleUrl(event)" class="flex gap-2">
-              <Image
-                v-if="event.label"
-                class="aspect-56/19 w-14 object-cover self-center shrink-0"
-                :src="`${imgCDN}/assets/jkt48${event.label}`"
-                alt="Label"
-                loading="lazy"
-                quality="100"
-                fit="fill"
-                width="56px"
-                format="webp"
-              />
-              <NewsCategoryBadge
-                v-else-if="event.category" class="self-start text-[11px]!" :category="event.category" variant="soft"
-              />
+              <div class="flex w-14 shrink-0 items-start">
+                <Image
+                  v-if="event.label"
+                  class="aspect-56/19 w-14 object-cover self-center shrink-0"
+                  :src="`${imgCDN}/assets/jkt48${event.label}`"
+                  alt="Label"
+                  loading="lazy"
+                  quality="100"
+                  fit="fill"
+                  width="56px"
+                  format="webp"
+                />
+                <NewsCategoryBadge
+                  v-else-if="event.category"
+                  class="min-w-14 self-start text-center text-[11px]!"
+                  :category="event.category"
+                  variant="soft"
+                />
+              </div>
               <span
                 :class="{
                   '-mt-1': schedule.events.length > 1,

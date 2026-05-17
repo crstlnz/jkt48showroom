@@ -10,3 +10,6 @@ dist
 .data
 .data/hub
 .wrangler
+.agents
+.dev
+/.playwright-mcp
