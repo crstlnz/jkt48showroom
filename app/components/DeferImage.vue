@@ -98,9 +98,6 @@ onBeforeUnmount(resetLoad)
 
 <template>
   <div ref="container" class="relative">
-    <div class="bg-white text-black p-2 absolute z-9999">
-      {{ showLoader }} {{ targetIsVisible }}
-    </div>
     <Transition
       name="fade-abs"
       mode="in-out"
