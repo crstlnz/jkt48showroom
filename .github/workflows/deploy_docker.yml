@@ -55,5 +55,5 @@ jobs:
             echo '🔄 Pulling latest Docker image...' && \
             docker compose pull ${{ env.IMAGE_NAME }} && \
             echo '♻️ Restarting containers...' && \
-            docker compose up -d && \
+            docker compose up -d ${{ env.IMAGE_NAME }}  && \
             echo '✅ Deployment complete!'"
