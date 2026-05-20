@@ -19,20 +19,14 @@ const generation = computed(() => {
         .map(member => member.generation)
         .filter((generation): generation is string => Boolean(generation)),
     ),
-  ).sort((a, b) => {
-    const numA = Number.parseInt(a.match(/gen(\d+)/i)?.[1] || '0', 10)
-    const numB = Number.parseInt(b.match(/gen(\d+)/i)?.[1] || '0', 10)
-    if (numA !== numB) return numA - numB
-    return a.localeCompare(b)
-  })
+  ).sort(compareGenerationKeys)
 
   if (!generationKeys.length) return fallbackGeneration.value
 
   return generationKeys.map((key) => {
-    const generationNumber = Number.parseInt(key.match(/gen(\d+)/i)?.[1] || '0', 10)
     return {
       key,
-      num: generationNumber,
+      num: getGenerationNumber(key),
       short_title: parseGeneration(key, true) || key,
       title: parseGeneration(key) || key,
     }

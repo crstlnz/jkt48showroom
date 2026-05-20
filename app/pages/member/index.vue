@@ -113,12 +113,7 @@ const generations = computed(() => {
         .map(member => member.generation)
         .filter((generation): generation is string => Boolean(generation)),
     ),
-  ).sort((a, b) => {
-    const numA = Number.parseInt(a.match(/gen(\d+)/i)?.[1] || '0', 10)
-    const numB = Number.parseInt(b.match(/gen(\d+)/i)?.[1] || '0', 10)
-    if (numA !== numB) return numA - numB
-    return a.localeCompare(b)
-  })
+  ).sort(compareGenerationKeys)
 
   const generationMap = new Map<string, { key: string, num: number, short_title: string, title: string }>()
 
@@ -132,19 +127,15 @@ const generations = computed(() => {
   }
 
   for (const key of dynamicGenerationKeys) {
-    const generationNumber = Number.parseInt(key.match(/gen(\d+)/i)?.[1] || '0', 10)
     generationMap.set(key, {
       key,
-      num: generationNumber,
+      num: getGenerationNumber(key),
       short_title: parseGeneration(key, true) || key,
       title: parseGeneration(key) || key,
     })
   }
 
-  return Array.from(generationMap.values()).sort((a, b) => {
-    if (a.num !== b.num) return a.num - b.num
-    return a.key.localeCompare(b.key)
-  })
+  return Array.from(generationMap.values()).sort((a, b) => compareGenerationKeys(a.key, b.key))
 })
 
 const teams = computed(() => {
