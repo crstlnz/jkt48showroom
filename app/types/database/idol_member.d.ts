@@ -31,6 +31,7 @@ interface IdolMember {
   idn?: {
     id?: string
     username?: string
+    link?: string
   }
   jkt48id?: string[]
   showroom_id?: number

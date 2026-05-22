@@ -50,23 +50,23 @@ const memberSocials = computed(() => {
   return getAllowedSocials(member.value?.socials ?? [])
 })
 
-function getSocialUsername(social: SocialNetwork) {
+const PATH_PREFIXES = ref(new Set(['channel', 'c', 'user', 'r', 's']))
+
+function getSocialUsername(social: SocialNetwork): string {
   try {
     const url = new URL(social.url)
+
     if (url.hostname.includes('click.idn.media')) {
-      const idnUrl = url.searchParams.get('af_web_dp')
-      if (idnUrl) {
-        return getSocialUsername({ ...social, url: idnUrl })
-      }
+      const redirect = url.searchParams.get('af_web_dp')
+      if (redirect) return getSocialUsername({ ...social, url: redirect })
     }
 
     const paths = url.pathname.split('/').filter(Boolean)
-    const username = url.hostname.includes('youtube.com') && ['channel', 'c', 'user'].includes(paths[0] ?? '')
-      ? paths[1]
-      : paths[0]
+    const username = PATH_PREFIXES.value.has(paths[0] ?? '') ? paths[1] : paths[0]
+
     if (!username) return social.title
 
-    return ['tiktok.com', 'twitter.com', 'x.com'].some(host => url.hostname.includes(host)) && !username.startsWith('@')
+    return ['tiktok.com', 'twitter.com', 'x.com'].some(h => url.hostname.includes(h)) && !username.startsWith('@')
       ? `@${username}`
       : username
   }

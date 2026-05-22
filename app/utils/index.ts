@@ -369,9 +369,11 @@ const allowed = [
   'tiktok.com',
   'showroom-live.com',
   'idn.media',
+  'idn-app.idn.link',
   'youtube.com',
   'youtu.be',
 ]
+
 export function getAllowedSocials(socials: SocialNetwork[]) {
   return socials.filter(i => allowed.some(u => i.url?.includes(u)))
 }
