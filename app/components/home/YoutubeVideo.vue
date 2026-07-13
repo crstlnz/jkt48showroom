@@ -30,7 +30,8 @@ const mockloading = ref(false)
 
     <div
       :class="{
-        'sm:px-3 md:px-4': data || pending,
+        'sm:px-3 md:px-4': data?.length || pending,
+        'px-3': !data?.length,
       }"
     >
       <div
@@ -106,7 +107,7 @@ const mockloading = ref(false)
             class="mx-auto aspect-square w-50 max-w-[80%] dark:brightness-110"
           />
           <div class="text-base">
-            Sorry, but there is no recents right now :(
+            Sorry, but there is no data right now :(
           </div>
         </div>
       </div>

@@ -35,7 +35,12 @@ defineExpose({
 </script>
 
 <template>
-  <Transition name="imageviewer">
-    <ImageViewerZoom v-if="isOpen && image" :image="image" @exit="close" />
-  </Transition>
+  <Teleport to="body">
+    <Transition name="imageviewer">
+      <div v-if="isOpen && image" class="fixed inset-0 z-aboveNav imageviewer-root">
+        <div class="absolute inset-0 bg-black/75 imageviewer-background" />
+        <ImageViewerZoom class="imageviewer-zoom" :image="image" @exit="close" />
+      </div>
+    </Transition>
+  </Teleport>
 </template>

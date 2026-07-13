@@ -233,23 +233,38 @@
 
 .imageviewer-enter-active,
 .imageviewer-leave-active {
-  transition: 0.4s ease;
+  transition: opacity 0.22s ease;
+}
+
+.imageviewer-enter-active .imageviewer-background,
+.imageviewer-leave-active .imageviewer-background {
+  transition: opacity 0.22s ease;
+}
+
+.imageviewer-enter-active .imageviewer-zoom,
+.imageviewer-leave-active .imageviewer-zoom {
+  transition: opacity 0.22s ease, transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .imageviewer-enter-active .imageElement,
 .imageviewer-leave-active .imageElement {
-  transition: 0.4s ease;
-  transform: scale(1) !important;
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.imageviewer-enter-from,
-.imageviewer-leave-to {
+.imageviewer-enter-from .imageviewer-background,
+.imageviewer-leave-to .imageviewer-background {
+  opacity: 0;
+}
+
+.imageviewer-enter-from .imageviewer-zoom,
+.imageviewer-leave-to .imageviewer-zoom {
   opacity: 0 !important;
+  transform: scale(0.94);
 }
 
 .imageviewer-enter-from .imageElement,
 .imageviewer-leave-to .imageElement {
-  transform: scale(0.5) !important;
+  transform: scale(0.94);
 }
 
 .telop-enter-active {

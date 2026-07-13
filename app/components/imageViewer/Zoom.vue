@@ -45,22 +45,66 @@ const minZoom = 1
 const maxZoom = 5
 const isExit = ref(false)
 
+function clamp(value: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, value))
+}
+
 function getScaleFactor() {
   return Math.min(windowWidth.value / imageSize.value.width, windowHeight.value / imageSize.value.height)
 }
 
-function getBound() {
+function getBound(zoom = zoomState.value) {
   const scaleFactor = getScaleFactor()
-  const width = imageSize.value.width * scaleFactor * zoomState.value
-  const height = imageSize.value.height * scaleFactor * zoomState.value
+  const width = imageSize.value.width * scaleFactor * zoom
+  const height = imageSize.value.height * scaleFactor * zoom
   return {
-    x: Math.max(0, (width - windowWidth.value) / 2 / zoomState.value),
-    y: Math.max(0, (height - windowHeight.value) / 2 / zoomState.value),
+    x: Math.max(0, (width - windowWidth.value) / 2 / zoom),
+    y: Math.max(0, (height - windowHeight.value) / 2 / zoom),
   }
 }
 
 let releaseAnimation: any
 let releaseZoomAnimation: any
+let wheelZoomAnimation: any
+let wheelPositionAnimation: any
+
+function onWheel(event: WheelEvent) {
+  if (isExit.value || pending.value || error.value) return
+  event.preventDefault()
+
+  if (releaseZoomAnimation) releaseZoomAnimation.stop()
+  if (wheelZoomAnimation) wheelZoomAnimation.stop()
+  if (wheelPositionAnimation) wheelPositionAnimation.stop()
+
+  const factor = Math.exp(-event.deltaY * 0.003)
+  const nextZoom = clamp(zoomState.value * factor, minZoom, maxZoom)
+  const bound = getBound(nextZoom)
+  const nextPosition = nextZoom === minZoom
+    ? { x: 0, y: 0 }
+    : {
+        x: clamp(rubberPos.value.x, -bound.x, bound.x),
+        y: clamp(rubberPos.value.y, -bound.y, bound.y),
+      }
+
+  wheelZoomAnimation = animate({
+    from: zoomState.value,
+    to: nextZoom,
+    duration: 120,
+    onUpdate(value) {
+      zoomState.value = value
+    },
+  })
+
+  wheelPositionAnimation = animate({
+    from: rubberPos.value,
+    to: nextPosition,
+    duration: 120,
+    onUpdate(value) {
+      pos.value = { ...value }
+      rubberPos.value = { ...value }
+    },
+  })
+}
 
 function preventDefault(e: Event) {
   e.preventDefault()
@@ -180,7 +224,7 @@ onMounted(() => {
           min: minZoom,
           max: maxZoom,
         },
-        pinchOnWheel: true,
+        pinchOnWheel: false,
         rubberband: true,
       },
       drag: {
@@ -205,11 +249,12 @@ onBeforeUnmount(() => {
 <template>
   <div
     ref="container"
-    class="fixed inset-0 w-screen z-aboveNav bg-black/90 imageViewer pointer-events-auto!"
+    class="fixed inset-0 w-screen z-aboveNav imageViewer pointer-events-auto!"
     :style="{
       opacity: bgOpacity,
       pointerEvents: isExit ? 'none' : 'auto',
     }"
+    @wheel="onWheel"
   >
     <div
       ref="imageElement"

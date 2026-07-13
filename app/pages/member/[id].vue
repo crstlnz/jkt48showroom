@@ -187,11 +187,6 @@ useHead({
           <div v-else class="flex flex-col gap-3 md:gap-4">
             <LazyBalloons v-if="member.birthdate && $dayjs(member.birthdate).year($dayjs().year()).isToday() " />
             <MemberProfileBanner :sousenkyo="data?.sousenkyo" :member="member" :room-id="member.showroom_id" />
-            <MemberShowroomInfo v-if="isShowroomExists" :room-id="member.showroom_id" @data="(data) => isFollow = data.is_follow" />
-            <MemberProfileVideo v-if="data?.profile_video" :url="data.profile_video" />
-            <div v-if="memberStatCards.length" class="max-md:p-3 max-md:bg-container max-md:rounded-xl mx-3 md:mx-4">
-              <SummaryCards :cards="memberStatCards" grid-class="grid-cols-1 md:grid-cols-2 xl:grid-cols-4" />
-            </div>
             <div v-if="member.jikosokai" class="bg-container mx-3 flex flex-col gap-2 rounded-xl p-4 md:mx-4">
               <div class="flex items-center gap-2 text-lg xl:text-xl font-semibold">
                 <Icon name="carbon:phrase-sentiment" class="text-pink-500" size="1.8rem" />
@@ -200,6 +195,11 @@ useHead({
               <div class="preformat">
                 {{ member.jikosokai }}
               </div>
+            </div>
+            <MemberShowroomInfo v-if="isShowroomExists" :room-id="member.showroom_id" @data="(data) => isFollow = data.is_follow" />
+            <MemberProfileVideo v-if="data?.profile_video" :url="data.profile_video" />
+            <div v-if="memberStatCards.length" class="max-md:p-3 max-md:bg-container max-md:rounded-xl mx-3 md:mx-4">
+              <SummaryCards :cards="memberStatCards" grid-class="grid-cols-1 md:grid-cols-2 xl:grid-cols-4" />
             </div>
             <div class="flex flex-col-reverse xl:flex-row gap-3 md:gap-4 mx-3 md:mx-4">
               <MemberProfileInfoCard class="flex-1" :title="`${$t('description')} Showroom`" icon="solar:clipboard-list-bold-duotone" icon-class="text-yellow-500">

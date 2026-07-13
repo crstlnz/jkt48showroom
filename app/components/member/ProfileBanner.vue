@@ -97,7 +97,7 @@ function getLiveUrl(member: ExtINowLive) {
               format="webp"
             />
           </component>
-          <div class="flex gap-3 items-center">
+          <div class="flex gap-2 items-center">
             <NuxtLink target="_blank" :to="$profileURL(roomId ?? 0)" class="rounded-full bg-blue-500 px-2.5 h-6 leading-6 md:leading-9 md:h-9 md:px-4 text-xs sm:text-sm text-white self-center flex items-center">
               Showroom
             </NuxtLink>
