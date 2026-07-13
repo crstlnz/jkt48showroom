@@ -30,7 +30,7 @@ const mockloading = ref(false)
 
     <div
       :class="{
-        'sm:px-3 md:px-4': data,
+        'sm:px-3 md:px-4': data || pending,
       }"
     >
       <div

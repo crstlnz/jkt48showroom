@@ -23,8 +23,8 @@ export function useApiFetch<T>(url: Parameters<typeof useFetch<T>>[0], options: 
       if (typeof onResponse === 'function') onResponse(ctx)
     },
     async onRequest(ctx) {
-      if (typeof onRequest === 'function') onRequest(ctx)
       await applyRequestHeaders(ctx.options)
+      if (typeof onRequest === 'function') onRequest(ctx)
     },
   }
 

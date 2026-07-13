@@ -185,6 +185,7 @@ useHead({
             <span>{{ $t("data.nodata") }}</span>
           </div>
           <div v-else class="flex flex-col gap-3 md:gap-4">
+            <LazyBalloons v-if="member.birthdate && $dayjs(member.birthdate).year($dayjs().year()).isToday() " />
             <MemberProfileBanner :sousenkyo="data?.sousenkyo" :member="member" :room-id="member.showroom_id" />
             <MemberShowroomInfo v-if="isShowroomExists" :room-id="member.showroom_id" @data="(data) => isFollow = data.is_follow" />
             <MemberProfileVideo v-if="data?.profile_video" :url="data.profile_video" />

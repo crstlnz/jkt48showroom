@@ -65,6 +65,9 @@ export default defineNuxtConfig({
     pageTransition: { name: 'page', mode: 'out-in' },
   },
   runtimeConfig: {
+    jwtSecret: process.env.JWT_SECRET,
+    secret: process.env.SECRET,
+    showroomApi: process.env.SHOWROOM_API || process.env.NUXT_PUBLIC_SHOWROOM_API,
     public: {
       isDev,
       api: process.env.NUXT_PUBLIC_API,

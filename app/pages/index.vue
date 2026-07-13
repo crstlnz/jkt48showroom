@@ -61,7 +61,6 @@ const searchInput = ref()
         <HomeLiveNow />
         <HomeRecentGrids v-if="group === 'jkt48'" />
         <HomeYoutubeVideo v-if="group === 'jkt48'" />
-        <HomeJKT48ShowroomCompetitionCard v-if="group === 'jkt48'" class="mx-3 md:mx-4" />
         <HomeProfileVideos v-if="group === 'jkt48'" />
         <!-- <HomeStats /> -->
         <div class="mx-3 flex items-center justify-between md:mx-4">
@@ -108,7 +107,6 @@ const searchInput = ref()
       <!-- <HomeContainer v-if="group === 'jkt48'" :title="$t('schedule')" icon-class="bg-blue-500" more="/schedule" more-label="More schedule" :more-text="$t('more')">
 
       </HomeContainer> -->
-      <HomeJKT48ShowroomCompetition v-if="group === 'jkt48'" />
       <HomeSchedule v-if="group === 'jkt48'" />
       <HomeNews v-if="group === 'jkt48'" />
       <HomeRecents v-if="group !== 'jkt48'" />

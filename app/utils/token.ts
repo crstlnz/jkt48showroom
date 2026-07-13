@@ -66,9 +66,12 @@ export function setShowroomToken(token?: string | null) {
   applyAuthData(showroomTokenKey, token)
 }
 
-export function applyHeaderToken(headers: Headers) {
+export function applyHeaderToken(headers: Headers, applyAccessToken?: (token: string | null) => void) {
   setRefreshToken(headers.get('X-Refresh-Token'))
-  setAccessToken(headers.get('X-Access-Token'))
+  const accessToken = applyAuthData(accessTokenKey, headers.get('X-Access-Token'))
+  if (accessToken && applyAccessToken) {
+    applyAccessToken(accessToken)
+  }
   setShowroomToken(headers.get('X-SR-Token'))
 }
 

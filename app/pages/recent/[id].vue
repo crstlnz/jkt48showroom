@@ -5,8 +5,8 @@ import { useSettings } from '~/store/settings'
 const route = useRoute()
 const settings = useSettings()
 const { getTitle } = useAppConfig()
-const { data, error, pending } = await useApiFetch<LogDetail.Live>(`/api/recent/${route.params.id}`, { useSignature: true })
 const { status, user } = useAuth()
+const { data, error, pending } = await useApiFetch<LogDetail.Live>(`/api/recent/${route.params.id}`, { useSignature: true })
 const { data: likeData } = await useApiFetch<Database.IsLike>('/api/user/like', { query: { data_id: route.params.id }, immediate: status.value === 'authenticated', credentials: 'include' })
 const liked = ref(false)
 
@@ -85,9 +85,13 @@ const isXL = greaterOrEqual('xl')
 
 <template>
   <div>
+    <div class="hidden">
+      {{ JSON.stringify(error) }}
+    </div>
     <div v-if="pending" key="loading" class="relative min-h-screen w-full">
       <Spinner class="size-10 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
     </div>
+
     <Error v-else-if="error || !data" key="error" :message="error ? (error.statusCode === 404 ? $t('error.pagenotfound') : $t('error.unknown')) : $t('error.pagenotfound')" :img-src="!data || error?.statusCode === 404 ? `${$imgCDN}/assets/svg/web/404.svg` : `${$imgCDN}/assets/svg/web/error.svg`" />
     <LayoutRow v-else key="data" :title="title!" :sub-title="`${data.type === 'idn' ? 'IDN' : 'Showroom'} Live - ${$dayjs(data.live_info?.date?.start).locale(locale).format('DD MMMM YYYY')}`">
       <template #default>

@@ -2,6 +2,15 @@
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 
 const route = useRoute()
+const config = useAppConfig()
+const { locale } = useI18n()
+const dayjs = useDayjs()
+const breakpoints = useBreakpoints(breakpointsTailwind)
+const lg = breakpoints.greater('lg')
+const userAgent = import.meta.client
+  ? navigator.userAgent
+  : useRequestHeaders(['user-agent'])['user-agent']
+
 const { data, status, error } = await useApiFetch<IApiTheaterDetailList>(`/api/theater/${route.params.id}`)
 
 const title = computed(() => {
@@ -18,9 +27,7 @@ const title = computed(() => {
   return ''
 })
 
-const { imgCDN } = useAppConfig()
-const pic = `${imgCDN}/assets/img/default-anime-avatar_ms7sea.webp`
-const config = useAppConfig()
+const pic = `${config.imgCDN}/assets/img/default-anime-avatar_ms7sea.webp`
 
 const description = computed(() => {
   let str = data.value?.shows?.[0]?.setlist?.description ?? 'Tidak ada deskripsi.'
@@ -45,9 +52,6 @@ useSeoMeta({
   ogDescription: description,
 })
 
-const { locale } = useI18n()
-const dayjs = useDayjs()
-
 function getTheaterDateLabel(date: string | Date) {
   return dayjs(date).locale(locale.value).format('DD MMMM YYYY')
 }
@@ -57,12 +61,6 @@ function getTheaterTimeRange(date: string | Date) {
   const end = start.add(3, 'hour')
   return `${start.locale(locale.value).format('HH:mm')} - ${end.locale(locale.value).format('HH:mm')}`
 }
-
-const breakpoints = useBreakpoints(breakpointsTailwind)
-const lg = breakpoints.greater('lg')
-const userAgent = import.meta.client
-  ? navigator.userAgent
-  : useRequestHeaders(['user-agent'])['user-agent']
 
 const headless = userAgent?.toLowerCase()?.includes('headless')
 

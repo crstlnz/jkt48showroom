@@ -1,4 +1,5 @@
 import syncServerCookies from '~/composables/syncServerCookies'
+import { useSettings } from '~/store/settings'
 import { API_KEY_SECRET, getSecret, sign } from '~/utils/secret'
 
 interface ApiFetchOptions {
@@ -21,6 +22,9 @@ export function getApiBaseURL() {
 
 export function useApiFetchShared(options: ApiFetchOptions = {}) {
   const { getHeaders, setCookie } = syncServerCookies()
+  const event = import.meta.server ? useRequestEvent() : undefined
+  const { applyAccessToken } = useSettings()
+  const defaultTokenHeaders = getHeadersToken()
 
   function getRequestHeaders(headersInit?: unknown) {
     const headers = new Headers(toValue(headersInit) as HeadersInit | undefined)
@@ -30,7 +34,7 @@ export function useApiFetchShared(options: ApiFetchOptions = {}) {
       serverHeaders.forEach((value, key) => headers.set(key, value))
     }
 
-    const tokenHeaders = new Headers(getHeadersToken())
+    const tokenHeaders = new Headers(defaultTokenHeaders)
     tokenHeaders.forEach((value, key) => headers.set(key, value))
 
     if (options.includeApiKey) {
@@ -57,14 +61,13 @@ export function useApiFetchShared(options: ApiFetchOptions = {}) {
   }
 
   function handleResponse(response: Response, setStatus = false) {
-    applyHeaderToken(response.headers)
+    applyHeaderToken(response.headers, applyAccessToken)
 
     if (!import.meta.server) return
 
     setCookie(response.headers)
 
     if (setStatus && response.status !== 200) {
-      const event = useRequestEvent()
       if (event) {
         setResponseStatus(event, response.status, response.statusText)
       }

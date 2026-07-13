@@ -3,10 +3,11 @@ import { appendResponseHeader } from 'h3'
 import CookieParser from '@/library/cookieParser'
 
 export default function () {
-  const event = useRequestEvent()
+  const event = import.meta.server ? useRequestEvent() : undefined
+  const app = tryUseNuxtApp()
+  const requestHeaders = import.meta.server ? useRequestHeaders(['cookie']) : {}
 
   function setCookie(headers: Headers) {
-    const app = tryUseNuxtApp()
     if (import.meta.server) {
       const setCookie = headers.get('set-cookie')
       const cookies = (setCookie) ? setCookie.split(',') : []
@@ -26,8 +27,7 @@ export default function () {
   }
 
   function getHeaders(): HeadersInit {
-    const app = tryUseNuxtApp()
-    const headers = useRequestHeaders(['cookie'])
+    const headers = { ...requestHeaders }
     if (app?.ssrContext?.newCookie) {
       const newCookie = app.ssrContext.newCookie
       const headerCookie = new CookieParser(headers?.cookie || '')
