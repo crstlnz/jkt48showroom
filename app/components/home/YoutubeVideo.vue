@@ -31,7 +31,7 @@ const mockloading = ref(false)
     <div
       :class="{
         'sm:px-3 md:px-4': data?.length || pending,
-        'px-3': !data?.length,
+        'px-3': !data?.length && !pending,
       }"
     >
       <div
