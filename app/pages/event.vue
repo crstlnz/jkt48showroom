@@ -5,6 +5,11 @@ import getScheduleUrl from '~/utils/schedule'
 const { data, pending, error } = await useApiFetch<IApiEvent>('/api/event', { server: true })
 const { locale } = useI18n()
 const forceLoading = ref(false)
+
+usePageSeo({
+  title: 'Jadwal Event dan Theater JKT48',
+  description: 'Lihat jadwal theater, event mendatang, dan agenda terbaru JKT48.',
+})
 </script>
 
 <template>

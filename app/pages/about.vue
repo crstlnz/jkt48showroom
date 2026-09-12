@@ -1,3 +1,10 @@
+<script setup lang="ts">
+usePageSeo({
+  title: 'Tentang JKT48 Live Log',
+  description: 'Tentang JKT48 Live Log, situs buatan penggemar untuk mengikuti live Showroom dan IDN JKT48, profil member, berita, dan riwayat live.',
+})
+</script>
+
 <template>
   <LayoutSingleRow :title="$t('menu.about')">
     <div class="mx-3 md:mx-4 p space-y-5 md:space-y-8 max-w-2xl [&_b]:text-red-500 text-sm md:text-base">

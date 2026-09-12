@@ -18,7 +18,7 @@ const searchInput = ref()
 </script>
 
 <template>
-  <LayoutRow title="Home" no-padding>
+  <LayoutRow title="Home" heading="JKT48 Live Log: Live Showroom dan IDN JKT48" no-padding>
     <template #actionSection>
       <ClientOnly>
         <div v-if="!isXL" class="pointer-events-none inset-x-0 max-sm:absolute xl:hidden">

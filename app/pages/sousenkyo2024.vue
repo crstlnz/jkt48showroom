@@ -1,5 +1,9 @@
 <script lang="ts" setup>
 const { data: members, pending, error } = await useApiFetch<SousenkyoMember[]>(`/api/sousenkyo/members`)
+usePageSeo({
+  title: 'Sousenkyo JKT48 2024',
+  description: 'Arsip video dan profil peserta Sousenkyo JKT48 2024.',
+})
 const openVideo = ref(false)
 const sousenkyoMember = ref<SousenkyoMember>()
 

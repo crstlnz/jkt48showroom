@@ -82,6 +82,21 @@ const members = computed(() => {
 
 useHead({
   title,
+  script: [
+    {
+      key: 'theater-event-schema',
+      type: 'application/ld+json',
+      innerHTML: computed(() => JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Event',
+        'name': title.value || undefined,
+        'description': description.value,
+        'startDate': data.value?.date ? new Date(data.value.date).toISOString() : undefined,
+        'image': poster.value,
+        'url': `https://48live.my.id${route.path}`,
+      })),
+    },
+  ],
 })
 </script>
 
@@ -136,9 +151,9 @@ useHead({
               <div class="flex gap-3 items-center">
                 <div class="flex gap-2.5">
                   <TeamBadge v-if="['dream', 'love', 'passion'].includes(theater.team?.toLowerCase() ?? '')" v-tooltip="$t('tooltip.show_by_team', { team: theater.team })" class="mt-0.5" :team="theater.team" />
-                  <h3 class="text-xl font-semibold">
+                  <h2 class="text-xl font-semibold">
                     {{ theater.title }}
-                  </h3>
+                  </h2>
                 </div>
                 <AdminEditTheaterButton :theater-data="theater" />
               </div>

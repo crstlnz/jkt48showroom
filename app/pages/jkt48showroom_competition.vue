@@ -13,6 +13,10 @@ const { data, pending, error, refresh } = await useShowroomCompetitionDetail<Com
 const config = useRuntimeConfig()
 const { t, locale, n } = useI18n()
 const dayjs = useDayjs()
+usePageSeo({
+  title: computed(() => t('competition.title_full')),
+  description: 'Peringkat dan perkembangan kompetisi Showroom JKT48.',
+})
 const onLives = useOnLives()
 const { data: onLivesData, pending: onLivesPending, error: onLivesError } = storeToRefs(onLives)
 const now = ref(Date.now())

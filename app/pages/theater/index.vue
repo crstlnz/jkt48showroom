@@ -26,6 +26,11 @@ const isXl = greaterOrEqual('xl')
 const maxDots = computed(() => {
   return isXl.value ? 9 : 7
 })
+
+usePageSeo({
+  title: 'Theater JKT48',
+  description: 'Daftar pertunjukan theater JKT48, setlist, jadwal, dan member yang tampil.',
+})
 </script>
 
 <template>

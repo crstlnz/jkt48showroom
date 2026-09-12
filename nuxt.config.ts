@@ -8,12 +8,28 @@ const apiBase = process.env.NUXT_PUBLIC_API?.replace(/\/$/, '')
 const sitemapPrivateRoutes = [
   '/admin',
   '/admin/**',
+  '/fans',
+  '/feedback',
+  '/history',
+  '/login',
+  '/logout',
+  '/multi',
+  '/offline',
+  '/sorter',
+  '/sorter/**',
+  '/stats',
   '/user',
   '/user/**',
-  '/stats',
-  '/offline',
-  '/history',
-  '/sorter/result',
+  '/watch',
+  '/watch/**',
+]
+
+const robotsBlockedRoutes = [
+  '/admin',
+  '/admin/**',
+  '/fans',
+  '/user',
+  '/user/**',
 ]
 
 const startYear = 2020
@@ -365,11 +381,12 @@ export default defineNuxtConfig({
     replace: {
       'import process from \'node:process\';': '',
     },
+    prerender: {
+      routes: ['/offline', '/sitemap_index.xml'],
+      ignore: ['/__sitemap__/**'],
+    },
     compressPublicAssets: {
       brotli: true,
-    },
-    prerender: {
-      routes: ['/offline'],
     },
   },
   devtools: {
@@ -412,9 +429,7 @@ export default defineNuxtConfig({
       allowedHosts: isDev ? (process.env.ALLOWED_HOSTS?.split(',')?.map(i => i.trim()) ?? []) : undefined,
     },
     plugins: [
-      // @ts-expect-error vite 7
       vidstack({ include: /vidstack\// }),
-      // @ts-expect-error vite 7
       tailwindcss(),
     ],
     optimizeDeps: {
@@ -450,7 +465,7 @@ export default defineNuxtConfig({
   },
   sitemap: {
     xsl: false,
-    cacheMaxAgeSeconds: 3600,
+    cacheMaxAgeSeconds: 3600 * 24,
     defaultSitemapsChunkSize: 1000,
     sitemaps: {
       pages: {
@@ -463,7 +478,7 @@ export default defineNuxtConfig({
   robots: {
     mergeWithRobotsTxtPath: false,
     allow: ['/'],
-    disallow: sitemapPrivateRoutes.map(route => route.replace('/**', '/*')),
+    disallow: robotsBlockedRoutes.map(route => route.replace('/**', '/*')),
   },
   compatibilityDate: '2025-10-26',
 })

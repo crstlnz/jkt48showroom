@@ -12,10 +12,28 @@ const i18nHead = useLocaleHead({
   seo: true,
 })
 
-const url = useRequestURL()
 const route = useRoute()
 const settings = useSettings()
 const { getFavicon } = useAppConfig()
+const canonicalUrl = computed(() => new URL(route.path, 'https://48live.my.id').href)
+const noIndexPaths = [
+  '/admin',
+  '/fans',
+  '/feedback',
+  '/history',
+  '/login',
+  '/logout',
+  '/multi',
+  '/offline',
+  '/sorter',
+  '/stats',
+  '/user',
+  '/watch',
+]
+const robots = computed(() => {
+  const isUtilityPage = noIndexPaths.some(path => route.path === path || route.path.startsWith(`${path}/`))
+  return isUtilityPage ? 'noindex, nofollow' : Object.keys(route.query).length ? 'noindex, follow' : 'index, follow'
+})
 
 useHead({
   htmlAttrs: {
@@ -30,7 +48,7 @@ useHead({
   link: [
     ...(i18nHead.value.link || []),
     { rel: 'icon', type: 'image/x-icon', href: getFavicon(settings.group) },
-    { rel: 'canonical', href: url.href },
+    { rel: 'canonical', href: canonicalUrl },
     // { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
     // {
     //   rel: 'preconnect',
@@ -43,6 +61,19 @@ useHead({
     { content: () => '#1e2124', name: 'theme-color' },
     { charset: 'utf-8' },
     { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+  ],
+  script: [
+    {
+      key: 'website-schema',
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        'name': 'JKT48 Live Log',
+        'url': 'https://48live.my.id/',
+        'description': 'Situs buatan penggemar untuk live Showroom dan IDN JKT48.',
+      }),
+    },
   ],
 })
 
@@ -72,6 +103,7 @@ useSeoMeta({
   twitterCard: 'summary',
   twitterSite: '@crstlnz',
   ogType: 'website',
+  robots,
 })
 
 const { $pwa } = useNuxtApp()

@@ -36,6 +36,21 @@ useSeoMeta({
 const { locale } = useI18n()
 useHead({
   title,
+  script: [
+    {
+      key: 'jkt48-event-schema',
+      type: 'application/ld+json',
+      innerHTML: computed(() => JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Event',
+        'name': title.value || undefined,
+        'description': description.value,
+        'startDate': data.value?.date ? new Date(data.value.date).toISOString() : undefined,
+        'image': poster.value,
+        'url': `https://48live.my.id${route.path}`,
+      })),
+    },
+  ],
 })
 </script>
 
@@ -64,9 +79,9 @@ useHead({
             />
             <div class="space-y-2 md:p-3 flex-1">
               <div class="flex gap-3 items-center">
-                <h3 class="text-xl">
+                <h2 class="text-xl">
                   {{ data.title }}
-                </h3>
+                </h2>
                 <Image
                   class="self-center rounded-md" :src="`${$imgCDN}/assets/jkt48${data.team.img || '/images/icon.team7.png'}`"
                   alt="Team Label" loading="lazy" fit="fill" width="56px" format="webp"

@@ -4,6 +4,11 @@ const router = useRouter()
 const page = ref(Number(route.query.page) || 1)
 const { data, pending, error } = await useApiFetch<IApiNews>('/api/news', { params: { page }, key: 'jkt48news', cache: 'only-if-cached' })
 const { locale } = useI18n()
+
+usePageSeo({
+  title: 'Jadwal JKT48',
+  description: 'Jadwal terbaru kegiatan, event, dan pengumuman JKT48.',
+})
 function changePage(p: number) {
   page.value = p
   window.scrollTo({ top: 0 })

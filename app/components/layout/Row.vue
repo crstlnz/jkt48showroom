@@ -3,6 +3,7 @@ import { useNavScroll } from '~/composables/useNavScroll'
 
 withDefaults(defineProps<{
   title: string
+  heading?: string
   subTitle?: string
   mobileSide?: boolean
   noPadding?: boolean
@@ -46,6 +47,9 @@ const { navShow } = useNavScroll(navBar)
         </LayoutRowTitle>
       </div>
       <div :class="{ 'pt-3 xl:pt-4': !noPadding }">
+        <h1 class="sr-only">
+          {{ heading || title }}
+        </h1>
         <slot />
       </div>
     </div>

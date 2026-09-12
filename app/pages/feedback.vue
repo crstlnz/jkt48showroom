@@ -52,15 +52,15 @@ useEventListener(feedbackForm, 'submit', async (e) => {
         :action="scriptUrl"
       >
         <div class="flex gap-3">
-          <label class="w-[100px] md:w-[150px]" for="Email">Email</label>
+          <label class="w-25 md:w-37.5" for="Email">Email</label>
           <input name="Email" type="email" placeholder="Tidak wajib" class="bg-black/10 dark:bg-white/10 rounded-md px-3 py-2 outline-hidden flex-1">
         </div>
         <div class="flex gap-3">
-          <label class="w-[100px] md:w-[150px]" for="Name">Nama</label>
+          <label class="w-25 md:w-37.5" for="Name">Nama</label>
           <input name="Name" type="text" placeholder="Name" required class="bg-black/10 dark:bg-white/10 rounded-md px-3 py-2 outline-hidden flex-1">
         </div>
         <div class="flex gap-3">
-          <label class="w-[100px] md:w-[150px]" for="Detail">Isi</label>
+          <label class="w-25 md:w-37.5" for="Detail">Isi</label>
           <textarea name="Detail" type="text" placeholder="Isi laporan bug atau saran" required form="feedback" class="bg-black/10 dark:bg-white/10 rounded-md px-3 py-2 outline-hidden flex-1" />
         </div>
         <div class="h-6 leading-6">
@@ -95,8 +95,8 @@ useEventListener(feedbackForm, 'submit', async (e) => {
           </Accordion>
           <Accordion title="Layar hitam saat menonton live member" class="mt-2">
             Untuk sementara, coba nonaktifkan fitur rotasi layar. (Lihat gambar di bawah untuk langkah-langkahnya.) Jika masalah tetap ada dan kamu menggunakan aplikasi Wots48, coba akses website ini menggunakan browser di alamat
-            <NuxtLink to="https://dc.crstlnz.my.id" class="text-red-500">
-              https://dc.crstlnz.my.id
+            <NuxtLink to="https://48live.my.id" class="text-red-500">
+              https://48live.my.id
             </NuxtLink>
             <div class="grid md:flex grid-cols-2 md:gap-2 md:flex-wrap mt-2">
               <Image sizes="200px" class="aspect-[5/8.8] object-cover" src="https://res.cloudinary.com/haymzm4wp/image/upload/v1705166721/assets/img/ss-tutorial01.png" />
@@ -104,8 +104,8 @@ useEventListener(feedbackForm, 'submit', async (e) => {
             </div>
           </Accordion>
           <Accordion title="Force Close saat menonton member pada aplikasi Wots48" class="mt-2">
-            Untuk mengatasi masalah ini, silakan coba versi web dengan membuka browser (disarankan Chrome) dan kemudian kunjungi <NuxtLink to="https://dc.crstlnz.my.id" class="text-red-500">
-              https://dc.crstlnz.my.id
+            Untuk mengatasi masalah ini, silakan coba versi web dengan membuka browser (disarankan Chrome) dan kemudian kunjungi <NuxtLink to="https://48live.my.id" class="text-red-500">
+              https://48live.my.id
             </NuxtLink>. Jangan lupa juga untuk melaporkan bug dengan menyertakan versi Android dan perangkat Anda.
           </Accordion>
           <Accordion title="Tidak bisa login" class="mt-2">

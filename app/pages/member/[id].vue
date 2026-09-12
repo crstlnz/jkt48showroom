@@ -148,26 +148,43 @@ const isXL = greaterOrEqual('xl')
 const { $fixCloudinary } = useNuxtApp()
 const { getGroup } = useAppConfig()
 const { group } = useSettings()
+const memberName = computed(() => data.value?.fullname || member.value?.name || 'Member JKT48')
 const description = computed(() => {
   if (data.value?.jikosokai) return data.value.jikosokai
-  const name = data.value?.nickname || data.value?.fullname || data.value?.name
+  const name = data.value?.nickname || memberName.value
   return `Berikut profile lengkap dari ${name} ${getGroup(group)}`
 })
 useSeoMeta({
   description,
-  title: () => `${data.value?.fullname || member.value?.name} Profile` || 'Member Profile',
-  twitterTitle: () => `${member.value?.name} Profile` || 'Member Profile',
+  title: () => `${memberName.value} Profile`,
+  twitterTitle: () => `${memberName.value} Profile`,
   twitterDescription: description,
   twitterImage: () => $fixCloudinary(member.value?.img_alt || member.value?.img || ''),
   twitterCard: 'summary',
-  ogTitle: () => `${data.value?.fullname || member.value?.name} Profile` || 'Member Profile',
+  ogTitle: () => `${memberName.value} Profile`,
   ogImage: () => member.value?.img || '',
   ogDescription: description,
   ogType: 'profile',
 })
 
 useHead({
-  title: () => data.value?.fullname || member.value?.name || 'Member Profile',
+  title: () => `${memberName.value} Profile`,
+  script: [
+    {
+      key: 'member-profile-schema',
+      type: 'application/ld+json',
+      innerHTML: computed(() => JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'ProfilePage',
+        'name': `${memberName.value} Profile`,
+        'mainEntity': {
+          '@type': 'Person',
+          'name': memberName.value,
+          'image': member.value?.img || undefined,
+        },
+      })),
+    },
+  ],
 })
 </script>
 

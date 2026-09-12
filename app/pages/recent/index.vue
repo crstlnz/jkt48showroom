@@ -3,6 +3,10 @@ const { t } = useI18n()
 const title = ref('')
 
 useHead({ title: computed(() => t(title.value || 'page.title.recent')) })
+usePageSeo({
+  title: computed(() => t(title.value || 'page.title.recent')),
+  description: 'Rekap live Showroom dan IDN JKT48 yang telah selesai, termasuk statistik, gift, dan peringkat penggemar.',
+})
 const fetch = useRecentFetch({ changeRoute: false, mode: 'infinite', initPage: 1 })
 const { data: res, query, pending, error } = fetch.data
 const { changePage, refresh, setFilter, onQueryChange } = fetch

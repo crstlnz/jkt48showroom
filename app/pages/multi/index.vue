@@ -710,7 +710,7 @@ useSeoMeta({
   description,
   ogDescription: () => description.value,
   twitterDescription: () => description.value,
-  keywords: 'jkt48 multi viewer, jkt48 multi stream, jkt48 live multi stream, nonton jkt48, nonton jkt48 bersamaan',
+  // keywords: 'jkt48 multi viewer, jkt48 multi stream, jkt48 live multi stream, nonton jkt48, nonton jkt48 bersamaan',
   twitterCard: 'summary',
 })
 const mediaControl = ref<InstanceType<typeof MultiMediaControl>>()

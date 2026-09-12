@@ -16,6 +16,7 @@ const colorMode = useColorMode()
 const isDark = computed(() => colorMode.value === 'dark')
 
 const title = computed(() => data.value?.title || 'News')
+const publishedTime = computed(() => data.value?.date ? new Date(data.value.date).toISOString() : undefined)
 const content = computed(() => {
   const html = data.value?.content?.replaceAll('https://jkt48.com/upload/news', `https://jkt48.com/api/v1/storages/media/news/migrated`)?.replaceAll('https://jkt48.com/api/v1/storages/media', `${useRuntimeConfig().public.showroomApi ?? ''}https://jkt48.com/api/v1/storages/media`)
   return isDark.value ? convertToDark(html ?? '').html : html
@@ -28,10 +29,27 @@ useSeoMeta({
   description,
   twitterDescription: description,
   ogDescription: description,
+  ogType: 'article',
+  articlePublishedTime: publishedTime,
 })
 
 useHead({
   title,
+  script: [
+    {
+      key: 'news-article-schema',
+      type: 'application/ld+json',
+      innerHTML: computed(() => JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'NewsArticle',
+        'headline': title.value,
+        'description': description.value,
+        'datePublished': publishedTime.value,
+        'mainEntityOfPage': `https://48live.my.id${route.path}`,
+        'isBasedOn': data.value?.url || undefined,
+      })),
+    },
+  ],
 })
 </script>
 
@@ -41,13 +59,13 @@ useHead({
       <Icon name="eos-icons:loading" size="3rem" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 " />
     </div>
     <Error v-else-if="error || !data" :message="error ? (error.statusCode === 404 ? $t('error.pagenotfound') : $t('error.unknown')) : $t('error.pagenotfound')" :img-src="!data || error?.statusCode === 404 ? `${$imgCDN}/assets/svg/web/404.svg` : `${$imgCDN}/assets/svg/web/error.svg`" />
-    <LayoutRow v-else title="News" :mobile-side="false">
+    <LayoutRow v-else title="News" :heading="title" :mobile-side="false">
       <template #default>
         <div class="px-3 md:px-4">
           <div class="flex lg:gap-3 items-start max-lg:flex-col">
-            <h3 class="text-2xl font-bold flex-1">
+            <h2 class="text-2xl font-bold flex-1">
               {{ data?.title }}
-            </h3>
+            </h2>
             <NuxtLink
               :to="data.url ?? `https://jkt48.com/news/detail/id/${data.id}`"
               :external="true"

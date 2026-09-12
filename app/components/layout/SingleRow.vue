@@ -3,6 +3,7 @@ import { useNavScroll } from '~/composables/useNavScroll'
 
 withDefaults(defineProps<{
   title: string
+  heading?: string
   subTitle?: string
   search?: string
   enableSearch?: boolean
@@ -59,6 +60,9 @@ const id = computed(() => {
       </LayoutRowTitle>
     </div>
     <div :id="id" class="flex-1" :class="{ 'pt-3 xl:pt-4': !noPadding }">
+      <h1 class="sr-only">
+        {{ heading || title }}
+      </h1>
       <slot />
     </div>
     <div :class="{ 'pb-18': isMobile }" class="pt-4 pb-10 text-center px-3 md:px-4">

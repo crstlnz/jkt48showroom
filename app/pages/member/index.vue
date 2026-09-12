@@ -248,6 +248,11 @@ const title = computed(() => {
 useHead({
   title,
 })
+
+usePageSeo({
+  title,
+  description: 'Daftar profil member JKT48, termasuk informasi Showroom, IDN Live, dan riwayat live.',
+})
 </script>
 
 <template>

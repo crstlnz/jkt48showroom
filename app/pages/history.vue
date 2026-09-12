@@ -181,7 +181,7 @@ const recentHeight = computed(() => {
         <LayoutPopupButton v-if="!isXL" class="bg-container flex aspect-square h-10 w-10 items-center justify-center rounded-2xl transition-colors sm:hover:bg-blue-500 sm:hover:text-slate-100">
           <Icon name="ph:magnifying-glass-bold" />
           <template #panel="{ close }">
-            <div class="flex flex-col items-stretch py-3 text-lg max-sm:py-5" :class="{ 'min-w-[350px]': !isMobile }">
+            <div class="flex flex-col items-stretch py-3 text-lg max-sm:py-5" :class="{ 'min-w-87.5': !isMobile }">
               <PaginationFilter
                 key="filterDiv"
                 :must-calculate-height="true"
@@ -208,7 +208,7 @@ const recentHeight = computed(() => {
     >
       <div
         v-if="!isTop"
-        class="fixed bottom-[80px] left-1/2 z-belowNav flex w-[180px] max-w-[80%] -translate-x-1/2 overflow-hidden rounded-xl bg-second-2/95 font-bold text-white transition sm:bottom-10"
+        class="fixed bottom-20 left-1/2 z-belowNav flex w-45 max-w-[80%] -translate-x-1/2 overflow-hidden rounded-xl bg-second-2/95 font-bold text-white transition sm:bottom-10"
       >
         <button
           type="button"
@@ -236,7 +236,7 @@ const recentHeight = computed(() => {
             class="flex flex-col justify-center px-10 pt-10 text-center"
           >
             <div class="space-y-5">
-              <div class="mx-auto aspect-video w-4/5 lg:w-[350px]">
+              <div class="mx-auto aspect-video w-4/5 lg:w-87.5">
                 <Image v-if="error" :src="`${$imgCDN}/assets/img/web/security-error.png`" alt="An Error Occured!" class="mx-auto w-full" />
                 <Image v-else :src="`${$imgCDN}/assets/img/web/empty-box.png`" alt="Empty!" class="mx-auto w-full" />
               </div>
@@ -269,7 +269,7 @@ const recentHeight = computed(() => {
               <template #default="{ item }">
                 <div class="pb-3 md:pb-4 px-1 relative">
                   <NuxtLink :to="`/recent/${item.data_id}`" class="flex gap-3 md:gap-4 bg-container rounded-xl p-3 md:p-4">
-                    <div v-if="item.user" class="flex flex-col justify-center items-center gap-2 max-w-[80px] md:max-w-[100px] xl:max-w-[200px]">
+                    <div v-if="item.user" class="flex flex-col justify-center items-center gap-2 max-w-20 md:max-w-25 xl:max-w-50">
                       <div v-if="item.type === 'top100'" class="bg-orange-600 px-1.5 text-sm md:text-base md:px-2 rounded-md">
                         Top 100
                       </div>
@@ -319,7 +319,7 @@ const recentHeight = computed(() => {
               <template #after>
                 <div class="mb-4 flex w-full items-center justify-center py-16">
                   <Icon v-if="!isEnded" name="svg-spinners:ring-resize" size="3rem" />
-                  <div v-else class="flex h-[3rem] items-center justify-center text-lg">
+                  <div v-else class="flex h-12 items-center justify-center text-lg">
                     {{ $t("data.nomore") }}
                   </div>
                 </div>

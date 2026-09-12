@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+if [ "${SKIP_VERSION_BUMP:-}" = "1" ]; then
+  exit 0
+fi
+
+bun run version:patch
