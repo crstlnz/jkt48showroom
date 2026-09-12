@@ -34,7 +34,7 @@ jobs:
           NUXT_PUBLIC_VARIABLES: ${{ toJSON(vars) }}
         run: |
           printf '%s' "$NUXT_PUBLIC_VARIABLES" \
-            | jq -r 'to_entries[] | select(.key | startswith("NUXT_PUBLIC_")) | "\(.key)=\(.value)"' \
+            | jq -r 'to_entries[] | select(.key | startswith("NUXT_PUBLIC_")) | "export \(.key)=\(.value | @sh)"' \
             > .nuxt-public.env
           test -s .nuxt-public.env
           grep -q '^NUXT_PUBLIC_API=' .nuxt-public.env

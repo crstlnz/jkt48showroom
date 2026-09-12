@@ -23,14 +23,15 @@ const args = [
   imageTag,
 ]
 
-for (const [key, value] of Object.entries(publicEnv)) {
-  if (value) args.push('--build-arg', `${key}=${value}`)
+function shellQuote(value) {
+  const quote = String.fromCharCode(39)
+  return `${quote}${value.replaceAll(quote, `${quote}\\${quote}${quote}`)}${quote}`
 }
 
 args.push('.')
 
 const envContent = Object.entries(publicEnv)
-  .map(([key, value]) => `${key}=${value}`)
+  .map(([key, value]) => `export ${key}=${shellQuote(value)}`)
   .join('\n')
 
 if (process.argv.includes('--dry-run')) {
