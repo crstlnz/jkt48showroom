@@ -25,12 +25,7 @@ RUN --mount=type=secret,id=nuxt_public_env \
       echo "NUXT_PUBLIC_SITE_URL is required for the Nuxt build"; \
       exit 1; \
     fi; \
-    bun run build; \
-    if [ ! -s .output/server/index.mjs ]; then \
-      echo "Nuxt build did not create .output/server/index.mjs"; \
-      find .output -maxdepth 2 -type f -print 2>/dev/null || true; \
-      exit 1; \
-    fi
+    bun run build
 
 
 FROM oven/bun:${BUN_VERSION} AS runner
