@@ -385,8 +385,8 @@ export default defineNuxtConfig({
       'import process from \'node:process\';': '',
     },
     prerender: {
-      routes: ['/offline', '/sitemap_index.xml'],
-      ignore: ['/__sitemap__/**'],
+      routes: ['/offline'],
+      // ignore: ['/__sitemap__/**'],
     },
     compressPublicAssets: {
       brotli: true,
