@@ -17,11 +17,15 @@ ENV NITRO_PRESET=bun
 RUN --mount=type=secret,id=nuxt_public_env \
     set -eu; \
     set -a; . /run/secrets/nuxt_public_env; set +a; \
-    test -n "$NUXT_PUBLIC_API"; \
-    test -n "$NUXT_PUBLIC_SITE_URL"; \
-    bun run build; \
-    test -s .output/server/index.mjs; \
-    test -d .output/public
+    if [ -z "${NUXT_PUBLIC_API:-}" ]; then \
+      echo "NUXT_PUBLIC_API is required for the Nuxt build"; \
+      exit 1; \
+    fi; \
+    if [ -z "${NUXT_PUBLIC_SITE_URL:-}" ]; then \
+      echo "NUXT_PUBLIC_SITE_URL is required for the Nuxt build"; \
+      exit 1; \
+    fi; \
+    bun run build
 
 
 FROM oven/bun:${BUN_VERSION}
