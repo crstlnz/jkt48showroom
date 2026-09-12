@@ -56,7 +56,7 @@ usePageSeo({
               v-for="(theater, index) in data.theater.recent.slice(0, 5)" :key="theater.url" :theater=" theater" :class="{
                 'md:hidden lg:block': index === 3,
                 'hidden xl:block': index === 4,
-                'hidden': index >= 5,
+                'hidden': Number(index) >= 5,
               }"
             />
           </div>

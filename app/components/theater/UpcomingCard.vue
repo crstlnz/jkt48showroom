@@ -16,10 +16,13 @@ const { locale } = useI18n()
 
 <template>
   <div class="group block overflow-hidden rounded-xl border border-black/10 bg-container p-3 transition-all  dark:border-white/10 md:p-4">
-    <div class="flex gap-3 md:gap-4">
-      <NuxtLink :to="`/theater/${theater.url}`">
+    <div class="flex gap-2 md:gap-2.5">
+      <NuxtLink :to="`/theater/${theater.url}`" class="aspect-4/5.5 w-30 relative">
+        <span v-if="$dayjs(theater.date).isToday()" class="absolute group-hover:bg-red-500/80 transition-all duration-300 left-0 top-0 m-1 text-xs rounded-md px-1.5 text-white py-0.5 font-bold  bg-red-500/60 backdrop-blur-sm">
+          {{ $t("today") }}
+        </span>
         <Image
-          class="aspect-4/5.5 w-25 shrink-0 rounded-lg bg-black/10 object-cover md:w-29"
+          class="shrink-0 rounded-lg bg-black/10 object-cover md:w-29"
           :src="theater.poster ?? theater.banner ?? $errorPicture"
           alt="Theater Poster"
           loading="lazy"
