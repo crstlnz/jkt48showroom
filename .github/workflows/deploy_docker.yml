@@ -33,12 +33,38 @@ jobs:
         env:
           NUXT_PUBLIC_VARIABLES: ${{ toJSON(vars) }}
         run: |
-          printf '%s' "$NUXT_PUBLIC_VARIABLES" \
-            | jq -r 'to_entries[] | select(.key | startswith("NUXT_PUBLIC_")) | "export \(.key)=\(.value | @sh)"' \
-            > .nuxt-public.env
-          test -s .nuxt-public.env
-          grep -q '^NUXT_PUBLIC_API=' .nuxt-public.env
-          grep -q '^NUXT_PUBLIC_SITE_URL=' .nuxt-public.env
+          set -eu
+          printf '%s' "$NUXT_PUBLIC_VARIABLES" > .github-vars.json
+
+          if ! jq -e 'type == "object"' .github-vars.json > /dev/null; then
+            echo "GitHub variables context is not valid JSON."
+            exit 1
+          fi
+
+          jq -r '
+            to_entries[]
+            | select(.key | test("^NUXT_PUBLIC_[A-Za-z0-9_]+$"))
+            | "export \(.key)=\(.value | @sh)"
+          ' .github-vars.json > .nuxt-public.env
+
+          # Support the previous variable name while migrating to NUXT_PUBLIC_SITE_URL.
+          if ! grep -q '^export NUXT_PUBLIC_SITE_URL=' .nuxt-public.env; then
+            jq -r '
+              .NUXT_SITE_URL // empty
+              | "export NUXT_PUBLIC_SITE_URL=\(. | @sh)"
+            ' .github-vars.json >> .nuxt-public.env
+          fi
+
+          rm .github-vars.json
+
+          if ! grep -q '^export NUXT_PUBLIC_API=' .nuxt-public.env \
+            || ! grep -q '^export NUXT_PUBLIC_SITE_URL=' .nuxt-public.env; then
+            echo "Missing required GitHub Actions Variables: NUXT_PUBLIC_API and NUXT_PUBLIC_SITE_URL."
+            echo "Available public variable names:"
+            sed -n 's/^export \(NUXT_PUBLIC_[A-Za-z0-9_]*\)=.*/\1/p' .nuxt-public.env || true
+            echo "If these are Environment Variables, set jobs.build.environment to that environment name."
+            exit 1
+          fi
 
       - name: 🏗️ Build and push image
         uses: docker/build-push-action@v6.17.0
