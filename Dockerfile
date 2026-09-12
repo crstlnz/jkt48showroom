@@ -18,7 +18,10 @@ ENV NUXT_PUBLIC_API=${NUXT_PUBLIC_API}
 ENV NUXT_SITE_NAME=${NUXT_SITE_NAME}
 
 RUN test -n "$NUXT_PUBLIC_API" || (echo "NUXT_PUBLIC_API build arg is required" && exit 1)
-RUN bun run build
+RUN set -eu; \
+    bun run build; \
+    test -s .output/server/index.mjs; \
+    test -d .output/public
 
 
 FROM oven/bun:${BUN_VERSION}

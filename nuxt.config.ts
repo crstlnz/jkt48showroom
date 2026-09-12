@@ -48,6 +48,9 @@ function buildRecentYears(): Record<string, Partial<SitemapDefinition>> {
 }
 
 export default defineNuxtConfig({
+  site: {
+    url: process.env.NUXT_PUBLIC_SITE_URL,
+  },
   app: {
     head: {
       htmlAttrs: {
