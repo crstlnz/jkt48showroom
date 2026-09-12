@@ -6,6 +6,10 @@ on:
       - master
   workflow_dispatch:
 
+permissions:
+  contents: read
+  actions: read
+
 env:
   IMAGE_NAME: jkt48showroom
   IMAGE_TAG: latest
@@ -26,13 +30,24 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: 📦 Collect public Nuxt variables
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api --paginate \
+            "/repos/${GITHUB_REPOSITORY}/actions/variables?per_page=30" \
+            --jq '.variables[] | select(.name | startswith("NUXT_PUBLIC_")) | "\(.name)=\(.value)"' \
+            > .nuxt-public.env
+          test -s .nuxt-public.env
+          grep -q '^NUXT_PUBLIC_API=' .nuxt-public.env
+          grep -q '^NUXT_PUBLIC_SITE_URL=' .nuxt-public.env
+
       - name: 🏗️ Build and push image
         uses: docker/build-push-action@v6.17.0
         with:
           push: true
-          build-args: |
-            NUXT_PUBLIC_API=${{ vars.NUXT_PUBLIC_API }}
-            NUXT_SITE_NAME=${{ vars.NUXT_SITE_NAME }}
+          secret-files: |
+            nuxt_public_env=.nuxt-public.env
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
 
