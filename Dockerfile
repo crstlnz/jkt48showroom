@@ -25,18 +25,24 @@ RUN --mount=type=secret,id=nuxt_public_env \
       echo "NUXT_PUBLIC_SITE_URL is required for the Nuxt build"; \
       exit 1; \
     fi; \
-    bun run build
+    bun run build; \
+    if [ ! -s .output/server/index.mjs ]; then \
+      echo "Nuxt build did not create .output/server/index.mjs"; \
+      find .output -maxdepth 2 -type f -print 2>/dev/null || true; \
+      exit 1; \
+    fi
 
 
-FROM oven/bun:${BUN_VERSION}
+FROM oven/bun:${BUN_VERSION} AS runner
 
 WORKDIR /app
 
 COPY --from=builder /app/.output ./.output
-COPY --from=builder /app/package.json ./package.json
 
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+ENV NODE_ENV=production \
+    HOST=0.0.0.0 \
+    PORT=3000
 
-ENV NODE_ENV=production
+EXPOSE 3000
 
 CMD ["bun", ".output/server/index.mjs"]

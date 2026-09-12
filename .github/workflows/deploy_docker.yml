@@ -72,6 +72,9 @@ jobs:
           push: true
           secret-files: |
             nuxt_public_env=.nuxt-public.env
+          secrets: |
+            jwt_secret=${{ secrets.JWT_SECRET }}
+            app_secret=${{ secrets.SECRET }}
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
 
