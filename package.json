@@ -1,12 +1,12 @@
 {
   "name": "jkt48showroom",
   "type": "module",
-  "version": "0.26.5",
+  "version": "0.26.6",
   "engines": {
     "node": "20.x.x"
   },
   "scripts": {
-    "start": "node .output/server/index.mjs",
+    "start": "bun .output/server/index.mjs",
     "build": "nuxt build",
     "dev": "nuxt dev --host",
     "generate": "nuxt generate",
@@ -16,7 +16,7 @@
     "version:patch": "node scripts/bump-version.mjs",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "docker:build": "docker build --build-arg NUXT_PUBLIC_API=$NUXT_PUBLIC_API --build-arg NUXT_SITE_NAME=$NUXT_SITE_NAME -t crstlnz/jkt48showroom:latest .",
+    "docker:build": "node scripts/docker-build.mjs",
     "docker:push": "docker push crstlnz/jkt48showroom:latest",
     "docker": "bun docker:build && bun docker:push"
   },
