@@ -8,7 +8,6 @@ on:
 
 permissions:
   contents: read
-  actions: read
 
 env:
   IMAGE_NAME: jkt48showroom
@@ -32,11 +31,10 @@ jobs:
 
       - name: 📦 Collect public Nuxt variables
         env:
-          GH_TOKEN: ${{ github.token }}
+          NUXT_PUBLIC_VARIABLES: ${{ toJSON(vars) }}
         run: |
-          gh api --paginate \
-            "/repos/${GITHUB_REPOSITORY}/actions/variables?per_page=30" \
-            --jq '.variables[] | select(.name | startswith("NUXT_PUBLIC_")) | "\(.name)=\(.value)"' \
+          printf '%s' "$NUXT_PUBLIC_VARIABLES" \
+            | jq -r 'to_entries[] | select(.key | startswith("NUXT_PUBLIC_")) | "\(.key)=\(.value)"' \
             > .nuxt-public.env
           test -s .nuxt-public.env
           grep -q '^NUXT_PUBLIC_API=' .nuxt-public.env
