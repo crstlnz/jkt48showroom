@@ -297,6 +297,9 @@ selectvideofirst: Add the video from the bottom right!
 logininfo: "Logging in will not store your data on this website. By logging in, you can access the commenting feature in showroom live, bookmarks, and various other information that utilizes your showroom account."
 loginfailedinfo: "If login failed, try to refresh this page!"
 watch_on: Watch on
+idn_live_disabled: This live stream cannot be displayed in accordance with IDN Live’s applicable regulations.
+idn_live_hidden: IDN Live content cannot be displayed in accordance with IDN Live's policies.
+open_live_on: Open this live one
 add: Add
 delete: Delete
 media_controls: Media Controls

@@ -7,6 +7,7 @@ const route = useRoute()
 // const { data, pending, error } = await useApiFetch<IDNLivesDetail>(`/api/watch/${route.params.id}/idn`)
 const onLives = useOnLives()
 const { data: lives, pending: pendingSocket } = storeToRefs(onLives)
+const idnEnabled = ref(false)
 const { members, tryRefresh: tryRefreshMember } = useMembers()
 const currentLive = computed(() => {
   return lives.value?.find(i => i.type === 'idn' && i.url_key === route.params.id) as INowLive | undefined
@@ -159,7 +160,7 @@ const enableComment = useLocalStorage('enable-idn-comment', true)
         <div
           class="flex-1 relative flex flex-col overflow-hidden transition-all duration-300 h-full"
         >
-          <Suspense>
+          <Suspense v-if="idnEnabled">
             <template #fallback>
               <div
                 class="max-h-screen bg-black/50 flex-1 bg-container"
@@ -173,6 +174,24 @@ const enableComment = useLocalStorage('enable-idn-comment', true)
               :thumbnails="data?.img ?? ''" :src="streamURLs[0]?.url ?? ''"
             />
           </Suspense>
+          <div v-else class="bg-black size-full text-center flex justify-center items-center">
+            <div class="bg-dark-1 px-6 py-10 rounded-xl border border-white/5">
+              <div>
+                {{ $t('idn_live_disabled') }}
+              </div>
+              <NuxtLink
+                target="_blank" :to="$idnLiveUrl(data?.url_key || '', data?.slug || '')"
+                class="flex gap-1.5 items-center justify-center mt-3"
+              >
+                <div>
+                  {{ $t('open_live_on') }}
+                </div>
+                <div class="text-red-500 font-bold hover:bg-red-500/30 transition-colors px-2 rounded-sm">
+                  IDN Live
+                </div>
+              </NuxtLink>
+            </div>
+          </div>
           <div v-if="!isLandscape" class="p-2">
             <NuxtLink class="text-sm h-7 flex items-center justify-center text-white px-3 py-2 text-center font-bold rounded-md bg-red-500" :to="$idnLiveUrl(data?.url_key || '', data?.slug || '')" external>
               {{ $t('watch_on') }} IDN

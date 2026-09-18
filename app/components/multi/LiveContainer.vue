@@ -44,7 +44,7 @@ const lives = computed<Omit<Multi.Video, 'order'>[]>(() => {
       result.push(convertShowroom(live))
     }
     else if (live.type === 'idn') {
-      result.push(convertIDNLive(live))
+      // result.push(convertIDNLive(live)) // disabled due request from idn live
     }
     else {
       result.push(convertYoutube(live as YoutubeLive))
@@ -86,19 +86,24 @@ const lives = computed<Omit<Multi.Video, 'order'>[]>(() => {
       leave-to-class="translate-y-2 translate-x-1 opacity-0"
     >
       <PopoverPanel class="absolute -bottom-3 flex flex-col -right-3 z-0 rounded-[28px] overflow-hidden bg-white border border-color-1 drop-shadow-lg dark:bg-dark-1 w-112.5 md:min-w-112.5 max-w-[calc(100vw-8px)] min-h-[60dvh] max-h-[85dvh]">
-        <div class="flex justify-between px-6 py-6 text-lg 2xl:text-xl font-bold">
+        <div class="flex justify-between px-6 pt-6 text-lg 2xl:text-xl font-bold">
           <div>
             Daftar Live
           </div>
         </div>
-        <div v-if="pending " class="p-10 flex justify-center">
-          <Icon name="svg-spinners:ring-resize" size="1.7rem" />
+        <div class="bg-red-500/20 mx-3 mt-2 mb-2 px-3 py-1.5 rounded-md text-xs">
+          IDN Live tidak ditampilkan dikarenakan dari IDN Live
         </div>
-        <div v-else-if="lives?.length" class="flex flex-col font-bold pb-16 overflow-y-auto flex-1">
-          <MultiLiveCard v-for="live in lives" :key="live.id" :live="live" :selected="selected.has(live.id)" @live-click="select(live)" />
-        </div>
-        <div v-else class="text-center py-2 flex px-8 text-base font-light">
-          {{ $t('nolive') }}
+        <div class="overflow-y-auto">
+          <div v-if="pending " class="p-10 flex justify-center">
+            <Icon name="svg-spinners:ring-resize" size="1.7rem" />
+          </div>
+          <div v-else-if="lives?.length" class="flex flex-col font-bold pb-16 flex-1">
+            <MultiLiveCard v-for="live in lives" :key="live.id" :live="live" :selected="selected.has(live.id)" @live-click="select(live)" />
+          </div>
+          <div v-else class="text-center py-2 flex px-8 text-base font-light">
+            {{ $t('nolive') }}
+          </div>
         </div>
       </PopoverPanel>
     </Transition>

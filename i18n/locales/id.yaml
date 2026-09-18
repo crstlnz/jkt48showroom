@@ -297,6 +297,9 @@ selectvideofirst: Tambah videonya di kanan bawah!
 logininfo: "Login tidak akan menyimpan data Anda pada web ini. Dengan login, anda dapat mengakses fitur komen pada showroom, markah, serta beberapa informasi yang menggunakan akun showroom."
 loginfailedinfo: "Jika login gagal, coba untuk merefresh halaman ini!"
 watch_on: Tonton di
+idn_live_disabled: Live ini tidak dapat ditampilkan sesuai peraturan IDN Live yang berlaku.
+idn_live_hidden: Live IDN tidak dapat ditampilkan sesuai peraturan IDN Live yang berlaku.
+open_live_on: Buka live ini di
 add: Tambah
 delete: Hapus
 media_controls: Kontrol Media
