@@ -92,7 +92,7 @@ const lives = computed<Omit<Multi.Video, 'order'>[]>(() => {
           </div>
         </div>
         <div class="bg-red-500/20 mx-3 mt-2 mb-2 px-3 py-1.5 rounded-md text-xs">
-          IDN Live tidak ditampilkan dikarenakan dari IDN Live
+          {{ $t("idn_live_hidden") }}
         </div>
         <div class="overflow-y-auto">
           <div v-if="pending " class="p-10 flex justify-center">
