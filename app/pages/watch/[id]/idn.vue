@@ -175,7 +175,7 @@ const enableComment = useLocalStorage('enable-idn-comment', true)
             />
           </Suspense>
           <div v-else class="bg-black size-full text-center flex justify-center items-center">
-            <div class="bg-dark-1 px-6 py-10 rounded-xl border border-white/5">
+            <div class="bg-dark-1 px-6 py-10 rounded-xl border border-white/5 mx-4 sm:mx-5">
               <div>
                 {{ $t('idn_live_disabled') }}
               </div>
