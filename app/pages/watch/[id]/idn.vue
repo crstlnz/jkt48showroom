@@ -181,7 +181,7 @@ const enableComment = useLocalStorage('enable-idn-comment', true)
               </div>
               <NuxtLink
                 target="_blank" :to="$idnLiveUrl(data?.url_key || '', data?.slug || '')"
-                class="flex gap-1.5 items-center justify-center mt-3"
+                class="flex gap-1 sm:gap-1.5 items-center justify-center mt-3"
               >
                 <div>
                   {{ $t('open_live_on') }}
