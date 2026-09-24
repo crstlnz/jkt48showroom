@@ -9,6 +9,45 @@ const props = defineProps<{
 const emit = defineEmits<{ (e: 'select', id: Multi.Video): void }>()
 const route = useRoute()
 const isMockup = ref(route.query.mockup != null)
+const isIDNMultiBypassEnabled = ref(false)
+const isBetaDeviceChecked = ref(false)
+
+function takeUnlockIDNKey() {
+  const hash = new URLSearchParams(window.location.hash.slice(1))
+  const key = hash.get('betakey') || hash.get('betaKey') || undefined
+  if (!key) return undefined
+
+  hash.delete('betakey')
+  hash.delete('betaKey')
+  const remainingHash = hash.toString()
+  const cleanUrl = `${window.location.pathname}${window.location.search}${remainingHash ? `#${remainingHash}` : ''}`
+  window.history.replaceState(window.history.state, '', cleanUrl)
+  return key
+}
+
+onMounted(async () => {
+  const key = takeUnlockIDNKey()
+  if (!key && !hasBetaDeviceId()) {
+    isBetaDeviceChecked.value = true
+    return
+  }
+
+  try {
+    const deviceId = await useBetaDeviceId()
+    const result = await $apiFetch<{ enabled: boolean }>('/api/beta', {
+      method: 'POST',
+      body: { fingerprint: deviceId, key },
+    })
+    isIDNMultiBypassEnabled.value = result.enabled
+  }
+  catch {
+    isIDNMultiBypassEnabled.value = false
+  }
+  finally {
+    isBetaDeviceChecked.value = true
+  }
+})
+
 function select(video: Omit<Multi.Video, 'order'>) {
   emit('select', {
     ...video,
@@ -44,7 +83,9 @@ const lives = computed<Omit<Multi.Video, 'order'>[]>(() => {
       result.push(convertShowroom(live))
     }
     else if (live.type === 'idn') {
-      // result.push(convertIDNLive(live)) // disabled due request from idn live
+      if (isIDNMultiBypassEnabled.value) {
+        result.push(convertIDNLive(live))
+      }
     }
     else {
       result.push(convertYoutube(live as YoutubeLive))
@@ -91,7 +132,7 @@ const lives = computed<Omit<Multi.Video, 'order'>[]>(() => {
             Daftar Live
           </div>
         </div>
-        <div class="bg-red-500/20 mx-3 mt-2 mb-2 px-3 py-1.5 rounded-md text-xs">
+        <div v-if="isBetaDeviceChecked && !isIDNMultiBypassEnabled" class="bg-red-500/20 mx-3 mt-2 mb-2 px-3 py-1.5 rounded-md text-xs">
           {{ $t("idn_live_hidden") }}
         </div>
         <div class="overflow-y-auto">

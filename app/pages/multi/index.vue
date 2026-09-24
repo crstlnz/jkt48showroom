@@ -652,7 +652,9 @@ const { t } = useI18n()
 
 function checkLive(video: Multi.Video) {
   if (video.is_mockup) return true
-  const live = (data.value ?? []).find((i: any) => video.id === `${i.type}-${i.room_id}`)
+  const live = (data.value ?? []).find((live) => {
+    return live.type !== 'youtube' && video.id === getMultiLiveId(live)
+  })
   if (!live) {
     if (autoRemove.value) toggleVideo(video)
     addNotif({

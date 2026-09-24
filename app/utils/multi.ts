@@ -1,7 +1,16 @@
+export function getMultiLiveId(room: INowLive): string {
+  if (room.type === 'idn') {
+    // IDN room_id is not unique in the live socket payload; url_key identifies the creator.
+    return `idn-${room.url_key ?? room.slug ?? room.room_id}`
+  }
+
+  return `showroom-${room.room_id}`
+}
+
 export function convertIDNLive(room: INowLive): Omit<Multi.Video, 'order'> {
   const { idnLiveUrl, idnLiveIcon } = useAppConfig()
   return {
-    id: `idn-${room.room_id}`,
+    id: getMultiLiveId(room),
     name: room.name,
     poster: room.img,
     image: room.img_alt || room.img,
@@ -18,7 +27,7 @@ export function convertIDNLive(room: INowLive): Omit<Multi.Video, 'order'> {
 export function convertShowroom(room: INowLive): Omit<Multi.Video, 'order'> {
   const { liveURL, showroomIcon } = useAppConfig()
   return {
-    id: `showroom-${room.room_id}`,
+    id: getMultiLiveId(room),
     name: room.name,
     image: room.img_alt || room.img,
     poster: room.img,

@@ -24,6 +24,9 @@ definePageMeta({ middleware: 'admin' })
         <NuxtLink class="bg-container rounded-3xl px-3.5 py-2 text-sm hover:bg-hover" to="/admin/stage48">
           Stage48
         </NuxtLink>
+        <NuxtLink class="bg-container rounded-3xl px-3.5 py-2 text-sm hover:bg-hover" to="/admin/beta">
+          Beta
+        </NuxtLink>
         <NuxtLink class="bg-container rounded-3xl px-3.5 py-2 text-sm hover:bg-hover" to="/fans">
           Fans List
         </NuxtLink>
