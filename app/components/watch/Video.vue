@@ -11,6 +11,9 @@ const props = withDefaults(
     useDefaultControl?: boolean
     hideControl?: boolean
     hideCursorWhenPlaying?: boolean
+    muted?: boolean
+    volume?: number
+    seekPreviewOffset?: number | null
     maxBufferSize?: number
     maxMaxBufferLength?: number
     saveState?: boolean
@@ -34,6 +37,8 @@ const emit = defineEmits<{
   (e: 'fullsceen', isFullscreen: boolean): void
   (e: 'isLandscape', isLandscape: boolean): void
   (e: 'sourceError'): void
+  (e: 'userVolumeChange', volume: number): void
+  (e: 'userMuteChange', muted: boolean): void
 }>()
 
 const sources = ref(props.sources.filter(i => i.type === 'hls' || isYouTubeUrl(i.url ?? '')) ?? [])
@@ -58,11 +63,48 @@ const youtubeVideoId = computed(() => extractYouTubeId(currentSource.value?.url 
 const videoPlayer = ref<HTMLElement>()
 const video = ref<HTMLVideoElement>()
 const hls = ref()
-const tempVolume = props.saveState ? useLocalStorage('data-volume', 0) : ref(1)
-const isMuted = ref(false)
+const tempVolume = props.saveState ? useLocalStorage('data-volume', 0) : ref(props.volume ?? 1)
 const mutedData = props.saveState
   ? useLocalStorage('data-muted', false)
   : ref(false)
+const isMuted = ref(props.muted ?? mutedData.value)
+const isApplyingMediaState = ref(false)
+const nativeVolume = ref(0)
+const nativeMuted = ref(false)
+
+function runWithMediaState(callback: () => void) {
+  const wasApplying = isApplyingMediaState.value
+  isApplyingMediaState.value = true
+  try {
+    callback()
+  }
+  finally {
+    if (!wasApplying) {
+      nextTick(() => {
+        isApplyingMediaState.value = false
+      })
+    }
+  }
+}
+
+watch(
+  () => props.muted,
+  (val) => {
+    const shouldMute = val ?? mutedData.value
+    if (shouldMute) mute()
+    else if (props.volume === 0) setVolume(0, true)
+    else unmute()
+  },
+)
+
+watch(
+  () => props.volume,
+  (v) => {
+    if (v != null) {
+      setVolume(v)
+    }
+  },
+)
 const isPlaying = ref(true)
 const isLoading = ref(true)
 const volume = ref(0)
@@ -77,35 +119,39 @@ const ytPlayer = ref<any>(null)
 
 function setVolume(v: any, forced = false) {
   const n = Number.parseFloat(v)
-  // YouTube player
-  if (isYouTube.value && ytPlayer.value) {
-    if (n === 0) {
-      ytPlayer.value.mute()
+  runWithMediaState(() => {
+    // YouTube player
+    if (isYouTube.value) {
+      if (n > 0) tempVolume.value = n
+      if (ytPlayer.value) {
+        if (n === 0 || props.muted === true) {
+          ytPlayer.value.mute()
+        }
+        else {
+          ytPlayer.value.unMute()
+          ytPlayer.value.setVolume(n * 100)
+        }
+        if (!forced && props.muted == null) mutedData.value = n === 0
+        isMuted.value = props.muted === true ? true : n === 0
+      }
+      volume.value = props.muted === true ? 0 : n
+      return
     }
-    else {
-      ytPlayer.value.unMute()
-      ytPlayer.value.setVolume(n * 100)
+    // Native video
+    if (video.value) {
+      if (n === 0 || props.muted === true) {
+        video.value.muted = true
+        video.value.volume = n
+      }
+      else {
+        video.value.muted = false
+        video.value.volume = n
+      }
+      if (n > 0) tempVolume.value = n
+      if (!forced && props.muted == null) mutedData.value = video.value.muted
+      isMuted.value = props.muted === true ? true : video.value.muted
     }
-    if (n > 0) tempVolume.value = n
-    if (!forced) mutedData.value = n === 0
-    isMuted.value = n === 0
-    volume.value = n
-    return
-  }
-  // Native video
-  if (video.value) {
-    if (n === 0) {
-      video.value.muted = true
-      video.value.volume = 0
-    }
-    else {
-      video.value.muted = false
-      video.value.volume = n
-    }
-    if (n > 0) tempVolume.value = n
-    if (!forced) mutedData.value = video.value.muted
-    isMuted.value = video.value.muted
-  }
+  })
 }
 
 const showControl = ref(false)
@@ -142,12 +188,15 @@ watch(y, () => {
 const volumeSlider = ref<HTMLInputElement | null>(null)
 useEventListener(volumeSlider, 'input', (event) => {
   setShowControl(true)
-  setVolume((event.target as HTMLInputElement).value)
+  const value = Number((event.target as HTMLInputElement).value)
+  setVolume(value)
+  emit('userVolumeChange', value)
 })
 
 function setShowControl(show: boolean) {
   if (show) {
-    autoRemoveHover()
+    if (props.seekPreviewOffset == null) autoRemoveHover()
+    else stopAutoRemoveHover()
   }
   else {
     isFocusControl.value = false
@@ -156,6 +205,22 @@ function setShowControl(show: boolean) {
   }
   showControl.value = show
 }
+
+function showControls() {
+  setShowControl(true)
+}
+
+watch(
+  () => props.seekPreviewOffset != null,
+  (active) => {
+    if (active) {
+      setShowControl(true)
+    }
+    else if (showControl.value) {
+      autoRemoveHover()
+    }
+  },
+)
 
 // ─── YouTube IFrame API ───────────────────────────────────────────────────────
 
@@ -226,15 +291,16 @@ async function createYouTubePlayer(videoId: string) {
         isLoading.value = false
         isPlaying.value = true
         // Restore volume / mute state
-        if (mutedData.value) {
+        const initialMuted = props.muted ?? mutedData.value
+        const v = props.volume ?? (Number(tempVolume.value) || 1)
+        event.target.setVolume(v * 100)
+        if (initialMuted) {
           event.target.mute()
           isMuted.value = true
           volume.value = 0
         }
         else {
-          const v = Number(tempVolume.value) || 1
           event.target.unMute()
-          event.target.setVolume(v * 100)
           volume.value = v
           isMuted.value = false
         }
@@ -430,58 +496,76 @@ function toggleMute() {
   if (isYouTube.value && ytPlayer.value) {
     if (ytPlayer.value.isMuted()) {
       ytPlayer.value.unMute()
-      const v = Number(tempVolume.value) || 1
+      const v = props.volume === 0 ? 0 : (Number(tempVolume.value) || 1)
       ytPlayer.value.setVolume(v * 100)
       isMuted.value = false
       volume.value = v
-      mutedData.value = false
+      if (props.muted == null) mutedData.value = false
     }
     else {
       ytPlayer.value.mute()
       isMuted.value = true
       volume.value = 0
-      mutedData.value = true
+      if (props.muted == null) mutedData.value = true
     }
+    emit('userMuteChange', isMuted.value)
     return
   }
   if (video.value) {
     if (video.value.muted) unmute()
     else mute()
   }
+  emit('userMuteChange', isMuted.value)
 }
 
 function mute() {
-  if (isYouTube.value && ytPlayer.value) {
-    ytPlayer.value.mute()
-    isMuted.value = true
-    volume.value = 0
-    return
-  }
-  if (video.value) {
-    video.value.muted = true
-    isMuted.value = true
-  }
-  else {
-    setVolume(0)
-  }
+  runWithMediaState(() => {
+    if (isYouTube.value && ytPlayer.value) {
+      ytPlayer.value.mute()
+      isMuted.value = true
+      volume.value = 0
+      if (props.muted == null) mutedData.value = true
+      return
+    }
+    if (video.value) {
+      video.value.muted = true
+      isMuted.value = true
+      volume.value = 0
+      if (props.muted == null) mutedData.value = true
+    }
+    else {
+      setVolume(0)
+    }
+  })
 }
 
 function unmute() {
-  if (isYouTube.value && ytPlayer.value) {
-    ytPlayer.value.unMute()
-    const v = Number(tempVolume.value) || 1
-    ytPlayer.value.setVolume(v * 100)
-    isMuted.value = false
-    volume.value = v
-    return
-  }
-  if (video.value) {
-    video.value.muted = false
-    isMuted.value = false
-  }
-  else {
-    setVolume(tempVolume.value || 1)
-  }
+  runWithMediaState(() => {
+    if (props.volume === 0) {
+      setVolume(0, true)
+      return
+    }
+    if (isYouTube.value && ytPlayer.value) {
+      ytPlayer.value.unMute()
+      const v = Number(tempVolume.value) || 1
+      ytPlayer.value.setVolume(v * 100)
+      isMuted.value = false
+      volume.value = v
+      if (props.muted == null) mutedData.value = false
+      return
+    }
+    if (video.value) {
+      video.value.muted = false
+      isMuted.value = false
+      const v = Number(tempVolume.value) || 1
+      video.value.volume = v
+      volume.value = v
+      if (props.muted == null) mutedData.value = false
+    }
+    else {
+      setVolume(tempVolume.value || 1)
+    }
+  })
 }
 
 const isProcessingPlay = ref(false)
@@ -634,7 +718,7 @@ async function play() {
   }
   if (video.value) {
     try {
-      mutedData.value ? mute() : unmute()
+      (props.muted ?? mutedData.value) ? mute() : unmute()
       await video.value.play()
     }
     catch (e) {
@@ -724,6 +808,14 @@ const videoProgess = computed(() => {
   return (currentTime.value / duration.value) * 100
 })
 
+const seekPreviewProgress = computed(() => {
+  const offset = props.seekPreviewOffset
+  if (offset == null || !Number.isFinite(offset) || !Number.isFinite(duration.value) || duration.value <= 0) return null
+
+  const targetTime = Math.min(Math.max(currentTime.value + offset, 0), duration.value)
+  return (targetTime / duration.value) * 100
+})
+
 function seek() {
   if (seekSlider.value) {
     currentTime.value
@@ -743,6 +835,67 @@ function changeVideoTime() {
     video.value.currentTime = t
   }
   isSeekDragging.value = false
+}
+
+function canSeek() {
+  if (isYouTube.value) {
+    if (!ytPlayerReady.value || !ytPlayer.value || typeof ytPlayer.value.getCurrentTime !== 'function') return false
+    try {
+      return Number.isFinite(Number(ytPlayer.value.getCurrentTime()))
+    }
+    catch {
+      return false
+    }
+  }
+
+  return Boolean(
+    video.value
+    && video.value.readyState >= HTMLMediaElement.HAVE_METADATA
+    && Number.isFinite(video.value.currentTime),
+  )
+}
+
+function seekBy(offset: number) {
+  if (!Number.isFinite(offset)) return false
+
+  if (isYouTube.value) {
+    const player = ytPlayer.value
+    if (!ytPlayerReady.value || !player || typeof player.getCurrentTime !== 'function' || typeof player.seekTo !== 'function') return false
+
+    const current = Number(player.getCurrentTime())
+    if (!Number.isFinite(current)) return false
+
+    const playerDuration = Number(player.getDuration?.())
+    let targetTime = Math.max(0, current + offset)
+    if (Number.isFinite(playerDuration) && playerDuration > 0) {
+      targetTime = Math.min(targetTime, playerDuration)
+    }
+
+    player.seekTo(targetTime, true)
+    currentTime.value = targetTime
+    return true
+  }
+
+  const player = video.value
+  if (!player) return false
+
+  const current = player.currentTime
+  if (!Number.isFinite(current)) return false
+
+  const playerDuration = player.duration
+  let targetTime = Math.max(0, current + offset)
+  if (Number.isFinite(playerDuration) && playerDuration > 0) {
+    targetTime = Math.min(targetTime, playerDuration)
+  }
+
+  try {
+    player.currentTime = targetTime
+  }
+  catch {
+    return false
+  }
+  currentTime.value = targetTime
+  return true
 }
 
 if (props.useShortcut) {
@@ -887,8 +1040,21 @@ useEventListener(video, 'loadstart', () => {
   isLoading.value = true
 })
 useEventListener(video, 'volumechange', (event) => {
-  isMuted.value = (event.target as HTMLVideoElement)?.muted
-  volume.value = (event.target as HTMLVideoElement)?.volume || 0
+  const el = event.target as HTMLVideoElement | null
+  if (!el) return
+  const previousVolume = nativeVolume.value
+  const previousMuted = nativeMuted.value
+  nativeVolume.value = el.volume
+  nativeMuted.value = el.muted
+  isMuted.value = el.muted
+  volume.value = el.muted ? 0 : (el.volume || 0)
+  if (isApplyingMediaState.value) return
+  if (el.volume !== previousVolume) {
+    emit('userVolumeChange', el.volume)
+  }
+  else if (el.muted !== previousMuted) {
+    emit('userMuteChange', el.muted)
+  }
 })
 
 function checkBuiltInFullscreen() {
@@ -911,15 +1077,26 @@ onMounted(() => {
   catch (e) { console.error(e) }
 
   if (video.value) {
-    volume.value = Number(tempVolume.value) || 1
-    setVolume(volume.value)
+    const initialMuted = props.muted ?? mutedData.value
+    const v = props.volume ?? (Number(tempVolume.value) || 1)
+    runWithMediaState(() => {
+      if (!video.value) return
+      video.value.volume = v
+      video.value.muted = initialMuted
+      nativeVolume.value = v
+      nativeMuted.value = initialMuted
+      isMuted.value = initialMuted
+      volume.value = initialMuted ? 0 : v
+    })
     isPlaying.value = !video.value.paused
   }
 
   nextTick(() => {
     if (!isYouTube.value) {
-      if (!mutedData.value) unmute()
-      else mute()
+      const isCurrentlyMuted = props.muted ?? mutedData.value
+      if (isCurrentlyMuted) mute()
+      else if (props.volume === 0) setVolume(0, true)
+      else unmute()
     }
   })
 })
@@ -954,7 +1131,10 @@ defineExpose({
   play,
   mute,
   unmute,
+  showControls,
+  canSeek,
   setVolume,
+  seekBy,
 })
 </script>
 
@@ -1017,8 +1197,8 @@ defineExpose({
       <div
         v-if="!isPlaying && !isLoading"
         class="z-10 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/50 p-1"
-        :class="{ 'pointer-events-none': !isMobile }"
-        @click="() => { if (isMobile) togglePlay() }"
+        :class="{}"
+        @click="() => { togglePlay() }"
       >
         <Icon name="ic:round-play-arrow" class="text-white/60" size="3rem" />
       </div>
@@ -1072,7 +1252,25 @@ defineExpose({
                 :class="{ 'h-0.75': compact, 'h-1': !compact }"
                 class="absolute bottom-0 z-0 w-full overflow-hidden bg-gray-200"
               >
+                <div
+                  v-if="seekPreviewProgress != null"
+                  class="absolute inset-y-0 z-10 bg-blue-400/80"
+                  :style="{
+                    left: `${Math.min(videoProgess, seekPreviewProgress)}%`,
+                    width: `${Math.abs(seekPreviewProgress - videoProgess)}%`,
+                  }"
+                />
                 <div class="h-full bg-red-500" :style="{ width: `${videoProgess}%` }" />
+              </div>
+              <div
+                v-if="seekPreviewProgress != null"
+                class="absolute -bottom-3 z-20 flex -translate-x-1/2 -translate-y-full flex-col items-center"
+                :style="{ left: `${seekPreviewProgress}%` }"
+              >
+                <div class="rounded-full bg-blue-500 px-1.5 py-0.5 text-[10px] font-semibold leading-none text-white">
+                  {{ seekPreviewOffset! > 0 ? '+' : '−' }}{{ Math.abs(seekPreviewOffset!) }}s
+                </div>
+                <div class="h-1.5 w-2 rounded-b-full bg-blue-400" />
               </div>
               <div
                 :class="{

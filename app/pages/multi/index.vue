@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { MultiMediaControl, MultiVideo } from '#components'
+import { useMultiVolume } from '~/store/multiVolume'
 import { useNotifications } from '~/store/notifications'
 import { useOnLives } from '~/store/onLives'
 import { useSettings } from '~/store/settings'
@@ -10,6 +11,7 @@ definePageMeta({
 })
 
 const selectedVideos = useSessionStorage<Map<string, Multi.Video>>('videoMultiSelected', new Map())
+const multiVolume = useMultiVolume()
 
 const videos = computed(() => {
   return [...selectedVideos.value.values()].sort((a, b) => a.order - b.order)
@@ -29,6 +31,7 @@ const sortedIndexById = computed(() => {
 
 function toggleVideo(video: Multi.Video) {
   if (selectedVideos.value.has(video.id)) {
+    multiVolume.clearPlayerSettings(video.id)
     selectedVideos.value.delete(video.id)
     for (const [i, video] of videos.value.entries()) {
       video.order = i + 1
@@ -37,6 +40,13 @@ function toggleVideo(video: Multi.Video) {
   else {
     selectedVideos.value.set(video.id, video)
   }
+}
+
+function clearSelectedVideos() {
+  for (const video of selectedVideos.value.values()) {
+    multiVolume.clearPlayerSettings(video.id)
+  }
+  selectedVideos.value.clear()
 }
 
 const { width } = useWindowSize()
@@ -719,6 +729,14 @@ const mediaControl = ref<InstanceType<typeof MultiMediaControl>>()
 function openMediaControl() {
   if (mediaControl.value) mediaControl.value.open()
 }
+
+function toggleMute() {
+  multiVolume.setAllMuted(!multiVolume.allMuted, videoPlayers.value.values())
+}
+
+// const allMuted = computed(() => {
+//   return ![...videoPlayers.value.values()].some(i => i.isMuted())
+// })
 </script>
 
 <template>
@@ -737,24 +755,28 @@ function openMediaControl() {
           </div>
           <div class="flex gap-3 items-center">
             <div class="flex md:flex-row t border border-color-1 rounded-md overflow-hidden">
-              <button v-ripple type="button" class="flex h-8 w-8 bg-container hover:bg-container border-r border-color-1  p-1.5" @click="() => selectedVideos.clear()">
+              <button v-ripple type="button" class="flex h-8 w-8 bg-container hover:bg-container border-r border-color-1  p-1.5" @click="clearSelectedVideos">
                 <Icon name="mingcute:broom-fill" class="w-full h-full" />
               </button>
               <button v-ripple type="button" class="flex h-8 w-8 bg-container hover:bg-container border-r border-color-1  p-1.5" @click="refreshAll">
                 <Icon name="material-symbols:sync" class="w-full h-full" />
               </button>
+              <button v-ripple type="button" class="flex h-8 w-8 bg-container hover:bg-container border-r border-color-1  p-1.5" @click="toggleMute">
+                <Icon v-if="!multiVolume.allMuted" name="material-symbols:volume-up" class="w-full h-full" />
+                <Icon v-else name="material-symbols:volume-off-rounded" class="w-full h-full" />
+              </button>
               <button v-ripple type="button" class="flex h-8 w-8 bg-container hover:bg-container p-1.5" @click="openMediaControl">
                 <Icon name="icon-park-outline:equalizer" class="w-full h-full p-0.5" />
               </button>
             </div>
-            <div class="flex gap-2 bg-white dark:bg-white/5 px-3 py-2 rounded-md items-center overflow-hidden text-sm md:text-base">
+            <div class="flex gap-2 bg-white dark:bg-white/5 pl-2 py-0.5 rounded-md items-center overflow-hidden text-xs md:text-sm">
               <div>Row</div>
-              <input v-model.number="rowCountModel" type="number" step="1" class="inputRow rounded-md text-center min-w-5 bg-transparent outline-hidden [&::-webkit-outer-spin-button]:appearance-none" :max="maxCount" min="1" placeholder="Row Count" @blur="rowCount = clampRowCount(rowCount)">
-              <div class="flex flex-col -my-2 -mr-3">
-                <button v-ripple type="button" class="h-5 w-5 md:w-6 md:h-6 flex border-l border-b border-color-1 disabled:opacity-50" :disabled="rowCount >= maxCount" @click="changeRow(rowCount + 1)">
+              <input v-model.number="rowCountModel" type="number" step="1" class="no-spinner inputRow rounded-md text-center min-w-5 bg-transparent outline-hidden [&::-webkit-outer-spin-button]:appearance-none" :max="maxCount" min="1" placeholder="Row Count" @blur="rowCount = clampRowCount(rowCount)">
+              <div class="flex flex-col">
+                <button v-ripple type="button" class="size-3 md:size-4.5 flex border-l border-b border-color-1 disabled:opacity-50" :disabled="rowCount >= maxCount" @click="changeRow(rowCount + 1)">
                   <Icon name="material-symbols:arrow-drop-up-rounded" class="w-full h-full" />
                 </button>
-                <button v-ripple type="button" class="h-5 w-5 md:w-6 md:h-6 flex border-l border-color-1 disabled:opacity-50" :disabled="rowCount <= 1" @click="changeRow(rowCount - 1)">
+                <button v-ripple type="button" class="size-3 md:size-4.5 flex border-l border-color-1 disabled:opacity-50" :disabled="rowCount <= 1" @click="changeRow(rowCount - 1)">
                   <Icon name="material-symbols:arrow-drop-down-rounded" class="w-full h-full" />
                 </button>
               </div>

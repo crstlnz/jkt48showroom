@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { MultiVideo } from '#components'
-import { Slider } from '#components'
 import {
   Dialog,
   DialogPanel,
@@ -8,6 +7,8 @@ import {
   TransitionChild,
   TransitionRoot,
 } from '@headlessui/vue'
+import { Slider } from '#components'
+import { useMultiVolume } from '~/store/multiVolume'
 
 const props = defineProps<{
   videoPlayers: Map<string, InstanceType<typeof MultiVideo>>
@@ -16,6 +17,8 @@ const props = defineProps<{
 const videoPlayers = computed(() => {
   return [...props.videoPlayers.values()]
 })
+
+const multiVolume = useMultiVolume()
 
 const isOpen = ref(false)
 
@@ -51,20 +54,19 @@ function reloadAll() {
 }
 
 function muteAll() {
-  for (const player of videoPlayers.value) {
-    player.video?.mute()
-  }
+  multiVolume.setAllMuted(true, videoPlayers.value)
 }
 
 function unmuteAll() {
-  for (const player of videoPlayers.value) {
-    player.video?.unmute()
-  }
+  multiVolume.setAllMuted(false, videoPlayers.value)
 }
 
-const allVolume = ref(0)
-const useAllVolume = ref(false)
-// const TO = ref<NodeJS.Timeout | null>()
+const allVolumeModel = computed({
+  get: () => multiVolume.allVolume,
+  set: (value: string | number) => {
+    multiVolume.setAllVolume(Number(value), videoPlayers.value)
+  },
+})
 
 function syncLive() {
   for (const player of videoPlayers.value) {
@@ -77,40 +79,7 @@ const autoRemove = useLocalStorage('auto_remove_player', () => true)
 const centerVideos = useLocalStorage('center_videos', () => false)
 const showVideoControl = useLocalStorage('show_video_control', () => true)
 
-const isAllVolumeSame = computed(() => {
-  return videoPlayers.value.every(a => a.video?.volume === videoPlayers.value[0]?.video?.volume)
-})
 defineExpose({ open: openModal })
-
-const slider = ref<InstanceType<typeof Slider>>()
-
-const { start } = useTimeoutFn(() => {
-  if (!isAllVolumeSame.value) {
-    slider.value?.silentUpdate(0)
-  }
-}, 50)
-
-watch(isAllVolumeSame, () => {
-  nextTick(() => {
-    start()
-  })
-})
-
-watch(allVolume, (volume) => {
-  // if (TO.value) clearTimeout(TO.value)
-  // TO.value = setTimeout(() => {
-  for (const player of videoPlayers.value) {
-    player.video?.setVolume(volume)
-  }
-  // }, 50)
-})
-
-onMounted(() => {
-  if (slider.value?.slider) {
-    useEventListener(slider.value.slider, 'change', () => {
-    })
-  }
-})
 </script>
 
 <template>
@@ -135,11 +104,11 @@ onMounted(() => {
           <TransitionChild
             as="template"
             enter="duration-100 ease-out"
-            enter-from="opacity-0 scale-75"
+            enter-from="opacity-0 scale-95"
             enter-to="opacity-100 scale-100"
             leave="duration-100 ease-in"
             leave-from="opacity-100 scale-100"
-            leave-to="opacity-0 scale-75"
+            leave-to="opacity-0 scale-95"
           >
             <DialogPanel
               class="w-full max-w-lg transform overflow-hidden rounded-2xl bg-container p-6 text-left align-middle shadow-xl transition-all max-h-[95vh] md:max-h-[85vh] flex flex-col"
@@ -176,10 +145,10 @@ onMounted(() => {
                         <Icon name="ic:round-volume-off" class="h-full w-full p-px" />
                       </button>
                     </div>
-                    <Slider ref="slider" v-model="allVolume" :hide-slider-value="useAllVolume" class="w-full md:w-50" :min="0" :max="1" :step="0.01" />
+                    <Slider v-model="allVolumeModel" class="w-full md:w-50" :min="0" :max="1" :step="0.01" />
                   </div>
                   <div class="overflow-y-auto h-0 items-stretch flex-1">
-                    <MultiVideoMediaControl v-for="[idx, player] in videoPlayers.entries()" :key="idx" :player="player" class="border-b-2 border-color-2 py-2 md:px-4 md:py-2.5" />
+                    <MultiVideoMediaControl v-for="player in videoPlayers" :key="player.id" :player="player" class="border-b-2 border-color-2 py-2 md:px-4 md:py-2.5" />
                   </div>
                 </div>
               </div>

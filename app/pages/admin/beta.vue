@@ -132,7 +132,7 @@ definePageMeta({ middleware: 'admin' })
           </div>
           <label class="block text-sm">
             Catatan
-            <input v-model="note" maxlength="200" placeholder="Contoh: Laptop Ella" class="bg-container-2 mt-1 w-full rounded-lg px-3 py-2 outline-none">
+            <input v-model="note" maxlength="200" placeholder="Contoh: Key A" class="bg-container-2 mt-1 w-full rounded-lg px-3 py-2 outline-none">
           </label>
           <label class="block text-sm">
             Token dapat digunakan sampai

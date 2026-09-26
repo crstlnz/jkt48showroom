@@ -72,7 +72,7 @@ width: 10px;
 /* Set a specific slider handle width */
 height: 10px;
 /* Slider handle height */
-background: #000;
+background: white;
 border: none;
 border-radius: 100%;
 /* cursor: pointer;

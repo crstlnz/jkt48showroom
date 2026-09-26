@@ -50,7 +50,7 @@ function loadImage(delay = 0) {
 
   clearTimeout(retryTimer)
   if (delay) {
-    retryTimer = setTimeout(() => loadImage(), delay)
+    retryTimer = setTimeout(loadImage, delay)
     return
   }
 

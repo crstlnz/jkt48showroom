@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { PreviewVideo } from '#components'
-import { DeferImage } from '#components'
 import { useElementHover, useTimeoutFn } from '@vueuse/core'
+import { DeferImage } from '#components'
 
 const props = defineProps<{ live: INowLive }>()
 defineEmits(['refreshliveinfo'])
@@ -151,6 +151,9 @@ watch(isHovered, (hovered) => {
       <NuxtLink class="pointer-events-auto" :to="$idnLiveUrl(live?.url_key ?? '0', live?.slug ?? '0')" target="_blank" :external="true" no-prefetch>
         <Image :src="idnLiveIcon" size="64px" class="w-16" />
       </NuxtLink>
+      <div v-if="live.is_premium" class="mt-1 rounded bg-yellow-500 px-1.5 py-0.5 text-center text-[10px] font-bold text-black">
+        PREMIUM
+      </div>
     </div>
     <div class="absolute bottom-0 left-0 z-20 font-semibold w-full pointer-events-none">
       <div class="flex gap-1.5 items-center p-3 md:p-4 relative">

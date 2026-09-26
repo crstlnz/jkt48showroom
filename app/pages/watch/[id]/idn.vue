@@ -19,6 +19,7 @@ const currentLiveKey = computed(() => {
   return [
     live.room_id,
     live.chat_room_id,
+    live.live_type,
     live.url_key,
     live.slug,
     live.streaming_url_list?.[0]?.url,

@@ -1,34 +1,33 @@
 <script lang="ts" setup>
 import type { MultiVideo } from '#components'
 import { Slider } from '#components'
+import { useMultiVolume } from '~/store/multiVolume'
 
 const props = defineProps<{
   player: InstanceType<typeof MultiVideo>
 }>()
 
+const multiVolume = useMultiVolume()
+
 function toggleMute() {
-  if (props.player.video?.isMuted) {
-    props.player.video?.unmute()
-  }
-  else {
-    props.player.video?.mute()
-  }
+  multiVolume.setPlayerMuted(
+    props.player.id,
+    !multiVolume.getPlayerMuted(props.player.id),
+    props.player,
+  )
 }
 
-const volume = ref(props.player.video?.volume || 1)
+const volume = ref(multiVolume.getPlayerVolume(props.player.id))
+const isMuted = computed(() => multiVolume.getPlayerMuted(props.player.id))
 
-watch(() => props.player.video?.volume, (vol) => {
-  volume.value = vol || 0
+watch(() => multiVolume.getPlayerVolume(props.player.id), (vol) => {
+  volume.value = vol
 })
 
-const slider = ref<InstanceType<typeof Slider>>()
-onMounted(() => {
-  if (slider.value) {
-    slider.value.slider?.addEventListener('input', (evt) => {
-      props.player.video?.setVolume((evt.target as HTMLInputElement).value)
-    })
-  }
-})
+function onVolumeChange(val: string | number) {
+  const n = Number(val)
+  multiVolume.setPlayerVolume(props.player.id, n, props.player)
+}
 </script>
 
 <template>
@@ -56,14 +55,14 @@ onMounted(() => {
           </button>
 
           <button v-ripple type="button" class="w-7 h-7 md:h-7 md:w-7 flex hover:bg-hover-2 rounded-full p-1" @click="toggleMute">
-            <Icon v-if="!player.video?.isMuted" name="ic:round-volume-up" class="h-full w-full p-px" />
+            <Icon v-if="!isMuted" name="ic:round-volume-up" class="h-full w-full p-px" />
             <Icon v-else name="ic:round-volume-off" class="h-full w-full p-px" />
           </button>
           <button v-ripple type="button" class="w-7 h-7 md:h-7 md:w-7 flex hover:bg-hover-2 rounded-full p-1" @click="player.remove">
             <Icon name="ic:baseline-delete" class="h-full w-full p-px" />
           </button>
         </div>
-        <Slider ref="slider" v-model="volume" class="w-full md:w-[200px] max-w-full" :min="0" :max="1" :step="0.01" />
+        <Slider v-model="volume" class="w-full md:w-[200px] max-w-full" :min="0" :max="1" :step="0.01" @update:model-value="onVolumeChange" />
       </div>
     </div>
   </div>

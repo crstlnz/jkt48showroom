@@ -83,7 +83,7 @@ const lives = computed<Omit<Multi.Video, 'order'>[]>(() => {
       result.push(convertShowroom(live))
     }
     else if (live.type === 'idn') {
-      if (isIDNMultiBypassEnabled.value) {
+      if (isIDNMultiBypassEnabled.value && !live.is_premium) {
         result.push(convertIDNLive(live))
       }
     }

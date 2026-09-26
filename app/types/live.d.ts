@@ -25,6 +25,7 @@ interface INowLive {
   is_group: boolean
   started_at: string | number
   chat_room_id?: string
+  live_type?: string
   streaming_url_list: StreamingURL[]
   is_premium?: boolean
   group?: string
