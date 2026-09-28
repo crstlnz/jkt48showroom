@@ -307,6 +307,7 @@ settings_global: Settings
 no_video_player: No video attached.
 enable_rotate: Enable video player rotate feature
 multi:
+  no_live: No one is live right now 😭
   source_url: Source URL
   source_url_placeholder: YouTube URL or direct stream URL
   add_source: Add source

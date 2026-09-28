@@ -24,6 +24,7 @@ const livePanel = ref<HTMLElement>()
 const liveScroller = ref<HTMLElement>()
 const swipeOffset = ref(0)
 const isSwiping = ref(false)
+const isRebounding = ref(false)
 const touchGesture = ref<{
   identifier: number
   startX: number
@@ -38,6 +39,7 @@ const touchGesture = ref<{
 
 let removeGestureListeners: (() => void) | undefined
 let escapeListenerAttached = false
+let reboundTimer: ReturnType<typeof setTimeout> | undefined
 
 const SWIPE_CLOSE_DISTANCE = 80
 const SWIPE_CLOSE_RATIO = 0.4
@@ -150,8 +152,8 @@ function addSourceUrl() {
 }
 
 function close() {
-  cleanupGestureController()
   if (!liveOpen.value) return
+  cleanupGestureController()
   liveOpen.value = false
   emit('openChange', false)
 }
@@ -165,10 +167,26 @@ function getPanelHeight() {
   return livePanel.value?.getBoundingClientRect().height || window.innerHeight
 }
 
-function resetTouchGesture() {
+function resetTouchGesture(rebound = false) {
+  if (reboundTimer) {
+    clearTimeout(reboundTimer)
+    reboundTimer = undefined
+  }
+
   touchGesture.value = undefined
   swipeOffset.value = 0
   isSwiping.value = false
+
+  if (!rebound) {
+    isRebounding.value = false
+    return
+  }
+
+  isRebounding.value = true
+  reboundTimer = setTimeout(() => {
+    isRebounding.value = false
+    reboundTimer = undefined
+  }, 300)
 }
 
 function startPanelDrag(gesture: NonNullable<typeof touchGesture.value>, touch: Touch, event: TouchEvent, resetOrigin: boolean) {
@@ -275,11 +293,11 @@ function handleTouchEnd(event: TouchEvent) {
     return
   }
 
-  resetTouchGesture()
+  resetTouchGesture(true)
 }
 
 function handleTouchCancel() {
-  resetTouchGesture()
+  resetTouchGesture(true)
 }
 
 function handleEscape(event: KeyboardEvent) {
@@ -323,7 +341,7 @@ function cleanupGestureController() {
   resetTouchGesture()
 }
 
-watch(liveOpen, async open => {
+watch(liveOpen, async (open) => {
   if (open) {
     await nextTick()
     if (liveOpen.value && livePanel.value) attachGestureController()
@@ -338,10 +356,14 @@ onBeforeUnmount(() => {
 })
 
 function toggleLive() {
-  liveOpen.value = !liveOpen.value
-  if (!liveOpen.value) cleanupGestureController()
-  emit('openChange', liveOpen.value)
-  if (liveOpen.value) nextTick(() => emit('requestCollapse'))
+  if (liveOpen.value) {
+    close()
+    return
+  }
+
+  liveOpen.value = true
+  emit('openChange', true)
+  nextTick(() => emit('requestCollapse'))
 }
 
 const onLives = useOnLives()
@@ -412,19 +434,19 @@ defineExpose({ close })
     <Teleport to="body">
       <div v-if="liveOpen" class="fixed inset-0 z-belowNav bg-transparent" @click="close" />
       <Transition
-        enter-active-class="transition duration-200 ease-out"
-        enter-from-class="translate-y-full opacity-0"
-        enter-to-class="translate-y-0 opacity-100"
-        leave-active-class="transition duration-150 ease-in"
-        leave-from-class="translate-y-0 opacity-100"
-        leave-to-class="translate-y-full opacity-0"
+        enter-active-class="transition-transform duration-300 ease-out"
+        enter-from-class="translate-y-full"
+        enter-to-class="translate-y-0"
+        leave-active-class="transition-transform duration-200 ease-in"
+        leave-from-class="translate-y-0"
+        leave-to-class="translate-y-full"
       >
         <div
           v-if="liveOpen"
           ref="livePanel"
           data-multi-live-panel
-          class="fixed inset-x-0 bottom-0 z-belowNav mx-auto flex max-h-[85dvh] w-full max-w-162 flex-col overflow-hidden rounded-t-3xl border border-color-1 bg-dark-1 text-left shadow-xl"
-          :class="{ 'transition-transform duration-300 ease-out': !isSwiping }"
+          class="fixed inset-x-0 bottom-0 z-belowNav mx-auto flex max-h-[85dvh] w-full max-w-162 flex-col overflow-hidden rounded-t-3xl border border-color-1 bg-dark-2 text-left shadow-xl"
+          :class="{ 'transition-transform duration-300 ease-out': isRebounding }"
           :style="isSwiping ? { transform: `translateY(${swipeOffset}px)` } : undefined"
           tabindex="-1"
           @click.stop
@@ -468,7 +490,7 @@ defineExpose({ close })
               <MultiLiveCard v-for="live in lives" :key="live.id" :live="live" :selected="selected.has(live.id)" @live-click="select(live)" />
             </div>
             <div v-else class="flex px-8 py-2 text-center text-base font-light">
-              {{ $t('nolive') }}
+              {{ $t('multi.no_live') }}
             </div>
           </div>
         </div>

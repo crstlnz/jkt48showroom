@@ -307,6 +307,7 @@ settings_global: Pengaturan
 no_video_player: Tidak ada video yang terlampir. Tambah dulu videonya!
 enable_rotate: Hidupkan fitur rotate untuk pemutar video
 multi:
+  no_live: Tidak ada live saat ini 😭
   source_url: URL Source
   source_url_placeholder: URL YouTube atau direct stream
   add_source: Tambah source
