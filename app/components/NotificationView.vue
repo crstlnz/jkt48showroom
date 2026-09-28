@@ -18,11 +18,19 @@ function beforeLeave(el: Element) {
 }
 
 const { isMobile } = useDevice()
+const route = useRoute()
+const isMultiPage = computed(() => route.path === '/multi')
 </script>
 
 <template>
   <Teleport to="body">
-    <div class="pointer-events-none fixed inset-0 z-notification my-3 mx-5" :class="{ 'mb-[60px]': isMobile }">
+    <div
+      class="pointer-events-none fixed inset-0 z-notification mx-5 my-3"
+      :class="{
+        'mb-[60px]': isMobile && !isMultiPage,
+        'mb-16 md:mb-20': isMultiPage,
+      }"
+    >
       <TransitionGroup
         ref="containerNotif"
         tag="div"

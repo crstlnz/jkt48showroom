@@ -39,13 +39,14 @@ defineExpose({ silentUpdate, slider })
       class="absolute inset-0 top-1/2 z-0 h-1 w-full -translate-y-1/2 overflow-hidden rounded-xs bg-gray-300/25 pointer-events-none"
     >
       <div
+        :data-value="(silentValue ?? Number(modelValue)) / max * 100"
         class="h-full bg-slate-200"
         :style="{ width: `${(silentValue ?? Number(modelValue)) / max * 100}%` }"
       />
     </div>
     <input
       id="myRange" ref="slider" type="range" :min="min" :max="max" :step="step"
-      class="slider flex-1 cursor-pointer h-4 md:h-5" :value="modelValue" @input="onChange"
+      class="slider min-w-0 flex-1 cursor-pointer h-4 md:h-5" :value="modelValue" @input="onChange"
     >
   </div>
 </template>

@@ -307,6 +307,13 @@ settings_global: Settings
 no_video_player: No video attached.
 enable_rotate: Enable video player rotate feature
 multi:
+  source_url: Source URL
+  source_url_placeholder: YouTube URL or direct stream URL
+  add_source: Add source
+  source_url_required: Enter a source URL
+  source_url_invalid: Invalid URL
+  source_url_protocol: URL must use http or https
+  source_url_exists: Source already added
   auto_remove: Auto remove player when stream is offline
   center: Align video to center
   hidevideocontrol: Hide video control

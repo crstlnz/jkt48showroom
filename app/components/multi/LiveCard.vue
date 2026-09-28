@@ -20,8 +20,18 @@ defineEmits<{ (e: 'liveClick', video: Omit<Multi.Video, 'order'>): void }>()
         </div>
       </div>
     </div>
-    <button type="button" :class="{ 'bg-blue-500 visible': !selected, 'bg-red-500': selected }" class="self-end px-2 py-0.5 rounded-md text-base text-white" @click="$emit('liveClick', live)">
-      {{ selected ? $t('delete') : $t('add') }}
+    <button
+      v-ripple
+      type="button"
+      :aria-label="selected ? $t('delete') : $t('add')"
+      :title="selected ? $t('delete') : $t('add')"
+      class="flex size-8 shrink-0 items-center justify-center rounded-lg border p-1.5 transition-colors md:size-9"
+      :class="selected
+        ? 'border-red-500/40 bg-red-500/10 text-red-500 hover:bg-red-500/20'
+        : 'border-blue-500/40 bg-blue-500/10 text-blue-500 hover:bg-blue-500/20'"
+      @click="$emit('liveClick', live)"
+    >
+      <Icon :name="selected ? 'ic:baseline-delete-outline' : 'ic:round-add'" class="size-full" />
     </button>
   </div>
 </template>

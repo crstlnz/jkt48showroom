@@ -71,7 +71,7 @@
 }
 
 @utility bg-container {
-  @apply bg-white border border-color-1 dark:border-none dark:bg-dark-1;
+  @apply bg-white border border-color-1 dark:bg-dark-1;
 }
 
 @utility bg-container-2 {

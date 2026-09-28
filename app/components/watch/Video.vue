@@ -71,19 +71,19 @@ const isMuted = ref(props.muted ?? mutedData.value)
 const isApplyingMediaState = ref(false)
 const nativeVolume = ref(0)
 const nativeMuted = ref(false)
+let mediaStateGuardTimer: ReturnType<typeof setTimeout> | undefined
 
 function runWithMediaState(callback: () => void) {
-  const wasApplying = isApplyingMediaState.value
   isApplyingMediaState.value = true
   try {
     callback()
   }
   finally {
-    if (!wasApplying) {
-      nextTick(() => {
-        isApplyingMediaState.value = false
-      })
-    }
+    if (mediaStateGuardTimer != null) clearTimeout(mediaStateGuardTimer)
+    mediaStateGuardTimer = setTimeout(() => {
+      isApplyingMediaState.value = false
+      mediaStateGuardTimer = undefined
+    }, 100)
   }
 }
 
@@ -159,6 +159,17 @@ const isFocusControl = ref(false)
 const isHoverControl = ref(false)
 const videoWidth = ref(0)
 const videoHeight = ref(0)
+let videoSizeFrame: number | undefined
+let currentTimeFrame: number | undefined
+
+function scheduleVideoSizeCalculation() {
+  if (videoSizeFrame != null) return
+
+  videoSizeFrame = requestAnimationFrame(() => {
+    videoSizeFrame = undefined
+    calculateVideoSize()
+  })
+}
 
 const { start: autoRemoveHover, stop: stopAutoRemoveHover } = useTimeoutFn(
   () => {
@@ -173,16 +184,11 @@ watch(isFocusControl, (focus) => {
   if (focus) autoRemoveHover()
 })
 
-const { isOutside, x, y } = useMouseInElement(videoPlayer)
-watch(x, () => {
-  if (!isMobile && !isOutside.value !== showControl.value) {
-    setShowControl(!isOutside.value)
-  }
+useEventListener(videoPlayer, 'pointerenter', () => {
+  if (!isMobile) setShowControl(true)
 })
-watch(y, () => {
-  if (!isMobile && !isOutside.value !== showControl.value) {
-    setShowControl(!isOutside.value)
-  }
+useEventListener(videoPlayer, 'pointerleave', () => {
+  if (!isMobile) setShowControl(false)
 })
 
 const volumeSlider = ref<HTMLInputElement | null>(null)
@@ -343,9 +349,7 @@ const createdVideo = ref(false)
 useScriptTag(
   useAppConfig().hlsUrl,
   () => {
-    if (!isYouTube.value) {
-      createHLS(currentSource.value?.url ?? '')
-    }
+    initializeHLS()
   },
   { defer: true },
 )
@@ -354,15 +358,23 @@ const useWorker = ref(true)
 const proxyServers = ref(getProxyServer())
 const proxyIndex = ref(0)
 
+function initializeHLS() {
+  if (isYouTube.value || createdVideo.value || !video.value) return
+  const supportsNativeHLS = video.value.canPlayType('application/vnd.apple.mpegurl') !== ''
+  if (typeof Hls === 'undefined' && !supportsNativeHLS) return
+
+  createdVideo.value = true
+  createHLS(currentSource.value?.url ?? '')
+}
+
 onMounted(() => {
   if (isYouTube.value) {
     if (youtubeVideoId.value) {
       createYouTubePlayer(youtubeVideoId.value)
     }
   }
-  else if (!createdVideo.value && typeof Hls !== 'undefined') {
-    createdVideo.value = true
-    createHLS(currentSource.value?.url ?? '')
+  else {
+    initializeHLS()
   }
 })
 
@@ -373,7 +385,7 @@ function createHLS(_url: string) {
   if (!video.value) return
   const url = `${proxied.value ? `${proxyServers.value[proxyIndex.value] ?? ''}` : ''}${_url}`
 
-  if (Hls.isSupported() && !hlsNotWork.value) {
+  if (typeof Hls !== 'undefined' && Hls.isSupported() && !hlsNotWork.value) {
     fatalError.value = 0
     isLoading.value = true
     destroyVideo()
@@ -390,14 +402,12 @@ function createHLS(_url: string) {
     })
 
     const syncVideoMetrics = () => {
-      requestAnimationFrame(() => {
-        if (!video.value) return
-        if (video.value.videoWidth && video.value.videoHeight) {
-          videoWidth.value = video.value.videoWidth
-          videoHeight.value = video.value.videoHeight
-        }
-        calculateVideoSize()
-      })
+      if (!video.value) return
+      if (video.value.videoWidth && video.value.videoHeight) {
+        videoWidth.value = video.value.videoWidth
+        videoHeight.value = video.value.videoHeight
+      }
+      scheduleVideoSizeCalculation()
     }
 
     hls.value.on(Hls.Events.ERROR, (event: any, data: any) => {
@@ -469,14 +479,43 @@ function createHLS(_url: string) {
     play()
   }
   else {
+    destroyVideo()
     video.value.src = url
     video.value.load()
     play()
   }
 }
 
+function handleNativeVideoError() {
+  if (isYouTube.value || hls.value) return
+
+  const sourceUrl = currentSource.value?.url ?? ''
+  if (!sourceUrl) return
+
+  if (!sourceUrl.includes('showroom')) {
+    if (!proxied.value) {
+      proxied.value = true
+      proxyIndex.value = 0
+      return createHLS(sourceUrl)
+    }
+
+    if (proxyIndex.value < proxyServers.value.length - 1) {
+      proxyIndex.value += 1
+      return createHLS(sourceUrl)
+    }
+  }
+
+  emit('sourceError')
+  startAutoReload()
+}
+
+useEventListener(video, 'error', handleNativeVideoError)
+
 function destroyVideo() {
-  if (hls.value) hls.value.destroy()
+  if (hls.value) {
+    hls.value.destroy()
+    hls.value = null
+  }
 }
 
 function destroyYouTube() {
@@ -746,7 +785,7 @@ const isFullscreenLandscape = ref(false)
 watch(isFullscreen, (fullscreen) => {
   emit('fullsceen', fullscreen)
   isFullscreenLandscape.value = window.innerHeight <= window.innerWidth
-  calculateVideoSize()
+  scheduleVideoSizeCalculation()
 })
 
 const duration = ref(0)
@@ -779,6 +818,9 @@ onBeforeUnmount(() => {
   destroyVideo()
   destroyYouTube()
   if (ytPoller) clearInterval(ytPoller)
+  if (mediaStateGuardTimer != null) clearTimeout(mediaStateGuardTimer)
+  if (videoSizeFrame != null) cancelAnimationFrame(videoSizeFrame)
+  if (currentTimeFrame != null) cancelAnimationFrame(currentTimeFrame)
   if (document?.pictureInPictureElement) {
     document.exitPictureInPicture()
   }
@@ -992,24 +1034,24 @@ function calculateVideoSize() {
 watch(rotation, () => {
   const isLs = isLandscape.value ? !isMiring.value : isMiring.value
   emit('isLandscape', isLs)
-  requestAnimationFrame(() => calculateVideoSize())
+  scheduleVideoSizeCalculation()
 })
 
 useEventListener(video, 'loadedmetadata', function () {
   videoWidth.value = (this as any).videoWidth
   videoHeight.value = (this as any).videoHeight
-  requestAnimationFrame(() => calculateVideoSize())
+  scheduleVideoSizeCalculation()
 })
 useEventListener(video, 'loadeddata', function () {
   videoWidth.value = (this as any).videoWidth
   videoHeight.value = (this as any).videoHeight
-  requestAnimationFrame(() => calculateVideoSize())
+  scheduleVideoSizeCalculation()
 })
 useEventListener(video, 'resize', () => {
   if (!video.value) return
   videoWidth.value = video.value.videoWidth
   videoHeight.value = video.value.videoHeight
-  requestAnimationFrame(() => calculateVideoSize())
+  scheduleVideoSizeCalculation()
 })
 useEventListener(video, 'play', () => {
   isLoading.value = false
@@ -1033,8 +1075,12 @@ useEventListener(video, 'durationchange', () => {
   duration.value = video.value?.duration || 0
 })
 useEventListener(video, 'timeupdate', () => {
-  if (isSeekDragging.value) return
-  currentTime.value = video.value?.currentTime || 0
+  if (isSeekDragging.value || currentTimeFrame != null) return
+
+  currentTimeFrame = requestAnimationFrame(() => {
+    currentTimeFrame = undefined
+    if (!isSeekDragging.value) currentTime.value = video.value?.currentTime || 0
+  })
 })
 useEventListener(video, 'loadstart', () => {
   isLoading.value = true
@@ -1067,8 +1113,7 @@ useEventListener(video, 'fullscreenchange', () => checkBuiltInFullscreen())
 const pipEnabled = ref(false)
 
 onMounted(() => {
-  useEventListener(window, 'resize', () => requestAnimationFrame(() => calculateVideoSize()))
-  useResizeObserver(videoPlayer, () => requestAnimationFrame(() => calculateVideoSize()))
+  useResizeObserver(videoPlayer, scheduleVideoSizeCalculation)
   pipEnabled.value = document.pictureInPictureEnabled
 
   try {
@@ -1200,7 +1245,7 @@ defineExpose({
         :class="{}"
         @click="() => { togglePlay() }"
       >
-        <Icon name="ic:round-play-arrow" class="text-white/60" size="3rem" />
+        <Icon name="ic:round-play-arrow" class="text-white/60" :size="compact ? '1.5rem' : '3rem'" />
       </div>
 
       <!-- Pause button (center, mobile) -->
@@ -1210,7 +1255,7 @@ defineExpose({
         :class="{ 'pointer-events-none': !isMobile }"
         @click="togglePlay"
       >
-        <Icon name="ic:round-pause" class="text-white/60" size="3rem" />
+        <Icon name="ic:round-pause" class="text-white/60" :size="compact ? '1.5rem' : '3rem'" />
       </div>
 
       <!-- Loading spinner -->
@@ -1219,7 +1264,7 @@ defineExpose({
         id="loading-spinner"
         class="absolute inset-0 z-0 flex items-center justify-center bg-black/30 text-black"
       >
-        <Icon name="svg-spinners:270-ring-with-bg" class="text-white" size="3rem" />
+        <Icon name="svg-spinners:270-ring-with-bg" class="text-white" :class="compact ? 'size-5 sm:size-7 md:size-9' : 'size-12'" />
       </div>
 
       <div
@@ -1300,15 +1345,15 @@ defineExpose({
 
           <!-- Buttons row -->
           <div class="flex w-full px-1 duration-200 md:px-2 items-center">
-            <button class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1" aria-label="Play" type="button" @click="togglePlay">
+            <button :class="compact ? 'h-5 w-5 p-0.5 sm:h-6 sm:w-6 md:h-7 md:w-7' : 'h-7 w-7 p-0.5 md:h-8 md:w-8 md:p-1'" aria-label="Play" type="button" @click="togglePlay">
               <Icon :name="playIcon" class="h-full w-full" />
             </button>
 
-            <div v-if="!compact" class="group/volume flex items-center gap-1">
-              <button class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1" aria-label="Mute" type="button" @click="toggleMute">
+            <div class="group/volume flex items-center gap-1">
+              <button :class="compact ? 'h-5 w-5 p-0.5 sm:h-6 sm:w-6 md:h-7 md:w-7' : 'h-7 w-7 p-0.5 md:h-8 md:w-8 md:p-1'" aria-label="Mute" type="button" @click="toggleMute">
                 <Icon :name="volumeIcon" class="h-full w-full" />
               </button>
-              <div class="relative flex h-full w-16 items-center duration-200 group-hover/volume:w-20 md:w-20">
+              <div v-if="!compact" class="relative flex h-full w-16 items-center duration-200 group-hover/volume:w-20 md:w-20">
                 <div class="absolute inset-0 top-1/2 h-1 z-0 w-16 -translate-y-1/2 overflow-hidden rounded-xs bg-gray-100/25 md:w-20">
                   <div class="h-full bg-slate-100" :style="{ width: `${volume * 100}%` }" />
                 </div>
@@ -1332,14 +1377,14 @@ defineExpose({
               / {{ $dayjs.duration(duration, 'second').format('mm:ss') }}
             </div>
 
-            <button class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1" aria-label="Reload" type="button" @click="reload">
+            <button :class="compact ? 'h-5 w-5 p-0.5 sm:h-6 sm:w-6 md:h-7 md:w-7' : 'h-7 w-7 p-0.5 md:h-8 md:w-8 md:p-1'" aria-label="Reload" type="button" @click="reload">
               <Icon name="ic:round-refresh" class="h-full w-full p-px" />
             </button>
 
             <!-- Rotate only for native video -->
             <button
               v-if="enableRotate && !isYouTube"
-              class="h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1"
+              :class="compact ? 'h-5 w-5 p-0.5 sm:h-6 sm:w-6 md:h-7 md:w-7' : 'h-7 w-7 p-0.5 md:h-8 md:w-8 md:p-1'"
               aria-label="Rotate"
               type="button"
               @click="rotate"
@@ -1389,7 +1434,7 @@ defineExpose({
             <!-- PiP: hide for YouTube -->
             <button
               v-if="pipEnabled && !isYouTube"
-              class="group h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1"
+              :class="compact ? 'group h-5 w-5 p-0.5 sm:h-6 sm:w-6 md:h-7 md:w-7' : 'group h-7 w-7 p-0.5 md:h-8 md:w-8 md:p-1'"
               aria-label="Picture in Picture"
               type="button"
               @click="togglePictureInPicture"
@@ -1398,7 +1443,7 @@ defineExpose({
             </button>
 
             <button
-              class="group h-7 w-7 md:h-8 md:w-8 p-0.5 md:p-1"
+              :class="compact ? 'group h-5 w-5 p-0.5 sm:h-6 sm:w-6 md:h-7 md:w-7' : 'group h-7 w-7 p-0.5 md:h-8 md:w-8 md:p-1'"
               aria-label="Fullscreen"
               type="button"
               @click="toggleFullscreen"

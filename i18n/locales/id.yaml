@@ -307,6 +307,13 @@ settings_global: Pengaturan
 no_video_player: Tidak ada video yang terlampir. Tambah dulu videonya!
 enable_rotate: Hidupkan fitur rotate untuk pemutar video
 multi:
+  source_url: URL Source
+  source_url_placeholder: URL YouTube atau direct stream
+  add_source: Tambah source
+  source_url_required: Masukkan URL source
+  source_url_invalid: URL tidak valid
+  source_url_protocol: URL harus menggunakan http atau https
+  source_url_exists: Source sudah ditambahkan
   auto_remove: Otomatis menghapus player saat stream telah selesai
   center: Sejajarkan video ke tengah
   hidevideocontrol: Sembunyikan kontrol video

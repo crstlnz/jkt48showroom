@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { MultiMediaControl, MultiVideo } from '#components'
+import { MultiLiveContainer, MultiMediaControl, MultiVideo } from '#components'
 import { useMultiVolume } from '~/store/multiVolume'
 import { useNotifications } from '~/store/notifications'
 import { useOnLives } from '~/store/onLives'
@@ -62,10 +62,36 @@ const maxCount = computed(() => {
   return Math.max(1, Math.floor(width.value / minWidth.value))
 })
 
-const rowCount = useLocalStorage('multiRowCount', 4, { deep: true })
+const legacyRowCount = useLocalStorage('multiRowCount', 4)
+const rowCountSettings = useLocalStorage<Record<string, number>>('multiRowCounts', {})
+const rowCount = ref(4)
+const rowCountKey = computed(() => `${isSmall.value ? 'small' : 'large'}-${maxCount.value}`)
 
 function clampRowCount(row: number, max = maxCount.value) {
   return Math.min(Math.max(1, row), max)
+}
+
+function getStoredRowCount() {
+  const stored = rowCountSettings.value[rowCountKey.value]
+  if (typeof stored === 'number' && Number.isFinite(stored)) return stored
+
+  const legacy = Number(legacyRowCount.value)
+  return legacy > 1 ? legacy : 4
+}
+
+function applyRowCountForResolution() {
+  rowCount.value = clampRowCount(getStoredRowCount())
+}
+
+const applyRowCountForResolutionDebounced = useDebounceFn(applyRowCountForResolution, 150)
+
+function setRowCount(row: number) {
+  const value = clampRowCount(Math.trunc(row))
+  rowCount.value = value
+  rowCountSettings.value = {
+    ...rowCountSettings.value,
+    [rowCountKey.value]: value,
+  }
 }
 
 const rowCountModel = computed({
@@ -73,20 +99,20 @@ const rowCountModel = computed({
   set: (val: unknown) => {
     const row = Number(val)
     if (!Number.isFinite(row)) return
-    rowCount.value = clampRowCount(Math.trunc(row))
+    setRowCount(row)
   },
 })
 
 onMounted(() => {
-  rowCount.value = clampRowCount(rowCount.value)
+  applyRowCountForResolution()
 })
 
-watch(maxCount, (c) => {
-  rowCount.value = clampRowCount(rowCount.value, c)
+watch([maxCount, isSmall], () => {
+  applyRowCountForResolutionDebounced()
 })
 
 function changeRow(row: number) {
-  rowCount.value = clampRowCount(row)
+  setRowCount(row)
 }
 
 const { group } = useSettings()
@@ -176,8 +202,8 @@ function getTileStyle(video: Multi.Video) {
     maxWidth: basis,
     minWidth: 0,
     transition: 'flex-basis 220ms ease, max-width 220ms ease, transform 220ms ease, scale 220ms ease, opacity 220ms ease',
-    opacity: isDragged ? 0.4 : 1,
-    scale: isDragged ? '0.92' : undefined,
+    opacity: isDragged ? 0.6 : 1,
+    scale: isDragged ? '0.94' : undefined,
   } as const
 }
 
@@ -623,7 +649,11 @@ function onBeforeLeave(el: Element) {
   element.style.width = `${rect.width}px`
 }
 
+let videoLayoutFrame: number | undefined
+
 onBeforeUnmount(() => {
+  const frame = videoLayoutFrame
+  if (frame != null) cancelAnimationFrame(frame)
   setDraggingCursor(false)
   for (const el of tileEls.value.values()) {
     clearTileAnimation(el)
@@ -698,14 +728,23 @@ const description = computed(() => {
   return `Multi viewer adalah aplikasi yang memungkinkan kamu untuk menonton member ${getGroupTitle(group)} favoritmu sercara bersamaan!`
 })
 
-watch(rowCount, () => {
-  for (const v of videoPlayers.value.values()) {
-    v.video?.calculateVideoSize()
-  }
+function scheduleVideoLayoutUpdate() {
+  if (videoLayoutFrame != null) return
 
+  videoLayoutFrame = requestAnimationFrame(() => {
+    videoLayoutFrame = undefined
+    for (const player of videoPlayers.value.values()) {
+      player.video?.calculateVideoSize()
+    }
+  })
+}
+
+watch(rowCount, () => {
   for (const v of videos.value) {
     v.space = clampVideoSpan(v.space)
   }
+
+  scheduleVideoLayoutUpdate()
 })
 
 const title = computed(() => `${getGroupTitle(group)} Multi Viewer`)
@@ -726,6 +765,12 @@ useSeoMeta({
   twitterCard: 'summary',
 })
 const mediaControl = ref<InstanceType<typeof MultiMediaControl>>()
+const multiLiveContainer = ref<InstanceType<typeof MultiLiveContainer>>()
+
+function handleMediaControlExpanded(expanded: boolean) {
+  if (expanded) multiLiveContainer.value?.close()
+}
+
 function openMediaControl() {
   if (mediaControl.value) mediaControl.value.open()
 }
@@ -743,7 +788,20 @@ function toggleMute() {
   <div>
     <SplashScreen>
       <div key="multiviewer" class="min-h-screen flex flex-col">
-        <MultiMediaControl ref="mediaControl" :video-players="videoPlayers" />
+        <MultiMediaControl
+          ref="mediaControl"
+          :video-players="videoPlayers"
+          @expanded-change="handleMediaControlExpanded"
+        >
+          <template #live-control="{ collapse }">
+            <MultiLiveContainer
+              ref="multiLiveContainer"
+              :selected="selectedVideos"
+              @select="toggleVideo"
+              @request-collapse="collapse"
+            />
+          </template>
+        </MultiMediaControl>
         <nav class="flex items-center gap-4 p-4 md:p-5 justify-between mx-auto max-w-162 w-full">
           <div class="text-base font-bold flex flex-col sm:flex-row sm:items-end sm:gap-0.5">
             <NuxtLink to="/" :class="$getGroup(group) === 'jkt48' ? 'text-red-500' : 'text-sky-400'" class="text-3xl lg:text-4xl max-sm:leading-8">
@@ -754,24 +812,24 @@ function toggleMute() {
             </h1>
           </div>
           <div class="flex gap-3 items-center">
-            <div class="flex md:flex-row t border border-color-1 rounded-md overflow-hidden">
-              <button v-ripple type="button" class="flex h-8 w-8 bg-container hover:bg-container border-r border-color-1  p-1.5" @click="clearSelectedVideos">
+            <div class="flex md:flex-row border border-color-2 rounded-md overflow-hidden">
+              <button v-ripple type="button" class="flex h-8 w-8 bg-dark-1 hover:bg-hover-2 border-r! border-color-1  p-1.5" @click="clearSelectedVideos">
                 <Icon name="mingcute:broom-fill" class="w-full h-full" />
               </button>
-              <button v-ripple type="button" class="flex h-8 w-8 bg-container hover:bg-container border-r border-color-1  p-1.5" @click="refreshAll">
+              <button v-ripple type="button" class="flex h-8 w-8 bg-dark-1 hover:bg-hover-2 border-r! border-color-1  p-1.5" @click="refreshAll">
                 <Icon name="material-symbols:sync" class="w-full h-full" />
               </button>
-              <button v-ripple type="button" class="flex h-8 w-8 bg-container hover:bg-container border-r border-color-1  p-1.5" @click="toggleMute">
+              <button v-ripple type="button" class="flex h-8 w-8 bg-dark-1 hover:bg-hover-2 border-r! border-color-1  p-1.5" @click="toggleMute">
                 <Icon v-if="!multiVolume.allMuted" name="material-symbols:volume-up" class="w-full h-full" />
                 <Icon v-else name="material-symbols:volume-off-rounded" class="w-full h-full" />
               </button>
-              <button v-ripple type="button" class="flex h-8 w-8 bg-container hover:bg-container p-1.5" @click="openMediaControl">
+              <button v-ripple type="button" class="flex h-8 w-8 bg-dark-1 hover:bg-hover-2 p-1.5" @click="openMediaControl">
                 <Icon name="icon-park-outline:equalizer" class="w-full h-full p-0.5" />
               </button>
             </div>
             <div class="flex gap-2 bg-white dark:bg-white/5 pl-2 py-0.5 rounded-md items-center overflow-hidden text-xs md:text-sm">
               <div>Row</div>
-              <input v-model.number="rowCountModel" type="number" step="1" class="no-spinner inputRow rounded-md text-center min-w-5 bg-transparent outline-hidden [&::-webkit-outer-spin-button]:appearance-none" :max="maxCount" min="1" placeholder="Row Count" @blur="rowCount = clampRowCount(rowCount)">
+              <input v-model.number="rowCountModel" type="number" step="1" class="no-spinner inputRow rounded-md text-center min-w-5 bg-transparent outline-hidden [&::-webkit-outer-spin-button]:appearance-none" :max="maxCount" min="1" placeholder="Row Count">
               <div class="flex flex-col">
                 <button v-ripple type="button" class="size-3 md:size-4.5 flex border-l border-b border-color-1 disabled:opacity-50" :disabled="rowCount >= maxCount" @click="changeRow(rowCount + 1)">
                   <Icon name="material-symbols:arrow-drop-up-rounded" class="w-full h-full" />
@@ -783,10 +841,6 @@ function toggleMute() {
             </div>
           </div>
         </nav>
-        <div class="fixed bottom-0 inset-x-0 w-screen pointer-events-none z-aboveNav">
-          <MultiLiveContainer :selected="selectedVideos" class="pointer-events-auto" @select="toggleVideo" />
-        </div>
-
         <div v-if="renderVideos.length" class="flex-1">
           <TransitionGroup v-if="renderVideos.length" name="multivideo" tag="div" class="flex flex-wrap" :class="{ 'justify-center': centerVideos }" data-multi-grid @before-leave="onBeforeLeave">
             <div
@@ -807,6 +861,8 @@ function toggleMute() {
                 :videos-length="renderVideos.length"
                 :video="video"
                 :show-video-control="showVideoControl"
+                :auto-remove="autoRemove"
+                :row-count="rowCount"
                 class="w-full h-full"
                 @space-change="(space) => changeVideoSpace(video, space)"
                 @delete="(reason) => deleteVideo(video, reason)"
@@ -823,16 +879,8 @@ function toggleMute() {
         <div v-else class="flex flex-1 justify-center items-center text-2xl font-semibold text-center px-3">
           {{ $t("selectvideofirst") }}
         </div>
-        <footer class="text-center pt-10 py-10 flex flex-col gap-1 items-center">
-          <div class="opacity-50 text-xs">
-            <span>
-              Created by
-            </span>
-            <NuxtLink to="https://twitter.com/crstlnz" target="_blank" class="">
-              @crstlnz
-            </NuxtLink>
-          </div>
-          <Footer class="opacity-50" />
+        <footer class="text-center pt-10 pb-18 flex flex-col gap-1 items-center">
+          <Footer />
         </footer>
       </div>
     </SplashScreen>

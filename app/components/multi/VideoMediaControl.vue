@@ -31,15 +31,16 @@ function onVolumeChange(val: string | number) {
 </script>
 
 <template>
-  <div class="flex gap-3 md:gap-4 items-end">
-    <img :src="player.data.image" class="w-16 aspect-square object-cover rounded-full">
+  <div class="flex gap-3 items-center">
+    <Image v-if="player.data.image" :src="player.data.image" alt="" class="w-14 md:w-16 aspect-square object-cover rounded-lg bg-container-2" />
+    <DummyProfilePicture v-else :name="player.data.name" class="w-14 md:w-16 aspect-square rounded-lg" />
     <div class="flex-1 w-0">
       <div>
         <div class="truncate text-sm md:text-base">
           {{ player.data.name }}
         </div>
       </div>
-      <div class="flex flex-col md:flex-row md:gap-3 justify-between">
+      <div class="flex flex-col md:flex-row md:gap-3">
         <div class="flex items-center mt-0.5">
           <button v-ripple type="button" class="w-7 h-7 md:h-7 md:w-7 flex hover:bg-hover-2 rounded-full p-1" @click="player.video?.togglePlay()">
             <Icon v-if="!player.video?.isPlaying" name="ic:round-play-arrow" class="h-full w-full" />
@@ -58,11 +59,13 @@ function onVolumeChange(val: string | number) {
             <Icon v-if="!isMuted" name="ic:round-volume-up" class="h-full w-full p-px" />
             <Icon v-else name="ic:round-volume-off" class="h-full w-full p-px" />
           </button>
-          <button v-ripple type="button" class="w-7 h-7 md:h-7 md:w-7 flex hover:bg-hover-2 rounded-full p-1" @click="player.remove">
+        </div>
+        <div class="flex gap-3 flex-1">
+          <Slider v-model="volume" class="w-full flex-1" :min="0" :max="1" :step="0.01" @update:model-value="onVolumeChange" />
+          <button v-ripple type="button" class="w-7 h-7 md:h-7 md:w-7 flex hover:bg-red-500/20 rounded-full p-1 text-red-500" @click="player.remove">
             <Icon name="ic:baseline-delete" class="h-full w-full p-px" />
           </button>
         </div>
-        <Slider v-model="volume" class="w-full md:w-[200px] max-w-full" :min="0" :max="1" :step="0.01" @update:model-value="onVolumeChange" />
       </div>
     </div>
   </div>

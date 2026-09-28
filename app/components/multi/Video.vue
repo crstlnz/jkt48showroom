@@ -24,6 +24,8 @@ const props = defineProps<{
   index: number
   videosLength: number
   showVideoControl: boolean
+  autoRemove: boolean
+  rowCount: number
 }>()
 
 const emit = defineEmits<{
@@ -40,7 +42,7 @@ const emit = defineEmits<{
 const multiVolume = useMultiVolume()
 const effectiveVolume = computed(() => multiVolume.getPlayerVolume(props.video.id))
 const effectiveMuted = computed(() => multiVolume.getPlayerMuted(props.video.id))
-const autoRemove = useLocalStorage('auto_remove_player', () => true)
+const controlSpan = computed(() => Math.max(1, Math.min(props.video.space, props.rowCount || 1)))
 const videoElement = ref<InstanceType<typeof WatchVideo>>()
 const pendingSeek = ref(0)
 const previewSeek = ref(0)
@@ -147,7 +149,7 @@ async function refreshShowroomStreamURL() {
 }
 
 function onSourceNotFound() {
-  if (autoRemove.value) {
+  if (props.autoRemove) {
     emit(`sourceNotFound`)
   }
 }
@@ -245,7 +247,6 @@ function expandSpace() {
 function reduceSpace() {
   emit('spaceChange', props.video.space - 1)
 }
-const rowCount = useLocalStorage('multiRowCount', 4, { deep: true })
 
 // DRAG GESTURE
 const container = ref<HTMLDivElement | null>(null)
@@ -502,7 +503,13 @@ onMounted(() => {
         emit('dragEnd', payload)
       }
     },
-    { filterTaps: true, threshold: 120 },
+    {
+      filterTaps: true,
+      threshold: 120,
+      pointer: {
+        keys: false,
+      },
+    },
   )
 })
 
@@ -579,45 +586,45 @@ defineExpose({ refresh, video: videoElement, data: props.video, remove, id: prop
         </div>
       </div>
     </div>
-    <div aria-hidden="true" class="pointer-events-none absolute inset-0 z-10 rounded-[inherit] bg-hover opacity-0 transition-opacity duration-150 group-focus-within:opacity-10" />
-    <div v-if="showVideoControl" class="relative p-1 md:p-2 xl:p-2 gap-1 md:gap-2 xl:gap-3 w-full bg-white t border border-black/10 drop-shadow-xs dark:border-white/10 dark:bg-black/20">
-      <div class="absolute inset-0 flex justify-between p-1 md:p-2 xl:p-3 pointer-events-none items-center">
-        <button :disabled="index === 0" type="button" class="pointer-events-auto bg-black/10 dark:bg-white/5 h-6 w-6 md:w-7 md:h-7 rounded-full disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center" @click="$emit('movePrevious')">
-          <Icon name="material-symbols:arrow-left" size="1.5rem" />
+    <div v-if="showVideoControl" class="relative max-h-10 w-full gap-1 bg-white transition-all duration-150 group-focus-within:bg-gray-600/5 group-focus-within:brightness-110 drop-shadow-xs border border-dark-1 dark:bg-black/20 md:gap-2 xl:gap-3">
+      <div aria-hidden="true" class="invisible aspect-50/4.5 min-h-7 max-h-10" :style="{ width: `${100 / controlSpan}%` }" />
+      <div class="absolute inset-0 flex items-center justify-between pointer-events-none">
+        <button :disabled="index === 0" type="button" class="@container pointer-events-auto hover:bg-white/5 h-full aspect-4/5 md:aspect-square disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center" @click="$emit('movePrevious')">
+          <Icon name="material-symbols:arrow-left" class="text-[60cqw]" />
         </button>
-        <button :disabled="index === videosLength - 1" type="button" class="pointer-events-auto bg-black/10 dark:bg-white/5 h-6 w-6 md:w-7 md:h-7 rounded-full disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center" @click="$emit('moveNext')">
-          <Icon name="material-symbols:arrow-right" size="1.5rem" />
+        <button :disabled="index === videosLength - 1" type="button" class="@container pointer-events-auto hover:bg-white/5 h-full aspect-4/5 md:aspect-square disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center" @click="$emit('moveNext')">
+          <Icon name="material-symbols:arrow-right" class="text-[60cqw]" />
         </button>
       </div>
-      <div class="flex gap-0.5 w-full flex-col items-center lg:px-10">
-        <div class="flex gap-0.5 sm:gap-1">
-          <button v-if="enableRotate" type="button" class="bg-blue-500 text-white size-5 sm:size-6 md:size-7 flex justify-center items-center rounded-md text-sm" @click="rotate">
-            <Icon name="ic:outline-sync" class="w-full h-full p-1" />
+      <div class="absolute inset-0 flex h-full w-full max-w-full flex-col items-center lg:px-10">
+        <div class="flex max-w-full justify-center gap-0.5 sm:gap-1 h-full">
+          <button v-if="enableRotate" type="button" class="pointer-events-auto flex shrink-0 items-center justify-center @container hover:bg-white/5 h-full aspect-4/5 md:aspect-square" @click="rotate">
+            <Icon name="ic:outline-sync" class="text-[50cqw]" />
           </button>
-          <button type="button" class="bg-blue-500 text-white size-5 sm:size-6 md:size-7 flex justify-center items-center rounded-md text-sm" @click="refresh">
-            <Icon name="material-symbols:refresh-rounded" class="w-full h-full p-1" />
+          <button type="button" class="pointer-events-auto flex shrink-0 items-center justify-center @container hover:bg-white/5 h-full aspect-4/5 md:aspect-square" @click="refresh">
+            <Icon name="material-symbols:refresh-rounded" class="text-[50cqw]" />
           </button>
           <button
             type="button"
-            class="bg-blue-500 text-white size-5 sm:size-6 md:size-7 flex justify-center items-center rounded-md text-sm disabled:opacity-45 disabled:cursor-not-allowed"
+            class="pointer-events-auto flex shrink-0 items-center justify-center @container hover:bg-white/5 h-full aspect-4/5 md:aspect-square disabled:cursor-not-allowed disabled:opacity-40"
             :disabled="video.space <= 1"
             @click="reduceSpace"
           >
-            <Icon name="iconoir:arrow-union" class="w-full h-full p-1" />
+            <Icon name="iconoir:arrow-union" class="text-[50cqw]" />
           </button>
           <button
             type="button"
-            class="bg-blue-500 text-white size-5 sm:size-6 md:size-7 flex justify-center items-center rounded-md text-sm disabled:opacity-45 disabled:cursor-not-allowed"
-            :disabled="video.space >= rowCount"
+            class="pointer-events-auto flex shrink-0 items-center justify-center @container hover:bg-white/5 h-full aspect-4/5 md:aspect-square disabled:cursor-not-allowed disabled:opacity-40"
+            :disabled="video.space >= props.rowCount"
             @click="expandSpace"
           >
-            <Icon name="iconoir:arrow-separate" class="w-full h-full p-1" />
+            <Icon name="iconoir:arrow-separate" class="text-[50cqw]" />
           </button>
-          <!-- <NuxtLink :to="video.original_url" target="_blank" :external="true" no-prefetch type="button" class="bg-blue-500 flex items-center size-5 sm:size-6 md:size-7 justify-center  text-white rounded-md text-sm">
-            <Icon name="octicon:link-external-16" class="w-full h-full p-1.5" />
+          <!-- <NuxtLink :to="video.original_url" target="_blank" :external="true" no-prefetch type="button" class="bg-blue-500 flex items-center size-5 h-full aspect-4/5 md:aspect-square justify-center  text-white rounded-md text-sm">
+            <Icon name="octicon:link-external-16" class="text-[50cqw]" />
           </NuxtLink> -->
-          <button type="button" class="bg-red-500 text-white size-5 sm:size-6 md:size-7 flex justify-center items-center rounded-md text-sm" @click="$emit('delete')">
-            <Icon name="heroicons:trash" class="w-full h-full p-1.5" />
+          <button type="button" class="pointer-events-auto flex shrink-0 items-center justify-center @container text-red-500 hover:bg-white/5 h-full aspect-4/5 md:aspect-square dark:text-red-400" @click="$emit('delete')">
+            <Icon name="heroicons:trash" class="text-[50cqw]" />
           </button>
         </div>
       </div>

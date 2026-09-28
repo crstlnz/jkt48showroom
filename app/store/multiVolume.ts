@@ -15,6 +15,11 @@ export const useMultiVolume = defineStore('multiVolume', () => {
     }
   }
 
+  function clampVolume(volume: number) {
+    if (!Number.isFinite(volume)) return
+    return Math.min(1, Math.max(0, volume))
+  }
+
   function getPlayerVolume(id: string): number {
     if (Object.hasOwn(playerVolumes.value, id)) {
       return playerVolumes.value[id]
@@ -30,7 +35,8 @@ export const useMultiVolume = defineStore('multiVolume', () => {
   }
 
   function setAllVolume(volume: number, videoPlayers?: Iterable<MultiPlayer>) {
-    const v = Math.min(1, Math.max(0, volume))
+    const v = clampVolume(volume)
+    if (v == null) return
     allVolume.value = v
     playerVolumes.value = {}
     if (videoPlayers) {
@@ -41,7 +47,8 @@ export const useMultiVolume = defineStore('multiVolume', () => {
   }
 
   function setPlayerVolume(id: string, volume: number, player?: MultiPlayer) {
-    const v = Math.min(1, Math.max(0, volume))
+    const v = clampVolume(volume)
+    if (v == null) return
     playerVolumes.value = {
       ...playerVolumes.value,
       [id]: v,
